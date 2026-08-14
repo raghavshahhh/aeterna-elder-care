@@ -54,37 +54,40 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#071519]/70 backdrop-blur-sm transition-opacity animate-in fade-in duration-200"
+        className="fixed inset-0 bg-[#071519]/75 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      {/* Modal Box */}
-      <div
-        className={cn(
-          'relative w-full bg-white rounded-3xl shadow-2xl border border-[#E8E2D8] p-5 sm:p-8 z-10 my-auto max-h-[92vh] overflow-y-auto animate-in zoom-in-95 duration-200',
-          maxWidths[maxWidth],
-          className
-        )}
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 rounded-full text-[#5C6F75] hover:text-[#0D2329] hover:bg-[#F6F1E8] transition-colors focus:outline-none"
-          aria-label="Close dialog"
+      {/* Centering wrapper */}
+      <div className="min-h-screen px-3 py-6 sm:px-6 sm:py-10 flex items-center justify-center">
+        {/* Modal Box */}
+        <div
+          className={cn(
+            'relative w-full bg-white rounded-3xl shadow-2xl border border-[#E8E2D8] p-5 sm:p-7 z-10 mx-auto text-left max-h-[90vh] overflow-y-auto transform transition-all',
+            maxWidths[maxWidth],
+            className
+          )}
         >
-          <X className="w-5 h-5" />
-        </button>
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 sm:top-5 sm:right-5 p-2 rounded-full text-[#53676E] hover:text-[#0D2329] hover:bg-[#F5EFE6] transition-colors focus:outline-none z-20 cursor-pointer"
+            aria-label="Close dialog"
+          >
+            <X className="w-5 h-5" />
+          </button>
 
-        {(title || subtitle) && (
-          <div className="mb-4 sm:mb-6 pr-8">
-            {title && <h3 className="text-xl sm:text-2xl font-serif-heading font-semibold text-[#0D2329]">{title}</h3>}
-            {subtitle && <p className="text-xs sm:text-sm text-[#5C6F75] mt-1">{subtitle}</p>}
-          </div>
-        )}
+          {(title || subtitle) && (
+            <div className="mb-4 pr-8">
+              {title && <h3 className="text-xl sm:text-2xl font-serif-heading font-bold text-[#0D2329]">{title}</h3>}
+              {subtitle && <p className="text-xs sm:text-sm text-[#53676E] mt-0.5">{subtitle}</p>}
+            </div>
+          )}
 
-        {children}
+          {children}
+        </div>
       </div>
     </div>
   );
