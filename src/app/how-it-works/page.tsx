@@ -102,10 +102,10 @@ export default function HowItWorksPage() {
             </ul>
           </div>
           <div className="lg:col-span-6 lg:order-1">
-            <div className="relative rounded-3xl overflow-hidden shadow-xl aspect-4/3 bg-[#F6F1E8]">
+            <div className="relative rounded-3xl overflow-hidden shadow-xl aspect-4/3 bg-[#F5EFE6]">
               <Image
-                src="https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?auto=format&fit=crop&w=800&q=80"
-                alt="Stage 2 Handover"
+                src="https://images.unsplash.com/photo-1617059063772-34532796cdb5?auto=format&fit=crop&w=800&q=80"
+                alt="Caregiver matching and respectful handover for Indian elder"
                 fill
                 className="object-cover"
               />

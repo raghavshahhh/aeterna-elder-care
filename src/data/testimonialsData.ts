@@ -48,7 +48,7 @@ export const testimonialsData: Testimonial[] = [
     fullStory: 'Handling sundowning and repetitive questions was taking a severe emotional toll on my mother. Caregiver Ramesh from Aeterna uses music therapy, old photo reminiscing, and calm redirection. My father now sleeps peacefully through the night without sedative pills.',
     verified: true,
     videoDuration: '2:10 min',
-    videoThumb: 'https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?auto=format&fit=crop&w=600&q=80'
+    videoThumb: 'https://images.unsplash.com/photo-1566492031773-4f4e44671857?auto=format&fit=crop&w=600&q=80'
   },
   {
     id: 'test-4',

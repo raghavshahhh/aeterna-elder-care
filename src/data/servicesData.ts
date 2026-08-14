@@ -152,7 +152,7 @@ export const servicesData: Service[] = [
     category: 'daily-living',
     categoryName: 'Daily Assisted Living',
     iconName: 'HeartHandshake',
-    heroImage: 'https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?auto=format&fit=crop&w=1400&q=80',
+    heroImage: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1400&q=80',
     badge: '100% Police Verified',
     rating: 4.93,
     reviewCount: 489,

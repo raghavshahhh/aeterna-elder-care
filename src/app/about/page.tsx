@@ -139,10 +139,10 @@ export default function AboutPage() {
           </div>
 
           <div className="lg:col-span-6">
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white aspect-4/3 bg-[#F6F1E8]">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white aspect-4/3 bg-[#F5EFE6]">
               <Image
-                src="https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?auto=format&fit=crop&w=1200&q=80"
-                alt="Doctor consulting an elderly mother with compassion"
+                src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80"
+                alt="Dignified Indian grandfather smiling warmly at home"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
