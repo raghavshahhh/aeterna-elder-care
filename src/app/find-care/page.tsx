@@ -407,18 +407,19 @@ export default function FindCarePage() {
             )}
 
             {/* Navigation buttons */}
-            <div className="flex items-center justify-between pt-6 border-t border-[#E8E2D8]">
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-6 border-t border-[#E8E2D8]">
               {currentStep > 1 ? (
                 <Button
                   variant="outline"
                   size="md"
                   onClick={handleBack}
                   leftIcon={<ArrowLeft className="w-4 h-4" />}
+                  className="w-full sm:w-auto"
                 >
                   Back
                 </Button>
               ) : (
-                <div />
+                <div className="hidden sm:block" />
               )}
 
               <Button
@@ -427,8 +428,9 @@ export default function FindCarePage() {
                 onClick={handleNext}
                 isLoading={loading}
                 rightIcon={<ArrowRight className="w-4 h-4" />}
+                className="w-full sm:w-auto font-bold"
               >
-                {currentStep === totalSteps ? 'Generate Care Recommendation' : 'Continue'}
+                {currentStep === totalSteps ? 'Generate Care Recommendation' : 'Continue →'}
               </Button>
             </div>
           </div>

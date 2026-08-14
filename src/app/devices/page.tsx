@@ -144,12 +144,12 @@ export default function DevicesPage() {
                 </div>
               </div>
 
-              <div className="p-6 sm:p-8 pt-0 flex items-center justify-between gap-3">
+              <div className="p-6 sm:p-8 pt-0 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setSelectedDevice(device)}
-                  className="text-xs"
+                  className="w-full sm:w-auto text-xs"
                 >
                   View Technical Specs
                 </Button>
@@ -159,6 +159,7 @@ export default function DevicesPage() {
                   size="md"
                   onClick={() => handleOrderDevice(device)}
                   leftIcon={<ShoppingBag className="w-4 h-4" />}
+                  className="w-full sm:w-auto font-bold"
                 >
                   Order {pricingMode === 'rent' ? 'Rental' : 'Device'}
                 </Button>

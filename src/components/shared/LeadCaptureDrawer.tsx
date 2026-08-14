@@ -57,8 +57,8 @@ export const LeadCaptureDrawer: React.FC = () => {
         onClick={closeLeadDrawer}
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-white border-l border-[#E8E2D8] shadow-2xl p-6 sm:p-8 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-300">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
+        <div className="w-screen max-w-md bg-white border-l border-[#E8E2D8] shadow-2xl p-5 sm:p-8 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-300">
           <div>
             <div className="flex items-center justify-between pb-4 border-b border-[#E8E2D8] mb-6">
               <div className="flex items-center gap-2">

@@ -85,6 +85,7 @@
 html {
   scroll-behavior: smooth;
   color-scheme: light;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -94,6 +95,25 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  width: 100%;
+}
+
+/* Prevent auto-zoom on iOS inputs */
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera (Horizontal pill scrolling) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 /* Typography styles */
@@ -104,14 +124,14 @@ body {
 
 /* Glassmorphism & Surface Tokens */
 .glass-header {
-  background: rgba(251, 249, 245, 0.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(251, 249, 245, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(232, 226, 216, 0.8);
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(12px);
   border: 1px solid var(--card-border);
   box-shadow: 0 4px 20px -2px rgba(13, 35, 41, 0.05);
@@ -138,8 +158,8 @@ body {
 
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -163,7 +183,7 @@ body {
   }
   70% {
     transform: scale(1);
-    box-shadow: 0 0 0 12px rgba(217, 56, 58, 0);
+    box-shadow: 0 0 0 10px rgba(217, 56, 58, 0);
   }
   100% {
     transform: scale(0.95);
@@ -180,7 +200,7 @@ body {
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-6px);
+    transform: translateY(-4px);
   }
 }
 

@@ -109,12 +109,12 @@ export default function ServiceDetailPage({ params }: ServiceDetailPageProps) {
             </div>
 
             {/* CTAs */}
-            <div className="flex flex-wrap items-center gap-3.5 pt-2">
-              <Link href={`/book?service=${service.slug}`}>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+              <Link href={`/book?service=${service.slug}`} className="w-full sm:w-auto">
                 <Button
                   variant="primary"
                   size="lg"
-                  className="bg-[#0D2329] hover:bg-[#163942] text-white"
+                  className="w-full sm:w-auto bg-[#0D2329] hover:bg-[#163942] text-white font-bold"
                   rightIcon={<ArrowRight className="w-4 h-4" />}
                 >
                   Book This Service
@@ -126,16 +126,18 @@ export default function ServiceDetailPage({ params }: ServiceDetailPageProps) {
                 size="lg"
                 onClick={() => openLeadDrawer({ title: `Inquire about ${service.title}`, service: service.title })}
                 leftIcon={<PhoneCall className="w-4 h-4 text-[#3D685A]" />}
+                className="w-full sm:w-auto"
               >
                 Request Callback
               </Button>
 
               <button
                 onClick={() => openWhatsApp({ service: service.title })}
-                className="p-3.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-colors"
+                className="p-3.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-colors flex items-center justify-center gap-2 text-xs font-bold sm:rounded-full"
                 title="Inquire on WhatsApp"
               >
-                <MessageSquare className="w-5 h-5 text-emerald-700" />
+                <MessageSquare className="w-4 h-4 text-emerald-700" />
+                <span className="sm:hidden">Chat on WhatsApp</span>
               </button>
             </div>
           </div>
