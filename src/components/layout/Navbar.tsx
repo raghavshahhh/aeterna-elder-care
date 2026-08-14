@@ -61,14 +61,14 @@ export const Navbar: React.FC = () => {
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5 group focus:outline-none shrink-0">
           <div className="w-10 h-10 rounded-2xl bg-[#0D2329] text-[#FBF9F5] flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-            <Heart className="w-5 h-5 fill-[#C58F58] text-[#C58F58]" />
+            <Heart className="w-5 h-5 fill-[#C58F58] text-[#C58F58] animate-heart-beat" />
           </div>
           <div className="leading-tight">
             <span className="text-xl sm:text-2xl font-serif-heading font-extrabold tracking-tight text-[#0D2329]">
               Aeterna<span className="text-[#C58F58]">.</span>
             </span>
-            <span className="hidden sm:block text-[9px] uppercase tracking-[0.2em] font-semibold text-[#5C6F75]">
-              Elder Healthcare
+            <span className="hidden sm:block text-[9px] uppercase tracking-[0.16em] font-bold text-[#2C5E50]">
+              Elder Care & Dignity
             </span>
           </div>
         </Link>
