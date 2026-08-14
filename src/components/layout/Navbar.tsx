@@ -144,7 +144,7 @@ export const Navbar: React.FC = () => {
           <Link
             href="/plans"
             className={cn(
-              'px-3.5 py-2 rounded-full text-sm font-medium transition-colors',
+              'px-3 py-2 rounded-full text-sm font-medium transition-colors',
               pathname === '/plans'
                 ? 'text-[#0D2329] font-bold bg-[#EAF2EE]'
                 : 'text-[#1D4B57] hover:text-[#0D2329] hover:bg-[#F6F1E8]'
@@ -153,11 +153,38 @@ export const Navbar: React.FC = () => {
             Care Plans
           </Link>
 
+          {/* Community & Live Shows (Emoha Clubs equivalent) */}
+          <Link
+            href="/community"
+            className={cn(
+              'px-3 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-1',
+              pathname === '/community'
+                ? 'text-[#0D2329] font-bold bg-[#EAF2EE]'
+                : 'text-[#1D4B57] hover:text-[#0D2329] hover:bg-[#F6F1E8]'
+            )}
+          >
+            <span>Club Aeterna</span>
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+          </Link>
+
+          {/* Smart Safety Devices (Emoha IoT equivalent) */}
+          <Link
+            href="/devices"
+            className={cn(
+              'px-3 py-2 rounded-full text-sm font-medium transition-colors',
+              pathname === '/devices'
+                ? 'text-[#0D2329] font-bold bg-[#EAF2EE]'
+                : 'text-[#1D4B57] hover:text-[#0D2329] hover:bg-[#F6F1E8]'
+            )}
+          >
+            Smart Safety Tech
+          </Link>
+
           {/* How it Works */}
           <Link
             href="/how-it-works"
             className={cn(
-              'px-3.5 py-2 rounded-full text-sm font-medium transition-colors',
+              'px-3 py-2 rounded-full text-sm font-medium transition-colors',
               pathname === '/how-it-works'
                 ? 'text-[#0D2329] font-bold bg-[#EAF2EE]'
                 : 'text-[#1D4B57] hover:text-[#0D2329] hover:bg-[#F6F1E8]'
@@ -175,7 +202,7 @@ export const Navbar: React.FC = () => {
             <Link
               href="/locations"
               className={cn(
-                'flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium transition-colors',
+                'flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium transition-colors',
                 pathname.startsWith('/locations')
                   ? 'text-[#0D2329] font-bold bg-[#EAF2EE]'
                   : 'text-[#1D4B57] hover:text-[#0D2329] hover:bg-[#F6F1E8]'
@@ -224,20 +251,20 @@ export const Navbar: React.FC = () => {
           <Link
             href="/resources"
             className={cn(
-              'px-3.5 py-2 rounded-full text-sm font-medium transition-colors',
+              'px-3 py-2 rounded-full text-sm font-medium transition-colors',
               pathname.startsWith('/resources')
                 ? 'text-[#0D2329] font-bold bg-[#EAF2EE]'
                 : 'text-[#1D4B57] hover:text-[#0D2329] hover:bg-[#F6F1E8]'
             )}
           >
-            Resources
+            Health Guides
           </Link>
 
           {/* About */}
           <Link
             href="/about"
             className={cn(
-              'px-3.5 py-2 rounded-full text-sm font-medium transition-colors',
+              'px-3 py-2 rounded-full text-sm font-medium transition-colors',
               pathname === '/about'
                 ? 'text-[#0D2329] font-bold bg-[#EAF2EE]'
                 : 'text-[#1D4B57] hover:text-[#0D2329] hover:bg-[#F6F1E8]'
@@ -358,6 +385,19 @@ export const Navbar: React.FC = () => {
                 className="block px-3 py-2.5 rounded-xl text-base font-semibold text-[#0D2329] hover:bg-[#EAF2EE]"
               >
                 Care Plans & Pricing
+              </Link>
+              <Link
+                href="/community"
+                className="block px-3 py-2.5 rounded-xl text-base font-semibold text-[#0D2329] hover:bg-[#EAF2EE] flex items-center justify-between"
+              >
+                <span>Club Aeterna (Daily Live Shows)</span>
+                <span className="text-[10px] bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded-full">LIVE</span>
+              </Link>
+              <Link
+                href="/devices"
+                className="block px-3 py-2.5 rounded-xl text-base font-semibold text-[#0D2329] hover:bg-[#EAF2EE]"
+              >
+                Smart IoT & Safety Devices
               </Link>
               <Link
                 href="/how-it-works"

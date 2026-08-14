@@ -8,6 +8,8 @@ import { carePlansData } from '@/data/plansData';
 import { locationsData } from '@/data/locationsData';
 import { resourcesData } from '@/data/resourcesData';
 import { faqsData } from '@/data/faqsData';
+import { communityEventsData } from '@/data/communityData';
+import { safetyDevicesData } from '@/data/devicesData';
 import { useModal } from '@/context/ModalContext';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -37,7 +39,15 @@ import {
   Activity,
   Brain,
   HelpCircle,
-  Play
+  Play,
+  Radio,
+  Tv,
+  Cpu,
+  Globe,
+  Smile,
+  Zap,
+  Calendar,
+  MessageSquare
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -45,159 +55,166 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
 
-  const filteredServices = activeCategory === 'all'
-    ? servicesData
-    : servicesData.filter((s) => s.category === activeCategory);
-
   const categoryOptions = [
-    { id: 'all', label: 'All Services', count: servicesData.length },
-    { id: 'critical-care', label: 'Critical Nursing & ICU', count: servicesData.filter((s) => s.category === 'critical-care').length },
-    { id: 'daily-living', label: 'Daily Attendants', count: servicesData.filter((s) => s.category === 'daily-living').length },
-    { id: 'medical-rehab', label: 'Doctor Visits & Physio', count: servicesData.filter((s) => s.category === 'medical-rehab').length },
-    { id: 'dementia-memory', label: 'Dementia Care', count: servicesData.filter((s) => s.category === 'dementia-memory').length },
-    { id: 'diagnostics-meds', label: 'Diagnostics & Equipment', count: servicesData.filter((s) => s.category === 'diagnostics-meds').length },
-    { id: 'companionship', label: 'Companionship', count: servicesData.filter((s) => s.category === 'companionship').length }
+    { id: 'all', label: 'All Services (10)' },
+    { id: 'critical-care', label: 'ICU & Clinical Nursing' },
+    { id: 'daily-living', label: 'Attendants & Caregivers' },
+    { id: 'medical-rehab', label: 'Doctor & Physio Rehab' },
+    { id: 'dementia-memory', label: 'Dementia Care' },
+    { id: 'companionship', label: 'Daughter on Demand' }
   ];
+
+  const filteredServices = servicesData.filter((srv) => {
+    if (activeCategory === 'all') return true;
+    return srv.category === activeCategory;
+  });
+
+  const featuredLiveEvent = communityEventsData[0];
 
   return (
     <div className="space-y-20 sm:space-y-28 pb-20">
       {/* ========================================================================= */}
       {/* 1. HERO SECTION                                                           */}
       {/* ========================================================================= */}
-      <section className="relative pt-8 sm:pt-14 pb-12 sm:pb-20 overflow-hidden bg-gradient-to-b from-[#FBF9F5] via-[#F6F1E8]/60 to-[#FBF9F5]">
-        {/* Soft background luxury glow */}
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-[#EAF2EE] rounded-full blur-3xl opacity-70 -z-10 pointer-events-none" />
-
+      <section className="relative overflow-hidden pt-8 sm:pt-14 pb-12 bg-gradient-to-b from-[#F6F1E8] via-[#FBF9F5] to-[#FBF9F5] border-b border-[#E8E2D8]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            {/* Left Column — Value Proposition & Actions */}
-            <div className="lg:col-span-7 space-y-6 sm:space-y-8">
+            {/* Hero Left Column (Copy + High-Conversion CTAs) */}
+            <div className="lg:col-span-7 space-y-6 sm:space-y-8 text-left">
               {/* Trust Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E8E2D8] shadow-sm">
-                <span className="flex h-2 w-2 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-                <span className="text-xs font-semibold text-[#0D2329]">
-                  NABH Compliant Protocols • Rated 4.96/5 by 12,000+ Families
-                </span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E2D7C5] shadow-xs text-xs font-semibold text-[#0D2329]">
+                <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                <span>India&apos;s #1 Comprehensive Elder Healthcare Platform</span>
+                <span className="text-[#C58F58] font-bold">★ 4.96/5</span>
               </div>
 
               {/* Main Headline */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif-heading font-bold text-[#0D2329] leading-[1.12] tracking-tight">
-                Hospital-grade clinical warmth for your parents.{' '}
-                <span className="italic font-normal text-[#3D685A] block mt-1">
-                  In the comfort of home.
-                </span>
+              <h1 className="text-4xl sm:text-6xl font-serif-heading font-extrabold text-[#0D2329] tracking-tight leading-[1.12]">
+                Hospital-Grade Care, 24/7 Emergency Safety, & Daily Joy at Home.
               </h1>
 
-              {/* Sub-headline */}
-              <p className="text-base sm:text-lg text-[#5C6F75] leading-relaxed max-w-2xl font-light">
-                India’s premier senior healthcare platform. Certified ICU nurses, quarterly geriatrician visits, dementia specialists, and an average <strong>14.8-minute emergency response</strong> across 12 metro cities.
+              {/* Subtitle */}
+              <p className="text-base sm:text-xl text-[#3D685A] font-light leading-relaxed max-w-2xl">
+                From sub-15 minute cardiac ambulances to verified ICU nurses, daily live yoga, and a dedicated &ldquo;Care Daughter&rdquo; for hospital visits — we protect your aging parents like our own.
               </p>
 
-              {/* Primary CTAs */}
-              <div className="flex flex-wrap items-center gap-3.5 pt-2">
-                <Link href="/find-care">
+              {/* Dual Primary Conversion CTAs */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
+                <Link href="/find-care" className="w-full sm:w-auto">
                   <Button
                     variant="primary"
                     size="lg"
-                    className="bg-[#0D2329] hover:bg-[#163942] text-white shadow-lg shadow-[#0D2329]/15"
-                    rightIcon={<ArrowRight className="w-4 h-4" />}
+                    className="w-full sm:w-auto font-bold text-base shadow-lg hover:shadow-xl group"
+                    rightIcon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
                   >
-                    Find Care in 60 Seconds
+                    Find the Right Care in 60s
                   </Button>
                 </Link>
 
                 <Button
                   variant="outline"
                   size="lg"
-                  onClick={() => openLeadDrawer({ title: 'Speak with Senior Geriatric Specialist' })}
-                  leftIcon={<PhoneCall className="w-4 h-4 text-[#3D685A]" />}
-                >
-                  Request Callback (5 Mins)
-                </Button>
-
-                <button
                   onClick={() => openEmergency()}
-                  className="inline-flex items-center gap-2 px-4 py-3 rounded-full text-xs font-bold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 transition-colors"
+                  leftIcon={<Siren className="w-4 h-4 text-red-600 animate-bounce" />}
+                  className="w-full sm:w-auto text-[#0D2329] border-red-200 bg-red-50/60 hover:bg-red-100 hover:border-red-300"
                 >
-                  <Siren className="w-4 h-4 text-red-600 animate-sos-pulse" />
-                  <span>24/7 Ambulance SOS</span>
-                </button>
+                  24/7 Emergency Ambulance
+                </Button>
               </div>
 
-              {/* Trust mini-stats */}
-              <div className="pt-4 border-t border-[#E8E2D8] grid grid-cols-3 gap-4 text-left">
+              {/* Quick WhatsApp & Call Micro-actions */}
+              <div className="pt-2 flex flex-wrap items-center gap-6 text-xs text-[#5C6F75]">
+                <button
+                  onClick={() => openWhatsApp()}
+                  className="inline-flex items-center gap-1.5 font-semibold text-emerald-800 hover:underline"
+                >
+                  <MessageSquare className="w-4 h-4 text-emerald-600" />
+                  <span>Chat with Doctor on WhatsApp</span>
+                </button>
+
+                <span className="text-[#E8E2D8]">•</span>
+
+                <a
+                  href="tel:+911140849900"
+                  className="inline-flex items-center gap-1.5 font-semibold text-[#0D2329] hover:underline"
+                >
+                  <PhoneCall className="w-3.5 h-3.5 text-[#C58F58]" />
+                  <span>Helpline: +91 11 4084 9900</span>
+                </a>
+              </div>
+
+              {/* Key Trust Metrics */}
+              <div className="pt-4 border-t border-[#E8E2D8] grid grid-cols-3 gap-4">
                 <div>
-                  <span className="block text-xl sm:text-2xl font-bold text-[#0D2329]">12,000+</span>
-                  <span className="text-[11px] sm:text-xs text-[#5C6F75]">Seniors Protected</span>
+                  <span className="block text-2xl sm:text-3xl font-extrabold text-[#0D2329]">
+                    12,000+
+                  </span>
+                  <span className="text-xs text-[#5C6F75] font-normal">Seniors Protected</span>
                 </div>
                 <div>
-                  <span className="block text-xl sm:text-2xl font-bold text-[#0D2329]">&lt; 15 Mins</span>
-                  <span className="text-[11px] sm:text-xs text-[#5C6F75]">Avg. Emergency SLA</span>
+                  <span className="block text-2xl sm:text-3xl font-extrabold text-[#3D685A]">
+                    &lt; 15 Mins
+                  </span>
+                  <span className="text-xs text-[#5C6F75] font-normal">Emergency Ambulance SLA</span>
                 </div>
                 <div>
-                  <span className="block text-xl sm:text-2xl font-bold text-[#0D2329]">100%</span>
-                  <span className="text-[11px] sm:text-xs text-[#5C6F75]">Police-Verified Staff</span>
+                  <span className="block text-2xl sm:text-3xl font-extrabold text-[#C58F58]">
+                    100%
+                  </span>
+                  <span className="text-xs text-[#5C6F75] font-normal">Biometric Verified Staff</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Column — Visual Editorial Collage with Interactive Live Badges */}
+            {/* Hero Right Column (Interactive Visual Card Deck) */}
             <div className="lg:col-span-5 relative">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white aspect-4/5 sm:aspect-square lg:aspect-4/5 bg-[#F6F1E8]">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white aspect-4/5 bg-[#F6F1E8]">
                 <Image
-                  src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=1200&q=80"
-                  alt="Senior care nurse assisting an elderly parent with warmth and compassion"
+                  src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=1000&q=80"
+                  alt="Senior doctor with elder patient"
                   fill
                   priority
-                  sizes="(max-width: 1024px) 100vw, 45vw"
-                  className="object-cover object-center"
+                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0D2329]/80 via-transparent to-black/20" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0D2329]/80 via-transparent to-transparent" />
 
-                {/* Live Pill 1: Floating Caregiver Status */}
-                <div className="absolute top-4 left-4 right-4 sm:right-auto bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white shadow-xl animate-float">
+                {/* Floating Top Card: Emergency SOS Active */}
+                <div className="absolute top-4 left-4 right-4 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-lg border border-[#E8E2D8] flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0 border border-emerald-500">
-                      <Image
-                        src="https://images.unsplash.com/photo-1594824813590-78174548842d?auto=format&fit=crop&w=150&q=80"
-                        alt="Sister Ananya"
-                        fill
-                        className="object-cover"
-                      />
+                    <div className="w-9 h-9 rounded-xl bg-red-600 text-white flex items-center justify-center animate-sos-pulse">
+                      <Siren className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-xs font-bold text-[#0D2329]">Sister Ananya (B.Sc. RN)</span>
-                      </div>
-                      <p className="text-[10px] text-[#5C6F75]">Checked-in • South Delhi GK-2</p>
+                      <span className="text-xs font-bold text-[#0D2329] block">24/7 Rapid SOS Response</span>
+                      <span className="text-[10px] text-emerald-700 font-semibold">12 Metro Nodes Active</span>
                     </div>
                   </div>
+                  <span className="text-[11px] font-bold text-red-600 bg-red-50 px-2.5 py-1 rounded-full">
+                    SLA &lt; 15m
+                  </span>
                 </div>
 
-                {/* Live Pill 2: Daily Vitals Synchronized */}
-                <div className="absolute bottom-6 left-4 right-4 bg-[#0D2329]/95 backdrop-blur-md p-4 rounded-2xl border border-white/20 text-white shadow-2xl">
-                  <div className="flex items-center justify-between text-xs pb-2 border-b border-white/10 mb-2">
-                    <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                      <Activity className="w-3.5 h-3.5" /> Live Vitals Synced
+                {/* Floating Bottom Card: Real-time Family Care Telemetry */}
+                <div className="absolute bottom-4 left-4 right-4 bg-[#0D2329]/90 backdrop-blur-md p-4 rounded-2xl border border-white/10 text-white space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-bold text-[#C58F58] flex items-center gap-1">
+                      <Activity className="w-3.5 h-3.5" /> Live Family App Sync
                     </span>
-                    <span className="text-white/60 text-[10px]">Today, 8:30 AM</span>
+                    <span className="text-[10px] text-emerald-400 font-mono">Synced 2m ago</span>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 text-center">
-                    <div className="bg-white/10 rounded-xl p-1.5">
-                      <span className="text-[10px] text-white/60 block">BP</span>
-                      <span className="text-xs font-bold text-white">124/82</span>
+                  <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                    <div className="bg-white/10 p-2 rounded-xl">
+                      <span className="text-[10px] text-white/60 block">Blood Pressure</span>
+                      <span className="font-bold">120/80</span>
                     </div>
-                    <div className="bg-white/10 rounded-xl p-1.5">
-                      <span className="text-[10px] text-white/60 block">Sugar</span>
-                      <span className="text-xs font-bold text-white">118 mg</span>
+                    <div className="bg-white/10 p-2 rounded-xl">
+                      <span className="text-[10px] text-white/60 block">Blood Sugar</span>
+                      <span className="font-bold">110 mg</span>
                     </div>
-                    <div className="bg-white/10 rounded-xl p-1.5">
-                      <span className="text-[10px] text-white/60 block">SpO2</span>
-                      <span className="text-xs font-bold text-emerald-400">98%</span>
+                    <div className="bg-white/10 p-2 rounded-xl">
+                      <span className="text-[10px] text-white/60 block">SpO2 Rate</span>
+                      <span className="font-bold text-emerald-400">98%</span>
                     </div>
                   </div>
                 </div>
@@ -208,38 +225,126 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 2. TRUST PARTNERS & ACCREDITATIONS                                        */}
+      {/* 2. THE 4 FOUNDATIONAL PILLARS (Emoha-Style Holistic Architecture)          */}
       {/* ========================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E8E2D8] shadow-sm">
-          <p className="text-center text-xs font-bold uppercase tracking-widest text-[#5C6F75] mb-6">
-            Trusted By Clinical Leaders & Networked With 120+ Tertiary Hospital Chains
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="text-center max-w-2xl mx-auto space-y-2">
+          <Badge variant="sage" size="md">
+            The 360° Care Ecosystem
+          </Badge>
+          <h2 className="text-3xl sm:text-4xl font-serif-heading font-bold text-[#0D2329]">
+            Four Pillars That Protect Your Parents Every Single Day
+          </h2>
+          <p className="text-sm text-[#5C6F75]">
+            Elder care is much more than medical treatment. We cover health, safety, daily companionship, and active social joy.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14 opacity-75 grayscale hover:grayscale-0 transition-all">
-            <span className="text-base sm:text-lg font-serif-heading font-extrabold text-[#0D2329]">
-              Max Healthcare
-            </span>
-            <span className="text-base sm:text-lg font-serif-heading font-extrabold text-[#0D2329]">
-              Apollo Hospitals
-            </span>
-            <span className="text-base sm:text-lg font-serif-heading font-extrabold text-[#0D2329]">
-              Fortis Escorts
-            </span>
-            <span className="text-base sm:text-lg font-serif-heading font-extrabold text-[#0D2329]">
-              Medanta — The Medicity
-            </span>
-            <span className="text-base sm:text-lg font-serif-heading font-extrabold text-[#0D2329]">
-              Manipal Hospitals
-            </span>
-            <span className="text-base sm:text-lg font-serif-heading font-extrabold text-[#0D2329]">
-              Lilavati Hospital
-            </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Pillar 1: Emergency & First Responders */}
+          <div className="bg-white rounded-3xl p-6 border border-[#E8E2D8] shadow-sm hover:shadow-md transition-shadow space-y-4 flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Siren className="w-6 h-6" />
+              </div>
+              <h3 className="font-bold text-lg text-[#0D2329]">24/7 Emergency & First Responders</h3>
+              <p className="text-xs text-[#5C6F75] leading-relaxed font-light">
+                Sub-15 minute GPS cardiac ambulance dispatch, ex-defense first responders on ground, emergency mock drills at home, and hospital green channel ER admissions.
+              </p>
+            </div>
+            <Link href="/services/emergency-ambulance-support" className="text-xs font-bold text-red-600 hover:underline flex items-center gap-1 pt-2 border-t border-[#E8E2D8]">
+              <span>Emergency Protocols</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          {/* Pillar 2: Clinical Health at Home */}
+          <div className="bg-white rounded-3xl p-6 border border-[#E8E2D8] shadow-sm hover:shadow-md transition-shadow space-y-4 flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Stethoscope className="w-6 h-6" />
+              </div>
+              <h3 className="font-bold text-lg text-[#0D2329]">Clinical Health & Home Nursing</h3>
+              <p className="text-xs text-[#5C6F75] leading-relaxed font-light">
+                B.Sc. ICU nurses, 24/7 live-in geriatric attendants, doctor bedside visits, neuro-physiotherapy rehab, lab collections, and medical equipment rental.
+              </p>
+            </div>
+            <Link href="/services" className="text-xs font-bold text-emerald-800 hover:underline flex items-center gap-1 pt-2 border-t border-[#E8E2D8]">
+              <span>Explore All 10 Services</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          {/* Pillar 3: Daughter on Demand / Family Concierge */}
+          <div className="bg-white rounded-3xl p-6 border border-[#E8E2D8] shadow-sm hover:shadow-md transition-shadow space-y-4 flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 text-[#C58F58] flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Heart className="w-6 h-6 fill-current" />
+              </div>
+              <h3 className="font-bold text-lg text-[#0D2329]">Daughter on Demand™ Concierge</h3>
+              <p className="text-xs text-[#5C6F75] leading-relaxed font-light">
+                A dedicated Care Manager who visits parents weekly, accompanies them to hospitals and banks, assists with smartphones, and coordinates home tasks.
+              </p>
+            </div>
+            <Link href="/services/companion-concierge-care" className="text-xs font-bold text-[#C58F58] hover:underline flex items-center gap-1 pt-2 border-t border-[#E8E2D8]">
+              <span>Learn About Concierge</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          {/* Pillar 4: Club Aeterna / Active Aging */}
+          <div className="bg-white rounded-3xl p-6 border border-[#E8E2D8] shadow-sm hover:shadow-md transition-shadow space-y-4 flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Tv className="w-6 h-6" />
+              </div>
+              <h3 className="font-bold text-lg text-[#0D2329]">Club Aeterna Active Aging</h3>
+              <p className="text-xs text-[#5C6F75] leading-relaxed font-light">
+                Daily live interactive shows: Morning Chair Yoga, Retro Sangeet & Antakshari, Doctor Live AMAs, and Memory Chess clubs so seniors never feel lonely.
+              </p>
+            </div>
+            <Link href="/community" className="text-xs font-bold text-blue-700 hover:underline flex items-center gap-1 pt-2 border-t border-[#E8E2D8]">
+              <span>Join Free Live Shows</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. INTERACTIVE SERVICE EXPLORER                                           */}
+      {/* 3. LIVE SHOW / CLUB AETERNA PREVIEW STRIP                                 */}
+      {/* ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-[#0D2329] text-white rounded-3xl p-6 sm:p-8 border border-[#1C4550] shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-red-600 text-white flex items-center justify-center animate-pulse shrink-0">
+              <Radio className="w-6 h-6" />
+            </div>
+            <div>
+              <span className="text-[10px] uppercase font-bold tracking-widest text-[#C58F58] block">
+                Today on Club Aeterna Live TV (Daily 8 AM & 5:30 PM)
+              </span>
+              <h4 className="font-bold text-base sm:text-lg text-white">
+                {featuredLiveEvent.title}
+              </h4>
+              <p className="text-xs text-white/70">
+                Hosted by {featuredLiveEvent.hostName} • {featuredLiveEvent.attendeesCount} Seniors RSVPed
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            <Link href="/community">
+              <Button variant="gold" size="md" className="font-bold">
+                Watch Live & RSVP Free →
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 4. INTERACTIVE SERVICE EXPLORER                                           */}
       {/* ========================================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -251,7 +356,7 @@ export default function HomePage() {
               Everything Your Parent Needs to Thrive at Home
             </h2>
             <p className="text-sm sm:text-base text-[#5C6F75] mt-1 max-w-xl">
-              From critical ICU nursing to gentle daily assistance and emergency hospitalization advocacy.
+              From critical ICU nursing to gentle daily assistance, physiotherapy, and emergency hospitalization advocacy.
             </p>
           </div>
 
@@ -281,226 +386,218 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 4. THE 4 PILLARS OF CLINICAL DIFFERENTIATION                              */}
+      {/* 5. SMART IOT & SENIOR SAFETY TECH (AI Fall Radar & 4G SOS Pendant)        */}
       {/* ========================================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-[#0D2329] text-white rounded-3xl p-8 sm:p-14 border border-[#1C4550] shadow-2xl relative overflow-hidden">
-          <div className="max-w-2xl space-y-3 mb-10">
-            <Badge variant="gold" size="md">
-              The Aeterna Quality Standard
-            </Badge>
-            <h2 className="text-3xl sm:text-4xl font-serif-heading font-bold text-white">
-              Why Discerning Families Choose Aeterna Over Local Agencies
+        <div className="bg-[#F6F1E8] rounded-3xl p-8 sm:p-14 border border-[#E2D7C5] space-y-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div className="space-y-2">
+              <Badge variant="gold" size="sm">
+                Smart Home Protection
+              </Badge>
+              <h2 className="text-3xl font-serif-heading font-bold text-[#0D2329]">
+                Zero-Camera AI Fall Radars & 4G Panic Pendants
+              </h2>
+              <p className="text-xs sm:text-sm text-[#5C6F75] max-w-xl">
+                Keep elders safe in bathrooms and bedrooms without privacy-invading optical cameras. Connected directly to our 24/7 Emergency Command Center.
+              </p>
+            </div>
+
+            <Link href="/devices">
+              <Button variant="primary" size="md" rightIcon={<ArrowRight className="w-4 h-4" />}>
+                Explore All Safety Hardware →
+              </Button>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {safetyDevicesData.slice(0, 3).map((dev) => (
+              <div
+                key={dev.id}
+                className="bg-white rounded-3xl p-6 border border-[#E8E2D8] shadow-sm flex flex-col justify-between space-y-4"
+              >
+                <div>
+                  <div className="relative h-44 w-full rounded-2xl overflow-hidden bg-[#FBF9F5] mb-4">
+                    <Image
+                      src={dev.image}
+                      alt={dev.name}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <Badge variant="forest" size="sm">
+                        {dev.category}
+                      </Badge>
+                    </div>
+                  </div>
+                  <h4 className="font-bold text-base text-[#0D2329]">{dev.name}</h4>
+                  <p className="text-xs text-[#5C6F75] mt-1 line-clamp-2">{dev.tagline}</p>
+                </div>
+
+                <div className="pt-3 border-t border-[#E8E2D8] flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#0D2329]">
+                    Rent from {formatINR(dev.priceRentPerMonth)}/mo
+                  </span>
+                  <Link href="/devices" className="text-xs font-bold text-[#C58F58] hover:underline">
+                    Order →
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 6. DEDICATED FOR NRI & LONG-DISTANCE FAMILIES                             */}
+      {/* ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-[#0D2329] text-white rounded-3xl p-8 sm:p-14 border border-[#1C4550] shadow-2xl relative overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <div className="lg:col-span-7 space-y-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-emerald-400 text-xs font-bold">
+              <Globe className="w-4 h-4" />
+              <span>Specialized Care for Children Living Overseas / Other Cities</span>
+            </div>
+
+            <h2 className="text-3xl sm:text-4xl font-serif-heading font-bold text-white leading-tight">
+              Living in the US, UK, or UAE? Your Parents Are in Safe Hands.
             </h2>
-            <p className="text-sm sm:text-base text-white/70 font-light">
-              Elder care is not domestic maid placement. It is a clinical responsibility requiring medical oversight, continuous monitoring, and absolute trust.
+
+            <p className="text-xs sm:text-sm text-white/70 leading-relaxed font-light">
+              We act as your proxy family on the ground. When you are thousands of miles away, you don&apos;t have to rely on neighbors during sudden medical panics or hospital admissions.
             </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <div className="flex items-start gap-2 text-xs text-white/90">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <span>Dedicated WhatsApp family group synced to US/UK timezones</span>
+              </div>
+              <div className="flex items-start gap-2 text-xs text-white/90">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <span>Shift-by-shift vitals telemetry & GPS attendance on mobile app</span>
+              </div>
+              <div className="flex items-start gap-2 text-xs text-white/90">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <span>Emergency hospital admission & cashless insurance advocacy</span>
+              </div>
+              <div className="flex items-start gap-2 text-xs text-white/90">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <span>Multi-currency international cards & Wire payments accepted</span>
+              </div>
+            </div>
+
+            <div className="pt-2 flex flex-wrap gap-3">
+              <Button
+                variant="gold"
+                size="lg"
+                onClick={() => openLeadDrawer({ title: 'NRI Family Care Consultation', service: 'Overseas Children Elder Support' })}
+              >
+                Schedule NRI Consultation Call →
+              </Button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
-              <div className="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-4">
-                <Stethoscope className="w-6 h-6" />
+          <div className="lg:col-span-5 bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-white/10 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+                🇺🇸 🇬🇧
               </div>
-              <h3 className="font-serif-heading font-bold text-lg text-white">
-                Chief Medical Officer Oversight
-              </h3>
-              <p className="text-xs sm:text-sm text-white/70 mt-2 leading-relaxed">
-                Every nursing shift and caregiver routine is audited by our senior MD Geriatricians. Not unsupervised domestic staff.
-              </p>
+              <div>
+                <strong className="text-sm text-white block">Over 4,500+ NRI Families</strong>
+                <span className="text-xs text-white/60">Trust Aeterna Care for their parents in India</span>
+              </div>
             </div>
-
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
-              <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-4">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif-heading font-bold text-lg text-white">
-                7-Stage Rigorous Vetting
-              </h3>
-              <p className="text-xs sm:text-sm text-white/70 mt-2 leading-relaxed">
-                Aadhaar biometric scan, court criminal history check, medical fitness, and 120 hours of geriatric training.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
-              <div className="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-4">
-                <Activity className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif-heading font-bold text-lg text-white">
-                Real-Time Family App Telemetry
-              </h3>
-              <p className="text-xs sm:text-sm text-white/70 mt-2 leading-relaxed">
-                Children living in the USA, UK, or other cities receive daily vitals charts, GPS attendance logs, and doctor summaries.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
-              <div className="w-12 h-12 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center mb-4">
-                <Clock className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif-heading font-bold text-lg text-white">
-                Guaranteed 2-4 Hr Standby Bench
-              </h3>
-              <p className="text-xs sm:text-sm text-white/70 mt-2 leading-relaxed">
-                If an attendant falls sick, our backup certified bench ensures immediate handover without leaving parents alone.
-              </p>
+            <p className="text-xs text-white/80 italic leading-relaxed pt-2 border-t border-white/10">
+              &ldquo;Living in San Jose, my biggest fear was my father collapsing in Gurgaon. Aeterna dispatched an ACLS ambulance within 12 minutes, admitted him to Max Healthcare, and their Care Manager stood by his bedside till I landed in Delhi.&rdquo;
+            </p>
+            <div className="text-[11px] text-[#C58F58] font-bold">
+              — Siddharth Mehta, VP Engineering (San Jose, California)
             </div>
           </div>
         </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* 5. 4-STEP CARE JOURNEY                                                     */}
-      {/* ========================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <Badge variant="sage" size="md">
-            Simple 4-Step Onboarding
-          </Badge>
-          <h2 className="text-3xl sm:text-4xl font-serif-heading font-bold text-[#0D2329]">
-            How We Onboard & Protect Your Parents
-          </h2>
-          <p className="text-sm sm:text-base text-[#5C6F75]">
-            A structured, dignified transition designed to establish immediate trust and clinical safety.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="p-6 rounded-3xl bg-white border border-[#E8E2D8] shadow-sm space-y-3 relative">
-            <span className="w-9 h-9 rounded-2xl bg-[#0D2329] text-white font-serif-heading font-bold flex items-center justify-center text-sm">
-              01
-            </span>
-            <h3 className="font-bold text-lg text-[#0D2329]">Tell Us Your Requirements</h3>
-            <p className="text-xs sm:text-sm text-[#5C6F75] leading-relaxed">
-              Complete our 60-second diagnostic wizard or speak to a Senior Care Specialist about your parent’s clinical conditions.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-3xl bg-white border border-[#E8E2D8] shadow-sm space-y-3 relative">
-            <span className="w-9 h-9 rounded-2xl bg-[#3D685A] text-white font-serif-heading font-bold flex items-center justify-center text-sm">
-              02
-            </span>
-            <h3 className="font-bold text-lg text-[#0D2329]">In-Home Clinical Triage</h3>
-            <p className="text-xs sm:text-sm text-[#5C6F75] leading-relaxed">
-              Our Geriatric Care Manager visits the home to audit mobility, medication charts, dietary habits, and room ergonomics.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-3xl bg-white border border-[#E8E2D8] shadow-sm space-y-3 relative">
-            <span className="w-9 h-9 rounded-2xl bg-[#C58F58] text-white font-serif-heading font-bold flex items-center justify-center text-sm">
-              03
-            </span>
-            <h3 className="font-bold text-lg text-[#0D2329]">Caregiver Matching & Trial</h3>
-            <p className="text-xs sm:text-sm text-[#5C6F75] leading-relaxed">
-              We match 2-3 verified profiles based on language, dietary preferences, and temperament. A trial orientation is conducted.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-3xl bg-white border border-[#E8E2D8] shadow-sm space-y-3 relative">
-            <span className="w-9 h-9 rounded-2xl bg-emerald-700 text-white font-serif-heading font-bold flex items-center justify-center text-sm">
-              04
-            </span>
-            <h3 className="font-bold text-lg text-[#0D2329]">24/7 Supervised Care & App</h3>
-            <p className="text-xs sm:text-sm text-[#5C6F75] leading-relaxed">
-              Care begins with automated daily vitals logs, weekly doctor reviews, and continuous 24/7 emergency ambulance standby.
-            </p>
-          </div>
-        </div>
-
-        <div className="text-center">
-          <Link href="/find-care">
-            <Button variant="primary" size="lg" rightIcon={<ArrowRight className="w-4 h-4" />}>
-              Start 60-Second Care Assessment →
-            </Button>
-          </Link>
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 6. CARE PLANS & PRICING PREVIEW                                           */}
+      {/* 7. CARE PLANS & MEMBERSHIP PREVIEW                                        */}
       {/* ========================================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <Badge variant="gold" size="md">
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <Badge variant="sage" size="md">
             Transparent Memberships
           </Badge>
           <h2 className="text-3xl sm:text-4xl font-serif-heading font-bold text-[#0D2329]">
-            Comprehensive Care Plans for Every Family Need
+            Comprehensive Care Plans for Every Stage of Aging
           </h2>
           <p className="text-sm sm:text-base text-[#5C6F75]">
-            Predictable monthly or annual memberships with doctor home visits, nursing hours, and emergency ambulance included.
+            Predictable monthly or annual memberships with zero hidden charges and guaranteed emergency ambulance coverage.
           </p>
 
-          {/* Billing Switch */}
-          <div className="inline-flex items-center gap-3 p-1.5 bg-[#F6F1E8] rounded-full border border-[#E2D7C5] mt-4">
-            <button
-              onClick={() => setBillingCycle('monthly')}
-              className={`px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all ${
-                billingCycle === 'monthly'
-                  ? 'bg-[#0D2329] text-white shadow-sm'
-                  : 'text-[#5C6F75] hover:text-[#0D2329]'
-              }`}
-            >
+          {/* Monthly vs Annual Toggle */}
+          <div className="pt-4 flex items-center justify-center gap-3 text-xs font-semibold">
+            <span className={billingCycle === 'monthly' ? 'text-[#0D2329] font-bold' : 'text-[#5C6F75]'}>
               Monthly Billing
-            </button>
+            </span>
             <button
-              onClick={() => setBillingCycle('annual')}
-              className={`px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 ${
-                billingCycle === 'annual'
-                  ? 'bg-[#0D2329] text-white shadow-sm'
-                  : 'text-[#5C6F75] hover:text-[#0D2329]'
-              }`}
+              type="button"
+              onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annual' : 'monthly')}
+              className="w-14 h-8 rounded-full bg-[#0D2329] p-1 transition-colors relative focus:outline-none"
+              aria-label="Toggle annual billing"
             >
-              <span>Annual Membership</span>
-              <span className="bg-[#C58F58] text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
-                Save 20%
-              </span>
+              <div
+                className={`w-6 h-6 rounded-full bg-[#C58F58] transition-transform duration-200 ${
+                  billingCycle === 'annual' ? 'translate-x-6' : 'translate-x-0'
+                }`}
+              />
             </button>
+            <span className={billingCycle === 'annual' ? 'text-[#0D2329] font-bold' : 'text-[#5C6F75]'}>
+              Annual Plan <span className="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full text-[10px]">Save 20%</span>
+            </span>
           </div>
         </div>
 
         {/* 4 Plan Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {carePlansData.map((plan) => {
-            const price = billingCycle === 'annual' ? Math.round(plan.priceAnnual / 12) : plan.priceMonthly;
+            const price = billingCycle === 'annual' ? plan.priceAnnual : plan.priceMonthly;
             return (
               <div
                 key={plan.id}
                 className={`rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 ${
                   plan.popular
-                    ? 'bg-white border-2 border-[#C58F58] shadow-xl relative -translate-y-2'
+                    ? 'bg-white border-2 border-[#C58F58] shadow-xl relative scale-102 lg:-translate-y-2'
                     : 'bg-white border border-[#E8E2D8] shadow-sm hover:shadow-md'
                 }`}
               >
+                {plan.popular && (
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#C58F58] text-white text-[11px] font-extrabold uppercase px-3.5 py-1 rounded-full shadow-md tracking-wider">
+                    Most Popular
+                  </div>
+                )}
+
                 <div>
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-[#3D685A]">
-                      {plan.badge}
+                      {plan.tagline}
                     </span>
-                    {plan.popular && (
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#C58F58] text-white">
-                        Most Popular
-                      </span>
-                    )}
                   </div>
 
-                  <h3 className="text-2xl font-serif-heading font-bold text-[#0D2329]">{plan.name}</h3>
-                  <p className="text-xs text-[#5C6F75] mt-1 min-h-[36px] line-clamp-2">
-                    {plan.tagline}
+                  <h3 className="text-2xl font-serif-heading font-bold text-[#0D2329] mt-2">
+                    {plan.name}
+                  </h3>
+
+                  <p className="text-xs text-[#5C6F75] mt-1 min-h-[32px]">
+                    {plan.description}
                   </p>
 
                   <div className="mt-5 pb-5 border-b border-[#E8E2D8]">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-3xl sm:text-4xl font-extrabold text-[#0D2329]">
+                      <span className="text-3xl font-extrabold text-[#0D2329]">
                         {formatINR(price)}
                       </span>
-                      <span className="text-xs text-[#5C6F75]">/ month</span>
-                    </div>
-                    {billingCycle === 'annual' && (
-                      <span className="text-[11px] font-semibold text-emerald-700 block mt-1">
-                        Billed annually ({formatINR(plan.priceAnnual)}/yr) • Save {formatINR(plan.annualSavings)}
+                      <span className="text-xs text-[#5C6F75]">
+                        /{billingCycle === 'annual' ? 'year' : 'mo'}
                       </span>
-                    )}
+                    </div>
                   </div>
 
                   <ul className="mt-5 space-y-2.5 text-xs text-[#1D4B57]">
@@ -546,14 +643,14 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 7. VERIFIED TESTIMONIALS CAROUSEL                                         */}
+      {/* 8. VERIFIED TESTIMONIALS CAROUSEL                                         */}
       {/* ========================================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <TestimonialCarousel />
       </section>
 
       {/* ========================================================================= */}
-      {/* 8. CITY LOCATIONS DIRECTORY                                               */}
+      {/* 9. CITY LOCATIONS DIRECTORY                                               */}
       {/* ========================================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -604,7 +701,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 9. LATEST CLINICAL RESOURCES & GUIDES                                      */}
+      {/* 10. LATEST CLINICAL RESOURCES & GUIDES                                     */}
       {/* ========================================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -635,7 +732,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 10. INTERACTIVE FAQ ACCORDION                                             */}
+      {/* 11. INTERACTIVE FAQ ACCORDION                                             */}
       {/* ========================================================================= */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="text-center space-y-3">
@@ -661,7 +758,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 11. FINAL HIGH-CONVERSION CTA                                             */}
+      {/* 12. FINAL HIGH-CONVERSION CTA                                             */}
       {/* ========================================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gradient-to-br from-[#0D2329] via-[#112E36] to-[#071519] text-white rounded-3xl p-8 sm:p-16 border border-[#1C4550] shadow-2xl relative overflow-hidden text-center space-y-8">
@@ -673,7 +770,7 @@ export default function HomePage() {
               Give Your Parents the Care, Safety, & Dignity They Deserve
             </h2>
             <p className="text-base sm:text-lg text-white/80 font-light max-w-2xl mx-auto leading-relaxed">
-              Join 12,000+ families who sleep peacefully knowing their aging parents have certified nurses, regular doctor checkups, and 24/7 emergency response.
+              Join 12,000+ families who sleep peacefully knowing their aging parents have certified nurses, regular doctor checkups, daily live activities, and 24/7 emergency response.
             </p>
           </div>
 

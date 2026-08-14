@@ -232,6 +232,17 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/community" className="hover:text-white flex items-center justify-between">
+                  <span>Club Aeterna</span>
+                  <span className="text-[9px] bg-red-600 text-white px-1.5 py-0.5 rounded-full font-bold">LIVE</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/devices" className="hover:text-white">
+                  Smart IoT & Safety Devices
+                </Link>
+              </li>
+              <li>
                 <Link href="/book" className="hover:text-white">
                   Book Instant Service
                 </Link>
