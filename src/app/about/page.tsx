@@ -141,8 +141,8 @@ export default function AboutPage() {
           <div className="lg:col-span-6">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white aspect-4/3 bg-[#F5EFE6]">
               <Image
-                src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80"
-                alt="Dignified Indian grandfather smiling warmly at home"
+                src="/images/indian-about-care.jpg"
+                alt="Senior Indian doctor attending to elderly grandfather with warmth and compassion at home"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"

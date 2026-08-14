@@ -168,8 +168,8 @@ export default function HomePage() {
             <div className="lg:col-span-5 relative">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white aspect-4/5 bg-[#F5EFE6] group">
                 <Image
-                  src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1000&q=80"
-                  alt="Dignified Indian grandfather smiling with warmth and dignity at home"
+                  src="/images/indian-grandparents-hero.jpg"
+                  alt="Dignified Indian grandfather and grandmother (Dadaji and Dadiji) smiling warmly at home"
                   fill
                   priority
                   sizes="(max-width: 1024px) 100vw, 40vw"
