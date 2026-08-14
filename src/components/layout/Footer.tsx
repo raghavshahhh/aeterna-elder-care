@@ -176,27 +176,36 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Care Plans & Cities */}
+          {/* Safety & Ecosystem */}
           <div className="lg:col-span-3 space-y-6">
             <div>
               <h4 className="text-xs font-bold uppercase tracking-wider text-[#C58F58] mb-3">
-                Care Plans & Pricing
+                Elder Safety & Ecosystem
               </h4>
               <ul className="space-y-2 text-xs sm:text-sm text-white/70">
-                {carePlansData.map((plan) => (
-                  <li key={plan.id}>
-                    <Link
-                      href={`/plans/${plan.slug}`}
-                      className="hover:text-white transition-colors flex items-center justify-between"
-                    >
-                      <span>{plan.name}</span>
-                      <span className="text-[11px] text-[#C58F58]">From ₹{plan.priceMonthly}/mo</span>
-                    </Link>
-                  </li>
-                ))}
                 <li>
-                  <Link href="/plans" className="text-[#C58F58] font-semibold hover:underline text-xs">
-                    Compare All 25+ Plan Features →
+                  <Link href="/devices" className="hover:text-white transition-colors">
+                    AI Fall Radars & 4G SOS Pendants
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/community" className="hover:text-white transition-colors">
+                    Club Aeterna Daily Live Shows
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services/companion-concierge-care" className="hover:text-white transition-colors">
+                    Daughter on Demand™ Concierge
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services/emergency-ambulance-support" className="hover:text-white transition-colors text-red-400 font-semibold">
+                    24/7 ACLS Ambulance SLA (&lt; 15m)
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/how-it-works" className="hover:text-white transition-colors">
+                    In-Home Emergency Mock Drills
                   </Link>
                 </li>
               </ul>
@@ -204,7 +213,7 @@ export const Footer: React.FC = () => {
 
             <div>
               <h4 className="text-xs font-bold uppercase tracking-wider text-[#C58F58] mb-3">
-                Major Cities
+                Major City Hubs
               </h4>
               <div className="grid grid-cols-2 gap-1.5 text-xs text-white/70">
                 {locationsData.slice(0, 8).map((city) => (

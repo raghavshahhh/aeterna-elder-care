@@ -69,7 +69,7 @@ export default function HowItWorksPage() {
           <div className="lg:col-span-6">
             <div className="relative rounded-3xl overflow-hidden shadow-xl aspect-4/3 bg-[#F6F1E8]">
               <Image
-                src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=800&q=80"
+                src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=800&q=80"
                 alt="Stage 1 Assessment"
                 fill
                 className="object-cover"
@@ -139,7 +139,7 @@ export default function HowItWorksPage() {
           <div className="lg:col-span-6">
             <div className="relative rounded-3xl overflow-hidden shadow-xl aspect-4/3 bg-[#F6F1E8]">
               <Image
-                src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80"
+                src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=800&q=80"
                 alt="Stage 3 Vitals"
                 fill
                 className="object-cover"
