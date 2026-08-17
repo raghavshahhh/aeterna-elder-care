@@ -268,45 +268,38 @@ export default function HomePage() {
               {/* Primary Conversion CTAs */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
                 <Link href="#care-calculator" className="w-full sm:w-auto">
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    className="w-full sm:w-auto font-bold text-sm sm:text-base px-8 py-4 shadow-lg hover:shadow-xl group"
-                    rightIcon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />}
-                  >
-                    Maa-Bauji ke liye Care Plan Karein (60s)
-                  </Button>
+                  <button className="w-full sm:w-auto min-h-[52px] px-8 py-3.5 rounded-full bg-[#0D2329] hover:bg-[#163942] text-white font-bold text-sm sm:text-base shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 group cursor-pointer">
+                    <span>Maa-Bauji ke liye Care Plan (60s)</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform text-[#C58F58]" />
+                  </button>
                 </Link>
 
-                <Button
-                  variant="outline"
-                  size="lg"
+                <button
+                  type="button"
                   onClick={() => openEmergency()}
-                  leftIcon={<Siren className="w-4 h-4 text-red-600 animate-bounce" />}
-                  className="w-full sm:w-auto text-[#0D2329] border-red-300 bg-red-50/80 hover:bg-red-100 hover:border-red-400 text-sm sm:text-base font-bold shadow-xs"
+                  className="w-full sm:w-auto min-h-[52px] px-7 py-3.5 rounded-full bg-red-50 hover:bg-red-100 text-[#0D2329] border-2 border-red-300 hover:border-red-400 font-bold text-sm sm:text-base shadow-xs transition-all flex items-center justify-center gap-2 group cursor-pointer"
                 >
-                  24/7 Emergency Ambulance (&lt; 15m)
-                </Button>
+                  <Siren className="w-4 h-4 text-red-600 animate-bounce" />
+                  <span>24/7 Emergency Ambulance (&lt; 15m)</span>
+                </button>
               </div>
 
-              {/* Quick WhatsApp & Call Micro-actions */}
-              <div className="pt-2 flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-[#53676E]">
+              {/* Quick WhatsApp & Call Micro-action Pills */}
+              <div className="pt-2 flex flex-wrap items-center gap-3 text-xs">
                 <button
                   onClick={() => openWhatsApp({ service: 'General Elder Care Inquiry' })}
-                  className="inline-flex items-center gap-1.5 font-bold text-emerald-800 hover:text-emerald-900 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 font-bold text-emerald-800 transition-colors cursor-pointer"
                 >
-                  <MessageSquare className="w-4 h-4 text-emerald-600" />
+                  <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
                   <span>WhatsApp par Doctor se baat karein →</span>
                 </button>
 
-                <span className="text-[#E8E2D8] hidden sm:inline">•</span>
-
                 <a
                   href="tel:+911140849900"
-                  className="inline-flex items-center gap-1.5 font-bold text-[#0D2329] hover:text-[#C58F58] transition-colors"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white hover:bg-[#FAF8F5] border border-[#E2D7C5] font-bold text-[#0D2329] hover:text-[#C58F58] transition-colors"
                 >
                   <PhoneCall className="w-3.5 h-3.5 text-[#C58F58]" />
-                  <span>Direct Doctor Triage: +91 11 4084 9900</span>
+                  <span>Direct Helpline: +91 11 4084 9900</span>
                 </a>
               </div>
 
@@ -371,24 +364,24 @@ export default function HomePage() {
                     <button
                       onClick={handleSimulateVitals}
                       disabled={isSimulatingVitals}
-                      className="text-[10px] text-emerald-400 hover:text-emerald-300 font-mono flex items-center gap-1 bg-white/10 px-2 py-0.5 rounded-md cursor-pointer transition-colors"
+                      className="text-[10px] text-emerald-400 hover:text-emerald-300 font-mono flex items-center gap-1 bg-white/10 px-2.5 py-1 rounded-md cursor-pointer transition-colors"
                       title="Click to simulate live vitals reading"
                     >
                       <RefreshCw className={`w-3 h-3 ${isSimulatingVitals ? 'animate-spin' : ''}`} />
-                      <span>{vitalsState.lastSync}</span>
+                      <span>{vitalsState.lastSync} (Ping)</span>
                     </button>
                   </div>
 
                   <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                    <div className="bg-white/10 p-2 rounded-xl border border-white/5">
+                    <div className="bg-white/10 p-2.5 rounded-xl border border-white/5">
                       <span className="text-[10px] text-white/60 block">Blood Pressure</span>
                       <span className="font-bold text-white text-xs sm:text-sm">{vitalsState.bp}</span>
                     </div>
-                    <div className="bg-white/10 p-2 rounded-xl border border-white/5">
+                    <div className="bg-white/10 p-2.5 rounded-xl border border-white/5">
                       <span className="text-[10px] text-white/60 block">Heart Pulse</span>
                       <span className="font-bold text-emerald-400 text-xs sm:text-sm">{vitalsState.pulse}</span>
                     </div>
-                    <div className="bg-white/10 p-2 rounded-xl border border-white/5">
+                    <div className="bg-white/10 p-2.5 rounded-xl border border-white/5">
                       <span className="text-[10px] text-white/60 block">AI Fall Radar</span>
                       <span className="font-bold text-emerald-400 text-[11px] block truncate">{vitalsState.radarStatus}</span>
                     </div>
@@ -398,12 +391,6 @@ export default function HomePage() {
                     <span className="flex items-center gap-1 text-emerald-400 font-semibold">
                       <CheckCircle2 className="w-3.5 h-3.5" /> All Vitals Synchronized with Family App
                     </span>
-                    <button
-                      onClick={handleSimulateVitals}
-                      className="underline text-xs text-[#C58F58] hover:text-white font-medium cursor-pointer"
-                    >
-                      Test Ping →
-                    </button>
                   </div>
                 </div>
               </div>
