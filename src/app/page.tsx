@@ -134,7 +134,7 @@ export default function HomePage() {
   const handleSimulateVitals = () => {
     setIsSimulatingVitals(true);
     showToast({
-      title: 'Syncing Maa-Bauji Live Vitals...',
+      title: 'Syncing Live Patient Vitals...',
       description: 'Pinging bedside clinical monitor & AI ceiling radar.',
       type: 'info'
     });
@@ -176,7 +176,7 @@ export default function HomePage() {
     setTimeout(() => {
       setRadarSimStatus('dispatched');
       showToast({
-        title: 'Ambulance & Doctor Pre-Alerted!',
+        title: 'Ambulance & Emergency Doctor Dispatched!',
         description: '24/7 Command Center is live voice-connecting to room & dispatching nearest ACLS unit.',
         type: 'success'
       });
@@ -234,42 +234,42 @@ export default function HomePage() {
             </span>
             <span className="text-white/30">•</span>
             <a href="tel:+911140849900" className="text-[#C58F58] font-bold hover:underline">
-              24/7 Helpline: +91 11 4084 9900
+              24/7 Direct Helpline: +91 11 4084 9900
             </a>
           </div>
         </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* 2. HERO SECTION (Deeply Emotional, Dignified Indian Elder Healthcare)      */}
+      {/* 2. HERO SECTION (Professional, Dignified, High-Trust Indian Elder Care)    */}
       {/* ========================================================================= */}
       <section className="relative overflow-hidden pt-4 sm:pt-10 pb-12 sm:pb-20 bg-gradient-to-b from-[#F5EFE6] via-[#FAF8F5] to-[#FAF8F5] border-b border-[#E8E2D8]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-            {/* Hero Left Column (Copy + Direct Conversion Triggers) */}
+            {/* Hero Left Column */}
             <div className="lg:col-span-7 space-y-6 text-left">
               {/* Trust Badge */}
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#E2D7C5] shadow-xs text-xs font-semibold text-[#0D2329]">
                 <Heart className="w-3.5 h-3.5 fill-[#C58F58] text-[#C58F58] animate-heart-beat" />
-                <span>Beti Jaisa Apnapan • Doctor Jaisi Dekhbhal</span>
+                <span>Daughter-Like Devotion • Clinical Excellence</span>
                 <span className="text-[#C58F58] font-bold">★ 4.96/5 (12,000+ Families)</span>
               </div>
 
               {/* Main Headline */}
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif-heading font-extrabold text-[#0D2329] tracking-tight leading-[1.14]">
-                Jab Aap Door Hain, Hum Hain Maa-Bauji Ka Sahara.
+                When You Cannot Be by Their Side, We Step in as Family.
               </h1>
 
-              {/* Emotional Subtitle */}
+              {/* Professional Subtitle */}
               <p className="text-base sm:text-lg text-[#2C5E50] font-normal leading-relaxed max-w-2xl">
-                Ek bache ke pyaar aur ek senior doctor ke vishwas ke saath. 24/7 cardiac ambulances, certified ICU nurses, dementia caregivers, non-intrusive AI fall radars, aur rozana ki khushiyan.
+                Combining a child’s heartfelt devotion with the clinical precision of senior geriatricians. Backed by 24/7 cardiac ambulances, certified ICU nurses, dementia caregivers, non-intrusive AI fall radars, and dedicated care managers.
               </p>
 
               {/* Primary Conversion CTAs */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
                 <Link href="#care-calculator" className="w-full sm:w-auto">
                   <button className="w-full sm:w-auto min-h-[52px] px-8 py-3.5 rounded-full bg-[#0D2329] hover:bg-[#163942] text-white font-bold text-sm sm:text-base shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 group cursor-pointer">
-                    <span>Maa-Bauji ke liye Care Plan (60s)</span>
+                    <span>Plan Care for Your Parents (60s)</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform text-[#C58F58]" />
                   </button>
                 </Link>
@@ -291,7 +291,7 @@ export default function HomePage() {
                   className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 font-bold text-emerald-800 transition-colors cursor-pointer"
                 >
                   <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>WhatsApp par Doctor se baat karein →</span>
+                  <span>Consult Geriatric Doctor on WhatsApp →</span>
                 </button>
 
                 <a
@@ -299,7 +299,7 @@ export default function HomePage() {
                   className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white hover:bg-[#FAF8F5] border border-[#E2D7C5] font-bold text-[#0D2329] hover:text-[#C58F58] transition-colors"
                 >
                   <PhoneCall className="w-3.5 h-3.5 text-[#C58F58]" />
-                  <span>Direct Helpline: +91 11 4084 9900</span>
+                  <span>24/7 Direct Helpline: +91 11 4084 9900</span>
                 </a>
               </div>
 
@@ -359,7 +359,7 @@ export default function HomePage() {
                 <div className="absolute bottom-4 left-4 right-4 bg-[#0D2329]/95 backdrop-blur-md p-4 rounded-2xl border border-white/15 text-white space-y-3 shadow-xl">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-bold text-[#C58F58] flex items-center gap-1.5">
-                      <Activity className="w-3.5 h-3.5 text-emerald-400" /> Maa-Bauji Live Health Vitals
+                      <Activity className="w-3.5 h-3.5 text-emerald-400" /> Parents&apos; Real-Time Health Vitals
                     </span>
                     <button
                       onClick={handleSimulateVitals}
@@ -447,7 +447,7 @@ export default function HomePage() {
                       : 'bg-white/5 border-white/10 text-white hover:bg-white/10'
                   }`}
                 >
-                  Father (Bauji)
+                  Father
                 </button>
                 <button
                   type="button"
@@ -458,7 +458,7 @@ export default function HomePage() {
                       : 'bg-white/5 border-white/10 text-white hover:bg-white/10'
                   }`}
                 >
-                  Mother (Mataji)
+                  Mother
                 </button>
                 <button
                   type="button"
@@ -484,11 +484,11 @@ export default function HomePage() {
                 onChange={(e) => setCalcNeed(e.target.value)}
                 className="w-full bg-[#0D2329] border border-white/20 text-white rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-[#C58F58]"
               >
-                <option value="attendant">24x7 Attendant (Hygiene, Bathing, Mobility)</option>
+                <option value="attendant">24x7 Attendant (Hygiene, Bathing, Mobility Assistance)</option>
                 <option value="icu-nursing">ICU Clinical Nursing (Tracheostomy, IV, Ryle&apos;s Tube)</option>
                 <option value="dementia">Dementia & Alzheimer&apos;s Memory Companion</option>
-                <option value="doctor-physio">Senior Doctor Home Visits & Neuro Physio</option>
-                <option value="daughter-concierge">Daughter on Demand™ (Outings & Errands)</option>
+                <option value="doctor-physio">Senior Doctor Home Visits & Neuro Physio Rehab</option>
+                <option value="daughter-concierge">Daughter on Demand™ (Hospital Outings & Errands)</option>
               </select>
             </div>
 
@@ -536,8 +536,8 @@ export default function HomePage() {
                 <CheckCircle className="w-5 h-5" />
               </div>
               <div>
-                <strong className="block text-white text-sm">Included in every plan:</strong>
-                <span>100% Police verification • Free backup replacement • Weekly doctor case audit • 24/7 SOS desk</span>
+                <strong className="block text-white text-sm">Included in every care plan:</strong>
+                <span>100% Police verification • Free backup nurse replacement • Weekly doctor case audit • 24/7 SOS desk</span>
               </div>
             </div>
 
@@ -600,10 +600,10 @@ export default function HomePage() {
             The Complete Care Ecosystem
           </Badge>
           <h2 className="text-3xl sm:text-4xl font-serif-heading font-bold text-[#0D2329]">
-            Ghar Par Har Suvidha, Poore Pyar aur Vishwas ke Sath
+            World-Class Clinical Care & Loving Support at Home
           </h2>
           <p className="text-sm text-[#53676E]">
-            Emergency ambulance se lekar daily doctor visits, certified attendants, aur khushnuma sangati tak.
+            From sub-15 minute emergency ambulances to daily doctor visits, certified attendants, and joyful active aging clubs.
           </p>
         </div>
 
@@ -842,10 +842,10 @@ export default function HomePage() {
                   Club Aeterna Active Aging
                 </Badge>
                 <h2 className="text-2xl sm:text-4xl font-serif-heading font-bold text-white mt-1">
-                  Loneliness Ka Ant: Daily Live TV Shows & Sangeet
+                  Eliminating Senior Loneliness: Daily Live Interactive Shows
                 </h2>
                 <p className="text-xs sm:text-sm text-white/70 mt-1">
-                  Free for all seniors. Connect on Zoom / Smart TV with hundreds of fellow Indian elders every morning and evening.
+                  Free for all seniors. Connect on Zoom / Smart TV with hundreds of fellow elders every morning and evening.
                 </p>
               </div>
 
@@ -903,11 +903,11 @@ export default function HomePage() {
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-serif-heading font-bold text-white leading-tight">
-              Door Rehte Hain? Hum Hain Bharat Me Aapke Parents Ka Parivaar.
+              Living Overseas? We Are Your Family On-Ground Across India.
             </h2>
 
             <p className="text-xs sm:text-sm text-white/75 leading-relaxed font-normal">
-              Samudra paar rehne ka dard aur chinta hum samajhte hain. Jab bhi koi achanak bimari ya midnight emergency ho, Aeterna Care on-ground hazir rehta hai.
+              We understand the worry and emotional toll of living oceans away. Whenever sudden illness or a midnight medical emergency strikes, Aeterna Care is immediately by your parents&apos; bedside.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
@@ -1068,7 +1068,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 13. FINAL EMOTIONAL CALL TO ACTION (Maa-Bauji Ki Muskaan)                  */}
+      {/* 13. FINAL EMOTIONAL CALL TO ACTION                                        */}
       {/* ========================================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-[#FAF8F5] rounded-3xl p-8 sm:p-14 border border-[#E2D7C5] shadow-lg text-center space-y-6">
@@ -1078,10 +1078,10 @@ export default function HomePage() {
 
           <div className="max-w-2xl mx-auto space-y-3">
             <h2 className="text-3xl sm:text-5xl font-serif-heading font-extrabold text-[#0D2329]">
-              Maa-Bauji Ko Dein Wahi Pyaar aur Samman, Jo Unhone Hamein Diya.
+              Giving Your Parents the Dignity, Love, and Care They Truly Deserve.
             </h2>
             <p className="text-sm sm:text-base text-[#53676E] leading-relaxed">
-              Keval ek call ya WhatsApp message par humare senior care manager aapke ghar aakar free clinical assessment karenge.
+              Just a single call or WhatsApp message connects your family with a senior care manager for a complimentary in-home clinical assessment.
             </p>
           </div>
 
