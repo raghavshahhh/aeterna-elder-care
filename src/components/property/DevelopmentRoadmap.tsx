@@ -35,7 +35,7 @@ export const DevelopmentRoadmap: React.FC = () => {
         </div>
 
         {/* Milestone Cards / Timeline */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 relative">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 relative">
           {developmentRoadmap.map((milestone, idx) => {
             const isCompleted = milestone.status === 'completed';
             const isInProgress = milestone.status === 'in-progress';

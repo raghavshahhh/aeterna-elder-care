@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { residenceUnits } from '@/data/propertyData';
 import { useModal } from '@/context/ModalContext';
-import { ResidenceUnit, UnitType } from '@/types';
+import { ResidenceUnit } from '@/types';
 import {
   Home,
   CheckCircle2,
@@ -16,29 +16,25 @@ import {
   ArrowRight,
   Eye,
   Sliders,
-  Heart
+  Heart,
+  Building2
 } from 'lucide-react';
 
 interface ResidenceUnitExplorerProps {
   initialUnitId?: string;
 }
 
-export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({ initialUnitId = '01' }) => {
+export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
+  initialUnitId = '1bhk-apt'
+}) => {
   const [selectedUnitId, setSelectedUnitId] = useState<string>(initialUnitId);
   const [activeTab, setActiveTab] = useState<'3d-interiors' | '2d-blueprint' | 'safety-specs'>('3d-interiors');
   const [activeRoomIndex, setActiveRoomIndex] = useState<number>(0);
-  const [typeFilter, setTypeFilter] = useState<'all' | '1-bhk' | '1-rk'>('all');
 
   const { openWhatsApp, openLeadDrawer } = useModal();
 
-  const filteredUnits = residenceUnits.filter((u) => {
-    if (typeFilter === 'all') return true;
-    return u.type === typeFilter;
-  });
-
   const activeUnit = residenceUnits.find((u) => u.id === selectedUnitId) || residenceUnits[0];
   const activeRoom = activeUnit.rooms[activeRoomIndex] || activeUnit.rooms[0];
-  const isUnitAvailable = activeUnit.status === 'available';
 
   return (
     <section id="unit-explorer" className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E8E2D8] relative">
@@ -48,92 +44,38 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({ in
           <div className="max-w-2xl space-y-3">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-wider">
               <Home className="w-3.5 h-3.5" />
-              Future Residence Explorer
+              Apartment & Suite Configurations
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-normal text-[#0D2329] tracking-tight">
-              Choose Your <span className="italic font-serif text-[#C58F58]">Sanctuary Suite.</span>
+              1BHK &amp; 2BHK — <span className="italic font-serif text-[#C58F58]">Compact, Considered, Complete.</span>
             </h2>
             <p className="text-sm sm:text-base text-[#53676E] leading-relaxed">
-              Every residence is crafted specifically for elder dignity — zero floor barriers, expansive natural sunlight, hospital-grade acoustic dampening, and direct nurse connectivity.
+              G+2 apartment buildings with stilt parking, two lifts, and gradual stairs (10&quot; tread, 6&quot; rise). Single-floor living inside each home — built for the body, not the brochure.
             </p>
           </div>
 
-          {/* Type Filter Selector */}
-          <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-white border border-[#E8E2D8] shadow-sm">
-            <button
-              onClick={() => setTypeFilter('all')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                typeFilter === 'all'
-                  ? 'bg-[#2C5E50] text-white shadow-sm'
-                  : 'text-[#53676E] hover:text-[#0D2329]'
-              }`}
-            >
-              All 9 Suites
-            </button>
-            <button
-              onClick={() => setTypeFilter('1-bhk')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                typeFilter === '1-bhk'
-                  ? 'bg-[#2C5E50] text-white shadow-sm'
-                  : 'text-[#53676E] hover:text-[#0D2329]'
-              }`}
-            >
-              1 BHK Care Suites (885–980 sq. ft.)
-            </button>
-            <button
-              onClick={() => setTypeFilter('1-rk')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                typeFilter === '1-rk'
-                  ? 'bg-[#2C5E50] text-white shadow-sm'
-                  : 'text-[#53676E] hover:text-[#0D2329]'
-              }`}
-            >
-              1 RK Wellness Studios (540–560 sq. ft.)
-            </button>
+          {/* Unit Selection Pills */}
+          <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-white border border-[#E8E2D8] shadow-sm">
+            {residenceUnits.map((unit) => {
+              const isSelected = unit.id === activeUnit.id;
+              return (
+                <button
+                  key={unit.id}
+                  onClick={() => {
+                    setSelectedUnitId(unit.id);
+                    setActiveRoomIndex(0);
+                  }}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                    isSelected
+                      ? 'bg-[#2C5E50] text-white shadow-sm'
+                      : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
+                  }`}
+                >
+                  {unit.unitNumber} ({unit.superAreaSqFt} sq. ft.)
+                </button>
+              );
+            })}
           </div>
-        </div>
-
-        {/* Unit Horizontal Selector Tabs */}
-        <div className="flex gap-3 overflow-x-auto pb-4 mb-8 no-scrollbar">
-          {filteredUnits.map((unit) => {
-            const isSelected = unit.id === activeUnit.id;
-            const isAvail = unit.status === 'available';
-            return (
-              <button
-                key={unit.id}
-                onClick={() => {
-                  setSelectedUnitId(unit.id);
-                  setActiveRoomIndex(0);
-                }}
-                className={`p-4 rounded-2xl border text-left shrink-0 min-w-[220px] transition-all duration-300 ${
-                  isSelected
-                    ? 'bg-[#0D2329] text-white border-[#0D2329] shadow-lg scale-[1.02]'
-                    : 'bg-white text-[#0D2329] border-[#E8E2D8] hover:border-[#C58F58]/50'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2 mb-1.5">
-                  <span className="text-sm font-bold font-serif-heading">{unit.unitNumber}</span>
-                  <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                      isAvail
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                        : isSelected
-                        ? 'bg-white/10 text-white/70'
-                        : 'bg-[#F0EBE1] text-[#53676E]'
-                    }`}
-                  >
-                    {isAvail ? '🟢 Available' : '🟡 Phase 2'}
-                  </span>
-                </div>
-                <div className={`text-xs ${isSelected ? 'text-white/70' : 'text-[#53676E]'}`}>
-                  {unit.typeName.split(' ')[0]} {unit.typeName.split(' ')[1]} • {unit.superAreaSqFt} sq. ft.
-                </div>
-                <div className={`text-[11px] mt-1 font-mono ${isSelected ? 'text-[#C58F58]' : 'text-[#2C5E50]'} font-semibold`}>
-                  {unit.floorName}
-                </div>
-              </button>
-            );
-          })}
         </div>
 
         {/* Deep Dive Unit Detail Card & Interactive Visualizer */}
@@ -145,12 +87,12 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({ in
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-[#2C5E50]">
-                    {activeUnit.releasePhase}
+                    {activeUnit.typeName}
                   </span>
                   <span className="text-xs text-[#53676E]">• {activeUnit.floorName}</span>
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-serif-heading font-bold text-[#0D2329] mt-0.5">
-                  {activeUnit.unitNumber} — {activeUnit.typeName}
+                  {activeUnit.unitNumber}
                 </h3>
               </div>
 
@@ -164,7 +106,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({ in
                       : 'text-[#53676E] hover:text-[#0D2329]'
                   }`}
                 >
-                  3D Proposed Interiors
+                  3D Proposed View
                 </button>
                 <button
                   onClick={() => setActiveTab('2d-blueprint')}
@@ -174,7 +116,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({ in
                       : 'text-[#53676E] hover:text-[#0D2329]'
                   }`}
                 >
-                  2D Architectural CAD
+                  2D Room Sizing
                 </button>
                 <button
                   onClick={() => setActiveTab('safety-specs')}
@@ -184,7 +126,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({ in
                       : 'text-[#53676E] hover:text-[#0D2329]'
                   }`}
                 >
-                  Senior Safety Specs
+                  Senior-First Features
                 </button>
               </div>
             </div>
@@ -237,39 +179,39 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({ in
                 </div>
 
                 <div className="text-[11px] text-[#899B9F] italic text-right">
-                  *Indicative 3D visualization. Furnishings & finishes subject to approved architectural specifications.
+                  *Architectural 3D concept. Standard turnkey fittings designed by The Vision Architects.
                 </div>
               </div>
             )}
 
-            {/* TAB CONTENT 2: 2D Blueprint */}
+            {/* TAB CONTENT 2: 2D Blueprint Room Sizing */}
             {activeTab === '2d-blueprint' && (
               <div className="space-y-4">
                 <div className="relative rounded-2xl overflow-hidden bg-[#071519] min-h-[380px] sm:min-h-[440px] border border-[#294B57] p-6 flex flex-col justify-between text-white">
                   <Image
                     src={activeUnit.blueprint2d}
-                    alt={`${activeUnit.unitNumber} CAD Architectural Blueprint`}
+                    alt={`${activeUnit.unitNumber} Blueprint`}
                     fill
                     className="object-cover object-center opacity-30"
                   />
                   <div className="relative z-10 flex items-center justify-between border-b border-white/10 pb-3">
                     <span className="text-xs font-mono font-bold text-[#C58F58]">
-                      STRUCTURAL BLUEPRINT // UNIT {activeUnit.id}
+                      ROOM-BY-ROOM DIMENSIONS // {activeUnit.unitNumber.toUpperCase()}
                     </span>
                     <span className="text-xs font-mono text-white/70">
-                      Carpet Area: {activeUnit.carpetAreaSqFt} sq. ft. | Super Built-up: {activeUnit.superAreaSqFt} sq. ft.
+                      ~{activeUnit.carpetAreaSqFt} Sqft Carpet | ~{activeUnit.superAreaSqFt} Sqft Built
                     </span>
                   </div>
 
                   <div className="relative z-10 bg-black/60 backdrop-blur-md p-5 rounded-xl border border-white/15 space-y-3 max-w-lg my-auto">
                     <h4 className="text-lg font-serif-heading font-bold text-white">
-                      Room-by-Room Architectural Sizing:
+                      Exact Measured Dimensions:
                     </h4>
-                    <div className="space-y-1.5 text-xs text-white/80">
+                    <div className="space-y-2 text-xs text-white/80">
                       {activeUnit.rooms.map((rm, i) => (
-                        <div key={i} className="flex items-center justify-between py-1 border-b border-white/10">
+                        <div key={i} className="flex items-center justify-between py-1.5 border-b border-white/10">
                           <span className="font-medium text-white">{rm.name}</span>
-                          <span className="font-mono text-[#C58F58]">{rm.dimensions}</span>
+                          <span className="font-mono text-[#C58F58] font-bold">{rm.dimensions}</span>
                         </div>
                       ))}
                     </div>
@@ -278,10 +220,10 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({ in
                   <div className="relative z-10 flex items-center justify-between text-xs text-white/60 pt-3 border-t border-white/10">
                     <span>Orientation: {activeUnit.facing}</span>
                     <button
-                      onClick={() => openLeadDrawer({ title: `Request High-Res CAD Blueprint for ${activeUnit.unitNumber}`, actionType: 'inquire-residence' })}
+                      onClick={() => openLeadDrawer({ title: `Request Scaled CAD Drawings for ${activeUnit.unitNumber}`, actionType: 'inquire-residence' })}
                       className="text-[#C58F58] hover:underline font-bold"
                     >
-                      Download Scaled PDF Blueprint →
+                      Download Scaled Architectural PDF →
                     </button>
                   </div>
                 </div>
@@ -294,11 +236,11 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({ in
                 <div className="p-6 rounded-2xl bg-[#EAF2EE] border border-[#CDE0D7] space-y-4">
                   <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#2C5E50]">
                     <ShieldCheck className="w-5 h-5" />
-                    Senior-Specific Universal Design Standards
+                    Designed for the Body that Lives Here
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     {activeUnit.seniorSafetyFeatures.map((feat, i) => (
-                      <div key={i} className="p-3 rounded-xl bg-white border border-[#CDE0D7] text-xs text-[#0D2329] flex items-start gap-2.5 shadow-sm">
+                      <div key={i} className="p-3.5 rounded-xl bg-white border border-[#CDE0D7] text-xs text-[#0D2329] flex items-start gap-2.5 shadow-sm">
                         <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                         <span className="leading-snug">{feat}</span>
                       </div>
@@ -314,7 +256,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({ in
             <div className="p-6 sm:p-7 rounded-3xl bg-white border border-[#E8E2D8] shadow-sm space-y-6">
               <div>
                 <span className="text-[11px] font-bold uppercase tracking-wider text-[#C58F58] block">
-                  Residence Specifications
+                  Configuration Summary
                 </span>
                 <h4 className="text-2xl font-serif-heading font-bold text-[#0D2329] mt-0.5">
                   {activeUnit.unitNumber}
@@ -327,27 +269,27 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({ in
               {/* Area & Pricing Breakdown */}
               <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8] space-y-3 text-xs">
                 <div className="flex items-center justify-between pb-2 border-b border-[#E8E2D8]">
-                  <span className="text-[#53676E]">Super Built-up Area</span>
-                  <strong className="text-sm font-bold text-[#0D2329]">{activeUnit.superAreaSqFt} sq. ft.</strong>
+                  <span className="text-[#53676E]">Built-Up Area</span>
+                  <strong className="text-sm font-bold text-[#0D2329]">~{activeUnit.superAreaSqFt} sq. ft.</strong>
                 </div>
                 <div className="flex items-center justify-between pb-2 border-b border-[#E8E2D8]">
                   <span className="text-[#53676E]">Carpet Usable Area</span>
-                  <strong className="text-sm font-bold text-[#0D2329]">{activeUnit.carpetAreaSqFt} sq. ft.</strong>
+                  <strong className="text-sm font-bold text-[#0D2329]">~{activeUnit.carpetAreaSqFt} sq. ft.</strong>
                 </div>
                 <div className="flex items-center justify-between pb-2 border-b border-[#E8E2D8]">
-                  <span className="text-[#53676E]">Pre-Launch Valuation</span>
-                  <strong className="text-sm font-bold text-[#2C5E50]">{activeUnit.startingPriceEstimate}</strong>
+                  <span className="text-[#53676E]">Building Structure</span>
+                  <strong className="text-xs font-semibold text-[#2C5E50]">G+2 Floors + Stilt Parking</strong>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[#53676E]">Monthly Care Package</span>
-                  <strong className="text-xs font-semibold text-[#0D2329]">{activeUnit.monthlyCarePackageEstimate}</strong>
+                  <span className="text-[#53676E]">Vertical Transit</span>
+                  <strong className="text-xs font-semibold text-[#0D2329]">2 Lifts (5×6ft) + Gradual Stairs</strong>
                 </div>
               </div>
 
               {/* Key Highlights */}
               <div className="space-y-2">
                 <span className="text-[11px] uppercase font-bold text-[#0D2329] tracking-wider block">
-                  Suite Highlights:
+                  Home Highlights:
                 </span>
                 {activeUnit.keyHighlights.map((hl, i) => (
                   <div key={i} className="flex items-start gap-2 text-xs text-[#53676E]">
@@ -359,40 +301,23 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({ in
 
               {/* Action Buttons */}
               <div className="pt-2 space-y-2.5">
-                {isUnitAvailable ? (
-                  <button
-                    onClick={() =>
-                      openWhatsApp({
-                        actionType: 'reserve-unit',
-                        unitName: activeUnit.unitNumber,
-                        unitType: activeUnit.typeName,
-                        floorName: activeUnit.floorName
-                      })
-                    }
-                    className="w-full py-4 rounded-2xl bg-[#2C5E50] hover:bg-[#1D4B57] text-white text-sm font-semibold transition-all shadow-lg shadow-[#2C5E50]/20 flex items-center justify-center gap-2"
-                  >
-                    Reserve {activeUnit.unitNumber} (Phase 1) →
-                  </button>
-                ) : (
-                  <button
-                    onClick={() =>
-                      openLeadDrawer({
-                        title: `Register Advance Interest for ${activeUnit.unitNumber}`,
-                        unitName: activeUnit.unitNumber,
-                        unitType: activeUnit.typeName,
-                        actionType: 'inquire-residence'
-                      })
-                    }
-                    className="w-full py-4 rounded-2xl bg-[#FAF8F5] border border-[#2C5E50] text-[#2C5E50] hover:bg-[#2C5E50] hover:text-white text-sm font-semibold transition-all flex items-center justify-center gap-2"
-                  >
-                    Register Priority Interest (Phase 2) →
-                  </button>
-                )}
+                <button
+                  onClick={() =>
+                    openWhatsApp({
+                      actionType: 'reserve-unit',
+                      unitName: activeUnit.unitNumber,
+                      unitType: activeUnit.typeName
+                    })
+                  }
+                  className="w-full py-4 rounded-2xl bg-[#2C5E50] hover:bg-[#1D4B57] text-white text-sm font-semibold transition-all shadow-lg shadow-[#2C5E50]/20 flex items-center justify-center gap-2"
+                >
+                  Enquire About {activeUnit.unitNumber} on WhatsApp →
+                </button>
 
                 <button
                   onClick={() =>
                     openLeadDrawer({
-                      title: `Schedule Site Visit for ${activeUnit.unitNumber}`,
+                      title: `Schedule Site & Sample Walkthrough for ${activeUnit.unitNumber}`,
                       unitName: activeUnit.unitNumber,
                       unitType: activeUnit.typeName,
                       actionType: 'book-site-visit'
@@ -400,7 +325,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({ in
                   }
                   className="w-full py-3 rounded-2xl text-xs text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5] transition-all font-medium text-center"
                 >
-                  Book Private Site & Floor Walkthrough
+                  Book Site Visit to Kheri Asra
                 </button>
               </div>
             </div>

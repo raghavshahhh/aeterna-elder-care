@@ -19,7 +19,8 @@ import {
   Building2,
   Compass,
   Layers,
-  Sparkles
+  Sparkles,
+  ExternalLink
 } from 'lucide-react';
 
 export const Footer: React.FC = () => {
@@ -39,8 +40,8 @@ export const Footer: React.FC = () => {
     }
 
     showToast({
-      title: 'Subscribed to Aeterna Sanctuary Dossier!',
-      description: 'You will receive monthly construction progress reports and blueprint updates.',
+      title: 'Subscribed to Senior Living Citizen Updates!',
+      description: 'You will receive monthly construction progress reports and plot allocation notices.',
       type: 'success'
     });
     setEmail('');
@@ -56,8 +57,8 @@ export const Footer: React.FC = () => {
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <h5 className="font-bold text-white text-sm">Universal Senior Design</h5>
-              <p className="text-white/60 text-[11px] mt-0.5">100% barrier-free zero threshold flooring</p>
+              <h5 className="font-bold text-white text-sm">64 Freehold Plots</h5>
+              <p className="text-white/60 text-[11px] mt-0.5">120 to 425 sq. yd. across 6 Blocks</p>
             </div>
           </div>
 
@@ -66,8 +67,8 @@ export const Footer: React.FC = () => {
               <Award className="w-5 h-5" />
             </div>
             <div>
-              <h5 className="font-bold text-white text-sm">On-Premise Hospital</h5>
-              <p className="text-white/60 text-[11px] mt-0.5">ICU triage, pharmacy & geriatric doctors</p>
+              <h5 className="font-bold text-white text-sm">30k Sqft Hospital</h5>
+              <p className="text-white/60 text-[11px] mt-0.5">G+2 Multi-Speciality Ayurvedic Hospital</p>
             </div>
           </div>
 
@@ -76,8 +77,8 @@ export const Footer: React.FC = () => {
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <h5 className="font-bold text-white text-sm">Ayurvedic Rejuvenation</h5>
-              <p className="text-white/60 text-[11px] mt-0.5">Panchakarma suites & Kerala Vaidya care</p>
+              <h5 className="font-bold text-white text-sm">Community Mandir</h5>
+              <p className="text-white/60 text-[11px] mt-0.5">Sacred temple within walking distance</p>
             </div>
           </div>
 
@@ -86,8 +87,8 @@ export const Footer: React.FC = () => {
               <CheckCircle2 className="w-5 h-5" />
             </div>
             <div>
-              <h5 className="font-bold text-white text-sm">Phase 1 Early Booking</h5>
-              <p className="text-white/60 text-[11px] mt-0.5">Ground floor Suites 01–03 open now</p>
+              <h5 className="font-bold text-white text-sm">Near Reliance MET City</h5>
+              <p className="text-white/60 text-[11px] mt-0.5">Kheri Asra, off SH-22 Jhajjar</p>
             </div>
           </div>
         </div>
@@ -103,11 +104,11 @@ export const Footer: React.FC = () => {
                 <Heart className="w-5 h-5 fill-[#C58F58] text-[#C58F58]" />
               </div>
               <div>
-                <span className="text-2xl font-serif-heading font-bold text-white">
-                  Aeterna<span className="text-[#C58F58]">.</span>
+                <span className="text-xl font-serif-heading font-bold text-white">
+                  Senior Living Citizen Foundation<span className="text-[#C58F58]">.</span>
                 </span>
                 <span className="block text-[9px] uppercase tracking-[0.2em] text-[#C58F58] font-bold">
-                  Sanjeevani Sanctuary
+                  A Plotted Sanctuary · Haryana
                 </span>
               </div>
             </Link>
@@ -117,14 +118,22 @@ export const Footer: React.FC = () => {
             </p>
 
             <div className="space-y-2.5 text-xs text-white/80">
-              <div className="flex items-center gap-2.5">
-                <MapPin className="w-4 h-4 text-[#C58F58] shrink-0" />
-                <span>Sector 2, Sohna Valley Corridor, South Gurgaon, Haryana 122103</span>
+              <div className="flex items-start gap-2.5">
+                <MapPin className="w-4 h-4 text-[#C58F58] shrink-0 mt-0.5" />
+                <div>
+                  <strong>Project Site:</strong> {projectOverview.locationShort}
+                </div>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <Building2 className="w-4 h-4 text-[#C58F58] shrink-0 mt-0.5" />
+                <div>
+                  <strong>Corporate / Sales Office:</strong> {projectOverview.siteOfficeAddress}
+                </div>
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-[#C58F58] shrink-0" />
-                <a href={`tel:${projectOverview.siteOfficePhone}`} className="hover:text-white font-mono">
-                  {projectOverview.siteOfficePhone} (Project Concierge)
+                <a href={`tel:${projectOverview.siteOfficePhone}`} className="hover:text-white font-mono font-bold">
+                  {projectOverview.siteOfficePhone}
                 </a>
               </div>
               <div className="flex items-center gap-2.5">
@@ -135,87 +144,90 @@ export const Footer: React.FC = () => {
               </div>
             </div>
 
-            <div className="pt-2">
+            <div className="pt-2 flex flex-wrap gap-2">
               <button
-                onClick={() => openWhatsApp({ actionType: 'reserve-unit', unitName: 'Residence 01' })}
+                onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizen Foundation...' })}
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-semibold shadow-md transition-all"
               >
                 <MessageSquare className="w-4 h-4" />
-                Chat on Sales WhatsApp Desk →
+                Chat on WhatsApp Desk →
               </button>
+              <a
+                href={projectOverview.googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-all"
+              >
+                <MapPin className="w-3.5 h-3.5 text-[#C58F58]" />
+                Google Maps <ExternalLink className="w-3 h-3" />
+              </a>
             </div>
           </div>
 
           {/* Column 2: Navigation Links */}
           <div className="lg:col-span-2 space-y-4">
             <h4 className="text-xs font-bold uppercase tracking-wider text-[#C58F58]">
-              The Development
+              The Project
             </h4>
             <ul className="space-y-2.5 text-xs text-white/70">
               <li>
                 <Link href="/#location" className="hover:text-white transition-colors">
-                  Location & Surroundings
-                </Link>
-              </li>
-              <li>
-                <Link href="/#building-vision" className="hover:text-white transition-colors">
-                  Architectural Elevation
+                  Location &amp; Map
                 </Link>
               </li>
               <li>
                 <Link href="/#master-plan" className="hover:text-white transition-colors">
-                  Interactive Master Plan
+                  Hospital CAD Blueprints
                 </Link>
               </li>
               <li>
                 <Link href="/#unit-explorer" className="hover:text-white transition-colors">
-                  1 RK & 1 BHK Suites
-                </Link>
-              </li>
-              <li>
-                <Link href="/#roadmap" className="hover:text-white transition-colors">
-                  Construction Milestones
+                  1BHK &amp; 2BHK Apartments
                 </Link>
               </li>
               <li>
                 <Link href="/#availability" className="hover:text-white transition-colors">
-                  Live Unit Inventory
+                  64 Plots Inventory
+                </Link>
+              </li>
+              <li>
+                <Link href="/#ecosystem" className="hover:text-white transition-colors">
+                  Ayurvedic Hospital
+                </Link>
+              </li>
+              <li>
+                <Link href="/#roadmap" className="hover:text-white transition-colors">
+                  Development Milestones
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Column 3: Residences Matrix */}
+          {/* Column 3: Township Infrastructure */}
           <div className="lg:col-span-3 space-y-4">
             <h4 className="text-xs font-bold uppercase tracking-wider text-[#C58F58]">
-              Residences (9 Units)
+              Key Infrastructure
             </h4>
             <ul className="space-y-2.5 text-xs text-white/70">
               <li className="flex items-center justify-between">
-                <Link href="/#unit-explorer" className="hover:text-white font-medium">
-                  Residence 01 (1 BHK)
-                </Link>
-                <span className="text-[10px] text-emerald-400 font-mono">🟢 Phase 1 Open</span>
+                <span>30,000 Sqft Ayurvedic Hospital</span>
+                <span className="text-[10px] text-emerald-400 font-mono">G+2</span>
               </li>
               <li className="flex items-center justify-between">
-                <Link href="/#unit-explorer" className="hover:text-white font-medium">
-                  Residence 02 (1 RK Studio)
-                </Link>
-                <span className="text-[10px] text-emerald-400 font-mono">🟢 Phase 1 Open</span>
+                <span>64 Residential Plots</span>
+                <span className="text-[10px] text-emerald-400 font-mono">Blocks A–F</span>
               </li>
               <li className="flex items-center justify-between">
-                <Link href="/#unit-explorer" className="hover:text-white font-medium">
-                  Residence 03 (1 BHK Corner)
-                </Link>
-                <span className="text-[10px] text-emerald-400 font-mono">🟢 Phase 1 Open</span>
+                <span>Senior Apartments</span>
+                <span className="text-[10px] text-emerald-400 font-mono">1 &amp; 2 BHK</span>
               </li>
-              <li className="flex items-center justify-between text-white/40">
-                <span>Residences 04–06 (Level 1)</span>
-                <span className="text-[10px] text-amber-400/70 font-mono">🟡 Phase 2</span>
+              <li className="flex items-center justify-between">
+                <span>Community Mandir</span>
+                <span className="text-[10px] text-amber-400 font-mono">Western Edge</span>
               </li>
-              <li className="flex items-center justify-between text-white/40">
-                <span>Residences 07–09 (Level 2)</span>
-                <span className="text-[10px] text-amber-400/70 font-mono">🟡 Phase 2</span>
+              <li className="flex items-center justify-between">
+                <span>50-Seat Amphitheater</span>
+                <span className="text-[10px] text-amber-400 font-mono">Rooftop</span>
               </li>
             </ul>
           </div>
@@ -223,10 +235,10 @@ export const Footer: React.FC = () => {
           {/* Column 4: Newsletter & Dossier Request */}
           <div className="lg:col-span-3 space-y-4">
             <h4 className="text-xs font-bold uppercase tracking-wider text-[#C58F58]">
-              Architectural Dossier
+              Township Dossier
             </h4>
             <p className="text-xs text-white/70 leading-relaxed">
-              Get the latest CAD blueprints, floor elevation updates, and early-bird priority windows in your inbox.
+              Get the latest CAD blueprints, plot availability, and construction progress in your inbox.
             </p>
 
             <form onSubmit={handleSubscribe} className="space-y-2">
@@ -249,10 +261,10 @@ export const Footer: React.FC = () => {
 
             <div className="pt-2">
               <button
-                onClick={() => openLeadDrawer({ title: 'Schedule Private Site Walkthrough', actionType: 'book-site-visit' })}
+                onClick={() => openLeadDrawer({ title: 'Schedule Site Visit to Kheri Asra, Jhajjar', actionType: 'book-site-visit' })}
                 className="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-xs text-white/80 font-medium transition-colors text-center"
               >
-                Schedule Private Site Visit
+                Schedule Private Site Walk
               </button>
             </div>
           </div>
@@ -261,16 +273,14 @@ export const Footer: React.FC = () => {
         {/* Legal & Architectural Disclaimer */}
         <div className="mt-12 pt-8 border-t border-[#163942] space-y-3 text-[11px] text-white/50 leading-relaxed">
           <p>
-            <strong>Disclaimer:</strong> {projectOverview.disclaimer} All medical claims, emergency response frameworks, and Ayurvedic doctor consultations are subject to final clinical licensing and statutory approvals before commencement of occupancy.
+            <strong>Disclaimer:</strong> {projectOverview.disclaimer}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/5 text-white/40">
             <div>
               © {new Date().getFullYear()} {projectOverview.legalName}. All rights reserved.
             </div>
-            <div className="flex items-center gap-4 text-[11px]">
-              <a href="#" className="hover:text-white">Privacy Policy</a>
-              <a href="#" className="hover:text-white">Terms of Booking</a>
-              <a href="#" className="hover:text-white">RERA Dossier</a>
+            <div>
+              Architecture by <strong>The Vision Architects</strong>, Farrukhnagar, Gurugram 122506
             </div>
           </div>
         </div>

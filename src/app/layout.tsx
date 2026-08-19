@@ -19,30 +19,29 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Aeterna Care — The Gold Standard in Elder Wellness & At-Home Care',
-    template: '%s | Aeterna Care Senior Living & Healthcare'
+    default: 'Senior Living Citizen Foundation — Plotted Sanctuary & Ayurvedic Hospital · Haryana',
+    template: '%s | Senior Living Citizen Foundation'
   },
-  description: 'Hospital-grade clinical home nursing, senior doctor visits, dementia care, and 24/7 emergency response across 12+ metro cities in India. Rated 4.96/5 by 12,000+ families.',
+  description: '64 residential plots and 1BHK/2BHK senior apartments with an on-site 30,000 sq. ft. G+2 Ayurvedic Hospital and Mandir near Reliance MET City, SH-22 Jhajjar, Haryana.',
   keywords: [
-    'elder care India',
-    'senior citizen care at home',
-    'home nursing Delhi Gurgaon Bangalore Mumbai',
-    'geriatrician home visit',
-    'dementia care India',
-    'elder attendant live in',
-    'emergency ambulance elderly',
-    'physiotherapy for seniors',
-    'Emoha alternative elder care'
+    'Senior Living Citizen Foundation',
+    'Senior living Haryana',
+    'Ayurvedic hospital Jhajjar',
+    'Reliance MET City plots',
+    'Senior citizen plots Haryana',
+    'Senior apartments Jhajjar Gurugram',
+    'Elderly plotted township NCR',
+    'Panchakarma senior living'
   ],
-  authors: [{ name: 'Aeterna Care Healthtech' }],
-  creator: 'Aeterna Care',
+  authors: [{ name: 'Senior Living Citizen Foundation' }],
+  creator: 'Senior Living Citizen Foundation',
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    url: 'https://aeternacare.com',
-    title: 'Aeterna Care — Premium Senior Wellness & At-Home Clinical Care',
-    description: 'Hospital-grade clinical home nursing, senior doctor visits, and 24/7 emergency response across 12+ cities in India.',
-    siteName: 'Aeterna Care'
+    url: 'https://seniorlivingcitizensfoundation.com',
+    title: 'Senior Living Citizen Foundation — A Home for the Second Half of Life',
+    description: '64 residential plots with on-site Ayurvedic Hospital and Mandir near Reliance MET City, SH-22 Jhajjar, Haryana.',
+    siteName: 'Senior Living Citizen Foundation'
   }
 };
 

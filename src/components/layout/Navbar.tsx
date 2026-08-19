@@ -20,7 +20,8 @@ import {
   Sparkles,
   ShieldCheck,
   CheckCircle2,
-  Home
+  Home,
+  MapPin
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -60,11 +61,11 @@ export const Navbar: React.FC = () => {
             <Heart className="w-4 h-4 sm:w-5 sm:h-5 fill-[#C58F58] text-[#C58F58] animate-heart-beat" />
           </div>
           <div className="leading-tight">
-            <span className="text-lg sm:text-2xl font-serif-heading font-extrabold tracking-tight text-[#0D2329]">
-              Aeterna<span className="text-[#C58F58]">.</span>
+            <span className="text-base sm:text-xl font-serif-heading font-extrabold tracking-tight text-[#0D2329]">
+              Senior Living<span className="text-[#C58F58]">.</span>
             </span>
             <span className="hidden md:block text-[8px] uppercase tracking-[0.18em] font-bold text-[#2C5E50]">
-              Sanctuary Living
+              Citizen Foundation · Haryana
             </span>
           </div>
         </Link>
@@ -75,62 +76,64 @@ export const Navbar: React.FC = () => {
             href="/#location"
             className="px-3.5 py-1.5 rounded-full hover:bg-[#FAF8F5] text-[#53676E] hover:text-[#0D2329] transition-colors"
           >
-            Location & Nature
-          </Link>
-          <Link
-            href="/#building-vision"
-            className="px-3.5 py-1.5 rounded-full hover:bg-[#FAF8F5] text-[#53676E] hover:text-[#0D2329] transition-colors"
-          >
-            Architecture
+            Location &amp; Map
           </Link>
           <Link
             href="/#master-plan"
             className="px-3.5 py-1.5 rounded-full hover:bg-[#FAF8F5] text-[#53676E] hover:text-[#0D2329] transition-colors"
           >
-            Master Plan
+            Hospital CAD Plans
           </Link>
           <Link
             href="/#unit-explorer"
             className="px-3.5 py-1.5 rounded-full hover:bg-[#FAF8F5] text-[#0D2329] hover:text-[#2C5E50] transition-colors font-bold flex items-center gap-1.5"
           >
             <Home className="w-3.5 h-3.5 text-[#C58F58]" />
-            Residences (1 RK / 1 BHK)
-          </Link>
-          <Link
-            href="/#ecosystem"
-            className="px-3.5 py-1.5 rounded-full hover:bg-[#FAF8F5] text-[#53676E] hover:text-[#0D2329] transition-colors"
-          >
-            Healthcare & Ayurveda
+            1BHK &amp; 2BHK Apartments
           </Link>
           <Link
             href="/#availability"
             className="px-3.5 py-1.5 rounded-full hover:bg-[#FAF8F5] text-[#2C5E50] hover:text-[#1D4B57] transition-colors font-bold"
           >
-            Suites (01–03)
+            64 Plots Map
+          </Link>
+          <Link
+            href="/#ecosystem"
+            className="px-3.5 py-1.5 rounded-full hover:bg-[#FAF8F5] text-[#53676E] hover:text-[#0D2329] transition-colors"
+          >
+            Ayurveda &amp; Mandir
           </Link>
         </nav>
 
         {/* Right CTAs */}
         <div className="flex items-center gap-2 sm:gap-2.5">
+          <a
+            href="tel:+9199999558447"
+            className="hidden md:flex items-center gap-1.5 text-xs font-mono font-bold text-[#0D2329] hover:text-[#2C5E50] px-2.5 py-1.5"
+          >
+            <PhoneCall className="w-3.5 h-3.5 text-[#C58F58]" />
+            +91 99999558447
+          </a>
+
           {/* Site Visit Trigger */}
           <Button
             variant="outline"
             size="sm"
             className="hidden sm:inline-flex border-[#2C5E50] text-[#2C5E50] hover:bg-[#EAF2EE] text-xs font-semibold px-3.5 py-2 rounded-full"
-            onClick={() => openLeadDrawer({ title: 'Schedule Private Site & CAD Walkthrough', actionType: 'book-site-visit' })}
+            onClick={() => openLeadDrawer({ title: 'Schedule Site Visit to Kheri Asra, Jhajjar', actionType: 'book-site-visit' })}
             leftIcon={<Calendar className="w-3.5 h-3.5" />}
           >
-            Book Site Visit
+            Book Site Walk
           </Button>
 
           {/* Reserve / WhatsApp CTA */}
           <Button
             size="sm"
             className="bg-[#2C5E50] hover:bg-[#1D4B57] text-white text-xs font-semibold px-4 py-2 rounded-full shadow-md shadow-[#2C5E50]/20 flex items-center gap-1.5"
-            onClick={() => openWhatsApp({ actionType: 'reserve-unit', unitName: 'Residence 01' })}
+            onClick={() => openWhatsApp({ actionType: 'general', message: 'I want to enquire about plots and apartments at Senior Living Citizen Foundation...' })}
             leftIcon={<MessageSquare className="w-3.5 h-3.5" />}
           >
-            <span className="hidden xs:inline">Reserve</span> Suite (01–03)
+            WhatsApp Desk
           </Button>
 
           {/* Mobile Hamburger Toggle */}
@@ -150,9 +153,9 @@ export const Navbar: React.FC = () => {
           <div className="space-y-3">
             <div className="pb-3 border-b border-[#E8E2D8] flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-[#2C5E50]">
-                Property Explorer
+                Senior Living Citizen Foundation
               </span>
-              <span className="text-[11px] text-[#53676E]">Phase 1 Booking Open</span>
+              <span className="text-[11px] text-[#53676E]">Near MET City, SH-22</span>
             </div>
 
             <div className="grid grid-cols-2 gap-2 text-xs font-semibold">
@@ -161,42 +164,28 @@ export const Navbar: React.FC = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-3 rounded-2xl bg-[#FAF8F5] text-[#0D2329] hover:bg-[#EAF2EE] flex items-center gap-2"
               >
-                <Compass className="w-4 h-4 text-[#2C5E50]" /> Location
-              </Link>
-              <Link
-                href="/#building-vision"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-3 rounded-2xl bg-[#FAF8F5] text-[#0D2329] hover:bg-[#EAF2EE] flex items-center gap-2"
-              >
-                <Building2 className="w-4 h-4 text-[#C58F58]" /> Architecture
+                <Compass className="w-4 h-4 text-[#2C5E50]" /> Location &amp; Map
               </Link>
               <Link
                 href="/#master-plan"
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-3 rounded-2xl bg-[#FAF8F5] text-[#0D2329] hover:bg-[#EAF2EE] flex items-center gap-2"
               >
-                <Layers className="w-4 h-4 text-[#1D4B57]" /> Master Plan
+                <Layers className="w-4 h-4 text-[#1D4B57]" /> Hospital CAD
               </Link>
               <Link
                 href="/#unit-explorer"
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-3 rounded-2xl bg-[#FAF8F5] text-[#0D2329] hover:bg-[#EAF2EE] flex items-center gap-2"
               >
-                <Home className="w-4 h-4 text-[#2C5E50]" /> 1 RK / 1 BHK
-              </Link>
-              <Link
-                href="/#ecosystem"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-3 rounded-2xl bg-[#FAF8F5] text-[#0D2329] hover:bg-[#EAF2EE] flex items-center gap-2"
-              >
-                <Sparkles className="w-4 h-4 text-[#C58F58]" /> Healthcare
+                <Home className="w-4 h-4 text-[#2C5E50]" /> 1BHK / 2BHK
               </Link>
               <Link
                 href="/#availability"
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-3 rounded-2xl bg-[#EAF2EE] text-[#2C5E50] font-bold flex items-center gap-2"
               >
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Suites (01–03)
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" /> 64 Plots
               </Link>
             </div>
 
@@ -207,10 +196,10 @@ export const Navbar: React.FC = () => {
                 className="w-full bg-[#2C5E50] hover:bg-[#1D4B57] text-white py-3.5 text-xs font-bold"
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  openWhatsApp({ actionType: 'reserve-unit', unitName: 'Residence 01' });
+                  openWhatsApp({ actionType: 'general', message: 'I want to enquire about plots and apartments...' });
                 }}
               >
-                Reserve Unit 01 / 02 / 03 on WhatsApp →
+                Chat on WhatsApp (+91 99999558447) →
               </Button>
               <Button
                 variant="outline"
@@ -218,10 +207,10 @@ export const Navbar: React.FC = () => {
                 className="w-full border-[#2C5E50] text-[#2C5E50] py-3 text-xs font-semibold"
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  openLeadDrawer({ title: 'Schedule Private Site & CAD Walkthrough', actionType: 'book-site-visit' });
+                  openLeadDrawer({ title: 'Schedule Site Visit to Kheri Asra, Jhajjar', actionType: 'book-site-visit' });
                 }}
               >
-                Schedule Site Visit Walkthrough
+                Schedule Site Visit
               </Button>
             </div>
           </div>

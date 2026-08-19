@@ -80,7 +80,7 @@ _Please connect me with the Senior Project Advisor for blueprint walkthrough & r
 
     showToast({
       title: 'Connecting to Project Concierge...',
-      description: 'Opening official WhatsApp channel for Aeterna Sanjeevani Sanctuary.',
+      description: `Opening official WhatsApp channel for ${projectOverview.name}.`,
       type: 'success'
     });
 

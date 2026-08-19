@@ -96,7 +96,7 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
                     <div className="hidden sm:block">
                       <div className="text-xs font-bold font-serif-heading leading-tight">{floor.name.split('—')[0]}</div>
                       <div className="text-[10px] text-white/60">
-                        {floor.id === 'ground' ? '🟢 01–03 Available' : '🟡 Phase 2'}
+                        {floor.level === 1 ? '🟢 Clinical & ICU' : floor.level === 2 ? '🟢 OPD & Ayurveda' : '🟢 Rooftop & Pool'}
                       </div>
                     </div>
                     <ChevronRight className={`w-3.5 h-3.5 ${isActive ? 'text-emerald-300' : 'text-white/40'}`} />
