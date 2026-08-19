@@ -5,7 +5,8 @@ import { useModal } from '@/context/ModalContext';
 import { useToast } from '@/context/ToastContext';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { X, PhoneCall, ShieldCheck, Clock, CheckCircle2 } from 'lucide-react';
+import { projectOverview } from '@/data/propertyData';
+import { X, Calendar, ShieldCheck, Clock, CheckCircle2, Building2, MapPin } from 'lucide-react';
 
 export const LeadCaptureDrawer: React.FC = () => {
   const { isLeadDrawerOpen, leadDrawerContext, closeLeadDrawer } = useModal();
@@ -13,7 +14,9 @@ export const LeadCaptureDrawer: React.FC = () => {
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [city, setCity] = useState('Delhi NCR');
+  const [email, setEmail] = useState('');
+  const [city, setCity] = useState(leadDrawerContext.city || 'Delhi NCR');
+  const [preferredDate, setPreferredDate] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -35,17 +38,19 @@ export const LeadCaptureDrawer: React.FC = () => {
       setLoading(false);
       setSubmitted(true);
       showToast({
-        title: 'Callback Scheduled!',
-        description: 'A Senior Care Specialist will call you within 5 minutes.',
+        title: 'Site Visit / Priority Interest Registered!',
+        description: 'Our Senior Project Advisor will contact you to confirm your private walkthrough.',
         type: 'success'
       });
-    }, 800);
+    }, 700);
   };
 
   const handleReset = () => {
     setSubmitted(false);
     setName('');
     setPhone('');
+    setEmail('');
+    setPreferredDate('');
     closeLeadDrawer();
   };
 
@@ -53,25 +58,28 @@ export const LeadCaptureDrawer: React.FC = () => {
     <div className="fixed inset-0 z-50 overflow-hidden">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#071519]/60 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-[#071519]/70 backdrop-blur-sm transition-opacity"
         onClick={closeLeadDrawer}
       />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
-        <div className="w-screen max-w-md bg-white border-l border-[#E8E2D8] shadow-2xl p-5 sm:p-8 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-300">
+        <div className="w-screen max-w-lg bg-white border-l border-[#E8E2D8] shadow-2xl p-6 sm:p-8 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-300">
           <div>
             <div className="flex items-center justify-between pb-4 border-b border-[#E8E2D8] mb-6">
-              <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-[#EAF2EE] text-[#3D685A] flex items-center justify-center">
-                  <PhoneCall className="w-4 h-4" />
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-xl bg-[#EAF2EE] text-[#2C5E50] flex items-center justify-center">
+                  <Building2 className="w-5 h-5" />
                 </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#3D685A]">
-                  Priority Callback
-                </span>
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#2C5E50]">
+                    Official Project Desk
+                  </span>
+                  <p className="text-[11px] text-[#53676E]">{projectOverview.name}</p>
+                </div>
               </div>
               <button
                 onClick={closeLeadDrawer}
-                className="p-1.5 rounded-full text-[#5C6F75] hover:text-[#0D2329] hover:bg-[#F6F1E8]"
+                className="p-2 rounded-full text-[#53676E] hover:text-[#0D2329] hover:bg-[#F5EFE6]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -80,72 +88,84 @@ export const LeadCaptureDrawer: React.FC = () => {
             {!submitted ? (
               <>
                 <h3 className="text-2xl font-serif-heading font-bold text-[#0D2329]">
-                  {leadDrawerContext.title || 'Speak to a Senior Geriatric Care Advisor'}
+                  {leadDrawerContext.title || 'Schedule Private Site & Blueprint Visit'}
                 </h3>
-                <p className="text-sm text-[#5C6F75] mt-1.5 leading-relaxed">
-                  Get personalized guidance, caregiver profiles, and transparent cost estimates for your parents in 5 minutes.
+                <p className="text-sm text-[#53676E] mt-1.5 leading-relaxed">
+                  Experience the tranquil location, review architectural CAD blueprints, and reserve your priority residence.
                 </p>
 
-                <div className="mt-4 p-3.5 rounded-2xl bg-[#FBF9F5] border border-[#E2D7C5] text-xs text-[#1B4550] flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-[#3D685A] shrink-0" />
-                  <span>Free Clinical Assessment • Zero Sales Pressure</span>
-                </div>
+                {leadDrawerContext.unitName && (
+                  <div className="mt-4 p-3.5 rounded-2xl bg-[#EAF2EE] border border-[#CDE0D7] text-xs text-[#14353E] flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-[#2C5E50] tracking-wider block">Target Residence</span>
+                      <strong className="text-sm text-[#0D2329]">{leadDrawerContext.unitName}</strong>
+                      <span className="text-[#53676E] ml-1.5">({leadDrawerContext.unitType})</span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-white text-[#2C5E50] border border-[#CDE0D7]">
+                      Phase 1 Locked
+                    </span>
+                  </div>
+                )}
 
-                <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+                <form onSubmit={handleSubmit} className="mt-5 space-y-4">
                   <Input
-                    label="Your Name"
-                    placeholder="e.g. Rahul Verma"
+                    label="Your Full Name"
+                    placeholder="e.g. Sh. Arvind Nair"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
                   />
 
-                  <Input
-                    label="Phone Number"
-                    placeholder="+91 98765 43210"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
-                  />
-
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#0D2329]/80 mb-2">
-                      City of Care
-                    </label>
-                    <select
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                      className="w-full bg-[#FBF9F5] border border-[#E2D7C5] rounded-2xl px-4 py-3.5 text-sm text-[#0D2329] focus:outline-none focus:border-[#3D685A]"
-                    >
-                      <option value="Delhi NCR">Delhi NCR</option>
-                      <option value="Gurgaon">Gurgaon</option>
-                      <option value="Noida">Noida & Gr. Noida</option>
-                      <option value="Mumbai">Mumbai & MMR</option>
-                      <option value="Bangalore">Bangalore</option>
-                      <option value="Pune">Pune</option>
-                      <option value="Hyderabad">Hyderabad</option>
-                      <option value="Chennai">Chennai</option>
-                      <option value="Kolkata">Kolkata</option>
-                      <option value="Ahmedabad">Ahmedabad</option>
-                      <option value="Chandigarh">Chandigarh Tricity</option>
-                      <option value="Jaipur">Jaipur</option>
-                    </select>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <Input
+                      label="Phone / WhatsApp Number"
+                      placeholder="+91 98765 43210"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      required
+                    />
+                    <Input
+                      label="Email Address"
+                      type="email"
+                      placeholder="arvind@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
                   </div>
 
-                  {leadDrawerContext.service && (
-                    <div className="text-xs text-[#5C6F75] bg-[#EAF2EE] p-3 rounded-xl">
-                      Inquiring for: <strong className="text-[#0D2329]">{leadDrawerContext.service}</strong>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <Input
+                      label="Preferred Visit Date"
+                      type="date"
+                      value={preferredDate}
+                      onChange={(e) => setPreferredDate(e.target.value)}
+                    />
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-[#0D2329]/80 mb-2">
+                        Location / City
+                      </label>
+                      <select
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        className="w-full bg-[#FBF9F5] border border-[#E2D7C5] rounded-2xl px-4 py-3 text-sm text-[#0D2329] focus:outline-none focus:border-[#2C5E50]"
+                      >
+                        <option value="Delhi NCR">Delhi NCR</option>
+                        <option value="Gurgaon">Gurgaon</option>
+                        <option value="Noida">Noida</option>
+                        <option value="NRI / Overseas">NRI / Overseas</option>
+                        <option value="Other">Other City</option>
+                      </select>
                     </div>
-                  )}
+                  </div>
 
                   <Button
                     type="submit"
                     variant="primary"
                     size="lg"
                     isLoading={loading}
-                    className="w-full mt-4"
+                    className="w-full mt-4 bg-[#2C5E50] hover:bg-[#1D4B57] py-4"
                   >
-                    Request Callback in 5 Mins →
+                    Confirm Private Walkthrough Request →
                   </Button>
                 </form>
               </>
@@ -154,28 +174,29 @@ export const LeadCaptureDrawer: React.FC = () => {
                 <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <h4 className="text-xl font-serif-heading font-bold text-[#0D2329]">
-                  Thank You, {name}!
+                <h4 className="text-2xl font-serif-heading font-bold text-[#0D2329]">
+                  Request Confirmed, {name}!
                 </h4>
-                <p className="text-sm text-[#5C6F75] leading-relaxed">
-                  Your request has been prioritized. Senior Care Specialist Sister Ananya Varghese has received your case and is dialing your number ({phone}).
+                <p className="text-sm text-[#53676E] leading-relaxed max-w-sm mx-auto">
+                  Your priority inquiry has been received. Our Senior Project Advisor will reach out via WhatsApp & call within 15 minutes to share the architectural dossier and coordinate your visit.
                 </p>
 
                 <div className="pt-6">
                   <Button variant="secondary" onClick={handleReset} className="w-full">
-                    Done
+                    Close Window
                   </Button>
                 </div>
               </div>
             )}
           </div>
 
-          <div className="pt-6 border-t border-[#E8E2D8] flex items-center gap-2 text-xs text-[#5C6F75]">
+          <div className="pt-6 border-t border-[#E8E2D8] flex items-center gap-2.5 text-xs text-[#53676E]">
             <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>NABH Accredited Clinical Protocols & 100% Data Privacy</span>
+            <span>Official Aeterna Development Desk • 100% Privacy Assured</span>
           </div>
         </div>
       </div>
     </div>
   );
 };
+

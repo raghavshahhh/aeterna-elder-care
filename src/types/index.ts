@@ -260,3 +260,95 @@ export interface PortalDocument {
   doctorName: string;
   fileSize: string;
 }
+
+// ----------------------------------------------------
+// Property Showcase & Residence Types
+// ----------------------------------------------------
+
+export type UnitType = '1-rk' | '1-bhk';
+export type UnitStatus = 'available' | 'future_release' | 'reserved' | 'on_hold';
+export type FloorId = 'ground' | 'first' | 'second' | 'rooftop';
+
+export interface RoomDetail {
+  name: string;
+  dimensions: string;
+  highlight: string;
+  cgiImage: string;
+}
+
+export interface ResidenceUnit {
+  id: string;
+  unitNumber: string;
+  type: UnitType;
+  typeName: string;
+  floor: FloorId;
+  floorNumber: number;
+  floorName: string;
+  superAreaSqFt: number;
+  carpetAreaSqFt: number;
+  facing: string;
+  status: UnitStatus;
+  releasePhase: string;
+  badge: string;
+  startingPriceEstimate: string;
+  monthlyCarePackageEstimate: string;
+  seniorSafetyFeatures: string[];
+  keyHighlights: string[];
+  rooms: RoomDetail[];
+  blueprint2d: string;
+  interior3dCgi: string;
+}
+
+export interface FloorZone {
+  name: string;
+  category: 'clinical' | 'wellness' | 'residential' | 'lifestyle';
+  badge?: string;
+  description: string;
+}
+
+export interface PropertyFloor {
+  id: FloorId;
+  level: number;
+  name: string;
+  tagline: string;
+  description: string;
+  zones: FloorZone[];
+  unitIds: string[];
+  totalAreaSqFt: number;
+}
+
+export interface EcosystemPillarItem {
+  title: string;
+  subtitle: string;
+  iconName: string;
+  highlight: string;
+  status: 'confirmed' | 'proposed';
+}
+
+export interface EcosystemPillar {
+  id: 'healthcare' | 'ayurveda' | 'lifestyle';
+  title: string;
+  badge: string;
+  tagline: string;
+  description: string;
+  disclaimer: string;
+  items: EcosystemPillarItem[];
+}
+
+export interface LocationLandmark {
+  category: 'hospital' | 'expressway' | 'nature' | 'transit';
+  name: string;
+  distance: string;
+  travelTime: string;
+  significance: string;
+}
+
+export interface RoadmapMilestone {
+  phase: string;
+  title: string;
+  timeline: string;
+  status: 'completed' | 'in-progress' | 'upcoming';
+  description: string;
+  deliverables: string[];
+}
+
