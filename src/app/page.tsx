@@ -103,7 +103,7 @@ export default function HomePage() {
               <span>Have a specific architectural or clinical question?</span>
             </div>
             <button
-              onClick={() => openWhatsApp({ actionType: 'general', message: 'I have a specific question about the Aeterna Sanjeevani Sanctuary project...' })}
+              onClick={() => openWhatsApp({ actionType: 'general', message: 'I have a specific question about Senior Living Citizen Foundation...' })}
               className="font-bold text-[#2C5E50] hover:underline shrink-0"
             >
               Ask Senior Advisor on WhatsApp →
@@ -117,22 +117,22 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-xs font-bold text-[#C58F58] uppercase tracking-wider">
             <Building2 className="w-3.5 h-3.5" />
-            Pre-Launch Reservation Desk
+            Senior Living Citizen Foundation Desk
           </div>
           <h2 className="text-3xl sm:text-5xl font-serif-heading font-normal text-white max-w-3xl mx-auto leading-tight">
-            Secure Your Family&apos;s Sanctuary at <span className="italic font-serif text-[#C58F58]">Aeterna.</span>
+            Secure Your Plot or Home at <span className="italic font-serif text-[#C58F58]">Senior Living Citizen.</span>
           </h2>
           <p className="text-sm sm:text-base text-white/70 max-w-2xl mx-auto leading-relaxed">
-            Phase 1 pre-launch window is currently open for Residences 01, 02, and 03. Connect with our advisory desk to review full CAD blueprints and schedule your private site walkthrough.
+            Phase 1 plot allotments and 1BHK/2BHK senior apartment bookings are open across Blocks A to F. Connect with our advisory desk to review full CAD blueprints and schedule your private site walkthrough in Kheri Asra, Jhajjar.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <button
-              onClick={() => openWhatsApp({ actionType: 'reserve-unit', unitName: 'Residence 01' })}
+              onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to reserve a plot / apartment at Senior Living Citizen Foundation...' })}
               className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[#2C5E50] hover:bg-[#3D7363] text-white font-semibold text-sm shadow-xl transition-all flex items-center justify-center gap-2"
             >
               <MessageSquare className="w-4 h-4" />
-              Reserve Priority Suite on WhatsApp →
+              Chat on WhatsApp (+91 99999558447) →
             </button>
             <button
               onClick={() => openLeadDrawer({ title: 'Schedule Private Site & CAD Walkthrough', actionType: 'book-site-visit' })}

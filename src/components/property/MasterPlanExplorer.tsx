@@ -5,19 +5,16 @@ import { propertyFloors, projectOverview } from '@/data/propertyData';
 import { useModal } from '@/context/ModalContext';
 import { FloorId, ResidenceUnit } from '@/types';
 import {
-  Layers,
-  Sparkles,
-  CheckCircle2,
-  Lock,
-  ArrowRight,
-  ShieldCheck,
-  Maximize2,
-  Compass,
-  FileText,
+  Building2,
   Activity,
   Heart,
-  Building2,
-  Stethoscope
+  FileText,
+  ShieldCheck,
+  CheckCircle2,
+  Sparkles,
+  ChevronRight,
+  Stethoscope,
+  Maximize2
 } from 'lucide-react';
 
 interface MasterPlanExplorerProps {
@@ -48,7 +45,7 @@ export const MasterPlanExplorer: React.FC<MasterPlanExplorerProps> = ({
               Hospital Master Plan <span className="italic font-serif text-[#C58F58]">(117&apos;-10&quot; × 138&apos;)</span>
             </h2>
             <p className="text-sm sm:text-base text-[#53676E] leading-relaxed">
-              Exact CAD drawings by <em>The Vision Architects</em>. Select each floor to inspect the precise room dimensions, clinical wings, Panchakarma suites, and community areas.
+              Designed by <em>The Vision Architects</em>. Explore the exact room-by-room CAD specifications, critical care units, doctor OPDs, and authentic Panchakarma suites across all 3 floors.
             </p>
           </div>
 
@@ -66,21 +63,18 @@ export const MasterPlanExplorer: React.FC<MasterPlanExplorerProps> = ({
                       : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
                   }`}
                 >
-                  <span>{floor.level === 1 ? 'Floor 1 (Clinical & ICU)' : floor.level === 2 ? 'Floor 2 (OPD & Ayurveda)' : 'Floor 3 (Pool & Rooftop)'}</span>
-                  {floor.id === 'ground' && (
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                  )}
+                  <span>{floor.level === 1 ? 'Floor 1: ICU & Diagnostics' : floor.level === 2 ? 'Floor 2: OPD & Ayurveda' : 'Floor 3: Pool & Rooftop Deck'}</span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Master Plan Interactive Layout View */}
+        {/* Master Plan Layout Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Architectural Blueprint Visual Card */}
-          <div className="lg:col-span-8 bg-[#142126] text-white rounded-3xl p-6 sm:p-8 border border-[#294B57] shadow-xl relative overflow-hidden">
-            {/* Blueprint Grid Watermark */}
+          {/* Blueprint Visual Card */}
+          <div className="lg:col-span-8 bg-[#101D22] text-white rounded-3xl p-6 sm:p-8 border border-[#1E3740] shadow-xl relative overflow-hidden">
+            {/* Grid Pattern */}
             <div
               className="absolute inset-0 opacity-10 pointer-events-none"
               style={{
@@ -89,32 +83,30 @@ export const MasterPlanExplorer: React.FC<MasterPlanExplorerProps> = ({
               }}
             />
 
-            {/* Header info inside blueprint */}
+            {/* Header info */}
             <div className="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-white/10 relative z-10">
               <div>
                 <span className="text-[10px] uppercase font-bold text-[#C58F58] tracking-widest block font-mono">
-                  APPROVED CAD BLUEPRINT // THE VISION ARCHITECTS
+                  APPROVED ARCHITECTURAL CAD PLAN // THE VISION ARCHITECTS
                 </span>
                 <h3 className="text-xl sm:text-2xl font-serif-heading font-bold text-white mt-0.5">
                   {currentFloor.name}
                 </h3>
               </div>
-              <div className="flex items-center gap-2 text-xs">
-                <span className="px-3 py-1 rounded-full bg-white/10 text-white/80 border border-white/10 font-mono">
-                  Footprint: 117&apos;-10&quot; × 138&apos; • L-Shaped Layout
-                </span>
-              </div>
+              <span className="px-3 py-1 rounded-full bg-white/10 text-white/80 border border-white/10 font-mono text-xs">
+                Footprint: 117&apos;-10&quot; × 138&apos; L-Shape
+              </span>
             </div>
 
-            {/* Schematic CAD Representation of Floor Zones */}
-            <div className="my-8 relative z-10 grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Primary Clinical / Functional Wings */}
-              <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-4">
-                <div className="flex items-center justify-between">
+            {/* Room Breakdown Grid */}
+            <div className="my-6 relative z-10 grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Primary Wing */}
+              <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-white/10">
                   <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                    <Activity className="w-4 h-4" /> Wing A — Medical & Treatment
+                    <Activity className="w-4 h-4" /> Wing A — Specialized Rooms
                   </span>
-                  <span className="text-[10px] text-white/50 font-mono">10&apos;-0&quot; Corridor Access</span>
+                  <span className="text-[10px] text-white/50 font-mono">10&apos;-0&quot; Corridors</span>
                 </div>
 
                 <div className="space-y-2">
@@ -123,7 +115,7 @@ export const MasterPlanExplorer: React.FC<MasterPlanExplorerProps> = ({
                     .map((zone, idx) => (
                       <div
                         key={idx}
-                        className="p-3.5 rounded-xl bg-white/5 border border-white/5 hover:border-emerald-400/40 transition-colors"
+                        className="p-3 rounded-xl bg-white/5 border border-white/5 hover:border-emerald-400/40 transition-colors"
                       >
                         <div className="flex items-center justify-between text-xs font-semibold text-white">
                           <span>{zone.name}</span>
@@ -133,7 +125,7 @@ export const MasterPlanExplorer: React.FC<MasterPlanExplorerProps> = ({
                             </span>
                           )}
                         </div>
-                        <p className="text-[11px] text-white/60 mt-1 leading-snug">
+                        <p className="text-[11px] text-white/65 mt-1 leading-snug">
                           {zone.description}
                         </p>
                       </div>
@@ -141,13 +133,13 @@ export const MasterPlanExplorer: React.FC<MasterPlanExplorerProps> = ({
                 </div>
               </div>
 
-              {/* Secondary Wellness / Inpatient / Community Wings */}
-              <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-4">
-                <div className="flex items-center justify-between">
+              {/* Secondary Wing */}
+              <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-white/10">
                   <span className="text-xs font-bold uppercase tracking-wider text-[#C58F58] flex items-center gap-1.5">
-                    <Heart className="w-4 h-4" /> Wing B — Rooms & Community
+                    <Heart className="w-4 h-4" /> Wing B — Care &amp; Community
                   </span>
-                  <span className="text-[10px] text-white/50 font-mono">NABH Compliant</span>
+                  <span className="text-[10px] text-white/50 font-mono">NABH Standards</span>
                 </div>
 
                 <div className="space-y-2">
@@ -156,7 +148,7 @@ export const MasterPlanExplorer: React.FC<MasterPlanExplorerProps> = ({
                     .map((zone, idx) => (
                       <div
                         key={idx}
-                        className="p-3.5 rounded-xl bg-white/5 border border-white/5 hover:border-[#C58F58]/40 transition-colors"
+                        className="p-3 rounded-xl bg-white/5 border border-white/5 hover:border-[#C58F58]/40 transition-colors"
                       >
                         <div className="flex items-center justify-between text-xs font-semibold text-white">
                           <span>{zone.name}</span>
@@ -166,7 +158,7 @@ export const MasterPlanExplorer: React.FC<MasterPlanExplorerProps> = ({
                             </span>
                           )}
                         </div>
-                        <p className="text-[11px] text-white/60 mt-1 leading-snug">
+                        <p className="text-[11px] text-white/65 mt-1 leading-snug">
                           {zone.description}
                         </p>
                       </div>
@@ -175,18 +167,18 @@ export const MasterPlanExplorer: React.FC<MasterPlanExplorerProps> = ({
               </div>
             </div>
 
-            {/* Footer Blueprint Callout */}
+            {/* Footer Specifications Callout */}
             <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-white/60">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>Dual Lifts (7&apos;0&quot;×9&apos;4&quot;) + 7&apos;4&quot; Wide Gradual Stairs Built on Every Floor</span>
+                <span>Equipped with 2 Lifts (7&apos;0&quot;×9&apos;4&quot;) and 7&apos;4&quot; wide gradual stairs on every floor</span>
               </div>
               <button
                 onClick={() => openLeadDrawer({ title: `Request CAD Floor Plans for ${currentFloor.name.split('—')[0]}`, actionType: 'inquire-residence' })}
-                className="text-[#C58F58] hover:text-white font-semibold flex items-center gap-1"
+                className="text-[#C58F58] hover:text-white font-bold flex items-center gap-1"
               >
                 <FileText className="w-3.5 h-3.5" />
-                Request High-Res CAD PDF →
+                Request Scaled CAD PDF →
               </button>
             </div>
           </div>
@@ -208,12 +200,12 @@ export const MasterPlanExplorer: React.FC<MasterPlanExplorerProps> = ({
                 {currentFloor.description}
               </p>
 
-              {/* Status Note */}
-              <div className="p-4 rounded-2xl bg-[#FBF9F5] border border-[#E2D7C5] space-y-2">
-                <span className="text-[11px] font-bold uppercase text-[#A8733E] tracking-wider block">
-                  On-Site Healthcare Advantage
+              {/* On-Site Benefit Banner */}
+              <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8] space-y-1.5">
+                <span className="text-[11px] font-bold uppercase text-[#2C5E50] tracking-wider block">
+                  Integrated Care for Residents
                 </span>
-                <p className="text-xs text-[#14353E] leading-relaxed">
+                <p className="text-xs text-[#53676E] leading-relaxed">
                   Residents of the 64 plots and senior apartments have direct on-foot access to this 30,000 sq. ft. hospital without having to step outside the township gates.
                 </p>
               </div>

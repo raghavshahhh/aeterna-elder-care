@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/Button';
 import {
   CheckCircle2,
   Sparkles,
-  Lock,
   Layers,
   ArrowRight,
   ShieldCheck,
@@ -15,15 +14,17 @@ import {
   Calendar,
   MessageSquare,
   Home,
-  MapPin
+  MapPin,
+  Filter
 } from 'lucide-react';
 
 export const AvailabilityMatrix: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<'plots' | 'apartments' | 'hospital-rooms'>('plots');
   const [selectedBlock, setSelectedBlock] = useState<string>('all');
+  const [selectedFilterStatus, setSelectedFilterStatus] = useState<string>('all');
   const { openWhatsApp, openLeadDrawer } = useModal();
 
-  // Mock interactive 64 plots generator across 6 blocks
+  // 64 interactive plots across 6 blocks
   const plots = Array.from({ length: 64 }, (_, i) => {
     const num = i + 1;
     const blockIndex = Math.floor(i / 11);
@@ -43,28 +44,29 @@ export const AvailabilityMatrix: React.FC = () => {
   });
 
   const filteredPlots = plots.filter((p) => {
-    if (selectedBlock === 'all') return true;
-    return p.block === selectedBlock;
+    if (selectedBlock !== 'all' && p.block !== selectedBlock) return false;
+    if (selectedFilterStatus !== 'all' && p.status !== selectedFilterStatus) return false;
+    return true;
   });
 
   return (
     <section id="availability" className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E8E2D8] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-14">
+        <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-wider">
             <Layers className="w-3.5 h-3.5" />
-            Live Township & Hospital Inventory
+            Live Township Availability
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-normal text-[#0D2329] tracking-tight">
             Find Your Space at <span className="italic font-serif text-[#C58F58]">Senior Living Citizen.</span>
           </h2>
           <p className="text-sm sm:text-base text-[#53676E] leading-relaxed">
-            Choose between 64 freehold residential plots to build your custom home, compact 1BHK/2BHK senior apartments, or hospital inpatient recovery suites.
+            Choose between 64 freehold residential plots to build your customized home, or pre-constructed 1BHK/2BHK senior apartments.
           </p>
         </div>
 
-        {/* Category Switcher Tabs (Plots vs Apartments vs Hospital Suites) */}
+        {/* Category Switcher Tabs */}
         <div className="flex flex-wrap justify-center gap-3 mb-10">
           <button
             onClick={() => setSelectedCategory('plots')}
@@ -97,46 +99,81 @@ export const AvailabilityMatrix: React.FC = () => {
             }`}
           >
             <Sparkles className="w-4 h-4" />
-            Hospital Inpatient Suites (9 Rooms)
+            Hospital Inpatient Suites (9 Units)
           </button>
         </div>
 
-        {/* 1. PLOTS INVENTORY VIEW */}
+        {/* 1. 64 PLOTS VIEW */}
         {selectedCategory === 'plots' && (
-          <div className="bg-white rounded-3xl border border-[#E8E2D8] shadow-xl p-6 sm:p-8 space-y-8">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-[#E8E2D8]">
+          <div className="bg-white rounded-3xl border border-[#E8E2D8] shadow-xl p-6 sm:p-8 space-y-6">
+            {/* Top Bar with Filter & Status */}
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-[#E8E2D8]">
               <div>
                 <h3 className="text-xl sm:text-2xl font-serif-heading font-bold text-[#0D2329]">
-                  64 Residential Plots · Real-Time Map
+                  64 Freehold Plots · Real-Time Map
                 </h3>
                 <p className="text-xs text-[#53676E] mt-0.5">
-                  120 to 425 sq. yd. along 33ft main arterial roads and 5ft-6ft green belts
+                  120 to 425 sq. yd. along 33ft main arterial roads with 5ft-6ft green belts
                 </p>
               </div>
 
-              {/* Status Indicators */}
-              <div className="flex items-center gap-3 text-xs font-semibold">
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+              {/* Status Filters */}
+              <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+                <button
+                  onClick={() => setSelectedFilterStatus('all')}
+                  className={`px-3 py-1.5 rounded-full border transition-all ${
+                    selectedFilterStatus === 'all'
+                      ? 'bg-[#0D2329] text-white border-[#0D2329]'
+                      : 'bg-white text-[#53676E] border-[#E8E2D8]'
+                  }`}
+                >
+                  All Plots (64)
+                </button>
+                <button
+                  onClick={() => setSelectedFilterStatus('available')}
+                  className={`px-3 py-1.5 rounded-full border transition-all flex items-center gap-1.5 ${
+                    selectedFilterStatus === 'available'
+                      ? 'bg-emerald-700 text-white border-emerald-700'
+                      : 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                  }`}
+                >
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
                   {plotsSummary.availableCount} Available
-                </span>
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                </button>
+                <button
+                  onClick={() => setSelectedFilterStatus('hold')}
+                  className={`px-3 py-1.5 rounded-full border transition-all flex items-center gap-1.5 ${
+                    selectedFilterStatus === 'hold'
+                      ? 'bg-amber-700 text-white border-amber-700'
+                      : 'bg-amber-50 text-amber-800 border-amber-200'
+                  }`}
+                >
                   <span className="w-2 h-2 rounded-full bg-amber-500" />
                   {plotsSummary.onHoldCount} On Hold
-                </span>
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-rose-800 border border-rose-200">
+                </button>
+                <button
+                  onClick={() => setSelectedFilterStatus('sold')}
+                  className={`px-3 py-1.5 rounded-full border transition-all flex items-center gap-1.5 ${
+                    selectedFilterStatus === 'sold'
+                      ? 'bg-rose-700 text-white border-rose-700'
+                      : 'bg-rose-50 text-rose-800 border-rose-200'
+                  }`}
+                >
                   <span className="w-2 h-2 rounded-full bg-rose-400" />
                   {plotsSummary.soldCount} Sold
-                </span>
+                </button>
               </div>
             </div>
 
-            {/* Block Filter Buttons */}
-            <div className="flex flex-wrap gap-2">
+            {/* Block Switcher */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs">
+              <span className="text-[#53676E] font-semibold text-[11px] uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1">
+                <Filter className="w-3 h-3" /> Filter Block:
+              </span>
               <button
                 onClick={() => setSelectedBlock('all')}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                  selectedBlock === 'all' ? 'bg-[#0D2329] text-white' : 'bg-[#FAF8F5] text-[#53676E] hover:bg-[#EAF2EE]'
+                className={`px-3 py-1.5 rounded-xl font-bold transition-all shrink-0 ${
+                  selectedBlock === 'all' ? 'bg-[#2C5E50] text-white' : 'bg-[#FAF8F5] text-[#53676E] hover:bg-[#EAF2EE]'
                 }`}
               >
                 All 6 Blocks
@@ -145,8 +182,8 @@ export const AvailabilityMatrix: React.FC = () => {
                 <button
                   key={b}
                   onClick={() => setSelectedBlock(b)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                    selectedBlock === b ? 'bg-[#0D2329] text-white' : 'bg-[#FAF8F5] text-[#53676E] hover:bg-[#EAF2EE]'
+                  className={`px-3 py-1.5 rounded-xl font-bold transition-all shrink-0 ${
+                    selectedBlock === b ? 'bg-[#2C5E50] text-white' : 'bg-[#FAF8F5] text-[#53676E] hover:bg-[#EAF2EE]'
                   }`}
                 >
                   {b}
@@ -154,8 +191,8 @@ export const AvailabilityMatrix: React.FC = () => {
               ))}
             </div>
 
-            {/* Interactive Grid of Plots */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5 max-h-[420px] overflow-y-auto pr-1">
+            {/* Grid of 64 Plots */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5 max-h-[440px] overflow-y-auto pr-1">
               {filteredPlots.map((p) => {
                 const isAvail = p.status === 'available';
                 const isHold = p.status === 'hold';
@@ -169,19 +206,24 @@ export const AvailabilityMatrix: React.FC = () => {
                         unitType: 'Residential Plot'
                       })
                     }
-                    className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
+                    className={`p-3 rounded-2xl border text-center transition-all cursor-pointer ${
                       isAvail
-                        ? 'bg-emerald-50/50 border-emerald-300 hover:bg-emerald-100 hover:scale-105 shadow-sm'
+                        ? 'bg-emerald-50/60 border-emerald-300 hover:bg-emerald-100 hover:scale-105 shadow-sm'
                         : isHold
-                        ? 'bg-amber-50/50 border-amber-300 opacity-80'
+                        ? 'bg-amber-50/60 border-amber-300 opacity-80'
                         : 'bg-rose-50/40 border-rose-200 opacity-60 cursor-not-allowed'
                     }`}
                   >
                     <div className="text-xs font-bold font-serif-heading text-[#0D2329]">{p.number}</div>
-                    <div className="text-[10px] text-[#53676E] font-mono">{p.sizeSqYd} sq.yd.</div>
+                    <div className="text-[10px] text-[#53676E] font-mono mt-0.5">{p.sizeSqYd} sq.yd.</div>
+                    <div className="text-[9px] text-[#899B9F] truncate mt-0.5">{p.facing}</div>
                     <span
-                      className={`text-[9px] font-bold uppercase tracking-wider block mt-1 ${
-                        isAvail ? 'text-emerald-700' : isHold ? 'text-amber-700' : 'text-rose-700'
+                      className={`text-[9px] font-bold uppercase tracking-wider block mt-1.5 px-1 py-0.5 rounded ${
+                        isAvail
+                          ? 'bg-emerald-200/60 text-emerald-800'
+                          : isHold
+                          ? 'bg-amber-200/60 text-amber-800'
+                          : 'bg-rose-200/60 text-rose-800'
                       }`}
                     >
                       {p.status}
@@ -192,12 +234,12 @@ export const AvailabilityMatrix: React.FC = () => {
             </div>
 
             <div className="pt-4 border-t border-[#E8E2D8] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#53676E]">
-              <span>💡 Click any plot to enquire about pricing, exact dimensions, and payment milestones.</span>
+              <span>💡 <em>Click any available plot above to enquire about exact dimensions, layout &amp; pricing on WhatsApp.</em></span>
               <button
-                onClick={() => openLeadDrawer({ title: 'Request Complete 64-Plot Layout PDF', actionType: 'inquire-residence' })}
+                onClick={() => openLeadDrawer({ title: 'Request 64-Plot Layout PDF Dossier', actionType: 'inquire-residence' })}
                 className="text-[#2C5E50] font-bold hover:underline"
               >
-                Download Plotted Township Master Plan (PDF) →
+                Download Plotted Master Plan (PDF) →
               </button>
             </div>
           </div>
@@ -217,11 +259,11 @@ export const AvailabilityMatrix: React.FC = () => {
                       G+2 Floors + Stilt Parking
                     </span>
                     <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800">
-                      {apt.badge}
+                      🟢 Available for Booking
                     </span>
                   </div>
 
-                  <h3 className="text-2xl font-serif-heading font-bold text-[#0D2329]">
+                  <h3 className="text-2xl sm:text-3xl font-serif-heading font-bold text-[#0D2329]">
                     {apt.unitNumber}
                   </h3>
                   <p className="text-xs text-[#53676E]">
@@ -230,7 +272,7 @@ export const AvailabilityMatrix: React.FC = () => {
 
                   <div className="space-y-2 pt-2">
                     {apt.rooms.map((rm, i) => (
-                      <div key={i} className="flex items-center justify-between text-xs py-1 border-b border-[#F0EBE1]">
+                      <div key={i} className="flex items-center justify-between text-xs py-1.5 border-b border-[#F0EBE1]">
                         <span className="font-medium text-[#0D2329]">{rm.name}</span>
                         <span className="font-mono text-[#2C5E50] font-bold">{rm.dimensions}</span>
                       </div>
@@ -241,7 +283,7 @@ export const AvailabilityMatrix: React.FC = () => {
                 <div className="pt-4 space-y-2">
                   <Button
                     size="lg"
-                    className="w-full bg-[#2C5E50] hover:bg-[#1D4B57] text-white text-xs font-bold py-3.5"
+                    className="w-full bg-[#2C5E50] hover:bg-[#1D4B57] text-white text-xs sm:text-sm font-bold py-3.5"
                     onClick={() =>
                       openWhatsApp({
                         actionType: 'reserve-unit',
@@ -250,7 +292,7 @@ export const AvailabilityMatrix: React.FC = () => {
                       })
                     }
                   >
-                    Enquire on WhatsApp →
+                    Enquire About {apt.unitNumber} on WhatsApp →
                   </Button>
                 </div>
               </div>
@@ -264,10 +306,10 @@ export const AvailabilityMatrix: React.FC = () => {
             <div className="flex items-center justify-between pb-4 border-b border-[#E8E2D8]">
               <div>
                 <h3 className="text-xl sm:text-2xl font-serif-heading font-bold text-[#0D2329]">
-                  Hospital Floor 1 Inpatient Accommodations
+                  Hospital Floor 1 Inpatient Rooms
                 </h3>
                 <p className="text-xs text-[#53676E] mt-0.5">
-                  9 Private Rooms (9&apos;4&quot; × 10&apos;8&quot;) + 4 Semi-Private Rooms (12&apos;6&quot; × 14&apos;8&quot;) + General Wards
+                  9 Private Inpatient Rooms (9&apos;4&quot; × 10&apos;8&quot;) + 4 Semi-Private Rooms (12&apos;6&quot; × 14&apos;8&quot;)
                 </p>
               </div>
               <span className="text-xs font-bold text-[#2C5E50] px-3 py-1 rounded-full bg-[#EAF2EE]">
@@ -297,7 +339,7 @@ export const AvailabilityMatrix: React.FC = () => {
           </div>
         )}
 
-        {/* Direct Contact Banner */}
+        {/* Direct Contact Callout Box */}
         <div className="mt-12 p-8 rounded-3xl bg-[#0D2329] text-white shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-2 text-center md:text-left max-w-xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold text-[#C58F58] uppercase tracking-wider">
@@ -308,7 +350,7 @@ export const AvailabilityMatrix: React.FC = () => {
               Ready to Walk the Land in Kheri Asra?
             </h3>
             <p className="text-xs sm:text-sm text-white/70 leading-relaxed">
-              Photographs only carry so much. Book a private site visit to experience the tranquil surroundings and review full architectural drawings.
+              Book a private on-site walkthrough with our senior project advisors to review plot boundary markings and CAD hospital drawings.
             </p>
           </div>
 
@@ -316,7 +358,7 @@ export const AvailabilityMatrix: React.FC = () => {
             <Button
               size="lg"
               className="bg-[#2C5E50] hover:bg-[#3D7363] text-white py-4 px-6 text-sm font-semibold shadow-lg"
-              onClick={() => openWhatsApp({ actionType: 'general', message: 'I want to book a site visit to Senior Living Citizen Foundation at Kheri Asra...' })}
+              onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to book a site visit to Senior Living Citizen Foundation at Kheri Asra...' })}
               leftIcon={<MessageSquare className="w-4 h-4" />}
             >
               WhatsApp: +91 99999558447 →
