@@ -1,62 +1,47 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { BuildingCGIViewer } from '@/components/property/BuildingCGIViewer';
 import { ResidenceUnitExplorer } from '@/components/property/ResidenceUnitExplorer';
-import { useModal } from '@/context/ModalContext';
-import { FloorId } from '@/types';
-import { Building2, Sparkles, ShieldCheck, CheckCircle2, MessageSquare, Calendar } from 'lucide-react';
+import {
+  Building2,
+  Calendar,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  CheckCircle2,
+  Footprints,
+  Home,
+  Car,
+  ArrowUpDown
+} from 'lucide-react';
+import Link from 'next/link';
 
 export default function ApartmentsPage() {
-  const [selectedFloor, setSelectedFloor] = useState<FloorId>('ground');
-  const { openWhatsApp, openLeadDrawer } = useModal();
-
   return (
-    <div className="space-y-16 pb-20 bg-[#FAF8F5]">
-      {/* Page Hero */}
-      <section className="bg-[#0D2329] text-white py-20 border-b border-white/10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-xs font-bold text-[#E0AB77] uppercase tracking-widest">
+    <div className="space-y-16 sm:space-y-24 pb-20 bg-[#FAF8F5]">
+      {/* Hero Header */}
+      <section className="bg-gradient-to-b from-[#0D2329] to-[#071519] text-white py-16 sm:py-24 border-b border-white/10">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs font-bold text-[#E0AB77] uppercase tracking-widest">
             <Building2 className="w-3.5 h-3.5" />
-            Senior Residences
+            9-Unit G+2 Residential Building
           </div>
-          <h1 className="text-4xl sm:text-6xl font-serif-heading font-normal tracking-tight text-[#FAF8F5]">
-            1 BHK &amp; 1 RK — <span className="italic font-serif text-[#C58F58]">Compact, Considered,</span> Complete.
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif-heading font-normal tracking-tight text-[#FAF8F5]">
+            1 RK &amp; 1 BHK <span className="italic font-serif text-[#C58F58]">Senior Residences</span>
           </h1>
-          <p className="text-sm sm:text-base text-white/80 max-w-2xl mx-auto leading-relaxed">
-            G+2 apartment buildings with stilt parking, two lifts, and gradual 6&quot; rise stairs. Single-floor living inside each home — built for the body, not the brochure.
+          <p className="text-sm sm:text-base text-white/80 font-light max-w-2xl mx-auto leading-relaxed">
+            Built for the body you have at 65, 75, and beyond. Single-floor living, two wheelchair-sized elevators, gradual 6&quot; rise stairs, and covered stilt parking.
           </p>
         </div>
       </section>
 
-      {/* Building Overview Metrics */}
+      {/* Building CGI Elevation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-6 rounded-2xl bg-white border border-[#E8E2D8] text-center shadow-sm">
-            <div className="text-3xl font-serif-heading font-bold text-[#2C5E50]">G+2</div>
-            <div className="text-xs font-mono uppercase text-[#53676E] mt-1">Floors + Stilt Parking</div>
-          </div>
-          <div className="p-6 rounded-2xl bg-white border border-[#E8E2D8] text-center shadow-sm">
-            <div className="text-3xl font-serif-heading font-bold text-[#2C5E50]">3</div>
-            <div className="text-xs font-mono uppercase text-[#53676E] mt-1">Apartments / Floor</div>
-          </div>
-          <div className="p-6 rounded-2xl bg-white border border-[#E8E2D8] text-center shadow-sm">
-            <div className="text-3xl font-serif-heading font-bold text-[#C58F58]">2</div>
-            <div className="text-xs font-mono uppercase text-[#53676E] mt-1">Lifts per Building</div>
-          </div>
-          <div className="p-6 rounded-2xl bg-white border border-[#E8E2D8] text-center shadow-sm">
-            <div className="text-3xl font-serif-heading font-bold text-[#2C5E50]">10+</div>
-            <div className="text-xs font-mono uppercase text-[#53676E] mt-1">Stilt Covered Car Parks</div>
-          </div>
-        </div>
+        <BuildingCGIViewer />
       </div>
 
-      {/* 3D CGI Floor Explorer */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <BuildingCGIViewer onSelectFloor={(fl) => setSelectedFloor(fl)} />
-      </div>
-
-      {/* 1 BHK & 1 RK Blueprints & Interior CGI */}
+      {/* 1 BHK / 1 RK Visualizer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ResidenceUnitExplorer />
       </div>
@@ -77,29 +62,40 @@ export default function ApartmentsPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="p-6 rounded-2xl bg-white/10 border border-white/10 space-y-3">
-              <div className="text-3xl">🛗</div>
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-4 hover:border-[#C58F58]/40 transition-colors">
+              <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-[#C58F58]">
+                <ArrowUpDown className="w-6 h-6" />
+              </div>
               <h3 className="text-lg font-serif-heading font-bold text-[#FAF8F5]">Two Lifts — Always One Working</h3>
               <p className="text-xs text-white/70 leading-relaxed">
                 One lift can break down. Two cannot simultaneously. 5×6ft cabins fit a wheelchair, walker, and attendant with plenty of room.
               </p>
             </div>
-            <div className="p-6 rounded-2xl bg-white/10 border border-white/10 space-y-3">
-              <div className="text-3xl">🪜</div>
+
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-4 hover:border-[#C58F58]/40 transition-colors">
+              <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-[#C58F58]">
+                <Footprints className="w-6 h-6" />
+              </div>
               <h3 className="text-lg font-serif-heading font-bold text-[#FAF8F5]">Gradual Stairs — 10&quot; Tread, 6&quot; Rise</h3>
               <p className="text-xs text-white/70 leading-relaxed">
                 Standard Indian stairs use a 7&quot; rise. Ours use 6&quot; — a gentle difference that spares knees over decades. 4ft wide for an accompanying walker.
               </p>
             </div>
-            <div className="p-6 rounded-2xl bg-white/10 border border-white/10 space-y-3">
-              <div className="text-3xl">🏠</div>
+
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-4 hover:border-[#C58F58]/40 transition-colors">
+              <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-[#C58F58]">
+                <Home className="w-6 h-6" />
+              </div>
               <h3 className="text-lg font-serif-heading font-bold text-[#FAF8F5]">Single-Floor Living Inside</h3>
               <p className="text-xs text-white/70 leading-relaxed">
                 Once on your floor, the entire home is on one level. Zero internal steps, no split levels, and zero trip hazards in the dark.
               </p>
             </div>
-            <div className="p-6 rounded-2xl bg-white/10 border border-white/10 space-y-3">
-              <div className="text-3xl">🚗</div>
+
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-4 hover:border-[#C58F58]/40 transition-colors">
+              <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-[#C58F58]">
+                <Car className="w-6 h-6" />
+              </div>
               <h3 className="text-lg font-serif-heading font-bold text-[#FAF8F5]">Stilt Parking — Shaded &amp; Ventilated</h3>
               <p className="text-xs text-white/70 leading-relaxed">
                 The ground level is open, shaded, and ventilated with 3 entry gates and 10+ covered parking bays.

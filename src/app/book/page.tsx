@@ -246,7 +246,7 @@ function BookingContent() {
                   <option value="12-Hour Day Shift (8:00 AM – 8:00 PM)">12-Hour Day Shift (8:00 AM – 8:00 PM)</option>
                   <option value="12-Hour Night Shift (8:00 PM – 8:00 AM)">12-Hour Night Shift (8:00 PM – 8:00 AM)</option>
                   <option value="24-Hour Live-in Shift">24-Hour Live-in Shift</option>
-                  <option value="Immediate Emergency Dispatch">🚨 Immediate Emergency Dispatch</option>
+                  <option value="Immediate Emergency Dispatch">Immediate Emergency Dispatch</option>
                 </select>
               </div>
 

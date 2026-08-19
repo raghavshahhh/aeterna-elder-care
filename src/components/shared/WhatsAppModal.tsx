@@ -57,20 +57,20 @@ export const WhatsAppModal: React.FC = () => {
     e.preventDefault();
 
     const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const dateStr = preferredDate ? `\n📅 Preferred Date: ${preferredDate}` : '';
-    const noteStr = customNotes.trim() ? `\n📝 Note: ${customNotes.trim()}` : '';
+    const dateStr = preferredDate ? `\n• Preferred Date: ${preferredDate}` : '';
+    const noteStr = customNotes.trim() ? `\n• Note: ${customNotes.trim()}` : '';
 
-    const textMessage = `🔔 *NEW WEBSITE PROPERTY LEAD*
-👤 *Name:* ${name || 'Prospective Resident'}
-📱 *Phone:* ${phone || 'Provided in chat'}
-📍 *Location:* ${city}
+    const textMessage = `*NEW WEBSITE PROPERTY LEAD*
+• Name: ${name || 'Prospective Resident'}
+• Phone: ${phone || 'Provided in chat'}
+• Location: ${city}
 
-🏠 *Project:* ${projectOverview.name}
-🏡 *Interested In:* ${selectedUnit}
-🎯 *Intent:* ${inquiryType}${dateStr}${noteStr}
+• Project: ${projectOverview.name}
+• Interested In: ${selectedUnit}
+• Intent: ${inquiryType}${dateStr}${noteStr}
 
-🔗 *Source:* Website Digital Explorer
-🕐 *Time:* ${timestamp}
+• Source: Website Digital Explorer
+• Time: ${timestamp}
 
 _Please connect me with the Senior Project Advisor for blueprint walkthrough & reservation details._`;
 
@@ -84,10 +84,8 @@ _Please connect me with the Senior Project Advisor for blueprint walkthrough & r
       type: 'success'
     });
 
-    setTimeout(() => {
-      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
-      closeWhatsApp();
-    }, 400);
+    window.open(whatsappUrl, '_blank');
+    closeWhatsApp();
   };
 
   return (
@@ -228,8 +226,9 @@ _Please connect me with the Senior Project Advisor for blueprint walkthrough & r
           >
             Connect with Project Advisor on WhatsApp →
           </Button>
-          <p className="text-[11px] text-center text-[#53676E] mt-2.5">
-            🔒 Direct sales desk. Zero spam. We respect your family&apos;s privacy and medical confidentiality.
+          <p className="text-[11px] text-center text-[#53676E] mt-2.5 flex items-center justify-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+            <span>Direct sales desk. Zero spam. We respect your family&apos;s privacy and medical confidentiality.</span>
           </p>
         </div>
       </form>

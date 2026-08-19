@@ -184,11 +184,11 @@ export default function AdminPage() {
                           onChange={(e) => handleUpdateLeadStatus(lead.id, e.target.value as any)}
                           className="bg-[#F6F1E8] border border-[#E2D7C5] rounded-xl px-2.5 py-1 text-xs font-bold text-[#0D2329] focus:outline-none"
                         >
-                          <option value="New">🟢 New Lead</option>
-                          <option value="Contacted">🟡 Contacted</option>
-                          <option value="Qualified">🔵 Qualified</option>
-                          <option value="Converted">⭐ Converted</option>
-                          <option value="Closed">❌ Closed</option>
+                          <option value="New">New Lead</option>
+                          <option value="Contacted">Contacted</option>
+                          <option value="Qualified">Qualified</option>
+                          <option value="Converted">Converted</option>
+                          <option value="Closed">Closed</option>
                         </select>
                       </td>
 

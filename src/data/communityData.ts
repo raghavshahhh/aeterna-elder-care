@@ -89,28 +89,28 @@ export const communityClubs = [
     name: 'Sur-Taal Music & Karaoke Club',
     members: '1,420+ Seniors',
     schedule: 'Every Tue & Fri, 5:30 PM',
-    icon: '🎵',
+    iconName: 'Music',
     desc: 'Sing your heart out with fellow golden-era music lovers from all across India.'
   },
   {
     name: 'Sanjeevani Yoga & Pranayama Club',
     members: '2,800+ Seniors',
     schedule: 'Daily, 8:00 AM',
-    icon: '🧘',
+    iconName: 'Activity',
     desc: 'Daily physician-curated joint stretching, breathing exercises, and guided mindfulness.'
   },
   {
     name: 'Grandmasters Chess & Sudoku Guild',
     members: '890+ Seniors',
     schedule: 'Every Wed & Sun, 4:00 PM',
-    icon: '♟️',
+    iconName: 'Trophy',
     desc: 'Friendly tournaments and memory challenges to keep cognitive acuity razor sharp.'
   },
   {
     name: 'Globetrotters Book & Travel Club',
     members: '1,150+ Seniors',
     schedule: 'Every Thursday, 6:00 PM',
-    icon: '📚',
+    iconName: 'BookOpen',
     desc: 'Virtual world tours, historical discussions, and literary book exchanges.'
   }
 ];

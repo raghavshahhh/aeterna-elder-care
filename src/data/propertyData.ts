@@ -241,7 +241,7 @@ export const buildingUnits: BuildingUnit[] = [
     carpetAreaSqFt: 270,
     facing: 'East / Morning Sun & Garden View',
     status: 'available',
-    badge: '🟢 Available • Phase 1',
+    badge: 'Available • Phase 1',
     priceDisplay: '₹29.5 Lakhs (Pre-Launch)',
     keyHighlights: [
       'Zero-step barrier-free access directly from ground elevator lobby',
@@ -297,7 +297,7 @@ export const buildingUnits: BuildingUnit[] = [
     carpetAreaSqFt: 270,
     facing: 'North-East / Courtyard View',
     status: 'available',
-    badge: '🟢 Available • Phase 1',
+    badge: 'Available • Phase 1',
     priceDisplay: '₹29.5 Lakhs (Pre-Launch)',
     keyHighlights: [
       'Quiet courtyard-facing orientation with abundant cross-ventilation',
@@ -352,7 +352,7 @@ export const buildingUnits: BuildingUnit[] = [
     carpetAreaSqFt: 195,
     facing: 'North / Green Belt View',
     status: 'available',
-    badge: '🟢 Available • Phase 1',
+    badge: 'Available • Phase 1',
     priceDisplay: '₹21.5 Lakhs (Pre-Launch)',
     keyHighlights: [
       'Compact, efficient studio suite ideal for single senior comfort',
@@ -840,7 +840,7 @@ export const residenceUnits: ResidenceUnit[] = [
     facing: 'East / Garden Facing',
     status: 'available',
     releasePhase: 'Active Phase 1 Booking (Units 01, 02)',
-    badge: '🟢 Available • Phase 1',
+    badge: 'Available • Phase 1',
     startingPriceEstimate: '₹29.5 Lakhs (Pre-Launch)',
     monthlyCarePackageEstimate: 'Customized Wellness Package',
     seniorSafetyFeatures: [
@@ -898,7 +898,7 @@ export const residenceUnits: ResidenceUnit[] = [
     facing: 'North / Countryside View',
     status: 'available',
     releasePhase: 'Active Phase 1 Booking (Unit 03)',
-    badge: '🟢 Available • Phase 1',
+    badge: 'Available • Phase 1',
     startingPriceEstimate: '₹21.5 Lakhs (Pre-Launch)',
     monthlyCarePackageEstimate: 'Customized Wellness Package',
     seniorSafetyFeatures: [

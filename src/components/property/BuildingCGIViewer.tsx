@@ -89,7 +89,7 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
             </div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] px-2.5 py-1 rounded-full bg-white/10 text-white/80 font-mono">
-                ⏳ Future Release (Phase 3)
+                Phase 3 Release
               </span>
             </div>
           </div>
@@ -114,7 +114,7 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
             </div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] px-2.5 py-1 rounded-full bg-white/10 text-white/80 font-mono">
-                ⏳ Future Release (Phase 2)
+                Phase 2 Release
               </span>
             </div>
           </div>
@@ -135,8 +135,9 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
               <div>
                 <div className="flex items-center gap-2">
                   <h4 className="text-sm font-bold text-white">Ground Floor (Units 01, 02, 03)</h4>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-400 text-emerald-950">
-                    🟢 CURRENT RELEASE
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-400 text-emerald-950 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-950" />
+                    CURRENT RELEASE
                   </span>
                 </div>
                 <p className="text-xs text-white/80 mt-0.5">Barrier-free ground access straight from garden walkway</p>

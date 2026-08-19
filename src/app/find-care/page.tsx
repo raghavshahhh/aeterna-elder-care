@@ -311,10 +311,10 @@ export default function FindCarePage() {
             {currentStep === 5 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
-                  { id: 'immediate', title: '🚨 Immediate / Today', desc: 'Hospital discharge or acute clinical need requiring deployment in 4-6 hours.' },
-                  { id: 'within-48-hours', title: '⏱️ Within 48 Hours', desc: 'Planning discharge or caregiver onboarding this week.' },
-                  { id: 'next-week', title: '📅 Next Week / Month', desc: 'Scheduled upcoming surgery or planned elder transition.' },
-                  { id: 'exploring', title: '🔍 Exploring Care Plans', desc: 'Comparing memberships for future peace of mind.' }
+                  { id: 'immediate', title: 'Immediate / Today', desc: 'Hospital discharge or acute clinical need requiring deployment in 4-6 hours.' },
+                  { id: 'within-48-hours', title: 'Within 48 Hours', desc: 'Planning discharge or caregiver onboarding this week.' },
+                  { id: 'next-week', title: 'Next Week / Month', desc: 'Scheduled upcoming surgery or planned elder transition.' },
+                  { id: 'exploring', title: 'Exploring Care Plans', desc: 'Comparing memberships for future peace of mind.' }
                 ].map((item) => (
                   <button
                     key={item.id}
@@ -458,7 +458,7 @@ export default function FindCarePage() {
             <div className="bg-[#0D2329] text-white rounded-3xl p-6 sm:p-8 space-y-5 border border-[#1C4550]">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold uppercase tracking-widest text-[#C58F58]">
-                  ⭐ Best Suited Care Plan
+                  Best Suited Care Plan
                 </span>
                 <span className="text-xs bg-white/10 px-3 py-1 rounded-full text-white/80">
                   98.4% Match Score

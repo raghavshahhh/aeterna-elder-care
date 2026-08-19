@@ -20,7 +20,10 @@ import {
   Radio,
   Music,
   Smile,
-  BookOpen
+  BookOpen,
+  Activity,
+  Trophy,
+  MessageSquare
 } from 'lucide-react';
 
 export default function CommunityPage() {
@@ -28,23 +31,32 @@ export default function CommunityPage() {
   const { openLeadDrawer } = useModal();
 
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [activeLiveEvent, setActiveLiveEvent] = useState<CommunityEvent | null>(
-    communityEventsData.find((e) => e.isLiveNow) || communityEventsData[0]
-  );
   const [isPlayingLive, setIsPlayingLive] = useState(false);
 
-  const categories = ['all', 'Yoga & Wellness', 'Music & Arts', 'Doctor AMA', 'Cognitive Games', 'Spiritual & Satsang'];
+  const activeLiveEvent = communityEventsData.find((e) => e.isLiveNow) || communityEventsData[0];
 
-  const filteredEvents = communityEventsData.filter(
-    (evt) => selectedCategory === 'all' || evt.category === selectedCategory
+  const categories = ['all', 'Spiritual & Bhakti', 'Wellness & Yoga', 'Music & Arts', 'Medical & Doctor AMA'];
+
+  const filteredEvents = communityEventsData.filter((e) =>
+    selectedCategory === 'all' ? true : e.category === selectedCategory
   );
 
   const handleRsvp = (eventTitle: string) => {
     showToast({
-      title: 'RSVP Confirmed! 🎉',
+      title: 'RSVP Confirmed!',
       description: `We've saved your seat for "${eventTitle}". A WhatsApp link has been sent.`,
       type: 'success'
     });
+  };
+
+  const getClubIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'Music': return <Music className="w-8 h-8 text-[#C58F58]" />;
+      case 'Activity': return <Activity className="w-8 h-8 text-emerald-700" />;
+      case 'Trophy': return <Trophy className="w-8 h-8 text-amber-600" />;
+      case 'BookOpen': return <BookOpen className="w-8 h-8 text-[#2C5E50]" />;
+      default: return <Sparkles className="w-8 h-8 text-[#C58F58]" />;
+    }
   };
 
   return (
@@ -52,13 +64,13 @@ export default function CommunityPage() {
       {/* Editorial Hero Header */}
       <section className="bg-gradient-to-b from-[#F6F1E8] to-[#FBF9F5] py-16 sm:py-20 border-b border-[#E8E2D8]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-100 text-red-700 text-xs font-bold animate-pulse">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-100 text-red-700 text-xs font-bold animate-pulse">
             <Radio className="w-4 h-4" />
             <span>Club Aeterna • Daily Interactive Community</span>
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-serif-heading font-bold text-[#0D2329]">
-            Active Aging, Lifelong Joy & Connected Fellowship
+            Active Aging, Lifelong Joy &amp; Connected Fellowship
           </h1>
 
           <p className="text-base sm:text-xl text-[#3D685A] font-light max-w-2xl mx-auto leading-relaxed">
@@ -87,8 +99,9 @@ export default function CommunityPage() {
                         <span className="w-2 h-2 rounded-full bg-white" />
                         LIVE BROADCAST NOW
                       </span>
-                      <span className="text-xs text-white/80 bg-black/40 px-3 py-1 rounded-full backdrop-blur-md">
-                        👥 {activeLiveEvent.attendeesCount} Seniors Watching
+                      <span className="text-xs text-white/80 bg-black/40 px-3 py-1 rounded-full backdrop-blur-md flex items-center gap-1.5">
+                        <Users className="w-3.5 h-3.5" />
+                        {activeLiveEvent.attendeesCount} Seniors Watching
                       </span>
                     </div>
 
@@ -161,8 +174,9 @@ export default function CommunityPage() {
 
                 {/* Simulated Live Comments Feed */}
                 <div className="space-y-2 pt-2">
-                  <span className="text-[10px] uppercase text-emerald-400 font-bold block">
-                    💬 Live Elder Chat (248 Active):
+                  <span className="text-[10px] uppercase text-emerald-400 font-bold block flex items-center gap-1.5">
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    Live Elder Chat (248 Active):
                   </span>
                   <div className="space-y-1.5 text-[11px] bg-white/5 p-3 rounded-2xl border border-white/5">
                     <p className="text-white/80">
@@ -182,7 +196,7 @@ export default function CommunityPage() {
                   className="w-full"
                   onClick={() => handleRsvp(activeLiveEvent.title)}
                 >
-                  Save to My Calendar & WhatsApp Reminder
+                  Save to My Calendar &amp; WhatsApp Reminder
                 </Button>
               </div>
             </div>
@@ -211,15 +225,23 @@ export default function CommunityPage() {
               className="bg-white rounded-3xl p-6 border border-[#E8E2D8] shadow-sm hover:shadow-md transition-shadow space-y-4 flex flex-col justify-between"
             >
               <div className="space-y-3">
-                <span className="text-4xl block">{club.icon}</span>
+                <div className="w-12 h-12 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8] flex items-center justify-center">
+                  {getClubIcon(club.iconName)}
+                </div>
                 <h3 className="font-bold text-base text-[#0D2329]">{club.name}</h3>
                 <p className="text-xs text-[#5C6F75] leading-relaxed font-light">{club.desc}</p>
               </div>
 
               <div className="pt-4 border-t border-[#E8E2D8] space-y-3">
-                <div className="text-[11px] text-[#3D685A] font-semibold space-y-0.5">
-                  <div>👥 {club.members}</div>
-                  <div>⏰ {club.schedule}</div>
+                <div className="text-[11px] text-[#3D685A] font-semibold space-y-1">
+                  <div className="flex items-center gap-1.5">
+                    <Users className="w-3.5 h-3.5" />
+                    <span>{club.members}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[#5C6F75]">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>{club.schedule}</span>
+                  </div>
                 </div>
                 <Button
                   variant="outline"
@@ -303,8 +325,9 @@ export default function CommunityPage() {
               </div>
 
               <div className="pt-4 border-t border-[#E8E2D8] flex items-center justify-between">
-                <span className="text-xs text-[#5C6F75]">
-                  👥 <strong>{evt.attendeesCount}</strong> RSVPed
+                <span className="text-xs text-[#5C6F75] flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5" />
+                  <span><strong>{evt.attendeesCount}</strong> RSVPed</span>
                 </span>
                 <Button
                   variant="primary"
@@ -317,30 +340,6 @@ export default function CommunityPage() {
               </div>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* CTA Box */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-[#F6F1E8] rounded-3xl p-8 sm:p-12 border border-[#E2D7C5] flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="space-y-2 max-w-xl">
-            <h3 className="text-2xl sm:text-3xl font-serif-heading font-bold text-[#0D2329]">
-              Want Your Parents to Join the Daily Joy?
-            </h3>
-            <p className="text-sm text-[#5C6F75]">
-              Club Aeterna is included 100% free with all Aeterna Care membership tiers. We even provide phone setup and tablet assistance.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <Button
-              variant="primary"
-              size="lg"
-              onClick={() => openLeadDrawer({ title: 'Get Free Club Aeterna Invitation' })}
-            >
-              Get Free Senior Pass →
-            </Button>
-          </div>
         </div>
       </section>
     </div>

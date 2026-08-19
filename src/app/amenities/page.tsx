@@ -2,9 +2,19 @@
 
 import React from 'react';
 import { EcosystemShowcase } from '@/components/property/EcosystemShowcase';
-import { MasterPlanExplorer } from '@/components/property/MasterPlanExplorer';
 import { useModal } from '@/context/ModalContext';
-import { Sparkles, Activity, ShieldCheck, Heart, Compass, CheckCircle2, MessageSquare } from 'lucide-react';
+import {
+  Sparkles,
+  Activity,
+  ShieldCheck,
+  Heart,
+  Compass,
+  CheckCircle2,
+  MessageSquare,
+  Zap,
+  Layers,
+  Trees
+} from 'lucide-react';
 
 export default function AmenitiesPage() {
   const { openWhatsApp } = useModal();
@@ -32,41 +42,55 @@ export default function AmenitiesPage() {
         <EcosystemShowcase />
       </div>
 
-      {/* CAD Master Plan Explorer */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <MasterPlanExplorer selectedFloorId="ground" onSelectUnit={() => {}} />
-      </div>
-
       {/* Quick Amenities Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="p-7 rounded-3xl bg-white border border-[#E8E2D8] shadow-sm space-y-3">
-            <div className="text-3xl">🕌</div>
-            <h3 className="text-xl font-serif-heading font-bold text-[#0D2329]">Community Mandir</h3>
-            <p className="text-xs text-[#53676E] leading-relaxed">
-              Sited at the western edge — within a gentle 5-minute walk from every plot for daily morning aarti and evening satsang.
-            </p>
+          <div className="p-7 rounded-3xl bg-white border border-[#E8E2D8] shadow-sm space-y-4 hover:shadow-md transition-all">
+            <div className="w-12 h-12 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8] flex items-center justify-center text-[#C58F58]">
+              <Heart className="w-6 h-6 fill-[#C58F58]/20" />
+            </div>
+            <div>
+              <h3 className="text-xl font-serif-heading font-bold text-[#0D2329]">Community Mandir</h3>
+              <p className="text-xs text-[#53676E] leading-relaxed mt-1.5">
+                Sited at the western edge — within a gentle 5-minute walk from every plot for daily morning aarti and evening satsang.
+              </p>
+            </div>
           </div>
-          <div className="p-7 rounded-3xl bg-white border border-[#E8E2D8] shadow-sm space-y-3">
-            <div className="text-3xl">⚡</div>
-            <h3 className="text-xl font-serif-heading font-bold text-[#0D2329]">Utility Services Block</h3>
-            <p className="text-xs text-[#53676E] leading-relaxed">
-              Dedicated 289 sq. yd. infrastructure zone for power management, clean water treatment, and 24x7 estate security.
-            </p>
+
+          <div className="p-7 rounded-3xl bg-white border border-[#E8E2D8] shadow-sm space-y-4 hover:shadow-md transition-all">
+            <div className="w-12 h-12 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8] flex items-center justify-center text-amber-600">
+              <Zap className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-xl font-serif-heading font-bold text-[#0D2329]">Utility Services Block</h3>
+              <p className="text-xs text-[#53676E] leading-relaxed mt-1.5">
+                Dedicated 289 sq. yd. infrastructure zone for power management, clean water treatment, and 24x7 estate security.
+              </p>
+            </div>
           </div>
-          <div className="p-7 rounded-3xl bg-white border border-[#E8E2D8] shadow-sm space-y-3">
-            <div className="text-3xl">🛣️</div>
-            <h3 className="text-xl font-serif-heading font-bold text-[#0D2329]">11ft to 33ft Wide Roads</h3>
-            <p className="text-xs text-[#53676E] leading-relaxed">
-              Designed for senior walkers with shaded paths, zero traffic congestion, and full emergency ambulance clearance.
-            </p>
+
+          <div className="p-7 rounded-3xl bg-white border border-[#E8E2D8] shadow-sm space-y-4 hover:shadow-md transition-all">
+            <div className="w-12 h-12 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8] flex items-center justify-center text-[#2C5E50]">
+              <Layers className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-xl font-serif-heading font-bold text-[#0D2329]">11ft to 33ft Wide Roads</h3>
+              <p className="text-xs text-[#53676E] leading-relaxed mt-1.5">
+                Designed for senior walkers with shaded paths, zero traffic congestion, and full emergency ambulance clearance.
+              </p>
+            </div>
           </div>
-          <div className="p-7 rounded-3xl bg-white border border-[#E8E2D8] shadow-sm space-y-3">
-            <div className="text-3xl">🌳</div>
-            <h3 className="text-xl font-serif-heading font-bold text-[#0D2329]">Boundary Green Belts</h3>
-            <p className="text-xs text-[#53676E] leading-relaxed">
-              Continuous 5ft (North) and 6ft (South) green buffer belts filled with native trees providing fresh, unpolluted air.
-            </p>
+
+          <div className="p-7 rounded-3xl bg-white border border-[#E8E2D8] shadow-sm space-y-4 hover:shadow-md transition-all">
+            <div className="w-12 h-12 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8] flex items-center justify-center text-emerald-700">
+              <Trees className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-xl font-serif-heading font-bold text-[#0D2329]">Boundary Green Belts</h3>
+              <p className="text-xs text-[#53676E] leading-relaxed mt-1.5">
+                Continuous 5ft (North) and 6ft (South) green buffer belts filled with native trees providing fresh, unpolluted air.
+              </p>
+            </div>
           </div>
         </div>
       </section>

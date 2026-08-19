@@ -289,7 +289,7 @@ export interface BuildingUnit {
   carpetAreaSqFt: number;
   facing: string;
   status: UnitStatus; // 'available' for 01-03, 'future_release' for 04-09
-  badge: string; // "🟢 Available (Phase 1)" or "⏳ Coming Soon (Future Release)"
+  badge: string; // "Available (Phase 1)" or "Coming Soon (Future Release)"
   priceDisplay: string; // "₹XX,XX,XXX" or "Request Pre-Launch Price"
   rooms: RoomDetail[];
   seniorFeatures: string[];

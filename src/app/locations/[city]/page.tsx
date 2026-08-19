@@ -66,7 +66,7 @@ export default function LocationDetailPage({ params }: LocationDetailPageProps) 
                 {location.region} Zonal Hub
               </Badge>
               <span className="text-xs bg-red-600 px-3 py-1 rounded-full font-bold">
-                🚨 &lt; {location.avgResponseTimeMin} Mins Emergency SLA
+                &lt; {location.avgResponseTimeMin} Mins Emergency Response
               </span>
             </div>
 

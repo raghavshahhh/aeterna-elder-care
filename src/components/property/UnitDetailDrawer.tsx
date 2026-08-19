@@ -111,7 +111,7 @@ Please share the pre-launch pricing, payment milestones, and floor plan.`
                 <span
                   className={`w-2 h-2 rounded-full ${isAvail ? 'bg-emerald-500' : 'bg-amber-500'}`}
                 />
-                {isAvail ? '🟢 Available • Phase 1 Launch' : '⏳ Future Release • Coming Soon'}
+                {isAvail ? 'Available • Phase 1 Launch' : 'Future Release • Coming Soon'}
               </span>
 
               <span className="px-3 py-1 rounded-full bg-[#FAF8F5] text-[#2C5E50] border border-[#E8E2D8] text-xs font-semibold">

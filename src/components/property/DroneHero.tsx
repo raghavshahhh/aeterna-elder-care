@@ -134,7 +134,10 @@ export const DroneHero: React.FC = () => {
 
       {/* Bottom Status & Scroll Indicator */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between text-xs text-white/70 pt-2 border-t border-white/10">
-        <span>📍 Kheri Asra, Near Reliance MET City, SH-22 Jhajjar, Haryana 124104</span>
+        <span className="flex items-center gap-1.5">
+          <MapPin className="w-3.5 h-3.5 text-[#C58F58]" />
+          Kheri Asra, Near Reliance MET City, SH-22 Jhajjar, Haryana 124104
+        </span>
         <button
           onClick={() => scrollToSection('location')}
           className="flex items-center gap-1.5 text-[#C58F58] hover:text-white transition-colors"
