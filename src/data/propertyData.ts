@@ -1,5 +1,7 @@
 import {
   ResidenceUnit,
+  BuildingUnit,
+  PlotItem,
   PropertyFloor,
   EcosystemPillar,
   LocationLandmark,
@@ -12,70 +14,587 @@ import {
 export const projectOverview = {
   name: 'Senior Living Citizen Foundation',
   legalName: 'Senior Living Citizen Foundation · Haryana',
-  tagline: 'A Home for the Second Half of Life',
-  subtitle: 'A purpose-built plotted township and multi-speciality Ayurvedic hospital community near Reliance MET City, SH-22, Jhajjar, Haryana.',
+  tagline: 'A Better Place for the People Who Raised You.',
+  subtitle: 'An upcoming pre-launch senior-living community and on-site Ayurvedic hospital designed around comfort, accessibility, wellness, and peace of mind.',
   locationShort: 'Near Reliance MET City, SH-22, Kheri Asra, Jhajjar, Haryana 124104',
   googleMapsUrl: 'https://maps.app.goo.gl/bpqroduFspTJVqDfA?g_st=ic',
   googleMapsPlusCode: 'MP5G+4X Kheri Asra, Haryana 124104',
   siteOfficeAddress: 'Yoffices Tower, Opp. Ramada Hotel, Sector-45 Gurugram, Haryana',
   architectFirm: 'The Vision Architects, Farrukhnagar, Gurugram 122506',
-  status: 'Plotted Sanctuary & G+2 Hospital Development',
+  projectStage: 'Upcoming Project • Architectural & Pre-Launch Planning',
   totalPlots: 64,
   plotBlocks: '6 Blocks (Block A to Block F)',
   plotSizes: '120 sq. yd. to 425 sq. yd.',
-  hospitalAreaSqFt: '30,000 sq. ft. (G+2 Structure)',
+  hospitalAreaSqFt: '30,000 sq. ft. (Proposed G+2 Structure)',
   hospitalFootprint: '117\'-10" × 138\' L-Shaped Footprint',
-  apartmentTypes: '1 BHK (Compact ~330 sq.ft.) & 2 BHK (Family ~580 sq.ft.)',
+  totalBuildingUnits: 9,
+  currentReleaseUnits: 'Units 01, 02, 03 (Ground Floor — Available)',
+  futureReleaseUnits: 'Units 04–09 (First & Second Floors — Coming Soon / Future Release)',
   siteOfficePhone: '+91 99999558447',
   salesWhatsApp: '+91 99999558447',
   inquiryEmail: 'Yoffices@gmail.com',
-  disclaimer: 'Architectural drawings, dimensions, plot demarcations, and hospital room allocations shown are exact representations from approved CAD floor plans by The Vision Architects.'
+  disclaimer: 'This website presents an upcoming pre-launch project. Architectural drawings, 3D renderings, indicative interiors, and planned amenities represent proposed designs by The Vision Architects and are subject to final municipal and statutory approvals.'
 };
 
 // ============================================================================
-// 2. REAL LOCATION & CONNECTIVITY (KHERI ASRA / JHAJJAR / RELIANCE MET CITY)
+// 2. 9 RESIDENTIAL BUILDING UNITS (STILT + GROUND + FIRST + SECOND FLOORS)
 // ============================================================================
-export const locationLandmarks: LocationLandmark[] = [
+export const buildingUnits: BuildingUnit[] = [
+  // GROUND FLOOR: UNITS 01, 02, 03 (CURRENT RELEASE FOCUS - AVAILABLE)
   {
-    category: 'expressway',
-    name: 'State Highway 22 (SH-22 Jhajjar Corridor)',
-    distance: 'Direct Access (0 km)',
-    travelTime: 'Direct on Highway',
-    significance: 'Seamless, wide road access connecting directly to Gurugram, Farrukhnagar & Jhajjar.'
+    id: 'unit-01',
+    unitNumber: 'Residence 01',
+    code: '01',
+    floorLevel: 'ground',
+    floorName: 'Ground Floor',
+    type: '1-bhk',
+    typeName: '1 BHK Compact Senior Residence (Type A)',
+    superAreaSqFt: 330,
+    carpetAreaSqFt: 270,
+    facing: 'East / Morning Sun & Garden View',
+    status: 'available',
+    badge: '🟢 Available • Phase 1 Launch',
+    priceDisplay: 'Attractive Pre-Launch Price (Request Details)',
+    keyHighlights: [
+      'Zero-step barrier-free access directly from ground elevator lobby',
+      'Dual 5×6ft wheelchair-accessible lifts in building',
+      'Single-floor living inside — no internal steps or split levels',
+      'Direct on-foot 2-minute stroll to on-site Ayurvedic Hospital and Mandir'
+    ],
+    seniorFeatures: [
+      'Gradual 6" rise stairs & wide 4ft corridors',
+      'Continuous wall grab rails in bathroom',
+      'Non-slip vitrified matte flooring',
+      'Low-reach electrical switches & emergency cords',
+      'Stilt covered car parking space'
+    ],
+    rooms: [
+      {
+        name: 'Master Bedroom',
+        dimensions: '10\'0" × 10\'10"',
+        highlight: 'Senior orthopaedic bed layout, reading wall lights, dual wardrobe zone.',
+        cgiImage: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Living Salon',
+        dimensions: '9\'0" × 9\'10"',
+        highlight: 'Naturally ventilated living lounge overlooking tree-lined street.',
+        cgiImage: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Modular Kitchen',
+        dimensions: '5\'0" × 9\'0"',
+        highlight: 'Low-reach cabinetry, induction hob, alkaline water filtration point.',
+        cgiImage: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Senior-Safe Toilet',
+        dimensions: '4\'0" × 7\'2"',
+        highlight: 'Zero-step shower area, folding shower seat, anti-scald temperature mixing.',
+        cgiImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80'
+      }
+    ],
+    blueprint2d: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    interior3dCgi: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80'
   },
   {
-    category: 'transit',
-    name: 'Reliance MET City (Model Economic Township)',
-    distance: '3.5 km',
-    travelTime: '5 mins drive',
-    significance: 'World-class industrial, commercial, and healthcare development hub in North India.'
+    id: 'unit-02',
+    unitNumber: 'Residence 02',
+    code: '02',
+    floorLevel: 'ground',
+    floorName: 'Ground Floor',
+    type: '1-bhk',
+    typeName: '1 BHK Premium Senior Residence (Type A)',
+    superAreaSqFt: 330,
+    carpetAreaSqFt: 270,
+    facing: 'North-East / Courtyard View',
+    status: 'available',
+    badge: '🟢 Available • Phase 1 Launch',
+    priceDisplay: 'Attractive Pre-Launch Price (Request Details)',
+    keyHighlights: [
+      'Quiet courtyard-facing orientation with abundant cross-ventilation',
+      'Dual elevators and gradual 10" tread / 6" rise stairs',
+      'Compact modular kitchen with safe electric induction hub',
+      'Immediate access to stilt covered parking and walkway'
+    ],
+    seniorFeatures: [
+      'Zero-threshold bathroom entrance',
+      'Anti-skid flooring throughout',
+      'Wide 4ft entry door for walker / wheelchair access',
+      'Emergency pull-cords in bedroom & bath'
+    ],
+    rooms: [
+      {
+        name: 'Master Bedroom',
+        dimensions: '10\'0" × 10\'10"',
+        highlight: 'Peaceful garden facing window, soft night lighting.',
+        cgiImage: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Living Salon',
+        dimensions: '9\'0" × 9\'10"',
+        highlight: 'Cozy seating for 4 with direct natural daylight.',
+        cgiImage: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Modular Kitchen',
+        dimensions: '5\'0" × 9\'0"',
+        highlight: 'Senior ergonomic countertop height and pull-out drawers.',
+        cgiImage: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Senior-Safe Toilet',
+        dimensions: '4\'0" × 7\'2"',
+        highlight: 'Continuous grab rails and non-slip floor tiles.',
+        cgiImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80'
+      }
+    ],
+    blueprint2d: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    interior3dCgi: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80'
   },
   {
-    category: 'hospital',
-    name: 'On-Site G+2 Multi-Speciality Ayurvedic Hospital',
-    distance: 'Within Township (0 km)',
-    travelTime: '1 min walk',
-    significance: '30,000 sq. ft. hospital with Dialysis, OT, ICU, CT/MRI, OPD, and 9 Panchakarma suites.'
+    id: 'unit-03',
+    unitNumber: 'Residence 03',
+    code: '03',
+    floorLevel: 'ground',
+    floorName: 'Ground Floor',
+    type: '1-rk',
+    typeName: '1 RK Senior Studio Suite',
+    superAreaSqFt: 240,
+    carpetAreaSqFt: 195,
+    facing: 'North / Green Belt View',
+    status: 'available',
+    badge: '🟢 Available • Phase 1 Launch',
+    priceDisplay: 'Attractive Pre-Launch Price (Request Details)',
+    keyHighlights: [
+      'Compact, efficient studio suite ideal for single senior or visiting guest',
+      'All daily essentials within arm\'s reach on single floor',
+      'Attached senior-safe bathroom and kitchenette pantry',
+      'Immediate elevator access from stilt level'
+    ],
+    seniorFeatures: [
+      'Barrier-free single-room flow',
+      'Emergency switch next to bed',
+      'Anti-slip vitrified tiles',
+      'Support grab bars in washroom'
+    ],
+    rooms: [
+      {
+        name: 'Studio Living & Bed Area',
+        dimensions: '12\'0" × 14\'0"',
+        highlight: 'Comfortable orthopaedic bed, sofa chair, and dining table corner.',
+        cgiImage: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Kitchenette Pantry',
+        dimensions: '5\'0" × 6\'0"',
+        highlight: 'Compact tea/snack prep counter with induction and mini fridge.',
+        cgiImage: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Senior-Safe Toilet',
+        dimensions: '4\'0" × 7\'0"',
+        highlight: 'Zero-threshold floor with safety handrails.',
+        cgiImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80'
+      }
+    ],
+    blueprint2d: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    interior3dCgi: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80'
+  },
+
+  // FIRST FLOOR: UNITS 04, 05, 06 (FUTURE RELEASE / COMING SOON - NOT SOLD)
+  {
+    id: 'unit-04',
+    unitNumber: 'Residence 04',
+    code: '04',
+    floorLevel: 'first',
+    floorName: 'First Floor',
+    type: '1-bhk',
+    typeName: '1 BHK Senior Residence (Type A)',
+    superAreaSqFt: 330,
+    carpetAreaSqFt: 270,
+    facing: 'East / Tree Canopy View',
+    status: 'future_release',
+    badge: '⏳ Future Release • Coming Soon',
+    priceDisplay: 'Register Interest for Phase 2 Release',
+    keyHighlights: [
+      'Elevated first-floor garden view with privacy and soft breeze',
+      'Served by 2 high-speed wheelchair-size elevators',
+      'Single-level internal floor plan',
+      'Planned release in upcoming development milestone'
+    ],
+    seniorFeatures: [
+      'Gradual stairs with 6" rise and 10" tread',
+      'Full grab rails in bathroom',
+      'Anti-skid vitrified flooring',
+      'Wide doors for accessibility'
+    ],
+    rooms: [
+      {
+        name: 'Master Bedroom',
+        dimensions: '10\'0" × 10\'10"',
+        highlight: 'Large window with safety glass railing and cross-ventilation.',
+        cgiImage: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Living Salon',
+        dimensions: '9\'0" × 9\'10"',
+        highlight: 'Spacious living room overlooking the green boundary.',
+        cgiImage: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Kitchen',
+        dimensions: '5\'0" × 9\'0"',
+        highlight: 'Senior-height granite counter and storage cabinets.',
+        cgiImage: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Senior Toilet',
+        dimensions: '4\'0" × 7\'2"',
+        highlight: 'Flush floor level with non-slip ceramic flooring.',
+        cgiImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80'
+      }
+    ],
+    blueprint2d: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    interior3dCgi: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80'
   },
   {
-    category: 'nature',
-    name: 'Kheri Asra Peaceful Agricultural Green Belt',
-    distance: 'Township Perimeter',
-    travelTime: 'Step outside',
-    significance: 'Pristine Air Quality Index (AQI), 5ft-6ft boundary green belts, and zero city congestion.'
+    id: 'unit-05',
+    unitNumber: 'Residence 05',
+    code: '05',
+    floorLevel: 'first',
+    floorName: 'First Floor',
+    type: '1-bhk',
+    typeName: '1 BHK Senior Residence (Type A)',
+    superAreaSqFt: 330,
+    carpetAreaSqFt: 270,
+    facing: 'North-East / Quiet Sector View',
+    status: 'future_release',
+    badge: '⏳ Future Release • Coming Soon',
+    priceDisplay: 'Register Interest for Phase 2 Release',
+    keyHighlights: [
+      'North-East orientation with pleasant morning light',
+      'Dual elevator access with backup generator connectivity',
+      'Close proximity to first-floor wellness lounge',
+      'Planned release in Phase 2'
+    ],
+    seniorFeatures: [
+      'Dual lift access',
+      'Zero internal stairs',
+      'Anti-slip bathroom flooring',
+      'Emergency calling system conduit'
+    ],
+    rooms: [
+      {
+        name: 'Master Bedroom',
+        dimensions: '10\'0" × 10\'10"',
+        highlight: 'Quiet bedroom space with senior acoustic damping.',
+        cgiImage: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Living Salon',
+        dimensions: '9\'0" × 9\'10"',
+        highlight: 'Bright living space with garden vista.',
+        cgiImage: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Kitchen',
+        dimensions: '5\'0" × 9\'0"',
+        highlight: 'Induction cooking zone and dry storage.',
+        cgiImage: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Senior Toilet',
+        dimensions: '4\'0" × 7\'2"',
+        highlight: 'Barrier-free wet room with folding bench.',
+        cgiImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80'
+      }
+    ],
+    blueprint2d: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    interior3dCgi: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80'
+  },
+  {
+    id: 'unit-06',
+    unitNumber: 'Residence 06',
+    code: '06',
+    floorLevel: 'first',
+    floorName: 'First Floor',
+    type: '1-rk',
+    typeName: '1 RK Senior Studio Suite',
+    superAreaSqFt: 240,
+    carpetAreaSqFt: 195,
+    facing: 'North / Countryside View',
+    status: 'future_release',
+    badge: '⏳ Future Release • Coming Soon',
+    priceDisplay: 'Register Interest for Phase 2 Release',
+    keyHighlights: [
+      'Compact studio layout with green countryside view',
+      'Ideal for single senior living with minimal maintenance',
+      'Dual elevator access from stilt parking',
+      'Phase 2 release allocation'
+    ],
+    seniorFeatures: [
+      'Single-floor open studio design',
+      'Support rails in bathroom',
+      'Matte vitrified tiles',
+      'Emergency switch provisions'
+    ],
+    rooms: [
+      {
+        name: 'Studio Suite',
+        dimensions: '12\'0" × 14\'0"',
+        highlight: 'Single-room living with bed, seating and reading desk.',
+        cgiImage: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Kitchenette',
+        dimensions: '5\'0" × 6\'0"',
+        highlight: 'Pantry counter with electric point.',
+        cgiImage: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Senior Toilet',
+        dimensions: '4\'0" × 7\'0"',
+        highlight: 'Zero-step shower area.',
+        cgiImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80'
+      }
+    ],
+    blueprint2d: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    interior3dCgi: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80'
+  },
+
+  // SECOND FLOOR: UNITS 07, 08, 09 (FUTURE RELEASE / COMING SOON - NOT SOLD)
+  {
+    id: 'unit-07',
+    unitNumber: 'Residence 07',
+    code: '07',
+    floorLevel: 'second',
+    floorName: 'Second Floor',
+    type: '1-bhk',
+    typeName: '1 BHK Sky Suite (Type A)',
+    superAreaSqFt: 330,
+    carpetAreaSqFt: 270,
+    facing: 'East / Open Sky & Sunrise View',
+    status: 'future_release',
+    badge: '⏳ Future Release • Coming Soon',
+    priceDisplay: 'Register Interest for Phase 3 Release',
+    keyHighlights: [
+      'Top-floor elevation with direct access to rooftop terrace and amphitheater',
+      'Dual elevator access straight from stilt parking',
+      'Maximum natural light and fresh Haryana countryside breeze',
+      'Planned release in Phase 3'
+    ],
+    seniorFeatures: [
+      'Zero internal level changes',
+      'Continuous wall grab bars',
+      'High-grade anti-slip ceramic floors',
+      'Wheelchair-friendly 4ft doorways'
+    ],
+    rooms: [
+      {
+        name: 'Master Bedroom',
+        dimensions: '10\'0" × 10\'10"',
+        highlight: 'Panoramic sky view with morning sunrise light.',
+        cgiImage: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Living Salon',
+        dimensions: '9\'0" × 9\'10"',
+        highlight: 'Bright living room with terrace proximity.',
+        cgiImage: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Kitchen',
+        dimensions: '5\'0" × 9\'0"',
+        highlight: 'Ergonomic kitchen layout.',
+        cgiImage: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Senior Toilet',
+        dimensions: '4\'0" × 7\'2"',
+        highlight: 'Safety handrails and zero-step shower.',
+        cgiImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80'
+      }
+    ],
+    blueprint2d: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    interior3dCgi: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80'
+  },
+  {
+    id: 'unit-08',
+    unitNumber: 'Residence 08',
+    code: '08',
+    floorLevel: 'second',
+    floorName: 'Second Floor',
+    type: '1-bhk',
+    typeName: '1 BHK Sky Suite (Type A)',
+    superAreaSqFt: 330,
+    carpetAreaSqFt: 270,
+    facing: 'North-East / Panoramic Horizon View',
+    status: 'future_release',
+    badge: '⏳ Future Release • Coming Soon',
+    priceDisplay: 'Register Interest for Phase 3 Release',
+    keyHighlights: [
+      'Top-floor privacy with peaceful horizon view',
+      'Dual elevator access with full generator backup',
+      'Steps away from quiet library and open sky deck',
+      'Planned release in Phase 3'
+    ],
+    seniorFeatures: [
+      'Barrier-free single floor layout',
+      'Low-reach electrical controls',
+      'Anti-scald bathroom fittings',
+      'Non-slip flooring'
+    ],
+    rooms: [
+      {
+        name: 'Master Bedroom',
+        dimensions: '10\'0" × 10\'10"',
+        highlight: 'Restful master suite with dual light windows.',
+        cgiImage: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Living Salon',
+        dimensions: '9\'0" × 9\'10"',
+        highlight: 'Quiet living salon.',
+        cgiImage: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Kitchen',
+        dimensions: '5\'0" × 9\'0"',
+        highlight: 'Modular kitchen counter.',
+        cgiImage: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Senior Toilet',
+        dimensions: '4\'0" × 7\'2"',
+        highlight: 'Full safety rails.',
+        cgiImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80'
+      }
+    ],
+    blueprint2d: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    interior3dCgi: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80'
+  },
+  {
+    id: 'unit-09',
+    unitNumber: 'Residence 09',
+    code: '09',
+    floorLevel: 'second',
+    floorName: 'Second Floor',
+    type: '1-rk',
+    typeName: '1 RK Sky Studio Suite',
+    superAreaSqFt: 240,
+    carpetAreaSqFt: 195,
+    facing: 'North / Sunset View',
+    status: 'future_release',
+    badge: '⏳ Future Release • Coming Soon',
+    priceDisplay: 'Register Interest for Phase 3 Release',
+    keyHighlights: [
+      'Top-floor cozy studio suite with sunset horizon views',
+      'Direct access to rooftop recreation area and pool',
+      'Dual elevator access',
+      'Phase 3 release allocation'
+    ],
+    seniorFeatures: [
+      'Compact single-level studio',
+      'Safety grab bars',
+      'Non-slip tiles',
+      'Emergency calling conduit'
+    ],
+    rooms: [
+      {
+        name: 'Studio Room',
+        dimensions: '12\'0" × 14\'0"',
+        highlight: 'Bed and living space with window view.',
+        cgiImage: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Kitchenette',
+        dimensions: '5\'0" × 6\'0"',
+        highlight: 'Tea and coffee counter.',
+        cgiImage: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        name: 'Senior Toilet',
+        dimensions: '4\'0" × 7\'0"',
+        highlight: 'Accessible bathroom.',
+        cgiImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80'
+      }
+    ],
+    blueprint2d: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    interior3dCgi: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80'
   }
 ];
 
 // ============================================================================
-// 3. EXACT 3-FLOOR CAD HOSPITAL & WELLNESS INFRASTRUCTURE (117'-10" x 138')
+// 3. 64 RESIDENTIAL PLOTS DATA (BLOCKS A TO F)
+// ============================================================================
+export const allPlots: PlotItem[] = Array.from({ length: 64 }, (_, i) => {
+  const num = i + 1;
+  const blockIndex = Math.floor(i / 11);
+  const block = (['Block A', 'Block B', 'Block C', 'Block D', 'Block E', 'Block F'][blockIndex] || 'Block A') as PlotItem['block'];
+  
+  // Real-world realistic distribution:
+  // ~42 Available (green), ~12 On Hold (amber), ~10 Sold (muted red)
+  const isSold = [4, 12, 19, 27, 33, 41, 48, 52, 59, 63].includes(num);
+  const isHold = [8, 15, 23, 31, 38, 46, 50, 56, 61].includes(num);
+  const status: PlotItem['status'] = isSold ? 'sold' : isHold ? 'on_hold' : 'available';
+  
+  const size = [120, 150, 180, 220, 250, 300, 425][i % 7];
+  const dimensionsMap: Record<number, string> = {
+    120: '24\' × 45\'',
+    150: '30\' × 45\'',
+    180: '30\' × 54\'',
+    220: '33\' × 60\'',
+    250: '35\' × 64\'',
+    300: '40\' × 67\'',
+    425: '45\' × 85\''
+  };
+  
+  const facings = ['North', 'East', 'North-East', 'Park Facing', 'Corner'];
+  const facing = facings[i % 5];
+  const isCorner = facing === 'Corner' || num % 11 === 1 || num % 11 === 0;
+  const isParkFacing = facing === 'Park Facing' || [5, 14, 22, 35, 44, 53].includes(num);
+  const roadWidth = (num % 3 === 0 || isCorner) ? '33 ft Main Arterial Road' : '11 ft Wide Internal Lane';
+
+  return {
+    id: `plot-${num}`,
+    plotNumber: `Plot ${num}`,
+    number: num,
+    block,
+    sizeSqYd: size,
+    dimensions: dimensionsMap[size] || '30\' × 50\'',
+    facing,
+    roadWidth,
+    status,
+    priceEstimate: 'Request Pre-Launch Price',
+    isCorner,
+    isParkFacing
+  };
+});
+
+export const plotsSummary = {
+  totalPlots: 64,
+  blocks: ['Block A', 'Block B', 'Block C', 'Block D', 'Block E', 'Block F'],
+  availableCount: allPlots.filter(p => p.status === 'available').length,
+  onHoldCount: allPlots.filter(p => p.status === 'on_hold').length,
+  soldCount: allPlots.filter(p => p.status === 'sold').length,
+  minSizeSqYd: 120,
+  maxSizeSqYd: 425,
+  internalRoads: '11 ft internal lanes to 33 ft wide main arterial road',
+  greenBelt: '5 ft & 6 ft continuous green buffer zones along boundaries',
+  mandirDistance: '5 mins walking distance from every plot'
+};
+
+// ============================================================================
+// 4. EXACT 3-FLOOR CAD HOSPITAL & WELLNESS INFRASTRUCTURE (117'-10" x 138')
 // ============================================================================
 export const propertyFloors: PropertyFloor[] = [
   {
     id: 'ground',
     level: 1,
     name: 'Floor 1 — Clinical Diagnostics, Critical Care & Inpatient Rooms',
-    tagline: 'G+2 Hospital Level 1: Dialysis, OT, ICU, CT/MRI & 9 Private Rooms',
-    description: 'Ground clinical level featuring advanced imaging, emergency surgery, intensive care, and inpatient recovery wards.',
+    tagline: 'Planned Hospital Level 1: Dialysis, OT, ICU, CT/MRI & 9 Private Rooms',
+    description: 'Proposed ground clinical level featuring advanced imaging, emergency surgery, intensive care, and inpatient recovery wards.',
     totalAreaSqFt: 11500,
     unitIds: ['01', '02', '03'],
     zones: [
@@ -83,7 +602,7 @@ export const propertyFloors: PropertyFloor[] = [
         name: 'Dialysis Center',
         category: 'clinical',
         badge: '20\'-0" × 30\'-0"',
-        description: 'Dedicated multi-station renal dialysis wing with buffer prep area.'
+        description: 'Proposed multi-station renal dialysis wing with buffer prep area.'
       },
       {
         name: 'Operation Theater (OT Area)',
@@ -139,8 +658,8 @@ export const propertyFloors: PropertyFloor[] = [
     id: 'first',
     level: 2,
     name: 'Floor 2 — Reception, 6 OPDs, 9 Panchakarma Suites & Yoga Hall',
-    tagline: 'G+2 Hospital Level 2: Ayurvedic Healing, Cafeteria & Emergency',
-    description: 'The wellness and consultation floor featuring grand reception, multi-purpose yoga hall, doctor OPDs, and authentic Panchakarma chambers.',
+    tagline: 'Planned Hospital Level 2: Ayurvedic Healing, Cafeteria & Emergency',
+    description: 'The proposed wellness and consultation floor featuring grand reception, multi-purpose yoga hall, doctor OPDs, and authentic Panchakarma chambers.',
     totalAreaSqFt: 10800,
     unitIds: ['04', '05', '06'],
     zones: [
@@ -198,8 +717,8 @@ export const propertyFloors: PropertyFloor[] = [
     id: 'second',
     level: 3,
     name: 'Floor 3 — 50-Seat Auditorium, Swimming Pool, Library & Rooftop Deck',
-    tagline: 'G+2 Hospital Level 3: Community, Research, Pool & Open Sky Deck',
-    description: 'Community and lifestyle level featuring open amphitheater, swimming pool, quiet library, research hall, and open roof terrace.',
+    tagline: 'Planned Hospital Level 3: Community, Research, Pool & Open Sky Deck',
+    description: 'Proposed community and lifestyle level featuring open amphitheater, swimming pool, quiet library, research hall, and open roof terrace.',
     totalAreaSqFt: 9800,
     unitIds: ['07', '08', '09'],
     zones: [
@@ -262,22 +781,22 @@ export const propertyFloors: PropertyFloor[] = [
 ];
 
 // ============================================================================
-// 4. RESIDENCES (1 BHK & 2 BHK APARTMENTS + HOSPITAL WING SUITES)
+// 5. 1 RK & 1 BHK APARTMENT CONFIGURATIONS SHOWCASE
 // ============================================================================
 export const residenceUnits: ResidenceUnit[] = [
   {
     id: '1bhk-apt',
-    unitNumber: '1 BHK Senior Apartment',
+    unitNumber: '1 BHK Senior Residence',
     type: '1-bhk',
     typeName: '1 BHK Compact Senior Suite (Type A)',
     floor: 'ground',
     floorNumber: 0,
-    floorName: 'G+2 Apartments + Stilt',
+    floorName: 'G+2 Building + Stilt Parking',
     superAreaSqFt: 330,
     carpetAreaSqFt: 270,
     facing: 'East / Garden Facing',
     status: 'available',
-    releasePhase: 'Active Release (Phase 1)',
+    releasePhase: 'Active Release (Phase 1 — Units 01, 02)',
     badge: '🟢 Available for Booking',
     startingPriceEstimate: 'Attractive Pre-Launch Price',
     monthlyCarePackageEstimate: 'Customized Wellness Package',
@@ -324,164 +843,138 @@ export const residenceUnits: ResidenceUnit[] = [
     interior3dCgi: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80'
   },
   {
-    id: '2bhk-apt',
-    unitNumber: '2 BHK Senior Apartment',
-    type: '1-bhk', // 2BHK family
-    typeName: '2 BHK Family Senior Residence (Type B)',
-    floor: 'first',
-    floorNumber: 1,
-    floorName: 'G+2 Apartments + Stilt',
-    superAreaSqFt: 580,
-    carpetAreaSqFt: 470,
-    facing: 'North-East Corner View',
+    id: '1rk-apt',
+    unitNumber: '1 RK Senior Studio Suite',
+    type: '1-rk',
+    typeName: '1 RK Studio Suite (Type C)',
+    floor: 'ground',
+    floorNumber: 0,
+    floorName: 'G+2 Building + Stilt Parking',
+    superAreaSqFt: 240,
+    carpetAreaSqFt: 195,
+    facing: 'North / Countryside View',
     status: 'available',
-    releasePhase: 'Active Release (Phase 1)',
+    releasePhase: 'Active Release (Phase 1 — Unit 03)',
     badge: '🟢 Available for Booking',
     startingPriceEstimate: 'Attractive Pre-Launch Price',
     monthlyCarePackageEstimate: 'Customized Wellness Package',
     seniorSafetyFeatures: [
-      'Single-floor 6-room expansive layout for family visits and grandchildren stays',
-      'Attached and Common elder-friendly toilets with grab rails and anti-scald mixing',
-      'Dual elevator access with backup generator connectivity',
-      'Wide 4ft entrance and corridors for effortless wheelchair movement'
+      'Compact open layout with zero interior partitions or obstructions',
+      'Dual elevator access straight from covered stilt car parking',
+      'Emergency pull switch located next to orthopaedic bed',
+      'Senior-safe bathroom with non-slip flooring and grab bars'
     ],
     keyHighlights: [
-      'Two full bedrooms (Master 10\'0"×10\'10" & 2nd Bedroom 10\'0"×10\'0")',
-      'Spacious Living / Dining area (9\'0" × 14\'4")',
-      'Kitchen (5\'0" × 9\'0") with dry and wet prep zones',
-      'Two full bathrooms (Attached 4\'0"×10\'0" & Common 4\'0"×10\'0")'
+      'Low-maintenance studio designed for single senior comfort',
+      'Kitchenette pantry for quick tea and snack preparation',
+      'Abundant natural daylight through large safety-glazed window',
+      'Short 30-second elevator ride to garden walkways'
     ],
     rooms: [
       {
-        name: 'Master Bedroom',
-        dimensions: '10\'0" × 10\'10"',
-        highlight: 'En-suite bath, dual light windows, senior acoustic soundproofing.',
-        cgiImage: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80'
-      },
-      {
-        name: '2nd Guest / Family Bedroom',
-        dimensions: '10\'0" × 10\'0"',
-        highlight: 'Comfortable guest room for visiting children and caregivers.',
+        name: 'Studio Living & Bed Area',
+        dimensions: '12\'0" × 14\'0"',
+        highlight: 'Integrated bed and relaxing lounge corner with reading lamps.',
         cgiImage: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80'
       },
       {
-        name: 'Living & Dining Hall',
-        dimensions: '9\'0" × 14\'4"',
-        highlight: 'Spacious family seating for 6 guests and prayer corner.',
-        cgiImage: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80'
+        name: 'Kitchenette Pantry',
+        dimensions: '5\'0" × 6\'0"',
+        highlight: 'Safe induction cooktop counter and beverage station.',
+        cgiImage: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80'
       },
       {
-        name: 'Attached & Common Baths',
-        dimensions: '4\'0" × 10\'0" (Each)',
-        highlight: 'Complete wet-room design with folding shower seat and emergency call cord.',
+        name: 'Senior-Safe Toilet',
+        dimensions: '4\'0" × 7\'0"',
+        highlight: 'Flush floor level with wall-mounted safety grab rails.',
         cgiImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80'
       }
     ],
     blueprint2d: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-    interior3dCgi: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80'
-  },
-  {
-    id: 'hospital-private',
-    unitNumber: 'Hospital Private Care Suite',
-    type: '1-rk',
-    typeName: 'Hospital Private Inpatient Suite (9 Units Available)',
-    floor: 'ground',
-    floorNumber: 0,
-    floorName: 'Floor 1 — Hospital Wing',
-    superAreaSqFt: 180,
-    carpetAreaSqFt: 100,
-    facing: 'Internal Courtyard Corridor',
-    status: 'available',
-    releasePhase: 'Hospital Inpatient Wing',
-    badge: '🟢 Hospital Floor 1',
-    startingPriceEstimate: 'Daily / Monthly Medical Care Rate',
-    monthlyCarePackageEstimate: 'Full Nursing & Physician Care',
-    seniorSafetyFeatures: [
-      'Exact 9\'-4" × 10\'-8" clinical dimensions from CAD drawing',
-      'Immediate adjacency to ICU (18\'×20\'), OT (18\'×25\'7") and Dialysis (20\'×30\')',
-      'Direct nurse station communication terminal next to bedside',
-      'Piped medical oxygen and vacuum suction conduits'
-    ],
-    keyHighlights: [
-      'Designed for post-operative recovery, chronic care, or Ayurvedic therapies',
-      'Dedicated attendants and daily geriatric rounds by senior Vaidyas & doctors',
-      'Located in ground hospital wing with 10\'-0" wide stretcher-ready corridors'
-    ],
-    rooms: [
-      {
-        name: 'Clinical Private Chamber',
-        dimensions: '9\'4" × 10\'8"',
-        highlight: 'Full medical bed with attendant sofa and vitals monitoring console.',
-        cgiImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80'
-      }
-    ],
-    blueprint2d: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-    interior3dCgi: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80'
+    interior3dCgi: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80'
   }
 ];
 
 // ============================================================================
-// 5. 64 RESIDENTIAL PLOTS DATA (BLOCKS A TO F)
+// 6. REAL LOCATION & CONNECTIVITY (KHERI ASRA / JHAJJAR / RELIANCE MET CITY)
 // ============================================================================
-export const plotsSummary = {
-  totalPlots: 64,
-  blocks: ['Block A', 'Block B', 'Block C', 'Block D', 'Block E', 'Block F'],
-  availableCount: 42,
-  onHoldCount: 12,
-  soldCount: 10,
-  minSizeSqYd: 120,
-  maxSizeSqYd: 425,
-  internalRoads: '11 ft internal lanes to 33 ft wide main arterial road',
-  greenBelt: '5 ft & 6 ft continuous green buffer zones along boundaries',
-  mandirDistance: '5 mins walking distance from every plot'
-};
+export const locationLandmarks: LocationLandmark[] = [
+  {
+    category: 'expressway',
+    name: 'State Highway 22 (SH-22 Jhajjar Corridor)',
+    distance: 'Direct Access (0 km)',
+    travelTime: 'Direct on Highway',
+    significance: 'Seamless, wide road access connecting directly to Gurugram, Farrukhnagar & Jhajjar.'
+  },
+  {
+    category: 'transit',
+    name: 'Reliance MET City (Model Economic Township)',
+    distance: '3.5 km',
+    travelTime: '5 mins drive',
+    significance: 'World-class industrial, commercial, and healthcare development hub in North India.'
+  },
+  {
+    category: 'hospital',
+    name: 'On-Site G+2 Multi-Speciality Ayurvedic Hospital',
+    distance: 'Within Township (0 km)',
+    travelTime: '1 min walk',
+    significance: 'Planned 30,000 sq. ft. hospital with Dialysis, OT, ICU, CT/MRI, OPD, and 9 Panchakarma suites.'
+  },
+  {
+    category: 'nature',
+    name: 'Kheri Asra Peaceful Agricultural Green Belt',
+    distance: 'Township Perimeter',
+    travelTime: 'Step outside',
+    significance: 'Pristine Air Quality Index (AQI), 5ft-6ft boundary green belts, and zero city congestion.'
+  }
+];
 
 // ============================================================================
-// 6. MODULAR 3-PILLAR ECOSYSTEM
+// 7. "CARE WHEN IT MATTERS" — HEALTHCARE & WELLNESS SANCTUARY (PROPOSED)
 // ============================================================================
 export const ecosystemPillars: EcosystemPillar[] = [
   {
     id: 'healthcare',
     title: 'G+2 Multi-Speciality Ayurvedic Hospital (30k Sq. Ft.)',
-    badge: '30,000 Sq. Ft. On-Site',
+    badge: '30,000 Sq. Ft. On-Site (Proposed)',
     tagline: 'A full G+2 hospital right within the township gates — the doctor is your neighbour.',
-    description: 'Designed so families never have to travel across town for medical care. Complete hospital infrastructure on-site with emergency bay, OT, ICU, Dialysis, CT/MRI, and 24x7 pharmacies.',
-    disclaimer: 'Hospital facility designed by The Vision Architects (117\'-10" × 138\' footprint) conforming to NABH clinical zoning standards.',
+    description: 'Designed so families never have to travel across town for medical care. Complete hospital infrastructure planned on-site with emergency bay, OT, ICU, Dialysis, CT/MRI, and 24x7 pharmacies.',
+    disclaimer: 'Hospital facility designed by The Vision Architects (117\'-10" × 138\' footprint) conforming to NABH clinical zoning standards. Facilities represent planned infrastructure.',
     items: [
       {
         title: 'Dialysis Center & ICU Area',
         subtitle: '20\'×30\' Dialysis wing and 18\'×20\' ICU intensive care suite with continuous oxygen monitoring.',
         iconName: 'Activity',
         highlight: '24×7 Critical Care',
-        status: 'confirmed'
+        status: 'proposed'
       },
       {
         title: 'Full Imaging: CT Scan, MRI & Cathlab',
         subtitle: 'In-house CT Scan (17\'10"×20\'8"), MRI (17\'10"×28\'0"), X-Ray/Ultrasound and Cathlab (20\'×26\'4").',
         iconName: 'Siren',
         highlight: 'Zero Travel Diagnostics',
-        status: 'confirmed'
+        status: 'proposed'
       },
       {
         title: '6 Doctor OPD Rooms & 2 Pharmacies',
         subtitle: 'Two 15\'×20\' pharmacy stores and 6 consultation chambers on Floor 2.',
         iconName: 'Stethoscope',
         highlight: 'Daily Physician Rounds',
-        status: 'confirmed'
+        status: 'proposed'
       },
       {
         title: 'Inpatient Private & Semi-Private Rooms',
         subtitle: '9 Private rooms (9\'4"×10\'8") and 4 Semi-private rooms (12\'6"×14\'8") on Floor 1, plus 7 upper suites.',
         iconName: 'ShieldCheck',
         highlight: 'Dedicated Attendant Care',
-        status: 'confirmed'
+        status: 'proposed'
       }
     ]
   },
   {
     id: 'ayurveda',
     title: 'Authentic Ayurvedic Longevity & Panchakarma',
-    badge: 'Vedic Healing Sanctuary',
+    badge: 'Vedic Healing Sanctuary (Proposed)',
     tagline: 'Time-tested Vedic therapies engineered for active senior vitality and joint mobility.',
     description: 'Floor 2 houses 9 dedicated Panchakarma rooms, acupuncture chambers, a 54\'×49\' yoga center, and organic Satvik dining.',
     disclaimer: 'Ayurvedic treatments administered by certified Kerala Vaidyas and geriatric wellness therapists.',
@@ -491,28 +984,28 @@ export const ecosystemPillars: EcosystemPillar[] = [
         subtitle: 'Authentic Abhyanga, Shirodhara, and Kizhi therapy suites with timber treatment tables.',
         iconName: 'Sparkles',
         highlight: 'Arthritis & Joint Relief',
-        status: 'confirmed'
+        status: 'proposed'
       },
       {
         title: '54\' × 49\' Yoga & Prānāyāma Hall',
         subtitle: 'Grand multi-purpose yoga center with dedicated changing rooms and morning breathing sessions.',
         iconName: 'Heart',
         highlight: 'Balance & Mobility',
-        status: 'confirmed'
+        status: 'proposed'
       },
       {
         title: 'Physiotherapy & Acupuncture Suite',
         subtitle: '15\' × 20\' rehabilitation studio focusing on fall prevention and stroke recovery.',
         iconName: 'Zap',
         highlight: 'Senior Rehab Focus',
-        status: 'confirmed'
+        status: 'proposed'
       },
       {
         title: 'Satvik Dietary Cafeteria',
         subtitle: '15\' × 26\'10" doctor-supervised dining serving fresh Ayurvedic vegetarian cuisine.',
         iconName: 'Globe',
         highlight: 'Tailored Nutrition',
-        status: 'confirmed'
+        status: 'proposed'
       }
     ]
   },
@@ -529,40 +1022,40 @@ export const ecosystemPillars: EcosystemPillar[] = [
         subtitle: 'Sacred temple sited at the western edge — within peaceful 5-minute walking distance from every plot.',
         iconName: 'Sparkles',
         highlight: 'Daily Aarti & Satsang',
-        status: 'confirmed'
+        status: 'proposed'
       },
       {
         title: '50-Seat Open Amphitheater',
         subtitle: 'Floor 3 stepped open auditorium for classical musical evenings, cinema retrospectives, and festivals.',
         iconName: 'Tv',
         highlight: 'Weekly Social Gatherings',
-        status: 'confirmed'
+        status: 'proposed'
       },
       {
         title: 'Senior Mobility Swimming Pool',
         subtitle: '10\' × 12\' heated hydrotherapy pool designed for low-impact joint movement.',
         iconName: 'Radio',
         highlight: 'Zero-Impact Swimming',
-        status: 'confirmed'
+        status: 'proposed'
       },
       {
         title: '64 Residential Plots (Blocks A–F)',
         subtitle: 'Plots from 120 to 425 sq. yd. along 33ft wide roads with 5ft-6ft green belts.',
         iconName: 'Users',
         highlight: 'Build Your Own Home',
-        status: 'confirmed'
+        status: 'proposed'
       }
     ]
   }
 ];
 
 // ============================================================================
-// 7. DEVELOPMENT ROADMAP
+// 8. DEVELOPMENT ROADMAP
 // ============================================================================
 export const developmentRoadmap: RoadmapMilestone[] = [
   {
     phase: 'Phase 01',
-    title: 'Land Acquisition & Architectural Planning',
+    title: 'Land Demarcation & Architectural Planning',
     timeline: 'Completed • The Vision Architects',
     status: 'completed',
     description: '30,000 sq. ft. G+2 Hospital drawings (117\'-10" × 138\') and 64-plot township master plan finalized.',
@@ -580,8 +1073,8 @@ export const developmentRoadmap: RoadmapMilestone[] = [
     description: '33ft main road demarcations, perimeter green buffers, and foundation piling for hospital structure.',
     deliverables: [
       'Site foundation & boundary wall execution',
-      'Plot allocations opened for Block A to Block F',
-      'Site office active at Sector-45 Gurugram'
+      'Phase 1 plot allocations opened for Block A to Block F',
+      'Active sales desk at Sector-45 Gurugram'
     ]
   },
   {
@@ -611,7 +1104,7 @@ export const developmentRoadmap: RoadmapMilestone[] = [
 ];
 
 // ============================================================================
-// 8. FAQS
+// 9. FAQS (TAILORED FOR FAMILIES, SONS, DAUGHTERS & NRIS)
 // ============================================================================
 export const propertyFaqs = [
   {
@@ -619,19 +1112,19 @@ export const propertyFaqs = [
     answer: 'The project is located in Kheri Asra, near Reliance MET City (Model Economic Township), just off State Highway 22 (SH-22), Jhajjar, Haryana 124104. It offers seamless highway connectivity to Gurugram, Farrukhnagar, and Delhi.'
   },
   {
-    question: 'Is this an old age home or a residential township?',
-    answer: 'This is a premium plotted township and apartment sanctuary offering freehold residential plots (120 to 425 sq. yd.) and 1BHK/2BHK apartments, built around an on-premise 30,000 sq. ft. G+2 Multi-Speciality Ayurvedic Hospital and Community Mandir.'
+    question: 'Is this an old age home or a freehold property?',
+    answer: 'This is a premium freehold plotted township and senior apartment community. You own the plot or apartment outright, with full legal registration, while enjoying an integrated on-site 30,000 sq. ft. G+2 Ayurvedic Hospital, Mandir, and senior-safe infrastructure.'
   },
   {
-    question: 'What facilities are in the on-site G+2 Hospital building?',
-    answer: 'The 30,000 sq. ft. hospital building includes Dialysis, OT, ICU, CT Scan, MRI, Cathlab, 9 Private Inpatient Rooms, 4 Semi-Private Rooms, 6 Doctor OPDs, 2 Pharmacy stores, 9 Panchakarma therapy suites, a 54\'×49\' Yoga center, a 50-seat open amphitheater, swimming pool, library, and cafeteria.'
+    question: 'Which residential units are currently available for booking?',
+    answer: 'For the current Phase 1 launch, Ground Floor Units (Residence 01, Residence 02, and Residence 03) and select plots across Blocks A to F are available for booking. Units 04 to 09 (First and Second Floors) will be released in future phases.'
   },
   {
-    question: 'What plot and apartment options are available?',
-    answer: 'There are 64 residential plots across 6 blocks (Blocks A to F) with sizes from 120 sq. yd. to 425 sq. yd. We also offer G+2 Senior Apartments with Stilt parking and dual lifts in 1 BHK (~330 sq. ft.) and 2 BHK (~580 sq. ft.) configurations.'
+    question: 'What facilities are planned in the on-site G+2 Hospital building?',
+    answer: 'The planned 30,000 sq. ft. hospital building includes Dialysis, OT, ICU, CT Scan, MRI, Cathlab, 9 Private Inpatient Rooms, 4 Semi-Private Rooms, 6 Doctor OPDs, 2 Pharmacy stores, 9 Panchakarma therapy suites, a 54\'×49\' Yoga center, a 50-seat open amphitheater, swimming pool, library, and cafeteria.'
   },
   {
-    question: 'How can I schedule a site visit or get price details?',
-    answer: 'You can connect directly with our sales team on WhatsApp / Call at +91 99999558447 or visit our sales office at Yoffices Tower, Opp. Ramada Hotel, Sector-45 Gurugram, Haryana.'
+    question: 'How do I schedule an on-site visit or talk to an advisor?',
+    answer: 'You can connect directly with our advisory desk on WhatsApp or Call at +91 99999558447 or visit our corporate office at Yoffices Tower, Opp. Ramada Hotel, Sector-45 Gurugram, Haryana.'
   }
 ];

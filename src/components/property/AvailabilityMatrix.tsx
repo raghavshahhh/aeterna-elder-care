@@ -1,78 +1,83 @@
 'use client';
 
 import React, { useState } from 'react';
-import { plotsSummary, residenceUnits } from '@/data/propertyData';
+import { allPlots, plotsSummary, buildingUnits, projectOverview } from '@/data/propertyData';
+import { PlotItem, BuildingUnit } from '@/types';
+import { PlotDetailDrawer } from '@/components/property/PlotDetailDrawer';
+import { UnitDetailDrawer } from '@/components/property/UnitDetailDrawer';
 import { useModal } from '@/context/ModalContext';
 import { Button } from '@/components/ui/Button';
 import {
-  CheckCircle2,
-  Sparkles,
   Layers,
-  ArrowRight,
-  ShieldCheck,
-  Building2,
-  Calendar,
-  MessageSquare,
   Home,
-  MapPin,
-  Filter
+  Building2,
+  Sparkles,
+  Filter,
+  CheckCircle2,
+  Clock,
+  MessageSquare,
+  Calendar,
+  Compass,
+  Trees,
+  Maximize2,
+  ArrowRight
 } from 'lucide-react';
 
 export const AvailabilityMatrix: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<'plots' | 'apartments' | 'hospital-rooms'>('plots');
+  const [activeCategory, setActiveCategory] = useState<'plots' | 'apartments' | 'hospital-rooms'>('plots');
   const [selectedBlock, setSelectedBlock] = useState<string>('all');
-  const [selectedFilterStatus, setSelectedFilterStatus] = useState<string>('all');
+  const [selectedStatus, setSelectedStatus] = useState<string>('all');
+
+  // Drawer States
+  const [selectedPlot, setSelectedPlot] = useState<PlotItem | null>(null);
+  const [isPlotDrawerOpen, setIsPlotDrawerOpen] = useState(false);
+
+  const [selectedUnit, setSelectedUnit] = useState<BuildingUnit | null>(null);
+  const [isUnitDrawerOpen, setIsUnitDrawerOpen] = useState(false);
+
   const { openWhatsApp, openLeadDrawer } = useModal();
 
-  // 64 interactive plots across 6 blocks
-  const plots = Array.from({ length: 64 }, (_, i) => {
-    const num = i + 1;
-    const blockIndex = Math.floor(i / 11);
-    const block = ['Block A', 'Block B', 'Block C', 'Block D', 'Block E', 'Block F'][blockIndex] || 'Block A';
-    const isSold = [4, 12, 19, 27, 33, 41, 48, 52, 59, 63].includes(num);
-    const isHold = [8, 15, 23, 31, 38, 46, 50, 56, 61].includes(num);
-    const status = isSold ? 'sold' : isHold ? 'hold' : 'available';
-    const size = [120, 150, 180, 220, 250, 300, 425][i % 7];
-    return {
-      id: `P-${num}`,
-      number: `Plot ${num}`,
-      block,
-      sizeSqYd: size,
-      facing: ['North', 'East', 'North-East', 'Park Facing', 'Corner'][i % 5],
-      status
-    };
-  });
-
-  const filteredPlots = plots.filter((p) => {
+  // Filtered plots
+  const filteredPlots = allPlots.filter((p) => {
     if (selectedBlock !== 'all' && p.block !== selectedBlock) return false;
-    if (selectedFilterStatus !== 'all' && p.status !== selectedFilterStatus) return false;
+    if (selectedStatus !== 'all' && p.status !== selectedStatus) return false;
     return true;
   });
+
+  const handlePlotClick = (plot: PlotItem) => {
+    setSelectedPlot(plot);
+    setIsPlotDrawerOpen(true);
+  };
+
+  const handleUnitClick = (unit: BuildingUnit) => {
+    setSelectedUnit(unit);
+    setIsUnitDrawerOpen(true);
+  };
 
   return (
     <section id="availability" className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E8E2D8] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-widest">
             <Layers className="w-3.5 h-3.5" />
-            Live Township Availability
+            Township &amp; Residence Master Plan
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-normal text-[#0D2329] tracking-tight">
-            Find Your Space at <span className="italic font-serif text-[#C58F58]">Senior Living Citizen.</span>
+            Explore Availability at <span className="italic font-serif text-[#C58F58]">Senior Living Citizen.</span>
           </h2>
           <p className="text-sm sm:text-base text-[#53676E] leading-relaxed">
-            Choose between 64 freehold residential plots to build your customized home, or pre-constructed 1BHK/2BHK senior apartments.
+            Select between 64 freehold residential plots across 6 blocks, 9 senior apartments (with Units 01–03 currently open for booking), or hospital inpatient suites.
           </p>
         </div>
 
         {/* Category Switcher Tabs */}
         <div className="flex flex-wrap justify-center gap-3 mb-10">
           <button
-            onClick={() => setSelectedCategory('plots')}
-            className={`px-6 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 ${
-              selectedCategory === 'plots'
-                ? 'bg-[#2C5E50] text-white shadow-lg'
+            onClick={() => setActiveCategory('plots')}
+            className={`px-6 py-3.5 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2.5 ${
+              activeCategory === 'plots'
+                ? 'bg-[#2C5E50] text-white shadow-lg scale-105'
                 : 'bg-white text-[#53676E] border border-[#E8E2D8] hover:text-[#0D2329]'
             }`}
           >
@@ -80,21 +85,21 @@ export const AvailabilityMatrix: React.FC = () => {
             64 Residential Plots (Blocks A–F)
           </button>
           <button
-            onClick={() => setSelectedCategory('apartments')}
-            className={`px-6 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 ${
-              selectedCategory === 'apartments'
-                ? 'bg-[#2C5E50] text-white shadow-lg'
+            onClick={() => setActiveCategory('apartments')}
+            className={`px-6 py-3.5 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2.5 ${
+              activeCategory === 'apartments'
+                ? 'bg-[#2C5E50] text-white shadow-lg scale-105'
                 : 'bg-white text-[#53676E] border border-[#E8E2D8] hover:text-[#0D2329]'
             }`}
           >
             <Building2 className="w-4 h-4" />
-            1BHK &amp; 2BHK Senior Apartments
+            9 Senior Residences (Units 01–09)
           </button>
           <button
-            onClick={() => setSelectedCategory('hospital-rooms')}
-            className={`px-6 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 ${
-              selectedCategory === 'hospital-rooms'
-                ? 'bg-[#2C5E50] text-white shadow-lg'
+            onClick={() => setActiveCategory('hospital-rooms')}
+            className={`px-6 py-3.5 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2.5 ${
+              activeCategory === 'hospital-rooms'
+                ? 'bg-[#2C5E50] text-white shadow-lg scale-105'
                 : 'bg-white text-[#53676E] border border-[#E8E2D8] hover:text-[#0D2329]'
             }`}
           >
@@ -103,36 +108,39 @@ export const AvailabilityMatrix: React.FC = () => {
           </button>
         </div>
 
-        {/* 1. 64 PLOTS VIEW */}
-        {selectedCategory === 'plots' && (
+        {/* 1. 64-PLOT INTERACTIVE TOWNSHIP MASTER PLAN */}
+        {activeCategory === 'plots' && (
           <div className="bg-white rounded-3xl border border-[#E8E2D8] shadow-xl p-6 sm:p-8 space-y-6">
-            {/* Top Bar with Filter & Status */}
+            {/* Top Bar with Status Counts & Filters */}
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-[#E8E2D8]">
               <div>
-                <h3 className="text-xl sm:text-2xl font-serif-heading font-bold text-[#0D2329]">
-                  64 Freehold Plots · Real-Time Map
-                </h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-xl sm:text-2xl font-serif-heading font-bold text-[#0D2329]">
+                    64 Freehold Residential Plots
+                  </h3>
+                  <span className="text-xs font-mono text-[#53676E]">({plotsSummary.blocks.length} Blocks)</span>
+                </div>
                 <p className="text-xs text-[#53676E] mt-0.5">
-                  120 to 425 sq. yd. along 33ft main arterial roads with 5ft-6ft green belts
+                  120 to 425 sq. yd. plots along 33ft main arterial roads with 5ft-6ft boundary green belts
                 </p>
               </div>
 
-              {/* Status Filters */}
+              {/* Status Filter Pills */}
               <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
                 <button
-                  onClick={() => setSelectedFilterStatus('all')}
+                  onClick={() => setSelectedStatus('all')}
                   className={`px-3 py-1.5 rounded-full border transition-all ${
-                    selectedFilterStatus === 'all'
+                    selectedStatus === 'all'
                       ? 'bg-[#0D2329] text-white border-[#0D2329]'
                       : 'bg-white text-[#53676E] border-[#E8E2D8]'
                   }`}
                 >
-                  All Plots (64)
+                  All ({plotsSummary.totalPlots})
                 </button>
                 <button
-                  onClick={() => setSelectedFilterStatus('available')}
+                  onClick={() => setSelectedStatus('available')}
                   className={`px-3 py-1.5 rounded-full border transition-all flex items-center gap-1.5 ${
-                    selectedFilterStatus === 'available'
+                    selectedStatus === 'available'
                       ? 'bg-emerald-700 text-white border-emerald-700'
                       : 'bg-emerald-50 text-emerald-800 border-emerald-200'
                   }`}
@@ -141,9 +149,9 @@ export const AvailabilityMatrix: React.FC = () => {
                   {plotsSummary.availableCount} Available
                 </button>
                 <button
-                  onClick={() => setSelectedFilterStatus('hold')}
+                  onClick={() => setSelectedStatus('on_hold')}
                   className={`px-3 py-1.5 rounded-full border transition-all flex items-center gap-1.5 ${
-                    selectedFilterStatus === 'hold'
+                    selectedStatus === 'on_hold'
                       ? 'bg-amber-700 text-white border-amber-700'
                       : 'bg-amber-50 text-amber-800 border-amber-200'
                   }`}
@@ -152,9 +160,9 @@ export const AvailabilityMatrix: React.FC = () => {
                   {plotsSummary.onHoldCount} On Hold
                 </button>
                 <button
-                  onClick={() => setSelectedFilterStatus('sold')}
+                  onClick={() => setSelectedStatus('sold')}
                   className={`px-3 py-1.5 rounded-full border transition-all flex items-center gap-1.5 ${
-                    selectedFilterStatus === 'sold'
+                    selectedStatus === 'sold'
                       ? 'bg-rose-700 text-white border-rose-700'
                       : 'bg-rose-50 text-rose-800 border-rose-200'
                   }`}
@@ -165,15 +173,17 @@ export const AvailabilityMatrix: React.FC = () => {
               </div>
             </div>
 
-            {/* Block Switcher */}
+            {/* Block Switcher Bar */}
             <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs">
               <span className="text-[#53676E] font-semibold text-[11px] uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1">
-                <Filter className="w-3 h-3" /> Filter Block:
+                <Filter className="w-3 h-3" /> Select Block:
               </span>
               <button
                 onClick={() => setSelectedBlock('all')}
-                className={`px-3 py-1.5 rounded-xl font-bold transition-all shrink-0 ${
-                  selectedBlock === 'all' ? 'bg-[#2C5E50] text-white' : 'bg-[#FAF8F5] text-[#53676E] hover:bg-[#EAF2EE]'
+                className={`px-3.5 py-1.5 rounded-xl font-bold transition-all shrink-0 ${
+                  selectedBlock === 'all'
+                    ? 'bg-[#2C5E50] text-white'
+                    : 'bg-[#FAF8F5] text-[#53676E] hover:bg-[#EAF2EE]'
                 }`}
               >
                 All 6 Blocks
@@ -182,8 +192,10 @@ export const AvailabilityMatrix: React.FC = () => {
                 <button
                   key={b}
                   onClick={() => setSelectedBlock(b)}
-                  className={`px-3 py-1.5 rounded-xl font-bold transition-all shrink-0 ${
-                    selectedBlock === b ? 'bg-[#2C5E50] text-white' : 'bg-[#FAF8F5] text-[#53676E] hover:bg-[#EAF2EE]'
+                  className={`px-3.5 py-1.5 rounded-xl font-bold transition-all shrink-0 ${
+                    selectedBlock === b
+                      ? 'bg-[#2C5E50] text-white'
+                      : 'bg-[#FAF8F5] text-[#53676E] hover:bg-[#EAF2EE]'
                   }`}
                 >
                   {b}
@@ -191,53 +203,57 @@ export const AvailabilityMatrix: React.FC = () => {
               ))}
             </div>
 
-            {/* Grid of 64 Plots */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5 max-h-[440px] overflow-y-auto pr-1">
+            {/* Interactive Grid of 64 Plots */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 max-h-[460px] overflow-y-auto pr-1">
               {filteredPlots.map((p) => {
                 const isAvail = p.status === 'available';
-                const isHold = p.status === 'hold';
+                const isHold = p.status === 'on_hold';
                 return (
                   <div
                     key={p.id}
-                    onClick={() =>
-                      openWhatsApp({
-                        actionType: 'reserve-unit',
-                        unitName: `${p.number} (${p.block}, ${p.sizeSqYd} sq.yd.)`,
-                        unitType: 'Residential Plot'
-                      })
-                    }
-                    className={`p-3 rounded-2xl border text-center transition-all cursor-pointer ${
+                    onClick={() => handlePlotClick(p)}
+                    className={`p-3.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col justify-between group ${
                       isAvail
-                        ? 'bg-emerald-50/60 border-emerald-300 hover:bg-emerald-100 hover:scale-105 shadow-sm'
+                        ? 'bg-emerald-50/60 hover:bg-emerald-100/80 border-emerald-300 hover:scale-105 shadow-sm'
                         : isHold
-                        ? 'bg-amber-50/60 border-amber-300 opacity-80'
-                        : 'bg-rose-50/40 border-rose-200 opacity-60 cursor-not-allowed'
+                        ? 'bg-amber-50/60 hover:bg-amber-100/80 border-amber-300 opacity-85'
+                        : 'bg-rose-50/40 border-rose-200 opacity-60'
                     }`}
                   >
-                    <div className="text-xs font-bold font-serif-heading text-[#0D2329]">{p.number}</div>
-                    <div className="text-[10px] text-[#53676E] font-mono mt-0.5">{p.sizeSqYd} sq.yd.</div>
-                    <div className="text-[9px] text-[#899B9F] truncate mt-0.5">{p.facing}</div>
+                    <div>
+                      <div className="text-xs font-bold font-serif-heading text-[#0D2329] group-hover:text-[#2C5E50]">
+                        {p.plotNumber}
+                      </div>
+                      <div className="text-[10px] text-[#53676E] font-mono mt-0.5">
+                        {p.sizeSqYd} sq.yd.
+                      </div>
+                      <div className="text-[9px] text-[#899B9F] truncate mt-0.5">
+                        {p.facing}
+                      </div>
+                    </div>
+
                     <span
-                      className={`text-[9px] font-bold uppercase tracking-wider block mt-1.5 px-1 py-0.5 rounded ${
+                      className={`text-[9px] font-bold uppercase tracking-wider block mt-2 px-1.5 py-0.5 rounded ${
                         isAvail
-                          ? 'bg-emerald-200/60 text-emerald-800'
+                          ? 'bg-emerald-200/70 text-emerald-900'
                           : isHold
-                          ? 'bg-amber-200/60 text-amber-800'
-                          : 'bg-rose-200/60 text-rose-800'
+                          ? 'bg-amber-200/70 text-amber-900'
+                          : 'bg-rose-200/70 text-rose-900'
                       }`}
                     >
-                      {p.status}
+                      {isAvail ? 'Available' : isHold ? 'On Hold' : 'Sold'}
                     </span>
                   </div>
                 );
               })}
             </div>
 
+            {/* Footer Plot Help Bar */}
             <div className="pt-4 border-t border-[#E8E2D8] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#53676E]">
-              <span>💡 <em>Click any available plot above to enquire about exact dimensions, layout &amp; pricing on WhatsApp.</em></span>
+              <span>💡 <em>Click any plot card above to view exact dimensions, facing, road access &amp; WhatsApp pricing.</em></span>
               <button
                 onClick={() => openLeadDrawer({ title: 'Request 64-Plot Layout PDF Dossier', actionType: 'inquire-residence' })}
-                className="text-[#2C5E50] font-bold hover:underline"
+                className="text-[#2C5E50] font-bold hover:underline flex items-center gap-1"
               >
                 Download Plotted Master Plan (PDF) →
               </button>
@@ -245,75 +261,122 @@ export const AvailabilityMatrix: React.FC = () => {
           </div>
         )}
 
-        {/* 2. APARTMENTS VIEW */}
-        {selectedCategory === 'apartments' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {residenceUnits.slice(0, 2).map((apt) => (
-              <div
-                key={apt.id}
-                className="bg-white rounded-3xl border border-[#E8E2D8] shadow-xl p-6 sm:p-8 space-y-5 flex flex-col justify-between"
-              >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#C58F58]">
-                      G+2 Floors + Stilt Parking
-                    </span>
-                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800">
-                      🟢 Available for Booking
-                    </span>
-                  </div>
-
-                  <h3 className="text-2xl sm:text-3xl font-serif-heading font-bold text-[#0D2329]">
-                    {apt.unitNumber}
-                  </h3>
-                  <p className="text-xs text-[#53676E]">
-                    {apt.typeName} • ~{apt.superAreaSqFt} sq. ft. Built (~{apt.carpetAreaSqFt} sq. ft. Carpet)
-                  </p>
-
-                  <div className="space-y-2 pt-2">
-                    {apt.rooms.map((rm, i) => (
-                      <div key={i} className="flex items-center justify-between text-xs py-1.5 border-b border-[#F0EBE1]">
-                        <span className="font-medium text-[#0D2329]">{rm.name}</span>
-                        <span className="font-mono text-[#2C5E50] font-bold">{rm.dimensions}</span>
-                      </div>
-                    ))}
-                  </div>
+        {/* 2. 9 RESIDENTIAL BUILDING UNITS VIEW */}
+        {activeCategory === 'apartments' && (
+          <div className="space-y-8">
+            {/* Ground Floor (01, 02, 03) - AVAILABLE */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-[#E8E2D8]">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <h4 className="text-lg font-serif-heading font-bold text-[#0D2329]">
+                    Ground Floor Units (Phase 1 Launch — Available)
+                  </h4>
                 </div>
-
-                <div className="pt-4 space-y-2">
-                  <Button
-                    size="lg"
-                    className="w-full bg-[#2C5E50] hover:bg-[#1D4B57] text-white text-xs sm:text-sm font-bold py-3.5"
-                    onClick={() =>
-                      openWhatsApp({
-                        actionType: 'reserve-unit',
-                        unitName: apt.unitNumber,
-                        unitType: apt.typeName
-                      })
-                    }
-                  >
-                    Enquire About {apt.unitNumber} on WhatsApp →
-                  </Button>
-                </div>
+                <span className="text-xs font-semibold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
+                  🟢 Currently Open for Booking
+                </span>
               </div>
-            ))}
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                {buildingUnits.slice(0, 3).map((unit) => (
+                  <div
+                    key={unit.id}
+                    onClick={() => handleUnitClick(unit)}
+                    className="bg-white rounded-3xl border border-emerald-300 shadow-md p-6 space-y-4 hover:shadow-xl transition-all cursor-pointer flex flex-col justify-between group"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#C58F58]">
+                          {unit.floorName}
+                        </span>
+                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                          🟢 Available
+                        </span>
+                      </div>
+                      <h5 className="text-xl font-serif-heading font-bold text-[#0D2329] group-hover:text-[#2C5E50] transition-colors">
+                        {unit.unitNumber}
+                      </h5>
+                      <p className="text-xs text-[#53676E]">
+                        {unit.typeName} • ~{unit.superAreaSqFt} sq. ft. Built (~{unit.carpetAreaSqFt} sq. ft. Carpet)
+                      </p>
+                      <div className="text-[11px] text-[#2C5E50] font-medium pt-1">
+                        Orientation: {unit.facing}
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-[#F0EBE1] flex items-center justify-between text-xs text-[#2C5E50] font-bold">
+                      <span>View Specifications</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* First & Second Floors (04–09) - FUTURE RELEASE / COMING SOON */}
+            <div className="space-y-4 pt-4">
+              <div className="flex items-center justify-between pb-2 border-b border-[#E8E2D8]">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                  <h4 className="text-lg font-serif-heading font-bold text-[#0D2329]">
+                    First &amp; Second Floor Units (Future Release / Coming Soon)
+                  </h4>
+                </div>
+                <span className="text-xs font-semibold text-amber-800 bg-amber-100 px-3 py-1 rounded-full">
+                  ⏳ Future Release (Not Yet Released)
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {buildingUnits.slice(3).map((unit) => (
+                  <div
+                    key={unit.id}
+                    onClick={() => handleUnitClick(unit)}
+                    className="bg-[#FAF8F5] rounded-3xl border border-[#E8E2D8] p-5 space-y-3 hover:bg-white hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
+                  >
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-mono text-[#53676E]">
+                          {unit.floorName}
+                        </span>
+                        <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded">
+                          ⏳ Coming Soon
+                        </span>
+                      </div>
+                      <h5 className="text-lg font-serif-heading font-bold text-[#0D2329] group-hover:text-[#C58F58] transition-colors">
+                        {unit.unitNumber}
+                      </h5>
+                      <p className="text-xs text-[#53676E]">
+                        {unit.typeName} • ~{unit.superAreaSqFt} sq. ft.
+                      </p>
+                    </div>
+
+                    <div className="pt-2 border-t border-[#E8E2D8] text-[11px] text-[#C58F58] font-semibold flex items-center justify-between">
+                      <span>Register Interest</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
         {/* 3. HOSPITAL ROOMS VIEW */}
-        {selectedCategory === 'hospital-rooms' && (
+        {activeCategory === 'hospital-rooms' && (
           <div className="bg-white rounded-3xl border border-[#E8E2D8] shadow-xl p-6 sm:p-8 space-y-6">
             <div className="flex items-center justify-between pb-4 border-b border-[#E8E2D8]">
               <div>
                 <h3 className="text-xl sm:text-2xl font-serif-heading font-bold text-[#0D2329]">
-                  Hospital Floor 1 Inpatient Rooms
+                  Hospital Floor 1 Inpatient Accommodations
                 </h3>
                 <p className="text-xs text-[#53676E] mt-0.5">
                   9 Private Inpatient Rooms (9&apos;4&quot; × 10&apos;8&quot;) + 4 Semi-Private Rooms (12&apos;6&quot; × 14&apos;8&quot;)
                 </p>
               </div>
               <span className="text-xs font-bold text-[#2C5E50] px-3 py-1 rounded-full bg-[#EAF2EE]">
-                On-Premise G+2 Hospital
+                On-Premise 30,000 Sqft G+2 Hospital
               </span>
             </div>
 
@@ -339,7 +402,7 @@ export const AvailabilityMatrix: React.FC = () => {
           </div>
         )}
 
-        {/* Direct Contact Callout Box */}
+        {/* Direct WhatsApp Callout Banner */}
         <div className="mt-12 p-8 rounded-3xl bg-[#0D2329] text-white shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-2 text-center md:text-left max-w-xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold text-[#C58F58] uppercase tracking-wider">
@@ -349,7 +412,7 @@ export const AvailabilityMatrix: React.FC = () => {
             <h3 className="text-2xl sm:text-3xl font-serif-heading font-bold text-white">
               Ready to Walk the Land in Kheri Asra?
             </h3>
-            <p className="text-xs sm:text-sm text-white/70 leading-relaxed">
+            <p className="text-xs sm:text-sm text-white/75 leading-relaxed">
               Book a private on-site walkthrough with our senior project advisors to review plot boundary markings and CAD hospital drawings.
             </p>
           </div>
@@ -357,7 +420,7 @@ export const AvailabilityMatrix: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
             <Button
               size="lg"
-              className="bg-[#2C5E50] hover:bg-[#3D7363] text-white py-4 px-6 text-sm font-semibold shadow-lg"
+              className="bg-[#2C5E50] hover:bg-[#3D7363] text-white py-4 px-6 text-sm font-bold shadow-lg"
               onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to book a site visit to Senior Living Citizen Foundation at Kheri Asra...' })}
               leftIcon={<MessageSquare className="w-4 h-4" />}
             >
@@ -375,6 +438,19 @@ export const AvailabilityMatrix: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Detail Drawers */}
+      <PlotDetailDrawer
+        plot={selectedPlot}
+        isOpen={isPlotDrawerOpen}
+        onClose={() => setIsPlotDrawerOpen(false)}
+      />
+
+      <UnitDetailDrawer
+        unit={selectedUnit}
+        isOpen={isUnitDrawerOpen}
+        onClose={() => setIsUnitDrawerOpen(false)}
+      />
     </section>
   );
 };

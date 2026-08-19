@@ -13,7 +13,9 @@ import {
   Building2,
   Layers,
   ArrowRight,
-  Maximize2
+  Maximize2,
+  MessageSquare,
+  Calendar
 } from 'lucide-react';
 
 interface ResidenceUnitExplorerProps {
@@ -38,13 +40,13 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
           <div className="max-w-2xl space-y-3">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-wider">
               <Building2 className="w-3.5 h-3.5" />
-              Senior Apartments
+              Senior Residences Visualizer
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-normal text-[#0D2329] tracking-tight">
-              1BHK &amp; 2BHK — <span className="italic font-serif text-[#C58F58]">Compact, Considered, Complete.</span>
+              1 RK &amp; 1 BHK — <span className="italic font-serif text-[#C58F58]">Compact, Considered, Complete.</span>
             </h2>
             <p className="text-sm sm:text-base text-[#53676E] leading-relaxed">
-              G+2 apartment buildings with stilt car parking, two lifts, and gradual stairs (10&quot; tread, 6&quot; rise). Single-floor living inside each home — built for the body, not the brochure.
+              G+2 residential buildings with stilt car parking, two lifts, and gradual stairs (10&quot; tread, 6&quot; rise). Single-floor living inside each home — built for the body, not the brochure.
             </p>
           </div>
 
@@ -97,7 +99,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                       : 'text-[#53676E] hover:text-[#0D2329]'
                   }`}
                 >
-                  3D View
+                  Proposed 3D View
                 </button>
                 <button
                   onClick={() => setActiveTab('room-sizes')}
@@ -117,7 +119,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                       : 'text-[#53676E] hover:text-[#0D2329]'
                   }`}
                 >
-                  Senior Features
+                  Senior Safety Design
                 </button>
               </div>
             </div>
@@ -132,17 +134,19 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                     fill
                     className="object-cover object-center opacity-90"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
 
-                  <div className="relative z-10 space-y-1 text-white max-w-xl">
-                    <span className="inline-block px-2.5 py-0.5 rounded bg-black/60 text-[#C58F58] font-mono text-[11px]">
-                      ~{activeUnit.superAreaSqFt} Sqft Built • ~{activeUnit.carpetAreaSqFt} Sqft Carpet
-                    </span>
+                  <div className="relative z-10 space-y-1.5 text-white max-w-xl">
+                    <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-black/60 backdrop-blur-md text-[#C58F58] font-mono text-[11px]">
+                      <span>~{activeUnit.superAreaSqFt} Sqft Built • ~{activeUnit.carpetAreaSqFt} Sqft Carpet</span>
+                      <span>•</span>
+                      <span>Indicative 3D Visualization</span>
+                    </div>
                     <h4 className="text-xl sm:text-2xl font-serif-heading font-bold">
                       {activeUnit.typeName}
                     </h4>
-                    <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
-                      Single-floor barrier-free residence designed with dual lifts, gradual stairs, and wide doorways for seniors.
+                    <p className="text-xs sm:text-sm text-white/85 leading-relaxed">
+                      Single-floor barrier-free residence designed with dual lifts, gradual 6&quot; rise stairs, and wide doorways for seniors.
                     </p>
                   </div>
                 </div>
@@ -154,6 +158,10 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                       <div className="text-[11px] font-mono text-[#2C5E50] font-semibold mt-0.5">{rm.dimensions}</div>
                     </div>
                   ))}
+                </div>
+
+                <div className="text-[10px] text-[#899B9F] italic text-right">
+                  *Artist impression &amp; indicative interior visualization. Final turnkey fittings as per approved specification.
                 </div>
               </div>
             )}
@@ -256,6 +264,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                   }
                   className="w-full py-4 rounded-2xl bg-[#2C5E50] hover:bg-[#1D4B57] text-white text-sm font-semibold transition-all shadow-lg shadow-[#2C5E50]/20 flex items-center justify-center gap-2"
                 >
+                  <MessageSquare className="w-4 h-4" />
                   Enquire on WhatsApp (+91 99999558447) →
                 </button>
 
@@ -268,8 +277,9 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                       actionType: 'book-site-visit'
                     })
                   }
-                  className="w-full py-3 rounded-2xl text-xs text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5] transition-all font-medium text-center"
+                  className="w-full py-3 rounded-2xl text-xs text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5] transition-all font-medium text-center flex items-center justify-center gap-1.5"
                 >
+                  <Calendar className="w-3.5 h-3.5 text-[#C58F58]" />
                   Book Site Visit to Kheri Asra
                 </button>
               </div>

@@ -262,18 +262,55 @@ export interface PortalDocument {
 }
 
 // ----------------------------------------------------
-// Property Showcase & Residence Types
+// Property Showcase & Senior Residence Models
 // ----------------------------------------------------
 
-export type UnitType = '1-rk' | '1-bhk';
-export type UnitStatus = 'available' | 'future_release' | 'reserved' | 'on_hold';
-export type FloorId = 'ground' | 'first' | 'second' | 'rooftop';
+export type UnitType = '1-rk' | '1-bhk' | '2-bhk';
+export type UnitStatus = 'available' | 'future_release' | 'on_hold' | 'sold';
+export type FloorLevel = 'stilt' | 'ground' | 'first' | 'second' | 'rooftop';
+export type FloorId = FloorLevel;
 
 export interface RoomDetail {
   name: string;
   dimensions: string;
   highlight: string;
   cgiImage: string;
+}
+
+export interface BuildingUnit {
+  id: string;
+  unitNumber: string; // e.g. "Residence 01"
+  code: string; // "01"
+  floorLevel: FloorLevel;
+  floorName: string; // "Ground Floor", "First Floor", "Second Floor"
+  type: UnitType;
+  typeName: string; // "1 BHK Senior Residence" or "1 RK Senior Suite"
+  superAreaSqFt: number;
+  carpetAreaSqFt: number;
+  facing: string;
+  status: UnitStatus; // 'available' for 01-03, 'future_release' for 04-09
+  badge: string; // "🟢 Available (Phase 1)" or "⏳ Coming Soon (Future Release)"
+  priceDisplay: string; // "₹XX,XX,XXX" or "Request Pre-Launch Price"
+  rooms: RoomDetail[];
+  seniorFeatures: string[];
+  blueprint2d: string;
+  interior3dCgi: string;
+  keyHighlights: string[];
+}
+
+export interface PlotItem {
+  id: string;
+  plotNumber: string; // "Plot 24"
+  number: number; // 24
+  block: 'Block A' | 'Block B' | 'Block C' | 'Block D' | 'Block E' | 'Block F';
+  sizeSqYd: number; // e.g. 180
+  dimensions: string; // "30' × 54'"
+  facing: string; // "North-East" | "Park Facing" | "Corner" | "East"
+  roadWidth: string; // "33 ft Main Road" | "11 ft Lane"
+  status: 'available' | 'on_hold' | 'sold';
+  priceEstimate: string; // "Request Price"
+  isCorner?: boolean;
+  isParkFacing?: boolean;
 }
 
 export interface ResidenceUnit {
@@ -351,4 +388,3 @@ export interface RoadmapMilestone {
   description: string;
   deliverables: string[];
 }
-
