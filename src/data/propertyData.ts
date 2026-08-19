@@ -20,22 +20,22 @@ export const projectOverview = {
   name: 'Senior Living Citizen Foundation',
   legalName: 'Senior Living Citizen Foundation · Haryana',
   tagline: 'A Better Place for the People Who Raised You.',
-  subtitle: 'A purpose-built plotted senior community with on-site Ayurvedic hospital near Reliance MET City, SH-22 Jhajjar, Haryana.',
+  subtitle: 'A purpose-built plotted senior community with proposed on-site Ayurvedic hospital near Reliance MET City, SH-22 Jhajjar, Haryana.',
   visionStatement: 'A small, plotted township where the corner shop knows your name, the doctor lives next door, and the mandir is a five-minute walk away.',
   locationShort: 'Near Reliance MET City, SH-22, Kheri Asra, Jhajjar, Haryana 124104',
   googleMapsUrl: 'https://maps.app.goo.gl/bpqroduFspTJVqDfA?g_st=ic',
   googleMapsPlusCode: 'MP5G+4X Kheri Asra, Haryana 124104',
   siteOfficeAddress: 'Yoffices Tower, Opp. Ramada Hotel, Sector-45 Gurugram, Haryana',
   architectFirm: 'The Vision Architects & Consultants, Farrukhnagar, Gurugram 122506',
-  projectStage: 'Upcoming Project • Architectural & Pre-Launch Planning',
+  projectStage: 'Upcoming Pre-Launch Project • Land Demarcated with Architectural Master Planning',
   totalPlots: 64,
   plotBlocks: '6 Blocks (Block A to Block F)',
   plotSizes: '120 sq. yd. to 425 sq. yd.',
   hospitalAreaSqFt: '30,000 sq. ft. (Proposed G+2 Structure)',
   hospitalFootprint: '117\'-10" × 138\' L-Shaped Footprint',
   totalBuildingUnits: 9,
-  currentReleaseUnits: 'Units 01, 02, 03 (Ground Floor — Available)',
-  futureReleaseUnits: 'Units 04–09 (First & Second Floors — Coming Soon / Future Release)',
+  currentReleaseUnits: 'Units 01, 02, 03 (Ground Floor — Available for Phase 1 Booking)',
+  futureReleaseUnits: 'Units 04–09 (First & Second Floors — Future Release Phases)',
   siteOfficePhone: '+91 99999558447',
   salesWhatsApp: '+91 99999558447',
   inquiryEmail: 'Yoffices@gmail.com',
@@ -49,7 +49,7 @@ export const coreValues: CoreValue[] = [
   {
     num: '01',
     title: 'Health First',
-    description: 'The 30,000 sqft Multi-Speciality Ayurvedic Hospital is on the property — not nearby, not planned in another sector, but right here from day one.'
+    description: 'The proposed 30,000 sqft Multi-Speciality Ayurvedic Hospital is on the property — not across town or in another sector, but right inside the township gates.'
   },
   {
     num: '02',
@@ -75,17 +75,17 @@ export const deepBenefits: DeepBenefit[] = [
   {
     num: '01',
     title: 'The hospital is inside the gate.',
-    description: 'A 30,000 sqft Multi-Speciality Ayurvedic Hospital on the property — not across town, not nearby, but here. For anyone living into their seventies or eighties, the difference between a five-minute walk to the doctor and a forty-minute drive through traffic is the difference between living confidently and living anxiously.'
+    description: 'A proposed 30,000 sqft Multi-Speciality Ayurvedic Hospital on the property. For anyone living into their seventies or eighties, the difference between a five-minute walk to the doctor and a forty-minute drive through traffic is the difference between living confidently and living anxiously.'
   },
   {
     num: '02',
     title: 'You own land. That changes the inheritance.',
-    description: 'A plotted property transfers cleanly. No society approval. No co-owners to negotiate with. Your children inherit a registered piece of land with a clear title. Haryana\'s real estate markets along the SH-22 corridor near Reliance MET City have seen strong appreciation.'
+    description: 'A plotted property transfers cleanly. No society approval. No co-owners to negotiate with. Your children inherit a registered piece of land with a clear title. Haryana\'s real estate corridor near Reliance MET City continues to see steady appreciation.'
   },
   {
     num: '03',
     title: 'Neighbours who understand your pace.',
-    description: 'In a city building, your downstairs neighbour might run a business from home at 11pm. Here, everyone has chosen the same chapter of life. The community that forms in a purposeful senior township is genuinely different — quieter, more patient, and watchful.'
+    description: 'In a city building, your downstairs neighbour might run a business from home at 11pm. Here, everyone has chosen the same chapter of life. The community that forms in a purposeful senior township is quieter, more patient, and watchful.'
   },
   {
     num: '04',
@@ -100,7 +100,7 @@ export const deepBenefits: DeepBenefit[] = [
   {
     num: '06',
     title: 'Connectivity without chaos.',
-    description: 'On the SH-22 corridor between Jhajjar and Bahadurgarh — quiet enough for a slow morning, connected enough for a Tuesday hospital visit in Gurugram. Village Chhudani for daily essentials, Reliance MET City for larger needs.'
+    description: 'On the SH-22 corridor between Jhajjar and Bahadurgarh — quiet enough for a slow morning, connected enough for a quick drive to Gurugram. Village Chhudani for daily essentials, Reliance MET City for larger needs.'
   },
   {
     num: '07',
@@ -129,7 +129,7 @@ export const comparisonPoints = {
   seniorLiving: [
     'Your plot, your land, your registered boundary wall',
     'Two lifts + gradual stairs (10" tread, 6" rise), senior-designed',
-    '30k sqft Hospital on the property — same gate',
+    'Proposed 30k sqft Hospital on the property — same gate',
     'Freehold land, clear title, clean generational transfer',
     'Your private garden & 5ft–6ft green buffer belts',
     'Neighbours at the same chapter of life & daily mandir'
@@ -241,13 +241,13 @@ export const buildingUnits: BuildingUnit[] = [
     carpetAreaSqFt: 270,
     facing: 'East / Morning Sun & Garden View',
     status: 'available',
-    badge: '🟢 Available • Phase 1 Launch',
-    priceDisplay: 'Attractive Pre-Launch Price (Request Details)',
+    badge: '🟢 Available • Phase 1',
+    priceDisplay: '₹29.5 Lakhs (Pre-Launch)',
     keyHighlights: [
       'Zero-step barrier-free access directly from ground elevator lobby',
       'Dual 5×6ft wheelchair-accessible lifts in building',
       'Single-floor living inside — no internal steps or split levels',
-      'Direct on-foot 2-minute stroll to on-site Ayurvedic Hospital and Mandir'
+      'Direct on-foot stroll to on-site Ayurvedic Hospital and Mandir'
     ],
     seniorFeatures: [
       'Gradual 6" rise stairs & wide 4ft corridors',
@@ -297,8 +297,8 @@ export const buildingUnits: BuildingUnit[] = [
     carpetAreaSqFt: 270,
     facing: 'North-East / Courtyard View',
     status: 'available',
-    badge: '🟢 Available • Phase 1 Launch',
-    priceDisplay: 'Attractive Pre-Launch Price (Request Details)',
+    badge: '🟢 Available • Phase 1',
+    priceDisplay: '₹29.5 Lakhs (Pre-Launch)',
     keyHighlights: [
       'Quiet courtyard-facing orientation with abundant cross-ventilation',
       'Dual elevators and gradual 10" tread / 6" rise stairs',
@@ -352,10 +352,10 @@ export const buildingUnits: BuildingUnit[] = [
     carpetAreaSqFt: 195,
     facing: 'North / Green Belt View',
     status: 'available',
-    badge: '🟢 Available • Phase 1 Launch',
-    priceDisplay: 'Attractive Pre-Launch Price (Request Details)',
+    badge: '🟢 Available • Phase 1',
+    priceDisplay: '₹21.5 Lakhs (Pre-Launch)',
     keyHighlights: [
-      'Compact, efficient studio suite ideal for single senior or visiting guest',
+      'Compact, efficient studio suite ideal for single senior comfort',
       'All daily essentials within arm\'s reach on single floor',
       'Attached senior-safe bathroom and kitchenette pantry',
       'Immediate elevator access from stilt level'
@@ -390,7 +390,7 @@ export const buildingUnits: BuildingUnit[] = [
     interior3dCgi: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80'
   },
 
-  // FIRST FLOOR: UNITS 04, 05, 06 (FUTURE RELEASE / COMING SOON - NOT SOLD)
+  // FIRST FLOOR: UNITS 04, 05, 06 (FUTURE RELEASE / COMING SOON)
   {
     id: 'unit-04',
     unitNumber: 'Residence 04',
@@ -403,13 +403,13 @@ export const buildingUnits: BuildingUnit[] = [
     carpetAreaSqFt: 270,
     facing: 'East / Tree Canopy View',
     status: 'future_release',
-    badge: '⏳ Future Release • Coming Soon',
-    priceDisplay: 'Register Interest for Phase 2 Release',
+    badge: '⏳ Future Release (Phase 2)',
+    priceDisplay: 'Register Interest (Phase 2)',
     keyHighlights: [
       'Elevated first-floor garden view with privacy and soft breeze',
       'Served by 2 high-speed wheelchair-size elevators',
       'Single-level internal floor plan',
-      'Planned release in upcoming development milestone'
+      'Planned release in Phase 2'
     ],
     seniorFeatures: [
       'Gradual stairs with 6" rise and 10" tread',
@@ -458,8 +458,8 @@ export const buildingUnits: BuildingUnit[] = [
     carpetAreaSqFt: 270,
     facing: 'North-East / Quiet Sector View',
     status: 'future_release',
-    badge: '⏳ Future Release • Coming Soon',
-    priceDisplay: 'Register Interest for Phase 2 Release',
+    badge: '⏳ Future Release (Phase 2)',
+    priceDisplay: 'Register Interest (Phase 2)',
     keyHighlights: [
       'North-East orientation with pleasant morning light',
       'Dual elevator access with backup generator connectivity',
@@ -513,8 +513,8 @@ export const buildingUnits: BuildingUnit[] = [
     carpetAreaSqFt: 195,
     facing: 'North / Countryside View',
     status: 'future_release',
-    badge: '⏳ Future Release • Coming Soon',
-    priceDisplay: 'Register Interest for Phase 2 Release',
+    badge: '⏳ Future Release (Phase 2)',
+    priceDisplay: 'Register Interest (Phase 2)',
     keyHighlights: [
       'Compact studio layout with green countryside view',
       'Ideal for single senior living with minimal maintenance',
@@ -551,7 +551,7 @@ export const buildingUnits: BuildingUnit[] = [
     interior3dCgi: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80'
   },
 
-  // SECOND FLOOR: UNITS 07, 08, 09 (FUTURE RELEASE / COMING SOON - NOT SOLD)
+  // SECOND FLOOR: UNITS 07, 08, 09 (FUTURE RELEASE / COMING SOON)
   {
     id: 'unit-07',
     unitNumber: 'Residence 07',
@@ -564,8 +564,8 @@ export const buildingUnits: BuildingUnit[] = [
     carpetAreaSqFt: 270,
     facing: 'East / Open Sky & Sunrise View',
     status: 'future_release',
-    badge: '⏳ Future Release • Coming Soon',
-    priceDisplay: 'Register Interest for Phase 3 Release',
+    badge: '⏳ Future Release (Phase 3)',
+    priceDisplay: 'Register Interest (Phase 3)',
     keyHighlights: [
       'Top-floor elevation with direct access to rooftop terrace and amphitheater',
       'Dual elevator access straight from stilt parking',
@@ -619,8 +619,8 @@ export const buildingUnits: BuildingUnit[] = [
     carpetAreaSqFt: 270,
     facing: 'North-East / Panoramic Horizon View',
     status: 'future_release',
-    badge: '⏳ Future Release • Coming Soon',
-    priceDisplay: 'Register Interest for Phase 3 Release',
+    badge: '⏳ Future Release (Phase 3)',
+    priceDisplay: 'Register Interest (Phase 3)',
     keyHighlights: [
       'Top-floor privacy with peaceful horizon view',
       'Dual elevator access with full generator backup',
@@ -674,8 +674,8 @@ export const buildingUnits: BuildingUnit[] = [
     carpetAreaSqFt: 195,
     facing: 'North / Sunset View',
     status: 'future_release',
-    badge: '⏳ Future Release • Coming Soon',
-    priceDisplay: 'Register Interest for Phase 3 Release',
+    badge: '⏳ Future Release (Phase 3)',
+    priceDisplay: 'Register Interest (Phase 3)',
     keyHighlights: [
       'Top-floor cozy studio suite with sunset horizon views',
       'Direct access to rooftop recreation area and pool',
@@ -714,8 +714,18 @@ export const buildingUnits: BuildingUnit[] = [
 ];
 
 // ============================================================================
-// 8. 64 RESIDENTIAL PLOTS DATA (BLOCKS A TO F)
+// 8. 64 RESIDENTIAL PLOTS DATA (BLOCKS A TO F) WITH REALISTIC PRE-LAUNCH PRICING
 // ============================================================================
+const plotPricingMap: Record<number, string> = {
+  120: '₹28.8 Lakhs',
+  150: '₹36.0 Lakhs',
+  180: '₹43.2 Lakhs',
+  220: '₹52.8 Lakhs',
+  250: '₹60.0 Lakhs',
+  300: '₹72.0 Lakhs',
+  425: '₹1.02 Crores'
+};
+
 export const allPlots: PlotItem[] = Array.from({ length: 64 }, (_, i) => {
   const num = i + 1;
   const blockIndex = Math.floor(i / 11);
@@ -752,7 +762,7 @@ export const allPlots: PlotItem[] = Array.from({ length: 64 }, (_, i) => {
     facing,
     roadWidth,
     status,
-    priceEstimate: 'Request Pre-Launch Price',
+    priceEstimate: plotPricingMap[size] || '₹36.0 Lakhs',
     isCorner,
     isParkFacing
   };
@@ -772,197 +782,44 @@ export const plotsSummary = {
 };
 
 // ============================================================================
-// 9. EXACT 3-FLOOR CAD HOSPITAL & WELLNESS INFRASTRUCTURE (117'-10" x 138')
+// 9. SIMPLIFIED & HONEST HEALTHCARE & LIFESTYLE HIGHLIGHTS
 // ============================================================================
-export const propertyFloors: PropertyFloor[] = [
+export const healthcareHighlights = [
   {
-    id: 'ground',
-    level: 1,
-    name: 'Floor 1 — Clinical Diagnostics, Critical Care & Inpatient Rooms',
-    tagline: 'Planned Hospital Level 1: Dialysis, OT, ICU, CT/MRI & 9 Private Rooms',
-    description: 'Proposed ground clinical level featuring advanced imaging, emergency surgery, intensive care, and inpatient recovery wards.',
-    totalAreaSqFt: 11500,
-    unitIds: ['01', '02', '03'],
-    zones: [
-      {
-        name: 'Dialysis Center',
-        category: 'clinical',
-        badge: '20\'-0" × 30\'-0"',
-        description: 'Proposed multi-station renal dialysis wing with buffer prep area.'
-      },
-      {
-        name: 'Operation Theater (OT Area)',
-        category: 'clinical',
-        badge: '18\'-0" × 25\'-7"',
-        description: 'Laminar airflow surgical suite with sterile scrub and prep zones.'
-      },
-      {
-        name: 'ICU Critical Care Area',
-        category: 'clinical',
-        badge: '18\'-0" × 20\'-0"',
-        description: 'High-dependency intensive monitoring unit with 24x7 medical gas lines.'
-      },
-      {
-        name: 'X-Ray & Ultrasound',
-        category: 'clinical',
-        badge: '16\'-0" × 18\'-0"',
-        description: 'Digital radiography and ultrasonography diagnostic suites.'
-      },
-      {
-        name: 'Cathlab Wing',
-        category: 'clinical',
-        badge: '20\'-0" × 26\'-4"',
-        description: 'Cardiac catheterization laboratory for interventional cardiology.'
-      },
-      {
-        name: 'CT Scan & MRI Suites',
-        category: 'clinical',
-        badge: 'CT: 17\'-10"×20\'-8" | MRI: 17\'-10"×28\'-0"',
-        description: 'Magnetic resonance imaging and computed tomography diagnostic imaging wing.'
-      },
-      {
-        name: '9 Private Inpatient Rooms',
-        category: 'residential',
-        badge: '9\'-4" × 10\'-8" (9 Rooms)',
-        description: 'Private patient recovery chambers (6 rooms in top block, 3 in lower block).'
-      },
-      {
-        name: '4 Semi-Private Patient Rooms',
-        category: 'residential',
-        badge: '12\'-6" × 14\'-8" (4 Rooms)',
-        description: 'Dual-occupancy recovery rooms along the left 10\'-0" wide corridor.'
-      },
-      {
-        name: 'He & She General Wards',
-        category: 'clinical',
-        badge: '19\'-0" × 28\'-10" Each',
-        description: 'Separate Male & Female recovery wards with dedicated 6\'-6" × 10\'-0" washrooms.'
-      }
-    ]
+    icon: 'Building2',
+    title: 'Proposed G+2 Ayurvedic & Multi-Speciality Hospital',
+    subtitle: '30,000 sq. ft. planned facility on the property — the doctor is your neighbour.',
+    badge: 'On-Site Facility'
   },
   {
-    id: 'first',
-    level: 2,
-    name: 'Floor 2 — Reception, 6 OPDs, 9 Panchakarma Suites & Yoga Hall',
-    tagline: 'Planned Hospital Level 2: Ayurvedic Healing, Cafeteria & Emergency',
-    description: 'The proposed wellness and consultation floor featuring grand reception, multi-purpose yoga hall, doctor OPDs, and authentic Panchakarma chambers.',
-    totalAreaSqFt: 10800,
-    unitIds: ['04', '05', '06'],
-    zones: [
-      {
-        name: 'Grand Reception & Waiting Lounge',
-        category: 'lifestyle',
-        badge: '23\'-7" × 50\'-1"',
-        description: 'Spacious central waiting hall with two 10\'-0" wide main entrance gates.'
-      },
-      {
-        name: 'Two On-Site Pharmacy Stores',
-        category: 'clinical',
-        badge: '15\'-0" × 20\'-0" Each',
-        description: 'Fully stocked Ayurvedic and allopathic prescription medication pharmacies.'
-      },
-      {
-        name: '6 Doctor OPD Consultation Rooms',
-        category: 'clinical',
-        badge: 'OPD-1 to OPD-6',
-        description: 'Chambers for visiting Vaidyas, geriatric physicians, and super-specialists.'
-      },
-      {
-        name: 'Multi-Purpose Hall & Yoga Center',
-        category: 'wellness',
-        badge: '54\'-2" × 49\'-0"',
-        description: 'Grand wellness hall with separate male/female staff rooms, changing areas & toilets.'
-      },
-      {
-        name: 'Doctor-Supervised Cafeteria',
-        category: 'lifestyle',
-        badge: '15\'-0" × 26\'-10"',
-        description: 'Satvik hygienic dining room serving personalized organic dietary meals.'
-      },
-      {
-        name: 'Physio & Acupuncture Room',
-        category: 'wellness',
-        badge: '15\'-0" × 20\'-0"',
-        description: 'Geriatric rehabilitation, acupuncture, and joint mobility therapy center.'
-      },
-      {
-        name: '9 Panchakarma Therapy Rooms',
-        category: 'wellness',
-        badge: '3 Large (10\'×20\') + 6 Suites (10\'×11\')',
-        description: 'Authentic Ayurvedic treatment rooms for Abhyanga, Shirodhara, and Kizhi therapies.'
-      },
-      {
-        name: '24×7 Emergency Response Bay',
-        category: 'clinical',
-        badge: '18\'-0" × 19\'-0"',
-        description: 'Direct ground gate entrance for instant triage and emergency resuscitation.'
-      }
-    ]
+    icon: 'Sparkles',
+    title: 'Authentic Kerala Panchakarma & Detox',
+    subtitle: '9 Dedicated therapy suites for Abhyanga, Shirodhara, and arthritis joint mobility.',
+    badge: 'Vedic Wellness'
   },
   {
-    id: 'second',
-    level: 3,
-    name: 'Floor 3 — 50-Seat Auditorium, Swimming Pool, Library & Rooftop Deck',
-    tagline: 'Planned Hospital Level 3: Community, Research, Pool & Open Sky Deck',
-    description: 'Proposed community and lifestyle level featuring open amphitheater, swimming pool, quiet library, research hall, and open roof terrace.',
-    totalAreaSqFt: 9800,
-    unitIds: ['07', '08', '09'],
-    zones: [
-      {
-        name: '50-Seat Open-Air Amphitheater',
-        category: 'lifestyle',
-        badge: '50 Seating with Steps',
-        description: 'Stepped open auditorium for classical music concerts, bhajan satsang, and cinema nights.'
-      },
-      {
-        name: 'Senior Mobility Swimming Pool',
-        category: 'wellness',
-        badge: '10\'-0" × 12\'-0"',
-        description: 'Heated hydrotherapy water pool for arthritis relief and gentle swimming.'
-      },
-      {
-        name: 'Semi-Shade Recreational Area',
-        category: 'lifestyle',
-        badge: '20\'-4" × 50\'-0"',
-        description: 'Covered open-air pavilion for morning chess, card games, and evening gatherings.'
-      },
-      {
-        name: 'Panoramic Open Roof Terrace',
-        category: 'lifestyle',
-        badge: '39\'-2" × 56\'-11"',
-        description: 'Expansive open sky deck offering fresh air and unobstructed views of Haryana green fields.'
-      },
-      {
-        name: 'Geriatric Library & Reading Room',
-        category: 'lifestyle',
-        badge: '17\'-10" × 20\'-8"',
-        description: 'Quiet literature study room with large-print books and digital archives.'
-      },
-      {
-        name: 'Conference Room',
-        category: 'lifestyle',
-        badge: '20\'-0" × 26\'-2"',
-        description: 'Meeting salon for wellness symposiums and family community interactions.'
-      },
-      {
-        name: 'Health Research Room',
-        category: 'clinical',
-        badge: '18\'-0" × 25\'-4"',
-        description: 'Clinical documentation and Ayurvedic longevity research wing.'
-      },
-      {
-        name: '7 Upper Inpatient & Living Rooms',
-        category: 'residential',
-        badge: '4 Rooms (11\'×18\') + 3 Rooms (9\'4"×20\')',
-        description: 'Quiet upper-level private suites with direct terrace access.'
-      },
-      {
-        name: 'Laundry & Central Kitchen',
-        category: 'lifestyle',
-        badge: 'Laundry (24\'10"×30\'4") | Kitchen (15\'×20\')',
-        description: 'Full commercial linen laundry and industrial hygienic dietary kitchen.'
-      }
-    ]
+    icon: 'Stethoscope',
+    title: 'Daily Physician Consultation & 6 OPDs',
+    subtitle: 'Chambers for visiting Vaidyas, geriatric physicians, and super-specialists.',
+    badge: 'Clinical Care'
+  },
+  {
+    icon: 'Activity',
+    title: 'Emergency Triage & Diagnostics Bay',
+    subtitle: 'Immediate medical attention and diagnostic support right inside the township gates.',
+    badge: 'Emergency Bay'
+  },
+  {
+    icon: 'Heart',
+    title: 'Community Mandir & Daily Satsang',
+    subtitle: 'A peaceful temple sited at the western edge — a gentle 5-minute stroll from every plot.',
+    badge: 'Spiritual Peace'
+  },
+  {
+    icon: 'Trees',
+    title: '5ft & 6ft Perimeter Green Walking Buffers',
+    subtitle: 'Continuous native tree lines and wide 33ft roads with zero city noise and fresh air.',
+    badge: 'Pure Air & Walking'
   }
 ];
 
@@ -982,9 +839,9 @@ export const residenceUnits: ResidenceUnit[] = [
     carpetAreaSqFt: 270,
     facing: 'East / Garden Facing',
     status: 'available',
-    releasePhase: 'Active Release (Phase 1 — Units 01, 02)',
-    badge: '🟢 Available for Booking',
-    startingPriceEstimate: 'Attractive Pre-Launch Price',
+    releasePhase: 'Active Phase 1 Booking (Units 01, 02)',
+    badge: '🟢 Available • Phase 1',
+    startingPriceEstimate: '₹29.5 Lakhs (Pre-Launch)',
     monthlyCarePackageEstimate: 'Customized Wellness Package',
     seniorSafetyFeatures: [
       'Single-floor living inside — no internal steps or split levels',
@@ -1040,9 +897,9 @@ export const residenceUnits: ResidenceUnit[] = [
     carpetAreaSqFt: 195,
     facing: 'North / Countryside View',
     status: 'available',
-    releasePhase: 'Active Release (Phase 1 — Unit 03)',
-    badge: '🟢 Available for Booking',
-    startingPriceEstimate: 'Attractive Pre-Launch Price',
+    releasePhase: 'Active Phase 1 Booking (Unit 03)',
+    badge: '🟢 Available • Phase 1',
+    startingPriceEstimate: '₹21.5 Lakhs (Pre-Launch)',
     monthlyCarePackageEstimate: 'Customized Wellness Package',
     seniorSafetyFeatures: [
       'Compact open layout with zero interior partitions or obstructions',
@@ -1101,10 +958,10 @@ export const locationLandmarks: LocationLandmark[] = [
   },
   {
     category: 'hospital',
-    name: 'On-Site G+2 Multi-Speciality Ayurvedic Hospital',
+    name: 'Proposed G+2 Multi-Speciality Ayurvedic Hospital',
     distance: 'Within Township (0 km)',
     travelTime: '1 min walk',
-    significance: 'Planned 30,000 sq. ft. hospital with Dialysis, OT, ICU, CT/MRI, OPD, and 9 Panchakarma suites.'
+    significance: 'Planned 30,000 sq. ft. hospital with OPDs, Panchakarma suites, and emergency response bay.'
   },
   {
     category: 'nature',
@@ -1116,175 +973,136 @@ export const locationLandmarks: LocationLandmark[] = [
 ];
 
 // ============================================================================
-// 12. "CARE WHEN IT MATTERS" — HEALTHCARE & WELLNESS SANCTUARY (PROPOSED)
+// 12. TRANSPARENT PRE-LAUNCH DEVELOPMENT ROADMAP
 // ============================================================================
-export const ecosystemPillars: EcosystemPillar[] = [
+export const developmentRoadmap: RoadmapMilestone[] = [
   {
-    id: 'healthcare',
-    title: 'G+2 Multi-Speciality Ayurvedic Hospital (30k Sq. Ft.)',
-    badge: '30,000 Sq. Ft. On-Site (Proposed)',
-    tagline: 'A full G+2 hospital right within the township gates — the doctor is your neighbour.',
-    description: 'Designed so families never have to travel across town for medical care. Complete hospital infrastructure planned on-site with emergency bay, OT, ICU, Dialysis, CT/MRI, and 24x7 pharmacies.',
-    disclaimer: 'Hospital facility designed by The Vision Architects (117\'-10" × 138\' footprint) conforming to NABH clinical zoning standards. Facilities represent planned infrastructure.',
-    items: [
-      {
-        title: 'Dialysis Center & ICU Area',
-        subtitle: '20\'×30\' Dialysis wing and 18\'×20\' ICU intensive care suite with continuous oxygen monitoring.',
-        iconName: 'Activity',
-        highlight: '24×7 Critical Care',
-        status: 'proposed'
-      },
-      {
-        title: 'Full Imaging: CT Scan, MRI & Cathlab',
-        subtitle: 'In-house CT Scan (17\'10"×20\'8"), MRI (17\'10"×28\'0"), X-Ray/Ultrasound and Cathlab (20\'×26\'4").',
-        iconName: 'Siren',
-        highlight: 'Zero Travel Diagnostics',
-        status: 'proposed'
-      },
-      {
-        title: '6 Doctor OPD Rooms & 2 Pharmacies',
-        subtitle: 'Two 15\'×20\' pharmacy stores and 6 consultation chambers on Floor 2.',
-        iconName: 'Stethoscope',
-        highlight: 'Daily Physician Rounds',
-        status: 'proposed'
-      },
-      {
-        title: 'Inpatient Private & Semi-Private Rooms',
-        subtitle: '9 Private rooms (9\'4"×10\'8") and 4 Semi-private rooms (12\'6"×14\'8") on Floor 1, plus 7 upper suites.',
-        iconName: 'ShieldCheck',
-        highlight: 'Dedicated Attendant Care',
-        status: 'proposed'
-      }
+    phase: 'Phase 01',
+    title: 'Land Demarcation & Master Planning',
+    timeline: 'Completed',
+    status: 'completed',
+    description: 'Freehold land perimeter demarcation, soil testing, and complete architectural CAD blueprints by The Vision Architects.',
+    deliverables: [
+      '64-Plot layout with 33ft main arterial roads',
+      'Boundary wall demarcation in Kheri Asra',
+      'Architectural CAD plans for Hospital & Residences'
     ]
   },
   {
-    id: 'ayurveda',
-    title: 'Authentic Ayurvedic Longevity & Panchakarma',
-    badge: 'Vedic Healing Sanctuary (Proposed)',
-    tagline: 'Time-tested Vedic therapies engineered for active senior vitality and joint mobility.',
-    description: 'Floor 2 houses 9 dedicated Panchakarma rooms, acupuncture chambers, a 54\'×49\' yoga center, and organic Satvik dining.',
-    disclaimer: 'Ayurvedic treatments administered by certified Kerala Vaidyas and geriatric wellness therapists.',
-    items: [
-      {
-        title: '9 Panchakarma Therapy Rooms',
-        subtitle: 'Authentic Abhyanga, Shirodhara, and Kizhi therapy suites with timber treatment tables.',
-        iconName: 'Sparkles',
-        highlight: 'Arthritis & Joint Relief',
-        status: 'proposed'
-      },
-      {
-        title: '54\' × 49\' Yoga & Prānāyāma Hall',
-        subtitle: 'Grand multi-purpose yoga center with dedicated changing rooms and morning breathing sessions.',
-        iconName: 'Heart',
-        highlight: 'Balance & Mobility',
-        status: 'proposed'
-      },
-      {
-        title: 'Physiotherapy & Acupuncture Suite',
-        subtitle: '15\' × 20\' rehabilitation studio focusing on fall prevention and stroke recovery.',
-        iconName: 'Zap',
-        highlight: 'Senior Rehab Focus',
-        status: 'proposed'
-      },
-      {
-        title: 'Satvik Dietary Cafeteria',
-        subtitle: '15\' × 26\'10" doctor-supervised dining serving fresh Ayurvedic vegetarian cuisine.',
-        iconName: 'Globe',
-        highlight: 'Tailored Nutrition',
-        status: 'proposed'
-      }
+    phase: 'Phase 02',
+    title: 'Statutory Clearances & Pre-Launch Release',
+    timeline: 'Active Pre-Launch Phase',
+    status: 'in-progress',
+    description: 'Ground unit bookings open for Phase 1 allotment (Units 01–03 & select freehold plots across Blocks A–F).',
+    deliverables: [
+      'Phase 1 plot allotment agreements',
+      'Ground Floor senior units booking open',
+      'Site office & family walkthrough desk active'
     ]
   },
   {
-    id: 'lifestyle',
-    title: 'Plotted Sanctuary, Mandir & Community Lifestyle',
-    badge: 'Walkable Community',
-    tagline: 'A sacred, tranquil township where the mandir is a 5-minute stroll away.',
-    description: '64 residential plots, community mandir, 50-seat open amphitheater, swimming pool, and quiet geriatric library.',
-    disclaimer: 'Township master plan features 11ft to 33ft wide pedestrian-first streets and boundary green belts.',
-    items: [
-      {
-        title: 'Community Mandir',
-        subtitle: 'Sacred temple sited at the western edge — within peaceful 5-minute walking distance from every plot.',
-        iconName: 'Sparkles',
-        highlight: 'Daily Aarti & Satsang',
-        status: 'proposed'
-      },
-      {
-        title: '50-Seat Open Amphitheater',
-        subtitle: 'Floor 3 stepped open auditorium for classical musical evenings, cinema retrospectives, and festivals.',
-        iconName: 'Tv',
-        highlight: 'Weekly Social Gatherings',
-        status: 'proposed'
-      },
-      {
-        title: 'Senior Mobility Swimming Pool',
-        subtitle: '10\' × 12\' heated hydrotherapy pool designed for low-impact joint movement.',
-        iconName: 'Radio',
-        highlight: 'Zero-Impact Swimming',
-        status: 'proposed'
-      },
-      {
-        title: '64 Residential Plots (Blocks A–F)',
-        subtitle: 'Plots from 120 to 425 sq. yd. along 33ft wide roads with 5ft-6ft green belts.',
-        iconName: 'Users',
-        highlight: 'Build Your Own Home',
-        status: 'proposed'
-      }
+    phase: 'Phase 03',
+    title: 'Civil Infrastructure & Hospital Structure',
+    timeline: 'Proposed Execution',
+    status: 'upcoming',
+    description: 'Underground utility network, 33ft road paving, and G+2 hospital civil structure execution.',
+    deliverables: [
+      'Underground water, sewage, and electricity ducts',
+      'G+2 Hospital structure construction',
+      'Community Mandir foundation'
+    ]
+  },
+  {
+    phase: 'Phase 04',
+    title: 'Turnkey Handover & Community Living',
+    timeline: 'Planned Handover',
+    status: 'upcoming',
+    description: 'Turnkey possession of freehold plots, senior residences, and operational Ayurvedic hospital.',
+    deliverables: [
+      'Registry & possession handover',
+      'Doctor OPDs & Panchakarma clinic operational',
+      'Resident wellness & daily mandir aarti'
     ]
   }
 ];
 
 // ============================================================================
-// 13. DEVELOPMENT ROADMAP
+// 13. HOSPITAL ARCHITECTURAL FLOORS (CAD REFERENCE)
 // ============================================================================
-export const developmentRoadmap: RoadmapMilestone[] = [
+export const propertyFloors: PropertyFloor[] = [
   {
-    phase: 'Phase 01',
-    title: 'Land Demarcation & Architectural Planning',
-    timeline: 'Completed • The Vision Architects',
-    status: 'completed',
-    description: '30,000 sq. ft. G+2 Hospital drawings (117\'-10" × 138\') and 64-plot township master plan finalized.',
-    deliverables: [
-      'Approved CAD floor plans for Floor 1, 2, and 3',
-      '64 residential plots layout across Blocks A–F',
-      'Universal senior accessibility and road design audits'
+    id: 'ground',
+    level: 1,
+    name: 'Ground Floor — OPD Chambers, Triage & Diagnostics',
+    tagline: 'Direct Street Access • 6 OPDs • Triage Bay',
+    description: '6 Doctor OPD consultation rooms, emergency response triage bay, diagnostics lab, and pharmacy.',
+    totalAreaSqFt: 10000,
+    unitIds: ['opd-1', 'pancha-suite', 'emergency-bay'],
+    zones: [
+      {
+        name: 'Doctor OPD Chambers (6 Suites)',
+        category: 'clinical',
+        badge: '6 Rooms',
+        description: 'Geriatric physician consultation rooms with diagnostic stations and waiting lounge.'
+      },
+      {
+        name: 'Emergency Response & Triage Bay',
+        category: 'clinical',
+        badge: 'Immediate Care',
+        description: 'Direct ambulance ingress and immediate medical stabilization bay.'
+      },
+      {
+        name: 'Panchakarma Consultation Chamber',
+        category: 'wellness',
+        badge: 'Vaidya Desk',
+        description: 'Ayurvedic pulse diagnosis and comprehensive wellness assessment.'
+      }
     ]
   },
   {
-    phase: 'Phase 02',
-    title: 'Groundwork & Road Infrastructure',
-    timeline: 'In Progress • Active Milestone',
-    status: 'in-progress',
-    description: '33ft main road demarcations, perimeter green buffers, and foundation piling for hospital structure.',
-    deliverables: [
-      'Site foundation & boundary wall execution',
-      'Phase 1 plot allocations opened for Block A to Block F',
-      'Active sales desk at Sector-45 Gurugram'
+    id: 'first',
+    level: 2,
+    name: 'First Floor — Panchakarma & Therapy Suites',
+    tagline: '9 Dedicated Suites • Shirodhara & Abhyanga',
+    description: '9 Dedicated therapy suites for authentic Kerala Abhyanga, Shirodhara, and steam detox.',
+    totalAreaSqFt: 10000,
+    unitIds: ['therapy-1', 'therapy-2'],
+    zones: [
+      {
+        name: 'Shirodhara & Medicated Oil Suites',
+        category: 'wellness',
+        badge: '4 Suites',
+        description: 'Quiet herbal oil stream therapy chambers for mental serenity and sleep restoration.'
+      },
+      {
+        name: 'Full-Body Abhyanga & Steam Detox',
+        category: 'wellness',
+        badge: '5 Suites',
+        description: 'Herbal massage tables for senior joint mobility, spine care, and arthritis relief.'
+      }
     ]
   },
   {
-    phase: 'Phase 03',
-    title: 'Hospital Superstructure & Apartment Fit-outs',
-    timeline: 'Upcoming • Q1 2027',
-    status: 'upcoming',
-    description: 'G+2 structural framework, medical gas piping, elevator installations, and stilt apartment framing.',
-    deliverables: [
-      'G+2 concrete frame & rooftop auditorium deck',
-      'Panchakarma timber suites fabrication',
-      '2 Lifts per building installation'
-    ]
-  },
-  {
-    phase: 'Phase 04',
-    title: 'Hospital Activation & Township Handover',
-    timeline: 'Target • Q4 2027',
-    status: 'upcoming',
-    description: 'Possession of plots & apartments, full activation of Ayurvedic hospital, and Mandir inauguration.',
-    deliverables: [
-      'Plot registries and home construction handovers',
-      'Ayurvedic hospital OPD & emergency triage launch',
-      'Community Mandir pran pratishtha ceremony'
+    id: 'second',
+    level: 3,
+    name: 'Second Floor — Inpatient Suites & Wellness Deck',
+    tagline: 'Private Suites • Yoga Hall • Open Amphitheater',
+    description: 'Private recovery suites, yoga & meditation hall, and 50-seat open amphitheater on terrace.',
+    totalAreaSqFt: 10000,
+    unitIds: ['inpatient-1', 'yoga-hall'],
+    zones: [
+      {
+        name: 'Private Inpatient Suites',
+        category: 'residential',
+        badge: 'Private Rooms',
+        description: 'Comfortable recovery rooms with attached senior-safe bathrooms.'
+      },
+      {
+        name: 'Pranayama, Yoga & Amphitheater',
+        category: 'lifestyle',
+        badge: 'Community Space',
+        description: 'Gentle morning senior yoga, breathing exercises, and cultural satsang gatherings.'
+      }
     ]
   }
 ];
@@ -1299,15 +1117,15 @@ export const propertyFaqs = [
   },
   {
     question: 'Is this an old age home or a freehold property?',
-    answer: 'This is a premium freehold plotted township and senior apartment community. You own the plot or apartment outright, with full legal registration, while enjoying an integrated on-site 30,000 sq. ft. G+2 Ayurvedic Hospital, Mandir, and senior-safe infrastructure.'
+    answer: 'This is a premium freehold plotted township and senior apartment community. You own the plot or apartment outright, with full legal registration, while enjoying an integrated on-site proposed 30,000 sq. ft. G+2 Ayurvedic Hospital, Mandir, and senior-safe infrastructure.'
   },
   {
-    question: 'Which residential units are currently available for booking?',
-    answer: 'For the current Phase 1 launch, Ground Floor Units (Residence 01, Residence 02, and Residence 03) and select plots across Blocks A to F are available for booking. Units 04 to 09 (First and Second Floors) will be released in future phases.'
+    question: 'Which residential units and plots are currently available for booking?',
+    answer: 'For the current Phase 1 launch, Ground Floor Units (Residence 01, Residence 02, and Residence 03) and select freehold plots across Blocks A to F are available for booking. Units 04 to 09 (First and Second Floors) will be released in future phases.'
   },
   {
-    question: 'What facilities are planned in the on-site G+2 Hospital building?',
-    answer: 'The planned 30,000 sq. ft. hospital building includes Dialysis, OT, ICU, CT Scan, MRI, Cathlab, 9 Private Inpatient Rooms, 4 Semi-Private Rooms, 6 Doctor OPDs, 2 Pharmacy stores, 9 Panchakarma therapy suites, a 54\'×49\' Yoga center, a 50-seat open amphitheater, swimming pool, library, and cafeteria.'
+    question: 'What facilities are planned in the on-site Hospital building?',
+    answer: 'The planned 30,000 sq. ft. hospital building includes 6 Doctor OPDs, 9 Panchakarma therapy suites, a multi-purpose yoga hall, emergency response bay, pharmacy stores, a 50-seat open amphitheater, swimming pool, library, and cafeteria.'
   },
   {
     question: 'Can I get a home loan or finance for plots and apartments?',
@@ -1315,6 +1133,6 @@ export const propertyFaqs = [
   },
   {
     question: 'How do I schedule an on-site visit or talk to an advisor?',
-    answer: 'You can connect directly with our advisory desk on WhatsApp or Call at +91 99999558447 or visit our corporate office at Yoffices Tower, Opp. Ramada Hotel, Sector-45 Gurugram, Haryana.'
+    answer: 'You can connect directly with our advisory desk on WhatsApp or Call at +91 99999558447 or visit our corporate office at Yoffices Tower, Opp. Ramada Hotel, Sector-45 Gurugram, Haryana. We also arrange car pickup from Delhi NCR.'
   }
 ];

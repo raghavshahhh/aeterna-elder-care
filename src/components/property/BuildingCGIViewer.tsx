@@ -57,244 +57,204 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs text-[#C58F58] font-bold uppercase tracking-widest">
             <Building2 className="w-3.5 h-3.5" />
-            Interactive Building Explorer
+            9-Unit Senior Residence Building
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-normal tracking-tight text-[#FAF8F5]">
-            See What We&apos;re <span className="italic font-serif text-[#C58F58]">Building.</span>
+            Choose Your <span className="italic font-serif text-[#C58F58]">Senior Residence.</span>
           </h2>
           <p className="text-sm sm:text-base text-white/75 leading-relaxed">
-            Explore the 4-level senior residential building. Select a floor below to inspect the 9 residences, stilt car parking, dual elevators, and proposed layouts.
+            G+2 residential building with stilt parking and two lifts. Units 01, 02, and 03 on the Ground Floor are currently open for Phase 1 booking.
           </p>
         </div>
 
-        {/* 4-Tier Floor Switcher */}
-        <div className="flex justify-center mb-10">
-          <div className="inline-flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-            <button
-              onClick={() => handleFloorSelect('second')}
-              className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${
-                selectedFloor === 'second'
-                  ? 'bg-[#2C5E50] text-white shadow-lg'
-                  : 'text-white/70 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              <span>Second Floor (07–09)</span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-white/10 text-white/80">Coming Soon</span>
-            </button>
-
-            <button
-              onClick={() => handleFloorSelect('first')}
-              className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${
-                selectedFloor === 'first'
-                  ? 'bg-[#2C5E50] text-white shadow-lg'
-                  : 'text-white/70 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              <span>First Floor (04–06)</span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-white/10 text-white/80">Coming Soon</span>
-            </button>
-
-            <button
-              onClick={() => handleFloorSelect('ground')}
-              className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 ${
-                selectedFloor === 'ground'
-                  ? 'bg-[#2C5E50] text-white shadow-lg ring-2 ring-emerald-400/40'
-                  : 'text-emerald-300 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Ground Floor (01–03)</span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">🟢 Available</span>
-            </button>
-
-            <button
-              onClick={() => handleFloorSelect('stilt')}
-              className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${
-                selectedFloor === 'stilt'
-                  ? 'bg-[#2C5E50] text-white shadow-lg'
-                  : 'text-white/70 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              <Car className="w-3.5 h-3.5" />
-              <span>Stilt Parking Level</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Main Interactive Elevation + Floor Plan Showcase */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          {/* Left: Proposed Architectural 3D Render Display */}
-          <div className="lg:col-span-6 relative rounded-3xl overflow-hidden border border-white/15 bg-[#071519] shadow-2xl min-h-[380px] sm:min-h-[460px] flex flex-col justify-between p-6 sm:p-8 group">
-            <Image
-              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85"
-              alt="Proposed G+2 Senior Residences Architectural 3D Render"
-              fill
-              className="object-cover object-center opacity-80 group-hover:scale-102 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#071519] via-transparent to-[#071519]/50" />
-
-            {/* Top Label */}
-            <div className="relative z-10 flex items-center justify-between">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/15 text-[11px] text-[#C58F58] font-mono">
-                <Sparkles className="w-3 h-3 text-[#C58F58]" />
-                <span>Proposed Design • Artist Impression</span>
+        {/* 4-Tier Building Elevation Matrix */}
+        <div className="max-w-4xl mx-auto mb-12 bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8 backdrop-blur-md space-y-4">
+          {/* Second Floor */}
+          <div
+            onClick={() => handleFloorSelect('second')}
+            className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col sm:flex-row items-center justify-between gap-4 ${
+              selectedFloor === 'second'
+                ? 'bg-[#2C5E50]/40 border-[#C58F58] ring-1 ring-[#C58F58]'
+                : 'bg-white/5 border-white/10 hover:bg-white/10'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <span className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center font-bold text-xs font-mono">
+                2F
+              </span>
+              <div>
+                <h4 className="text-sm font-bold text-white">Second Floor (Units 07, 08, 09)</h4>
+                <p className="text-xs text-white/60">Top-floor sky suites with open horizon views</p>
               </div>
-              <span className="text-xs font-mono text-white/70 bg-black/50 px-2.5 py-1 rounded">
-                Structure: G+2 + Stilt
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] px-2.5 py-1 rounded-full bg-white/10 text-white/80 font-mono">
+                ⏳ Future Release (Phase 3)
               </span>
             </div>
+          </div>
 
-            {/* Bottom Visual Highlights */}
-            <div className="relative z-10 space-y-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 font-mono block">
-                {selectedFloor === 'ground' ? 'CURRENT FOCUS // GROUND FLOOR' : selectedFloor === 'first' ? 'UPCOMING // FIRST FLOOR' : selectedFloor === 'second' ? 'UPCOMING // SECOND FLOOR' : 'GROUND INFRASTRUCTURE // STILT PARKING'}
+          {/* First Floor */}
+          <div
+            onClick={() => handleFloorSelect('first')}
+            className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col sm:flex-row items-center justify-between gap-4 ${
+              selectedFloor === 'first'
+                ? 'bg-[#2C5E50]/40 border-[#C58F58] ring-1 ring-[#C58F58]'
+                : 'bg-white/5 border-white/10 hover:bg-white/10'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <span className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center font-bold text-xs font-mono">
+                1F
               </span>
-              <h3 className="text-2xl font-serif-heading font-bold text-white">
-                {selectedFloor === 'ground' ? 'Ground Level Residences (01, 02, 03)' : selectedFloor === 'first' ? 'First Floor Residences (04, 05, 06)' : selectedFloor === 'second' ? 'Second Floor Sky Suites (07, 08, 09)' : 'Stilt Parking & Dual Lifts'}
-              </h3>
-              <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
-                {selectedFloor === 'ground'
-                  ? 'Zero-step barrier-free access. Direct pedestrian connection to the on-site hospital and Mandir.'
-                  : selectedFloor === 'first'
-                  ? 'Elevated quiet suites with dual lift access and open countryside views.'
-                  : selectedFloor === 'second'
-                  ? 'Top-tier floor with direct access to rooftop recreation, pool, and open amphitheater.'
-                  : 'Open, ventilated ground level with 10+ covered car parks, dual elevator lobbies, and gradual stairs.'}
-              </p>
+              <div>
+                <h4 className="text-sm font-bold text-white">First Floor (Units 04, 05, 06)</h4>
+                <p className="text-xs text-white/60">Elevated residences overlooking tree canopy</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] px-2.5 py-1 rounded-full bg-white/10 text-white/80 font-mono">
+                ⏳ Future Release (Phase 2)
+              </span>
+            </div>
+          </div>
+
+          {/* Ground Floor (ACTIVE LAUNCH) */}
+          <div
+            onClick={() => handleFloorSelect('ground')}
+            className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col sm:flex-row items-center justify-between gap-4 ${
+              selectedFloor === 'ground'
+                ? 'bg-[#2C5E50] border-emerald-400 shadow-xl ring-2 ring-emerald-400/40'
+                : 'bg-emerald-950/40 border-emerald-500/40 hover:bg-emerald-900/40'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <span className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center font-bold text-xs font-mono text-white">
+                GF
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm font-bold text-white">Ground Floor (Units 01, 02, 03)</h4>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-400 text-emerald-950">
+                    🟢 CURRENT RELEASE
+                  </span>
+                </div>
+                <p className="text-xs text-white/80 mt-0.5">Barrier-free ground access straight from garden walkway</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-xs font-bold text-emerald-300">
+              <span>View 3 Units →</span>
             </div>
           </div>
 
-          {/* Right: Floor Units & Interactive Unit Selector */}
-          <div className="lg:col-span-6 flex flex-col justify-between space-y-4">
-            {selectedFloor === 'stilt' ? (
-              <div className="p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md space-y-5 h-full flex flex-col justify-between">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#C58F58] flex items-center gap-1.5">
-                      <Car className="w-4 h-4" /> Stilt Infrastructure
-                    </span>
-                    <span className="text-xs text-white/60 font-mono">10+ Covered Bays</span>
-                  </div>
-
-                  <h4 className="text-2xl font-serif-heading font-bold text-white">
-                    Breathing Room Below
-                  </h4>
-                  <p className="text-xs sm:text-sm text-white/75 leading-relaxed">
-                    The ground level is open, shaded, and ventilated. Three entry gates allow smooth vehicular entry while leaving walking paths 100% pedestrian-safe.
-                  </p>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                    <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10">
-                      <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Two 5×6ft Lifts
-                      </div>
-                      <p className="text-[11px] text-white/60 mt-1">Accommodates wheelchairs, walkers, and attendants comfortably.</p>
-                    </div>
-                    <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10">
-                      <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Gradual Senior Stairs
-                      </div>
-                      <p className="text-[11px] text-white/60 mt-1">10" tread, 6" rise for easy, knee-safe climbing.</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs">
-                  <span className="text-white/60">Ready to explore residences?</span>
-                  <button
-                    onClick={() => handleFloorSelect('ground')}
-                    className="text-[#C58F58] font-bold hover:underline flex items-center gap-1"
-                  >
-                    View Ground Floor (01–03) →
-                  </button>
-                </div>
+          {/* Stilt Level */}
+          <div
+            onClick={() => handleFloorSelect('stilt')}
+            className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col sm:flex-row items-center justify-between gap-4 ${
+              selectedFloor === 'stilt'
+                ? 'bg-[#2C5E50]/40 border-[#C58F58] ring-1 ring-[#C58F58]'
+                : 'bg-white/5 border-white/10 hover:bg-white/10'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <span className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center font-bold text-xs font-mono">
+                ST
+              </span>
+              <div>
+                <h4 className="text-sm font-bold text-white">Stilt Parking &amp; Dual Elevators Level</h4>
+                <p className="text-xs text-white/60">10+ Covered car parks, 3 security entry gates, 2 wheelchair lifts</p>
               </div>
-            ) : (
-              <div className="p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md space-y-5 h-full flex flex-col justify-between">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#C58F58] flex items-center gap-1.5">
-                      <Layers className="w-4 h-4" />
-                      {selectedFloor === 'ground' ? 'Ground Floor (Phase 1 Release)' : `${selectedFloor.charAt(0).toUpperCase() + selectedFloor.slice(1)} Floor (Future Release)`}
-                    </span>
-                    <span className="text-xs text-white/60 font-mono">3 Units on Floor</span>
-                  </div>
-
-                  <p className="text-xs text-white/70">
-                    Click any residence below to inspect measured room dimensions, 2D floor plans, and proposed 3D interior renderings.
-                  </p>
-
-                  {/* 3 Unit Cards */}
-                  <div className="space-y-3">
-                    {currentUnits.map((unit) => {
-                      const isAvail = unit.status === 'available';
-                      return (
-                        <div
-                          key={unit.id}
-                          onClick={() => handleUnitClick(unit)}
-                          className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-4 group ${
-                            isAvail
-                              ? 'bg-white/10 hover:bg-white/15 border-emerald-500/40 hover:border-emerald-400 shadow-md'
-                              : 'bg-white/5 hover:bg-white/10 border-white/10 hover:border-[#C58F58]/40'
-                          }`}
-                        >
-                          <div className="flex items-center gap-3.5">
-                            <div
-                              className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold font-serif-heading text-sm ${
-                                isAvail ? 'bg-emerald-500/20 text-emerald-300' : 'bg-white/10 text-white/70'
-                              }`}
-                            >
-                              {unit.code}
-                            </div>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <h5 className="font-bold text-white text-sm group-hover:text-[#C58F58] transition-colors">
-                                  {unit.unitNumber}
-                                </h5>
-                                <span
-                                  className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded ${
-                                    isAvail
-                                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                                      : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                                  }`}
-                                >
-                                  {isAvail ? '🟢 Available' : '⏳ Coming Soon'}
-                                </span>
-                              </div>
-                              <div className="text-[11px] text-white/60 mt-0.5">
-                                {unit.typeName} • ~{unit.superAreaSqFt} sq. ft. • {unit.facing}
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="text-right shrink-0">
-                            <span className="text-xs text-[#C58F58] group-hover:text-white font-semibold flex items-center gap-1">
-                              View Specs <ChevronRight className="w-3.5 h-3.5" />
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Footer Helper */}
-                <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs text-white/60">
-                  <span>💡 <em>Units 01–03 currently open for booking. Units 04–09 are future release.</em></span>
-                  <button
-                    onClick={() => openWhatsApp({ actionType: 'general', message: 'Please share the complete 9-unit residential building brochure...' })}
-                    className="text-[#C58F58] font-bold hover:underline"
-                  >
-                    Request Brochure (PDF) →
-                  </button>
-                </div>
-              </div>
-            )}
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] px-2.5 py-1 rounded-full bg-white/10 text-white/80 font-mono">
+                Included with Units
+              </span>
+            </div>
           </div>
         </div>
+
+        {/* Units Grid for Selected Floor */}
+        {selectedFloor !== 'stilt' ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {currentUnits.map((unit) => {
+              const isAvail = unit.status === 'available';
+              return (
+                <div
+                  key={unit.id}
+                  onClick={() => handleUnitClick(unit)}
+                  className={`rounded-3xl border p-6 transition-all duration-300 cursor-pointer flex flex-col justify-between group ${
+                    isAvail
+                      ? 'bg-white/10 hover:bg-white/15 border-emerald-500/50 hover:border-emerald-400 hover:scale-[1.02] shadow-xl'
+                      : 'bg-white/5 border-white/10 opacity-75'
+                  }`}
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono uppercase text-[#C58F58] font-bold">
+                        {unit.typeName}
+                      </span>
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                          isAvail ? 'bg-emerald-500 text-white' : 'bg-white/10 text-white/70'
+                        }`}
+                      >
+                        {isAvail ? 'Available' : 'Future Phase'}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h3 className="text-2xl font-serif-heading font-bold text-white group-hover:text-[#C58F58] transition-colors">
+                        {unit.unitNumber}
+                      </h3>
+                      <p className="text-xs text-white/60 mt-1">
+                        ~{unit.superAreaSqFt} sq. ft. Built (~{unit.carpetAreaSqFt} sq. ft. Carpet)
+                      </p>
+                    </div>
+
+                    <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+                      <div className="text-[10px] text-white/60 uppercase font-mono">Pre-Launch Price</div>
+                      <div className="text-lg font-bold text-white font-serif-heading">
+                        {unit.priceDisplay}
+                      </div>
+                      <div className="text-[10px] text-emerald-400 flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3" /> Includes Stilt Parking &amp; Lift Access
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5 text-xs text-white/70">
+                      <div className="flex items-center gap-1.5">
+                        <Compass className="w-3.5 h-3.5 text-[#C58F58]" />
+                        <span>Facing: {unit.facing}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Zero-threshold senior bath &amp; grab bars</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#C58F58] group-hover:translate-x-1 transition-transform">
+                    <span>Inspect Unit Layout</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="max-w-3xl mx-auto p-8 rounded-3xl bg-white/5 border border-white/10 text-center space-y-4">
+            <Car className="w-10 h-10 text-[#C58F58] mx-auto" />
+            <h3 className="text-xl font-serif-heading font-bold text-white">
+              Stilt Car Parking &amp; Dual Elevator Lobby
+            </h3>
+            <p className="text-xs sm:text-sm text-white/70 leading-relaxed max-w-xl mx-auto">
+              10+ Dedicated covered car parking bays with 3 separate vehicle ingress/egress gates, 2 wheelchair-accessible elevators connecting directly to all residential floors.
+            </p>
+          </div>
+        )}
       </div>
 
-      {/* Unit Detail Modal / Drawer */}
+      {/* Unit Detail Drawer */}
       <UnitDetailDrawer
         unit={selectedUnitForDrawer}
         isOpen={isDrawerOpen}

@@ -15,7 +15,8 @@ import {
   MessageSquare,
   Building2,
   Trees,
-  Navigation
+  Navigation,
+  BadgePercent
 } from 'lucide-react';
 
 interface PlotDetailDrawerProps {
@@ -43,6 +44,7 @@ Block: ${plot.block}
 Size: ${plot.sizeSqYd} sq. yd. (${plot.dimensions})
 Facing: ${plot.facing}
 Road: ${plot.roadWidth}
+Indicative Price: ${plot.priceEstimate}
 Please share pricing, payment milestones, and plot layout.`;
 
     openWhatsApp({
@@ -121,6 +123,22 @@ Please share pricing, payment milestones, and plot layout.`;
               )}
             </div>
 
+            {/* Price Banner */}
+            <div className="p-4 rounded-2xl bg-[#0D2329] text-white flex items-center justify-between">
+              <div>
+                <span className="text-[10px] uppercase font-mono tracking-wider text-[#C58F58]">
+                  Indicative Pre-Launch Price
+                </span>
+                <div className="text-xl font-bold font-serif-heading text-white">
+                  {plot.priceEstimate}
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="text-[10px] text-white/60 block">Registration Ready</span>
+                <span className="text-xs font-bold text-emerald-400">Clear Title Freehold</span>
+              </div>
+            </div>
+
             {/* Plot Specifications Matrix */}
             <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8] space-y-3.5 text-xs">
               <div className="flex items-center justify-between pb-2 border-b border-[#E8E2D8]">
@@ -157,7 +175,7 @@ Please share pricing, payment milestones, and plot layout.`;
               <div className="space-y-2 text-xs text-[#53676E]">
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>3-minute walk to on-site 30,000 sq. ft. G+2 Ayurvedic Hospital</span>
+                  <span>3-minute walk to on-site proposed 30,000 sq. ft. Ayurvedic Hospital</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
@@ -198,36 +216,29 @@ Please share pricing, payment milestones, and plot layout.`;
             ) : isHold ? (
               <button
                 onClick={handleWhatsAppEnquiry}
-                className="w-full py-4 rounded-2xl bg-[#C58F58] hover:bg-[#B07A46] text-white text-sm font-bold transition-all shadow-md flex items-center justify-center gap-2"
+                className="w-full py-4 rounded-2xl bg-amber-700 hover:bg-amber-800 text-white text-sm font-bold transition-all flex items-center justify-center gap-2"
               >
                 <Clock className="w-4 h-4" />
-                Register Backup Interest for {plot.plotNumber} →
+                Register for Waitlist on {plot.plotNumber} →
               </button>
             ) : (
-              <button
-                onClick={() => {
-                  openWhatsApp({ actionType: 'general', message: `Plot ${plot.number} is sold. Please share available plots in ${plot.block}...` });
-                  onClose();
-                }}
-                className="w-full py-3.5 rounded-2xl bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs font-semibold transition-all flex items-center justify-center gap-2"
-              >
-                View Other Available Plots in {plot.block} →
-              </button>
+              <div className="text-center py-3 text-xs text-[#53676E] bg-[#FAF8F5] rounded-2xl border border-[#E8E2D8]">
+                This plot has already been alloted. Please check adjacent plots in {plot.block}.
+              </div>
             )}
 
             <button
               onClick={() => {
+                onClose();
                 openLeadDrawer({
                   title: `Schedule Site Visit for ${plot.plotNumber} (${plot.block})`,
-                  unitName: `${plot.plotNumber} (${plot.sizeSqYd} sq.yd.)`,
-                  unitType: 'Residential Plot',
-                  actionType: 'book-site-visit'
+                  actionType: 'book-site-visit',
+                  unitName: plot.plotNumber
                 });
-                onClose();
               }}
-              className="w-full py-3 rounded-2xl text-xs text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5] transition-all font-medium text-center"
+              className="w-full py-3.5 rounded-2xl bg-white border border-[#E8E2D8] hover:bg-[#FAF8F5] text-[#0D2329] text-xs font-bold transition-all text-center"
             >
-              Schedule Site Visit to Kheri Asra
+              Schedule Site Walk in Kheri Asra
             </button>
           </div>
         </div>
