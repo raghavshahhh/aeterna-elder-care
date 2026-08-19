@@ -5,7 +5,12 @@ import {
   PropertyFloor,
   EcosystemPillar,
   LocationLandmark,
-  RoadmapMilestone
+  RoadmapMilestone,
+  CoreValue,
+  DeepBenefit,
+  PaymentPlan,
+  LoanParameter,
+  ArchitectProfile
 } from '@/types';
 
 // ============================================================================
@@ -15,12 +20,13 @@ export const projectOverview = {
   name: 'Senior Living Citizen Foundation',
   legalName: 'Senior Living Citizen Foundation · Haryana',
   tagline: 'A Better Place for the People Who Raised You.',
-  subtitle: 'An upcoming pre-launch senior-living community and on-site Ayurvedic hospital designed around comfort, accessibility, wellness, and peace of mind.',
+  subtitle: 'A purpose-built plotted senior community with on-site Ayurvedic hospital near Reliance MET City, SH-22 Jhajjar, Haryana.',
+  visionStatement: 'A small, plotted township where the corner shop knows your name, the doctor lives next door, and the mandir is a five-minute walk away.',
   locationShort: 'Near Reliance MET City, SH-22, Kheri Asra, Jhajjar, Haryana 124104',
   googleMapsUrl: 'https://maps.app.goo.gl/bpqroduFspTJVqDfA?g_st=ic',
   googleMapsPlusCode: 'MP5G+4X Kheri Asra, Haryana 124104',
   siteOfficeAddress: 'Yoffices Tower, Opp. Ramada Hotel, Sector-45 Gurugram, Haryana',
-  architectFirm: 'The Vision Architects, Farrukhnagar, Gurugram 122506',
+  architectFirm: 'The Vision Architects & Consultants, Farrukhnagar, Gurugram 122506',
   projectStage: 'Upcoming Project • Architectural & Pre-Launch Planning',
   totalPlots: 64,
   plotBlocks: '6 Blocks (Block A to Block F)',
@@ -37,7 +43,189 @@ export const projectOverview = {
 };
 
 // ============================================================================
-// 2. 9 RESIDENTIAL BUILDING UNITS (STILT + GROUND + FIRST + SECOND FLOORS)
+// 2. FOUR CORE VALUES (FROM OFFICIAL FOUNDATION STORY)
+// ============================================================================
+export const coreValues: CoreValue[] = [
+  {
+    num: '01',
+    title: 'Health First',
+    description: 'The 30,000 sqft Multi-Speciality Ayurvedic Hospital is on the property — not nearby, not planned in another sector, but right here from day one.'
+  },
+  {
+    num: '02',
+    title: 'Dignity of Ownership',
+    description: 'You own freehold land, in your name, registered. No society politics, no maintenance disputes, no lifts that break down without recourse.'
+  },
+  {
+    num: '03',
+    title: 'Community by Design',
+    description: 'A township shaped for the same chapter of life. Walkable roads, a nearby mandir, and neighbours living at the same unhurried pace.'
+  },
+  {
+    num: '04',
+    title: 'Designed for the Body',
+    description: 'Wide 4ft doors, level access, gradual stairs (10" tread, 6" rise), two lifts per building. Built for the body you have at 65, 75, and beyond.'
+  }
+];
+
+// ============================================================================
+// 3. EIGHT DEEP BENEFITS (NOT A RETIREMENT HOME. YOUR OWN LAND.)
+// ============================================================================
+export const deepBenefits: DeepBenefit[] = [
+  {
+    num: '01',
+    title: 'The hospital is inside the gate.',
+    description: 'A 30,000 sqft Multi-Speciality Ayurvedic Hospital on the property — not across town, not nearby, but here. For anyone living into their seventies or eighties, the difference between a five-minute walk to the doctor and a forty-minute drive through traffic is the difference between living confidently and living anxiously.'
+  },
+  {
+    num: '02',
+    title: 'You own land. That changes the inheritance.',
+    description: 'A plotted property transfers cleanly. No society approval. No co-owners to negotiate with. Your children inherit a registered piece of land with a clear title. Haryana\'s real estate markets along the SH-22 corridor near Reliance MET City have seen strong appreciation.'
+  },
+  {
+    num: '03',
+    title: 'Neighbours who understand your pace.',
+    description: 'In a city building, your downstairs neighbour might run a business from home at 11pm. Here, everyone has chosen the same chapter of life. The community that forms in a purposeful senior township is genuinely different — quieter, more patient, and watchful.'
+  },
+  {
+    num: '04',
+    title: 'A body-first design from the foundation up.',
+    description: '6" stair risers instead of 7". 4ft-wide stairwells so someone can walk beside you. Two lifts per building. Single-floor living inside every apartment — no internal steps, no split levels. Wide roads built for walking, not just vehicles.'
+  },
+  {
+    num: '05',
+    title: 'The mandir is a five-minute walk.',
+    description: 'A community temple sited at the western edge of the township, accessible from every plot without a vehicle. Morning aarti, festival days, a quiet afternoon — faith integrated into the daily geography of life.'
+  },
+  {
+    num: '06',
+    title: 'Connectivity without chaos.',
+    description: 'On the SH-22 corridor between Jhajjar and Bahadurgarh — quiet enough for a slow morning, connected enough for a Tuesday hospital visit in Gurugram. Village Chhudani for daily essentials, Reliance MET City for larger needs.'
+  },
+  {
+    num: '07',
+    title: 'Your garden. Your outdoor morning.',
+    description: 'A plotted home gives you outdoor space in your name. Not a balcony overlooking a road, not a rooftop shared with twelve floors — your front and back garden to sit in, to tend, and to fill with what you love.'
+  },
+  {
+    num: '08',
+    title: 'A clean structure that banks understand.',
+    description: 'Plotted properties with clear titles and freehold ownership are among the simplest assets to finance and to sell. Major Indian banks and NBFCs offer home loans against plotted developments at competitive rates.'
+  }
+];
+
+// ============================================================================
+// 4. COMPARISON: REGULAR CITY FLAT VS SENIOR LIVING FOUNDATION
+// ============================================================================
+export const comparisonPoints = {
+  cityFlat: [
+    'Neighbour noise through shared walls',
+    'Lifts that break, stairs that hurt knees (7" rise)',
+    'Hospital 40 minutes away in city traffic',
+    'Society politics and maintenance disputes',
+    'No outdoor private garden space',
+    'No sense of community — strangers at every floor'
+  ],
+  seniorLiving: [
+    'Your plot, your land, your registered boundary wall',
+    'Two lifts + gradual stairs (10" tread, 6" rise), senior-designed',
+    '30k sqft Hospital on the property — same gate',
+    'Freehold land, clear title, clean generational transfer',
+    'Your private garden & 5ft–6ft green buffer belts',
+    'Neighbours at the same chapter of life & daily mandir'
+  ]
+};
+
+// ============================================================================
+// 5. FINANCE, HOME LOANS & PAYMENT PLANS
+// ============================================================================
+export const paymentPlans: PaymentPlan[] = [
+  {
+    id: 'plan-a',
+    code: 'Plan A',
+    title: 'Down Payment Plan',
+    ratio: '30:70',
+    description: 'Best for buyers arranging finance against the booking. Minimal outflow upfront.',
+    steps: [
+      { milestone: 'On Booking', percentage: '10%' },
+      { milestone: 'Within 30 Days', percentage: '20%' },
+      { milestone: 'On Possession', percentage: '70%' }
+    ]
+  },
+  {
+    id: 'plan-b',
+    code: 'Plan B',
+    title: 'Construction-Linked Plan',
+    ratio: '50:50',
+    description: 'Spread payments as construction progresses. Most popular choice among families.',
+    badge: 'Most Popular',
+    steps: [
+      { milestone: 'On Booking', percentage: '20%' },
+      { milestone: 'Foundation Complete', percentage: '15%' },
+      { milestone: 'Structure Complete', percentage: '15%' },
+      { milestone: 'On Possession', percentage: '50%' }
+    ]
+  },
+  {
+    id: 'plan-c',
+    code: 'Plan C',
+    title: 'Full Payment Plan',
+    ratio: '100%',
+    description: 'Full payment within 30 days of booking. Best rates, priority plot selection, and special upfront discount.',
+    badge: 'Special Discount',
+    highlight: 'Special discount on full payment. Ask our advisory desk.',
+    steps: [
+      { milestone: 'On Booking (Within 30 Days)', percentage: '100%' }
+    ]
+  }
+];
+
+export const loanParameters: LoanParameter[] = [
+  { parameter: 'Loan-to-Value (LTV)', detail: 'Up to 75–80% of property value', highlight: true },
+  { parameter: 'Minimum Loan Amount', detail: '₹5 Lakhs' },
+  { parameter: 'Maximum Tenure', detail: 'Up to 30 years', highlight: true },
+  { parameter: 'Eligibility Age', detail: 'Up to 70 years at loan maturity' },
+  { parameter: 'Income Proof', detail: 'Salary slips / ITR (3 years)' },
+  { parameter: 'Processing Fee', detail: '0.5% – 1% of loan amount' },
+  { parameter: 'Part Prepayment', detail: 'Free (floating rate loans)' },
+  { parameter: 'Foreclosure', detail: 'Free after 6 months' }
+];
+
+export const taxBenefits = [
+  {
+    section: 'Section 80C',
+    title: 'Principal Repayment Deduction',
+    benefit: 'Up to ₹1.5 Lakhs per financial year on principal loan repayment.'
+  },
+  {
+    section: 'Section 24(b)',
+    title: 'Interest Payment Deduction',
+    benefit: 'Up to ₹2.0 Lakhs per financial year on interest paid for self-occupied home.'
+  }
+];
+
+// ============================================================================
+// 6. ARCHITECT & CREDENTIALS
+// ============================================================================
+export const architectProfile: ArchitectProfile = {
+  firmName: 'The Vision Architects & Consultants',
+  principalArchitect: 'Ar. Yash Garg',
+  credentials: 'B.Arch, M.Arch',
+  studioAddress: 'Near Civil Hospital, Farrukhnagar, Gurugram 122506',
+  phone: '+91 99999558447',
+  email: 'Yoffices@gmail.com',
+  services: [
+    'Architectural Design & Master Planning',
+    'Interior Design & Turnkey Fit-Outs',
+    'Exterior & Landscape Architecture',
+    'Structural Consultancy & Engineering',
+    'Valuation Services',
+    'Vastu Consultancy'
+  ]
+};
+
+// ============================================================================
+// 7. 9 RESIDENTIAL BUILDING UNITS (STILT + GROUND + FIRST + SECOND FLOORS)
 // ============================================================================
 export const buildingUnits: BuildingUnit[] = [
   // GROUND FLOOR: UNITS 01, 02, 03 (CURRENT RELEASE FOCUS - AVAILABLE)
@@ -526,15 +714,13 @@ export const buildingUnits: BuildingUnit[] = [
 ];
 
 // ============================================================================
-// 3. 64 RESIDENTIAL PLOTS DATA (BLOCKS A TO F)
+// 8. 64 RESIDENTIAL PLOTS DATA (BLOCKS A TO F)
 // ============================================================================
 export const allPlots: PlotItem[] = Array.from({ length: 64 }, (_, i) => {
   const num = i + 1;
   const blockIndex = Math.floor(i / 11);
   const block = (['Block A', 'Block B', 'Block C', 'Block D', 'Block E', 'Block F'][blockIndex] || 'Block A') as PlotItem['block'];
   
-  // Real-world realistic distribution:
-  // ~42 Available (green), ~12 On Hold (amber), ~10 Sold (muted red)
   const isSold = [4, 12, 19, 27, 33, 41, 48, 52, 59, 63].includes(num);
   const isHold = [8, 15, 23, 31, 38, 46, 50, 56, 61].includes(num);
   const status: PlotItem['status'] = isSold ? 'sold' : isHold ? 'on_hold' : 'available';
@@ -586,7 +772,7 @@ export const plotsSummary = {
 };
 
 // ============================================================================
-// 4. EXACT 3-FLOOR CAD HOSPITAL & WELLNESS INFRASTRUCTURE (117'-10" x 138')
+// 9. EXACT 3-FLOOR CAD HOSPITAL & WELLNESS INFRASTRUCTURE (117'-10" x 138')
 // ============================================================================
 export const propertyFloors: PropertyFloor[] = [
   {
@@ -781,7 +967,7 @@ export const propertyFloors: PropertyFloor[] = [
 ];
 
 // ============================================================================
-// 5. 1 RK & 1 BHK APARTMENT CONFIGURATIONS SHOWCASE
+// 10. 1 RK & 1 BHK APARTMENT CONFIGURATIONS SHOWCASE
 // ============================================================================
 export const residenceUnits: ResidenceUnit[] = [
   {
@@ -896,7 +1082,7 @@ export const residenceUnits: ResidenceUnit[] = [
 ];
 
 // ============================================================================
-// 6. REAL LOCATION & CONNECTIVITY (KHERI ASRA / JHAJJAR / RELIANCE MET CITY)
+// 11. REAL LOCATION & CONNECTIVITY (KHERI ASRA / JHAJJAR / RELIANCE MET CITY)
 // ============================================================================
 export const locationLandmarks: LocationLandmark[] = [
   {
@@ -930,7 +1116,7 @@ export const locationLandmarks: LocationLandmark[] = [
 ];
 
 // ============================================================================
-// 7. "CARE WHEN IT MATTERS" — HEALTHCARE & WELLNESS SANCTUARY (PROPOSED)
+// 12. "CARE WHEN IT MATTERS" — HEALTHCARE & WELLNESS SANCTUARY (PROPOSED)
 // ============================================================================
 export const ecosystemPillars: EcosystemPillar[] = [
   {
@@ -1050,7 +1236,7 @@ export const ecosystemPillars: EcosystemPillar[] = [
 ];
 
 // ============================================================================
-// 8. DEVELOPMENT ROADMAP
+// 13. DEVELOPMENT ROADMAP
 // ============================================================================
 export const developmentRoadmap: RoadmapMilestone[] = [
   {
@@ -1104,7 +1290,7 @@ export const developmentRoadmap: RoadmapMilestone[] = [
 ];
 
 // ============================================================================
-// 9. FAQS (TAILORED FOR FAMILIES, SONS, DAUGHTERS & NRIS)
+// 14. FAQS (TAILORED FOR FAMILIES, SONS, DAUGHTERS & NRIS)
 // ============================================================================
 export const propertyFaqs = [
   {
@@ -1122,6 +1308,10 @@ export const propertyFaqs = [
   {
     question: 'What facilities are planned in the on-site G+2 Hospital building?',
     answer: 'The planned 30,000 sq. ft. hospital building includes Dialysis, OT, ICU, CT Scan, MRI, Cathlab, 9 Private Inpatient Rooms, 4 Semi-Private Rooms, 6 Doctor OPDs, 2 Pharmacy stores, 9 Panchakarma therapy suites, a 54\'×49\' Yoga center, a 50-seat open amphitheater, swimming pool, library, and cafeteria.'
+  },
+  {
+    question: 'Can I get a home loan or finance for plots and apartments?',
+    answer: 'Yes. Major Indian banks and NBFCs offer home loans for plotted development up to 75–80% LTV with tenures up to 30 years. Three structured payment plans (Plan A 30:70, Plan B 50:50, and Plan C 100%) are available.'
   },
   {
     question: 'How do I schedule an on-site visit or talk to an advisor?',

@@ -3,11 +3,15 @@
 import React, { useState } from 'react';
 import { DroneHero } from '@/components/property/DroneHero';
 import { EmotionalFamilyStory } from '@/components/property/EmotionalFamilyStory';
+import { ValuesAndVision } from '@/components/property/ValuesAndVision';
 import { LocationConnectivity } from '@/components/property/LocationConnectivity';
 import { BuildingCGIViewer } from '@/components/property/BuildingCGIViewer';
 import { MasterPlanExplorer } from '@/components/property/MasterPlanExplorer';
 import { ResidenceUnitExplorer } from '@/components/property/ResidenceUnitExplorer';
+import { WhySeniorLivingBenefits } from '@/components/property/WhySeniorLivingBenefits';
 import { EcosystemShowcase } from '@/components/property/EcosystemShowcase';
+import { FinancePaymentPlans } from '@/components/property/FinancePaymentPlans';
+import { ArchitectSection } from '@/components/property/ArchitectSection';
 import { DevelopmentRoadmap } from '@/components/property/DevelopmentRoadmap';
 import { AvailabilityMatrix } from '@/components/property/AvailabilityMatrix';
 import { propertyFaqs, projectOverview } from '@/data/propertyData';
@@ -47,31 +51,43 @@ export default function HomePage() {
       {/* 2. EMOTIONAL FAMILY STORY & SUKOON PROMISE */}
       <EmotionalFamilyStory />
 
-      {/* 3. REAL LOCATION & CONNECTIVITY */}
+      {/* 3. FOUNDATION VALUES & VISION STATEMENT */}
+      <ValuesAndVision />
+
+      {/* 4. REAL LOCATION & CONNECTIVITY */}
       <LocationConnectivity />
 
-      {/* 4. PROPOSED 3D ARCHITECTURAL EXTERIOR ELEVATION */}
+      {/* 5. PROPOSED 3D ARCHITECTURAL EXTERIOR ELEVATION */}
       <BuildingCGIViewer onSelectFloor={handleFloorSelectFromCGI} />
 
-      {/* 5. INTERACTIVE MASTER PLAN & CAD FLOOR EXPLORER */}
+      {/* 6. INTERACTIVE MASTER PLAN & CAD FLOOR EXPLORER */}
       <MasterPlanExplorer
         selectedFloorId={selectedFloor}
         onSelectUnit={handleUnitSelectFromMasterPlan}
       />
 
-      {/* 6. 1 RK & 1 BHK RESIDENCE VISUALIZER (2D BLUEPRINT + 3D INTERIOR CGI) */}
+      {/* 7. 1 RK & 1 BHK RESIDENCE VISUALIZER (2D BLUEPRINT + 3D INTERIOR CGI) */}
       <ResidenceUnitExplorer initialUnitId={selectedUnit} />
 
-      {/* 7. MODULAR 3-PILLAR ECOSYSTEM (HEALTHCARE, AYURVEDA, LIFESTYLE) */}
+      {/* 8. NOT A RETIREMENT HOME: 8 DEEP BENEFITS & COMPARISON */}
+      <WhySeniorLivingBenefits />
+
+      {/* 9. MODULAR 3-PILLAR ECOSYSTEM (HEALTHCARE, AYURVEDA, LIFESTYLE) */}
       <EcosystemShowcase />
 
-      {/* 8. DEVELOPMENT ROADMAP (FROM VISION TO REALITY) */}
+      {/* 10. FINANCE, HOME LOANS & 3 PAYMENT PLANS */}
+      <FinancePaymentPlans />
+
+      {/* 11. ARCHITECT CREDENTIALS & THE VISION ARCHITECTS */}
+      <ArchitectSection />
+
+      {/* 12. DEVELOPMENT ROADMAP (FROM VISION TO REALITY) */}
       <DevelopmentRoadmap />
 
-      {/* 9. 64 PLOTS AVAILABILITY MATRIX & EARLY RESERVATION */}
+      {/* 13. 64 PLOTS AVAILABILITY MATRIX & EARLY RESERVATION */}
       <AvailabilityMatrix />
 
-      {/* 10. PROPERTY SPECIFIC FAQS */}
+      {/* 14. PROPERTY SPECIFIC FAQS */}
       <section className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E8E2D8]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-3 mb-14">
@@ -83,7 +99,7 @@ export default function HomePage() {
               Everything You Need to <span className="italic font-serif text-[#C58F58]">Know.</span>
             </h2>
             <p className="text-xs sm:text-sm text-[#53676E] max-w-xl mx-auto">
-              Clear answers regarding pre-launch booking, on-premise medical infrastructure, unit dimensions, and site visits.
+              Clear answers regarding pre-launch booking, home loans, on-premise medical infrastructure, unit dimensions, and site visits.
             </p>
           </div>
 
@@ -116,7 +132,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 11. FINAL CONVERSION BANNER */}
+      {/* 15. FINAL CONVERSION BANNER */}
       <section className="py-20 bg-[#071519] text-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-xs font-bold text-[#C58F58] uppercase tracking-wider">

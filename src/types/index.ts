@@ -388,3 +388,51 @@ export interface RoadmapMilestone {
   description: string;
   deliverables: string[];
 }
+
+// ----------------------------------------------------
+// Official Foundation Models & Content Extensions
+// ----------------------------------------------------
+
+export interface CoreValue {
+  num: string;
+  title: string;
+  description: string;
+}
+
+export interface DeepBenefit {
+  num: string;
+  title: string;
+  description: string;
+}
+
+export interface PaymentPlanStep {
+  milestone: string;
+  percentage: string;
+}
+
+export interface PaymentPlan {
+  id: string;
+  code: string;
+  title: string;
+  ratio: string;
+  description: string;
+  steps: PaymentPlanStep[];
+  badge?: string;
+  highlight?: string;
+}
+
+export interface LoanParameter {
+  parameter: string;
+  detail: string;
+  highlight?: boolean;
+}
+
+export interface ArchitectProfile {
+  firmName: string;
+  principalArchitect: string;
+  credentials: string;
+  studioAddress: string;
+  phone: string;
+  email: string;
+  services: string[];
+}

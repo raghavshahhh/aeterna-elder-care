@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/context/ToastContext';
 import { useModal } from '@/context/ModalContext';
-import { projectOverview } from '@/data/propertyData';
+import { projectOverview, architectProfile } from '@/data/propertyData';
 import {
   Heart,
   Phone,
@@ -14,11 +14,9 @@ import {
   Award,
   CheckCircle2,
   ArrowRight,
-  Send,
   MessageSquare,
   Building2,
   Compass,
-  Layers,
   Sparkles,
   ExternalLink
 } from 'lucide-react';
@@ -41,7 +39,7 @@ export const Footer: React.FC = () => {
 
     showToast({
       title: 'Subscribed to Senior Living Citizen Updates!',
-      description: 'You will receive monthly construction progress reports and plot allocation notices.',
+      description: 'You will receive construction progress reports and plot allotment notices.',
       type: 'success'
     });
     setEmail('');
@@ -78,7 +76,7 @@ export const Footer: React.FC = () => {
             </div>
             <div>
               <h5 className="font-bold text-white text-sm">Community Mandir</h5>
-              <p className="text-white/60 text-[11px] mt-0.5">Sacred temple within walking distance</p>
+              <p className="text-white/60 text-[11px] mt-0.5">Sacred temple within 5-min walk</p>
             </div>
           </div>
 
@@ -164,15 +162,30 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Column 2: Navigation Links */}
+          {/* Column 2: Project Links */}
           <div className="lg:col-span-2 space-y-4">
             <h4 className="text-xs font-bold uppercase tracking-wider text-[#C58F58]">
-              The Project
+              Project
             </h4>
             <ul className="space-y-2.5 text-xs text-white/70">
               <li>
-                <Link href="/#location" className="hover:text-white transition-colors">
-                  Location &amp; Map
+                <Link href="/plots" className="hover:text-white transition-colors">
+                  Available Plots (64 Plots)
+                </Link>
+              </li>
+              <li>
+                <Link href="/apartments" className="hover:text-white transition-colors">
+                  Apartments (1 BHK / 1 RK)
+                </Link>
+              </li>
+              <li>
+                <Link href="/amenities" className="hover:text-white transition-colors">
+                  Amenities &amp; Hospital
+                </Link>
+              </li>
+              <li>
+                <Link href="/location" className="hover:text-white transition-colors">
+                  Location &amp; Connectivity
                 </Link>
               </li>
               <li>
@@ -180,59 +193,44 @@ export const Footer: React.FC = () => {
                   Hospital CAD Blueprints
                 </Link>
               </li>
+            </ul>
+          </div>
+
+          {/* Column 3: Information Links */}
+          <div className="lg:col-span-3 space-y-4">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#C58F58]">
+              Information
+            </h4>
+            <ul className="space-y-2.5 text-xs text-white/70">
               <li>
-                <Link href="/#unit-explorer" className="hover:text-white transition-colors">
-                  1BHK &amp; 2BHK Apartments
+                <Link href="/about" className="hover:text-white transition-colors">
+                  About Our Foundation
                 </Link>
               </li>
               <li>
-                <Link href="/#availability" className="hover:text-white transition-colors">
-                  64 Plots Inventory
+                <Link href="/benefits" className="hover:text-white transition-colors">
+                  8 Core Foundation Benefits
                 </Link>
               </li>
               <li>
-                <Link href="/#ecosystem" className="hover:text-white transition-colors">
-                  Ayurvedic Hospital
+                <Link href="/finance" className="hover:text-white transition-colors">
+                  Finance &amp; Payment Plans
                 </Link>
               </li>
               <li>
                 <Link href="/#roadmap" className="hover:text-white transition-colors">
-                  Development Milestones
+                  Development Roadmap
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-white transition-colors">
+                  Book a Site Walkthrough
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Column 3: Township Infrastructure */}
-          <div className="lg:col-span-3 space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-[#C58F58]">
-              Key Infrastructure
-            </h4>
-            <ul className="space-y-2.5 text-xs text-white/70">
-              <li className="flex items-center justify-between">
-                <span>30,000 Sqft Ayurvedic Hospital</span>
-                <span className="text-[10px] text-emerald-400 font-mono">G+2</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span>64 Residential Plots</span>
-                <span className="text-[10px] text-emerald-400 font-mono">Blocks A–F</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span>Senior Apartments</span>
-                <span className="text-[10px] text-emerald-400 font-mono">1 &amp; 2 BHK</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span>Community Mandir</span>
-                <span className="text-[10px] text-amber-400 font-mono">Western Edge</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span>50-Seat Amphitheater</span>
-                <span className="text-[10px] text-amber-400 font-mono">Rooftop</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Column 4: Newsletter & Dossier Request */}
+          {/* Column 4: Newsletter & Contact */}
           <div className="lg:col-span-3 space-y-4">
             <h4 className="text-xs font-bold uppercase tracking-wider text-[#C58F58]">
               Township Dossier
@@ -280,7 +278,7 @@ export const Footer: React.FC = () => {
               © {new Date().getFullYear()} {projectOverview.legalName}. All rights reserved.
             </div>
             <div>
-              Architecture by <strong>The Vision Architects</strong>, Farrukhnagar, Gurugram 122506
+              Architecture by <strong>The Vision Architects &amp; Consultants</strong>, Farrukhnagar, Gurugram 122506
             </div>
           </div>
         </div>

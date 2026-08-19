@@ -14,14 +14,14 @@ import {
   PhoneCall,
   MessageSquare,
   Calendar,
-  Compass,
+  ChevronDown,
   Building2,
-  Layers,
-  Sparkles,
-  ShieldCheck,
-  CheckCircle2,
   Home,
-  MapPin
+  MapPin,
+  Sparkles,
+  BadgePercent,
+  Activity,
+  Layers
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -30,6 +30,8 @@ export const Navbar: React.FC = () => {
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [projectDropdownOpen, setProjectDropdownOpen] = useState(false);
+  const [infoDropdownOpen, setInfoDropdownOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,6 +44,8 @@ export const Navbar: React.FC = () => {
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
+    setProjectDropdownOpen(false);
+    setInfoDropdownOpen(false);
   }, [pathname]);
 
   return (
@@ -58,7 +62,7 @@ export const Navbar: React.FC = () => {
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5 group focus:outline-none shrink-0">
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#0D2329] text-[#FBF9F5] flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-            <Heart className="w-4 h-4 sm:w-5 sm:h-5 fill-[#C58F58] text-[#C58F58] animate-heart-beat" />
+            <Heart className="w-4 h-4 sm:w-5 sm:h-5 fill-[#C58F58] text-[#C58F58]" />
           </div>
           <div className="leading-tight">
             <span className="text-base sm:text-xl font-serif-heading font-extrabold tracking-tight text-[#0D2329]">
@@ -73,54 +77,135 @@ export const Navbar: React.FC = () => {
         {/* Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center gap-1 xl:gap-2 text-xs font-semibold text-[#0D2329]">
           <Link
-            href="/#location"
-            className="px-3.5 py-1.5 rounded-full hover:bg-[#FAF8F5] text-[#53676E] hover:text-[#0D2329] transition-colors"
+            href="/"
+            className={cn(
+              'px-3.5 py-1.5 rounded-full transition-colors',
+              pathname === '/' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
+            )}
           >
-            Location &amp; Map
+            Home
           </Link>
+
           <Link
-            href="/#building-vision"
-            className="px-3.5 py-1.5 rounded-full hover:bg-[#FAF8F5] text-[#53676E] hover:text-[#0D2329] transition-colors"
+            href="/about"
+            className={cn(
+              'px-3.5 py-1.5 rounded-full transition-colors',
+              pathname === '/about' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
+            )}
           >
-            Building Explorer
+            About Us
           </Link>
-          <Link
-            href="/#master-plan"
-            className="px-3.5 py-1.5 rounded-full hover:bg-[#FAF8F5] text-[#53676E] hover:text-[#0D2329] transition-colors"
+
+          {/* Project Dropdown */}
+          <div
+            className="relative"
+            onMouseEnter={() => setProjectDropdownOpen(true)}
+            onMouseLeave={() => setProjectDropdownOpen(false)}
           >
-            Hospital CAD Plans
-          </Link>
-          <Link
-            href="/#availability"
-            className="px-3.5 py-1.5 rounded-full hover:bg-[#FAF8F5] text-[#2C5E50] hover:text-[#1D4B57] transition-colors font-bold flex items-center gap-1"
+            <button
+              className={cn(
+                'px-3.5 py-1.5 rounded-full transition-colors flex items-center gap-1',
+                ['/plots', '/apartments', '/amenities', '/location'].includes(pathname)
+                  ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]'
+                  : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
+              )}
+            >
+              <span>Project</span>
+              <ChevronDown className="w-3.5 h-3.5" />
+            </button>
+
+            {projectDropdownOpen && (
+              <div className="absolute top-full left-0 mt-1 w-52 bg-white rounded-2xl border border-[#E8E2D8] shadow-2xl p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                <Link
+                  href="/plots"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors"
+                >
+                  <span>🏡</span>
+                  <span>Plots &amp; Inventory</span>
+                </Link>
+                <Link
+                  href="/apartments"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors"
+                >
+                  <span>🏢</span>
+                  <span>Apartments (1 BHK/1 RK)</span>
+                </Link>
+                <Link
+                  href="/amenities"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors"
+                >
+                  <span>🏥</span>
+                  <span>Amenities &amp; Hospital</span>
+                </Link>
+                <Link
+                  href="/location"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors"
+                >
+                  <span>📍</span>
+                  <span>Location &amp; Connectivity</span>
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Info Dropdown */}
+          <div
+            className="relative"
+            onMouseEnter={() => setInfoDropdownOpen(true)}
+            onMouseLeave={() => setInfoDropdownOpen(false)}
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            64 Plots Map
-          </Link>
+            <button
+              className={cn(
+                'px-3.5 py-1.5 rounded-full transition-colors flex items-center gap-1',
+                ['/finance', '/benefits'].includes(pathname)
+                  ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]'
+                  : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
+              )}
+            >
+              <span>Info</span>
+              <ChevronDown className="w-3.5 h-3.5" />
+            </button>
+
+            {infoDropdownOpen && (
+              <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-2xl border border-[#E8E2D8] shadow-2xl p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                <Link
+                  href="/finance"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors"
+                >
+                  <span>💰</span>
+                  <span>Finance Available</span>
+                </Link>
+                <Link
+                  href="/benefits"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors"
+                >
+                  <span>✨</span>
+                  <span>8 Core Benefits</span>
+                </Link>
+              </div>
+            )}
+          </div>
+
           <Link
-            href="/#unit-explorer"
-            className="px-3.5 py-1.5 rounded-full hover:bg-[#FAF8F5] text-[#0D2329] hover:text-[#2C5E50] transition-colors font-bold flex items-center gap-1.5"
+            href="/contact"
+            className={cn(
+              'px-3.5 py-1.5 rounded-full transition-colors',
+              pathname === '/contact' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
+            )}
           >
-            <Home className="w-3.5 h-3.5 text-[#C58F58]" />
-            1 RK &amp; 1 BHK
-          </Link>
-          <Link
-            href="/#ecosystem"
-            className="px-3.5 py-1.5 rounded-full hover:bg-[#FAF8F5] text-[#53676E] hover:text-[#0D2329] transition-colors"
-          >
-            Ayurveda &amp; Mandir
+            Contact
           </Link>
         </nav>
 
         {/* Action CTAs */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <button
-            onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizen Foundation...' })}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#2C5E50]/10 hover:bg-[#2C5E50]/20 text-[#2C5E50] text-xs font-bold transition-colors"
+          <a
+            href={`tel:${projectOverview.siteOfficePhone}`}
+            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FAF8F5] hover:bg-[#EAF2EE] text-[#0D2329] text-xs font-mono font-bold transition-colors border border-[#E8E2D8]"
           >
-            <MessageSquare className="w-3.5 h-3.5" />
-            <span>WhatsApp Desk</span>
-          </button>
+            <PhoneCall className="w-3.5 h-3.5 text-[#C58F58]" />
+            <span>{projectOverview.siteOfficePhone}</span>
+          </a>
 
           <Button
             size="sm"
@@ -128,7 +213,7 @@ export const Navbar: React.FC = () => {
             onClick={() => openLeadDrawer({ title: 'Schedule Site Visit to Kheri Asra, Jhajjar', actionType: 'book-site-visit' })}
             leftIcon={<Calendar className="w-3.5 h-3.5 text-[#C58F58]" />}
           >
-            Book Site Walk
+            Book Visit
           </Button>
 
           {/* Mobile Hamburger Button */}
@@ -154,83 +239,105 @@ export const Navbar: React.FC = () => {
             </div>
             <button
               onClick={() => setMobileMenuOpen(false)}
-              className="p-1 rounded-full text-[#53676E] hover:bg-[#FAF8F5]"
+              className="p-1 rounded-lg text-[#53676E] hover:text-[#0D2329]"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
           </div>
 
-          <div className="py-4 space-y-3 text-sm font-semibold text-[#0D2329]">
+          <div className="py-4 space-y-2 text-sm font-semibold">
             <Link
-              href="/#location"
+              href="/"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between p-2 rounded-xl hover:bg-[#FAF8F5]"
+              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
             >
-              <span>Real Location &amp; Connectivity</span>
-              <span className="text-xs text-[#53676E]">Kheri Asra</span>
+              Home
             </Link>
             <Link
-              href="/#building-vision"
+              href="/about"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between p-2 rounded-xl hover:bg-[#FAF8F5]"
+              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
             >
-              <span>Building Explorer (G+2 + Stilt)</span>
-              <span className="text-xs text-[#C58F58]">9 Residences</span>
+              About Us
+            </Link>
+            <div className="pt-2 border-t border-[#E8E2D8] text-[10px] font-mono uppercase tracking-widest text-[#53676E] px-3">
+              Project
+            </div>
+            <Link
+              href="/plots"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
+            >
+              🏡 Plots &amp; Inventory (64 Plots)
             </Link>
             <Link
-              href="/#master-plan"
+              href="/apartments"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between p-2 rounded-xl hover:bg-[#FAF8F5]"
+              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
             >
-              <span>Hospital CAD Floor Plans</span>
-              <span className="text-xs text-[#53676E]">30k sq.ft.</span>
+              🏢 Apartments (1 BHK / 1 RK)
             </Link>
             <Link
-              href="/#availability"
+              href="/amenities"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between p-2 rounded-xl hover:bg-[#FAF8F5] text-[#2C5E50] font-bold"
+              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
             >
-              <span>64 Plots Master Plan Map</span>
-              <span className="text-xs px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Available</span>
+              🏥 Amenities &amp; 30k Sqft Hospital
             </Link>
             <Link
-              href="/#unit-explorer"
+              href="/location"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between p-2 rounded-xl hover:bg-[#FAF8F5]"
+              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
             >
-              <span>1 RK &amp; 1 BHK Residences</span>
-              <span className="text-xs text-[#53676E]">Floor Plans</span>
+              📍 Location (Reliance MET City, SH-22)
+            </Link>
+
+            <div className="pt-2 border-t border-[#E8E2D8] text-[10px] font-mono uppercase tracking-widest text-[#53676E] px-3">
+              Information
+            </div>
+            <Link
+              href="/finance"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
+            >
+              💰 Finance &amp; Home Loans
             </Link>
             <Link
-              href="/#ecosystem"
+              href="/benefits"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between p-2 rounded-xl hover:bg-[#FAF8F5]"
+              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
             >
-              <span>Healthcare, Ayurveda &amp; Mandir</span>
-              <span className="text-xs text-[#53676E]">Pillars</span>
+              ✨ 8 Core Benefits
+            </Link>
+            <Link
+              href="/contact"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
+            >
+              Contact Us
             </Link>
           </div>
 
-          <div className="pt-4 border-t border-[#E8E2D8] space-y-2">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizen Foundation...' });
-              }}
-              className="w-full py-3.5 rounded-2xl bg-[#2C5E50] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md"
-            >
-              <MessageSquare className="w-4 h-4" />
-              Chat on WhatsApp (+91 99999558447)
-            </button>
-            <button
+          <div className="pt-4 border-t border-[#E8E2D8] flex flex-col gap-2">
+            <Button
+              className="w-full bg-[#2C5E50] hover:bg-[#1D4B57] text-white py-3 text-xs font-bold"
               onClick={() => {
                 setMobileMenuOpen(false);
                 openLeadDrawer({ title: 'Schedule Site Visit to Kheri Asra, Jhajjar', actionType: 'book-site-visit' });
               }}
-              className="w-full py-3 rounded-2xl bg-[#FAF8F5] text-[#0D2329] text-xs font-bold border border-[#E8E2D8] text-center"
             >
-              Schedule Private Site Walk
-            </button>
+              Book a Site Visit
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full border-[#2C5E50] text-[#2C5E50] py-3 text-xs font-bold"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizen Foundation...' });
+              }}
+            >
+              Chat on WhatsApp
+            </Button>
           </div>
         </div>
       )}
