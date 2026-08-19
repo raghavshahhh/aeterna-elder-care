@@ -5,18 +5,16 @@ import Image from 'next/image';
 import { useModal } from '@/context/ModalContext';
 import {
   Heart,
-  ShieldCheck,
   CheckCircle2,
   Trees,
   Activity,
   Sparkles,
-  Calendar,
   MessageSquare,
   ArrowRight
 } from 'lucide-react';
 
 export const EmotionalFamilyStory: React.FC = () => {
-  const { openWhatsApp, openLeadDrawer } = useModal();
+  const { openWhatsApp } = useModal();
 
   return (
     <section className="py-20 sm:py-24 bg-white border-b border-[#E8E2D8] relative overflow-hidden">
@@ -35,20 +33,21 @@ export const EmotionalFamilyStory: React.FC = () => {
           </p>
         </div>
 
-        {/* 3 Emotional Solution Cards */}
+        {/* 3 Emotional Solution Cards with Generated Photorealistic Images */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Card 1: Clean Air & Walking */}
           <div className="bg-[#FAF8F5] rounded-3xl border border-[#E8E2D8] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
-            <div className="relative h-56 w-full bg-[#0D2329] overflow-hidden">
+            <div className="relative h-60 w-full bg-[#0D2329] overflow-hidden">
               <Image
-                src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=800&q=80"
-                alt="Indian elderly couple walking in clean green open garden"
+                src="/images/indian-garden-walking.jpg"
+                alt="Indian elderly couple walking peacefully on green garden pathway"
                 fill
+                sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0D2329]/80 via-transparent to-transparent" />
               <div className="absolute bottom-4 left-4 right-4">
-                <span className="px-2.5 py-1 rounded-md bg-emerald-700/90 text-white text-[11px] font-bold">
+                <span className="px-2.5 py-1 rounded-md bg-emerald-700/90 text-white text-[11px] font-bold shadow-sm">
                   Zero Traffic &bull; Pure Air
                 </span>
               </div>
@@ -73,16 +72,17 @@ export const EmotionalFamilyStory: React.FC = () => {
 
           {/* Card 2: Doctor Next Door */}
           <div className="bg-[#FAF8F5] rounded-3xl border border-[#E8E2D8] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
-            <div className="relative h-56 w-full bg-[#0D2329] overflow-hidden">
+            <div className="relative h-60 w-full bg-[#0D2329] overflow-hidden">
               <Image
-                src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80"
-                alt="Hospital and doctor care for senior citizens"
+                src="/images/indian-hospital-care.jpg"
+                alt="Senior Indian doctor attending to elderly parents in hospital"
                 fill
+                sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0D2329]/80 via-transparent to-transparent" />
               <div className="absolute bottom-4 left-4 right-4">
-                <span className="px-2.5 py-1 rounded-md bg-rose-700/90 text-white text-[11px] font-bold">
+                <span className="px-2.5 py-1 rounded-md bg-rose-700/90 text-white text-[11px] font-bold shadow-sm">
                   30,000 Sq. Ft. Hospital On-Site
                 </span>
               </div>
@@ -107,16 +107,17 @@ export const EmotionalFamilyStory: React.FC = () => {
 
           {/* Card 3: Mandir & Sacred Peace */}
           <div className="bg-[#FAF8F5] rounded-3xl border border-[#E8E2D8] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
-            <div className="relative h-56 w-full bg-[#0D2329] overflow-hidden">
+            <div className="relative h-60 w-full bg-[#0D2329] overflow-hidden">
               <Image
-                src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=80"
-                alt="Spiritual peace and sacred mandir community for elders"
+                src="/images/indian-mandir-prayer.jpg"
+                alt="Indian senior couple praying peacefully inside community Mandir"
                 fill
+                sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0D2329]/80 via-transparent to-transparent" />
               <div className="absolute bottom-4 left-4 right-4">
-                <span className="px-2.5 py-1 rounded-md bg-amber-700/90 text-white text-[11px] font-bold">
+                <span className="px-2.5 py-1 rounded-md bg-amber-700/90 text-white text-[11px] font-bold shadow-sm">
                   Community Mandir
                 </span>
               </div>

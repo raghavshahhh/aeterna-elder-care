@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useModal } from '@/context/ModalContext';
@@ -12,7 +12,6 @@ import {
   Menu,
   X,
   PhoneCall,
-  MessageSquare,
   Calendar,
   ChevronDown,
   Building2,
@@ -26,12 +25,13 @@ import {
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
-  const { openWhatsApp, openLeadDrawer } = useModal();
+  const { openLeadDrawer } = useModal();
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [projectDropdownOpen, setProjectDropdownOpen] = useState(false);
-  const [infoDropdownOpen, setInfoDropdownOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<'project' | 'info' | null>(null);
+
+  const navRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,19 +41,34 @@ export const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on route change
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Close all menus on route change
   useEffect(() => {
     setMobileMenuOpen(false);
-    setProjectDropdownOpen(false);
-    setInfoDropdownOpen(false);
+    setOpenDropdown(null);
   }, [pathname]);
 
+  const toggleDropdown = (name: 'project' | 'info') => {
+    setOpenDropdown((prev) => (prev === name ? null : name));
+  };
+
   return (
-    <header className="sticky top-0 z-50 w-full px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 transition-all duration-300 pointer-events-none">
+    <header className="sticky top-0 z-50 w-full px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 transition-all duration-300">
       {/* Floating Rounded Capsule Navbar Container */}
       <div
+        ref={navRef}
         className={cn(
-          'max-w-7xl mx-auto rounded-full transition-all duration-300 pointer-events-auto px-4 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between gap-3 border shadow-sm',
+          'max-w-7xl mx-auto rounded-full transition-all duration-300 px-4 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between gap-3 border shadow-sm relative',
           isScrolled
             ? 'bg-white/95 backdrop-blur-xl border-[#E2D7C5] shadow-[0_10px_35px_-5px_rgba(13,35,41,0.12)]'
             : 'bg-white/90 backdrop-blur-md border-[#E8E2D8] shadow-[0_4px_20px_rgba(13,35,41,0.05)]'
@@ -97,89 +112,91 @@ export const Navbar: React.FC = () => {
           </Link>
 
           {/* Project Dropdown */}
-          <div
-            className="relative"
-            onMouseEnter={() => setProjectDropdownOpen(true)}
-            onMouseLeave={() => setProjectDropdownOpen(false)}
-          >
+          <div className="relative">
             <button
+              type="button"
+              onClick={() => toggleDropdown('project')}
               className={cn(
-                'px-3.5 py-1.5 rounded-full transition-colors flex items-center gap-1',
-                ['/plots', '/apartments', '/amenities', '/location'].includes(pathname)
+                'px-3.5 py-1.5 rounded-full transition-colors flex items-center gap-1.5 cursor-pointer',
+                ['/plots', '/apartments', '/amenities', '/location'].includes(pathname) || openDropdown === 'project'
                   ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]'
                   : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
               )}
             >
               <span>Project</span>
-              <ChevronDown className="w-3.5 h-3.5" />
+              <ChevronDown className={cn('w-3.5 h-3.5 transition-transform duration-200', openDropdown === 'project' ? 'rotate-180 text-[#2C5E50]' : '')} />
             </button>
 
-            {projectDropdownOpen && (
-              <div className="absolute top-full left-0 mt-1 w-52 bg-white rounded-2xl border border-[#E8E2D8] shadow-2xl p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+            {openDropdown === 'project' && (
+              <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-2xl border border-[#E8E2D8] shadow-2xl p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                 <Link
                   href="/plots"
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors"
+                  onClick={() => setOpenDropdown(null)}
+                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors font-medium"
                 >
-                  <span>🏡</span>
+                  <Layers className="w-4 h-4 text-[#2C5E50]" />
                   <span>Plots &amp; Inventory</span>
                 </Link>
                 <Link
                   href="/apartments"
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors"
+                  onClick={() => setOpenDropdown(null)}
+                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors font-medium"
                 >
-                  <span>🏢</span>
-                  <span>Apartments (1 BHK/1 RK)</span>
+                  <Home className="w-4 h-4 text-[#C58F58]" />
+                  <span>Apartments (1 BHK / 1 RK)</span>
                 </Link>
                 <Link
                   href="/amenities"
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors"
+                  onClick={() => setOpenDropdown(null)}
+                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors font-medium"
                 >
-                  <span>🏥</span>
+                  <Activity className="w-4 h-4 text-emerald-600" />
                   <span>Amenities &amp; Hospital</span>
                 </Link>
                 <Link
                   href="/location"
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors"
+                  onClick={() => setOpenDropdown(null)}
+                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors font-medium"
                 >
-                  <span>📍</span>
-                  <span>Location &amp; Connectivity</span>
+                  <MapPin className="w-4 h-4 text-[#C58F58]" />
+                  <span>Location &amp; Map</span>
                 </Link>
               </div>
             )}
           </div>
 
           {/* Info Dropdown */}
-          <div
-            className="relative"
-            onMouseEnter={() => setInfoDropdownOpen(true)}
-            onMouseLeave={() => setInfoDropdownOpen(false)}
-          >
+          <div className="relative">
             <button
+              type="button"
+              onClick={() => toggleDropdown('info')}
               className={cn(
-                'px-3.5 py-1.5 rounded-full transition-colors flex items-center gap-1',
-                ['/finance', '/benefits'].includes(pathname)
+                'px-3.5 py-1.5 rounded-full transition-colors flex items-center gap-1.5 cursor-pointer',
+                ['/finance', '/benefits'].includes(pathname) || openDropdown === 'info'
                   ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]'
                   : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
               )}
             >
               <span>Info</span>
-              <ChevronDown className="w-3.5 h-3.5" />
+              <ChevronDown className={cn('w-3.5 h-3.5 transition-transform duration-200', openDropdown === 'info' ? 'rotate-180 text-[#2C5E50]' : '')} />
             </button>
 
-            {infoDropdownOpen && (
-              <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-2xl border border-[#E8E2D8] shadow-2xl p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+            {openDropdown === 'info' && (
+              <div className="absolute top-full left-0 mt-2 w-52 bg-white rounded-2xl border border-[#E8E2D8] shadow-2xl p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                 <Link
                   href="/finance"
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors"
+                  onClick={() => setOpenDropdown(null)}
+                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors font-medium"
                 >
-                  <span>💰</span>
+                  <BadgePercent className="w-4 h-4 text-[#2C5E50]" />
                   <span>Finance Available</span>
                 </Link>
                 <Link
                   href="/benefits"
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors"
+                  onClick={() => setOpenDropdown(null)}
+                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs text-[#0D2329] hover:bg-[#FAF8F5] hover:text-[#2C5E50] transition-colors font-medium"
                 >
-                  <span>✨</span>
+                  <Sparkles className="w-4 h-4 text-[#C58F58]" />
                   <span>8 Core Benefits</span>
                 </Link>
               </div>
@@ -218,8 +235,9 @@ export const Navbar: React.FC = () => {
 
           {/* Mobile Hamburger Button */}
           <button
+            type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-full text-[#0D2329] hover:bg-[#FAF8F5] transition-colors focus:outline-none"
+            className="lg:hidden p-2 rounded-full text-[#0D2329] hover:bg-[#FAF8F5] transition-colors focus:outline-none cursor-pointer"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -229,7 +247,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-4 top-20 z-50 bg-white/95 backdrop-blur-xl border border-[#E8E2D8] rounded-3xl shadow-2xl p-6 pointer-events-auto animate-in fade-in zoom-in-95 duration-200">
+        <div className="lg:hidden fixed inset-x-4 top-20 z-50 bg-white/98 backdrop-blur-2xl border border-[#E8E2D8] rounded-3xl shadow-2xl p-6 animate-in fade-in zoom-in-95 duration-200 max-h-[85vh] overflow-y-auto">
           <div className="flex items-center justify-between pb-4 border-b border-[#E8E2D8]">
             <div className="flex items-center gap-2">
               <Heart className="w-4 h-4 fill-[#C58F58] text-[#C58F58]" />
@@ -238,8 +256,9 @@ export const Navbar: React.FC = () => {
               </span>
             </div>
             <button
+              type="button"
               onClick={() => setMobileMenuOpen(false)}
-              className="p-1 rounded-lg text-[#53676E] hover:text-[#0D2329]"
+              className="p-1.5 rounded-lg text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]"
             >
               <X className="w-5 h-5" />
             </button>
@@ -249,70 +268,77 @@ export const Navbar: React.FC = () => {
             <Link
               href="/"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
+              className="block px-3 py-2.5 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
             >
               Home
             </Link>
             <Link
               href="/about"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
+              className="block px-3 py-2.5 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
             >
               About Us
             </Link>
-            <div className="pt-2 border-t border-[#E8E2D8] text-[10px] font-mono uppercase tracking-widest text-[#53676E] px-3">
-              Project
+
+            <div className="pt-3 pb-1 border-t border-[#E8E2D8] text-[10px] font-mono uppercase tracking-widest text-[#53676E] px-3">
+              Project Exploration
             </div>
             <Link
               href="/plots"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
             >
-              🏡 Plots &amp; Inventory (64 Plots)
+              <Layers className="w-4 h-4 text-[#2C5E50]" />
+              <span>Plots &amp; Inventory (64 Plots)</span>
             </Link>
             <Link
               href="/apartments"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
             >
-              🏢 Apartments (1 BHK / 1 RK)
+              <Home className="w-4 h-4 text-[#C58F58]" />
+              <span>Apartments (1 BHK / 1 RK)</span>
             </Link>
             <Link
               href="/amenities"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
             >
-              🏥 Amenities &amp; 30k Sqft Hospital
+              <Activity className="w-4 h-4 text-emerald-600" />
+              <span>Amenities &amp; 30k Sqft Hospital</span>
             </Link>
             <Link
               href="/location"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
             >
-              📍 Location (Reliance MET City, SH-22)
+              <MapPin className="w-4 h-4 text-[#C58F58]" />
+              <span>Location (Reliance MET City, SH-22)</span>
             </Link>
 
-            <div className="pt-2 border-t border-[#E8E2D8] text-[10px] font-mono uppercase tracking-widest text-[#53676E] px-3">
+            <div className="pt-3 pb-1 border-t border-[#E8E2D8] text-[10px] font-mono uppercase tracking-widest text-[#53676E] px-3">
               Information
             </div>
             <Link
               href="/finance"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
             >
-              💰 Finance &amp; Home Loans
+              <BadgePercent className="w-4 h-4 text-[#2C5E50]" />
+              <span>Finance &amp; Home Loans</span>
             </Link>
             <Link
               href="/benefits"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
             >
-              ✨ 8 Core Benefits
+              <Sparkles className="w-4 h-4 text-[#C58F58]" />
+              <span>8 Core Benefits</span>
             </Link>
             <Link
               href="/contact"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
+              className="block px-3 py-2.5 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5]"
             >
               Contact Us
             </Link>
@@ -328,16 +354,13 @@ export const Navbar: React.FC = () => {
             >
               Book a Site Visit
             </Button>
-            <Button
-              variant="outline"
-              className="w-full border-[#2C5E50] text-[#2C5E50] py-3 text-xs font-bold"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizen Foundation...' });
-              }}
+            <a
+              href={`tel:${projectOverview.siteOfficePhone}`}
+              className="w-full py-3 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8] text-[#0D2329] text-xs font-mono font-bold text-center flex items-center justify-center gap-2"
             >
-              Chat on WhatsApp
-            </Button>
+              <PhoneCall className="w-4 h-4 text-[#C58F58]" />
+              Call: {projectOverview.siteOfficePhone}
+            </a>
           </div>
         </div>
       )}
