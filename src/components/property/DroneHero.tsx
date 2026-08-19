@@ -16,7 +16,10 @@ import {
   ShieldCheck,
   CheckCircle2,
   Home,
-  Heart
+  Heart,
+  Trees,
+  Sun,
+  Activity
 } from 'lucide-react';
 
 export const DroneHero: React.FC = () => {
@@ -30,96 +33,112 @@ export const DroneHero: React.FC = () => {
   };
 
   return (
-    <section className="relative min-h-[90vh] sm:min-h-[96vh] flex flex-col justify-between overflow-hidden bg-[#071519] text-white pt-24 pb-12">
-      {/* Background Drone Atmosphere Image */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2000&q=85"
-          alt="Senior Living Citizen Foundation Actual Drone Location, Kheri Asra, Haryana"
-          fill
-          priority
-          className="object-cover object-center opacity-35 scale-105 transition-transform duration-1000"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#071519] via-[#071519]/65 to-[#071519]/80" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/25 via-transparent to-[#071519]/90" />
-      </div>
+    <section className="relative overflow-hidden bg-[#FAF8F5] text-[#0D2329] pt-8 sm:pt-12 pb-16 sm:pb-24 border-b border-[#E8E2D8]">
+      {/* Background Soft Warm Glows */}
+      <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-[#EAF2EE] rounded-full blur-3xl opacity-70 pointer-events-none" />
+      <div className="absolute bottom-0 left-10 w-[500px] h-[500px] bg-[#F5EFE6] rounded-full blur-3xl opacity-80 pointer-events-none" />
 
-      {/* Top Location & Project Status Bar */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-2 sm:pt-4">
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-white/10 text-xs">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 font-semibold tracking-wide">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-mono text-[11px] uppercase tracking-widest">UPCOMING PRE-LAUNCH PROJECT</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-10 sm:space-y-12">
+        {/* Top Status & Location Strip */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-[#E8E2D8] text-xs">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-[#2C5E50] font-bold tracking-wide">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="font-mono text-[11px] uppercase tracking-wider">UPCOMING SENIOR LIVING SANCTUARY</span>
           </div>
 
-          <div className="flex items-center gap-4 sm:gap-6 text-white/75 text-xs">
+          <div className="flex items-center gap-4 sm:gap-6 text-[#53676E] text-xs">
             <a
               href={projectOverview.googleMapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-[#C58F58] transition-colors"
+              className="flex items-center gap-1.5 hover:text-[#2C5E50] font-medium transition-colors"
             >
               <MapPin className="w-3.5 h-3.5 text-[#C58F58]" />
               <span>Near Reliance MET City, SH-22 Jhajjar</span>
             </a>
-            <span className="hidden sm:inline text-white/20">•</span>
-            <span className="hidden sm:flex items-center gap-1 text-emerald-400">
-              <ShieldCheck className="w-3.5 h-3.5" /> 30,000 Sqft Planned Hospital
+            <span className="hidden sm:inline text-[#D2C8BA]">•</span>
+            <span className="hidden sm:flex items-center gap-1 text-[#2C5E50] font-semibold">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> 30,000 Sqft Planned Hospital
             </span>
           </div>
         </div>
-      </div>
 
-      {/* Main Hero Visual Presentation */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-8 sm:py-14 my-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Left: Emotional Family Message */}
-          <div className="lg:col-span-7 space-y-6">
+        {/* Hero Main Grid: Emotional Headline on Left, Indian Grandparents Photo on Right */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          {/* Left Column: Emotional Story & Simplicity */}
+          <div className="lg:col-span-6 space-y-6">
             <div className="space-y-3">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#C58F58]/15 border border-[#C58F58]/30 text-[#E0AB77] text-xs font-bold uppercase tracking-widest">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#C58F58]/15 border border-[#C58F58]/30 text-[#A66D38] text-xs font-bold uppercase tracking-widest">
                 <Heart className="w-3.5 h-3.5 text-[#C58F58] fill-[#C58F58]" />
                 Senior Living Citizen Foundation
               </div>
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif-heading font-normal tracking-tight text-[#FAF8F5] leading-[1.12]">
-                A Better Place for the <span className="italic font-serif text-[#C58F58]">People Who Raised You.</span>
+              <h1 className="text-3xl sm:text-5xl lg:text-5xl font-serif-heading font-bold text-[#0D2329] leading-[1.15] tracking-tight">
+                A Peaceful, Safe &amp; Blessed Home for <span className="italic font-serif text-[#C58F58]">Your Parents.</span>
               </h1>
             </div>
 
-            <p className="text-base sm:text-lg text-white/80 font-normal leading-relaxed max-w-2xl">
-              An upcoming senior-living community designed around comfort, accessibility, wellness, and peace of mind. Offering 64 residential plots and senior apartments with an on-site 30,000 sq. ft. Ayurvedic hospital and Mandir near Reliance MET City, SH-22 Jhajjar.
+            <p className="text-base sm:text-lg text-[#53676E] leading-relaxed">
+              Give your parents the peace, clean air, and dignity they deserve. A thoughtfully planned senior community with <strong>64 freehold plots</strong>, <strong>senior apartments</strong>, an <strong>on-site 30,000 sq. ft. Ayurvedic hospital</strong>, and a <strong>sacred Mandir</strong> — just 35 mins from Gurugram in Kheri Asra, Jhajjar.
             </p>
 
-            {/* 3 Key Metrics */}
-            <div className="grid grid-cols-3 gap-3 pt-2">
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left">
-                <div className="text-2xl sm:text-3xl font-serif-heading font-bold text-white">64</div>
-                <div className="text-[11px] text-white/60 uppercase tracking-wider mt-0.5">Residential Plots</div>
+            {/* 4 Super Simple Key Highlights with Icons */}
+            <div className="grid grid-cols-2 gap-3 pt-1">
+              <div className="p-3.5 rounded-2xl bg-white border border-[#E8E2D8] shadow-sm flex items-start gap-3">
+                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                  <Trees className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-[#0D2329]">Pristine Green Air</h4>
+                  <p className="text-[11px] text-[#53676E] mt-0.5">Zero traffic &amp; clean AQI</p>
+                </div>
               </div>
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left">
-                <div className="text-2xl sm:text-3xl font-serif-heading font-bold text-emerald-400">30k</div>
-                <div className="text-[11px] text-white/60 uppercase tracking-wider mt-0.5">Sqft Hospital (G+2)</div>
+
+              <div className="p-3.5 rounded-2xl bg-white border border-[#E8E2D8] shadow-sm flex items-start gap-3">
+                <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center shrink-0 mt-0.5">
+                  <Activity className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-[#0D2329]">Doctor Next Door</h4>
+                  <p className="text-[11px] text-[#53676E] mt-0.5">30k sqft on-site hospital</p>
+                </div>
               </div>
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left">
-                <div className="text-2xl sm:text-3xl font-serif-heading font-bold text-[#C58F58]">G+2</div>
-                <div className="text-[11px] text-white/60 uppercase tracking-wider mt-0.5">Senior Residences</div>
+
+              <div className="p-3.5 rounded-2xl bg-white border border-[#E8E2D8] shadow-sm flex items-start gap-3">
+                <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-[#0D2329]">Mandir 5-Min Walk</h4>
+                  <p className="text-[11px] text-[#53676E] mt-0.5">Daily aarti &amp; satsang</p>
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-white border border-[#E8E2D8] shadow-sm flex items-start gap-3">
+                <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0 mt-0.5">
+                  <Home className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-[#0D2329]">64 Freehold Plots</h4>
+                  <p className="text-[11px] text-[#53676E] mt-0.5">120 to 425 sq. yd. (Blocks A–F)</p>
+                </div>
               </div>
             </div>
 
-            {/* Action CTAs */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
+            {/* Clear, Big Action CTAs */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
               <Button
                 size="lg"
-                className="bg-[#2C5E50] hover:bg-[#3D7363] text-white py-4 px-7 text-sm sm:text-base font-semibold shadow-xl shadow-[#2C5E50]/30"
-                onClick={() => scrollToSection('building-vision')}
-                leftIcon={<Building2 className="w-5 h-5" />}
+                className="bg-[#2C5E50] hover:bg-[#1D4B57] text-white py-4 px-6 text-sm sm:text-base font-bold shadow-lg shadow-[#2C5E50]/20"
+                onClick={() => scrollToSection('availability')}
+                leftIcon={<Home className="w-4 h-4" />}
               >
-                Explore the Project ↓
+                View 64 Plots &amp; Homes →
               </Button>
               <Button
                 variant="outline"
                 size="lg"
-                className="border-white/20 text-white hover:bg-white/10 py-4 px-6 text-sm font-medium"
-                onClick={() => openLeadDrawer({ title: 'Book Free Private Site Walkthrough', actionType: 'book-site-visit' })}
+                className="border-[#2C5E50] text-[#2C5E50] hover:bg-[#2C5E50] hover:text-white py-4 px-6 text-sm font-semibold"
+                onClick={() => openLeadDrawer({ title: 'Book Free Private Site Walk in Kheri Asra', actionType: 'book-site-visit' })}
                 leftIcon={<Calendar className="w-4 h-4 text-[#C58F58]" />}
               >
                 Book a Site Visit
@@ -127,95 +146,71 @@ export const DroneHero: React.FC = () => {
               <Button
                 variant="ghost"
                 size="lg"
-                className="text-emerald-400 hover:text-white hover:bg-white/5 py-4 px-4 text-sm font-semibold"
+                className="text-[#2C5E50] hover:bg-[#EAF2EE] py-4 px-4 text-sm font-bold flex items-center gap-2"
                 onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizen Foundation...' })}
-                leftIcon={<MessageSquare className="w-4 h-4" />}
               >
-                Chat on WhatsApp
+                <MessageSquare className="w-4 h-4 text-[#25D366]" />
+                WhatsApp Us
               </Button>
             </div>
           </div>
 
-          {/* Right: Live Township Snapshot */}
-          <div className="lg:col-span-5 bg-white/5 backdrop-blur-xl border border-white/15 rounded-3xl p-6 sm:p-7 shadow-2xl space-y-5">
-            <div className="flex items-center justify-between pb-4 border-b border-white/10">
-              <div>
-                <span className="text-[10px] uppercase font-bold text-[#C58F58] tracking-widest block font-mono">
-                  CURRENT RELEASE STATUS
+          {/* Right Column: Heartwarming Indian Grandparents Imagery & Live Phase 1 Card */}
+          <div className="lg:col-span-6 space-y-4">
+            {/* Emotional Image Showcase Card */}
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-[#0D2329] min-h-[380px] sm:min-h-[440px] flex flex-col justify-end p-6 sm:p-8 group">
+              <Image
+                src="https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?auto=format&fit=crop&w=1200&q=85"
+                alt="Happy Indian Senior Grandparents enjoying peaceful green retirement life"
+                fill
+                priority
+                className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#071519]/90 via-[#071519]/35 to-transparent" />
+
+              {/* Floating Quality of Life Pill */}
+              <div className="relative z-10 flex items-center justify-between mb-auto">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-[#2C5E50] text-xs font-bold shadow-md">
+                  <Sun className="w-3.5 h-3.5 text-[#C58F58]" />
+                  <span>Sukoon, Suraksha &amp; Seva</span>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-emerald-700/90 text-white text-xs font-semibold backdrop-blur-md">
+                  Phase 1 Launch
                 </span>
-                <h3 className="text-xl font-serif-heading font-bold text-white mt-0.5">
-                  Phase 1 Allotments Open
+              </div>
+
+              {/* Bottom Emotional Quote */}
+              <div className="relative z-10 space-y-2 text-white">
+                <h3 className="text-xl sm:text-2xl font-serif-heading font-bold text-white leading-snug">
+                  &ldquo;Bacchon ki chinta khatam, mata-pita ka sukoon shuru.&rdquo;
                 </h3>
-              </div>
-              <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold border border-emerald-500/30">
-                Active Phase
-              </span>
-            </div>
-
-            {/* Inventory Status Breakdown */}
-            <div className="grid grid-cols-3 gap-2 text-center text-xs">
-              <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30">
-                <div className="text-xl font-bold text-emerald-400">{plotsSummary.availableCount}</div>
-                <div className="text-[10px] text-emerald-200/70 uppercase tracking-wider mt-0.5 font-medium">Plots Avail.</div>
-              </div>
-              <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30">
-                <div className="text-xl font-bold text-emerald-400">01–03</div>
-                <div className="text-[10px] text-emerald-200/70 uppercase tracking-wider mt-0.5 font-medium">Ground Units</div>
-              </div>
-              <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-500/30">
-                <div className="text-xl font-bold text-amber-400">04–09</div>
-                <div className="text-[10px] text-amber-200/70 uppercase tracking-wider mt-0.5 font-medium">Future Release</div>
+                <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
+                  No high-rise elevators getting stuck. No noisy highways. Pure morning walks, fresh satvik food, temple bells, and round-the-clock doctor care on-site.
+                </p>
               </div>
             </div>
 
-            {/* Key Assurance Points */}
-            <div className="space-y-2 text-xs text-white/80">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span><strong>64 Freehold Plots:</strong> 120–425 sq. yd. across Blocks A to F</span>
+            {/* Quick Live Status Strip */}
+            <div className="p-4 rounded-2xl bg-white border border-[#E8E2D8] shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-3">
+                <span className="font-bold text-[#0D2329]">Live Inventory:</span>
+                <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 font-bold border border-emerald-200">
+                  {plotsSummary.availableCount} Plots Available
+                </span>
+                <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 font-bold border border-emerald-200">
+                  Ground Units 01–03 Open
+                </span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span><strong>Building:</strong> G+2 with 2 Lifts, Stilt Parking &amp; 6" Rise Stairs</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span><strong>Healthcare:</strong> On-site G+2 Ayurvedic hospital &amp; 9 Panchakarma suites</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span><strong>Sacred Space:</strong> Community Mandir sited within 5-min walk</span>
-              </div>
-            </div>
 
-            <div className="pt-2 border-t border-white/10 flex items-center justify-between">
               <button
-                onClick={() => scrollToSection('availability')}
-                className="text-xs font-semibold text-[#C58F58] hover:text-white flex items-center gap-1 transition-colors"
+                onClick={() => openWhatsApp({ actionType: 'request-pricing', message: 'Please share the price list for plots and residences at Senior Living Citizen...' })}
+                className="font-bold text-[#2C5E50] hover:underline flex items-center gap-1"
               >
-                Browse 64 Plots Master Plan <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => openWhatsApp({ actionType: 'request-pricing', message: 'Please share the price list and payment plan for plots and apartments...' })}
-                className="text-xs font-bold text-white hover:underline"
-              >
-                Get Price List (PDF) →
+                Request Price List (PDF) →
               </button>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Subtle Bottom Scroll Indicator */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between text-xs text-white/50 pt-2 border-t border-white/10">
-        <span>📍 Kheri Asra, Near Reliance MET City, SH-22 Jhajjar, Haryana 124104</span>
-        <button
-          onClick={() => scrollToSection('location')}
-          className="flex items-center gap-1.5 text-[#C58F58] hover:text-white transition-colors"
-        >
-          <span>Scroll to explore</span>
-          <ArrowDown className="w-3.5 h-3.5 animate-bounce" />
-        </button>
       </div>
     </section>
   );
