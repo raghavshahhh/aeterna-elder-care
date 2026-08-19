@@ -3,19 +3,15 @@
 import React from 'react';
 import Image from 'next/image';
 import { useModal } from '@/context/ModalContext';
-import { projectOverview, plotsSummary } from '@/data/propertyData';
+import { projectOverview } from '@/data/propertyData';
 import { Button } from '@/components/ui/Button';
 import {
   MapPin,
   Building2,
-  Sparkles,
   Calendar,
   MessageSquare,
-  ArrowRight,
   ArrowDown,
   ShieldCheck,
-  CheckCircle2,
-  Home,
   Heart
 } from 'lucide-react';
 
@@ -30,7 +26,7 @@ export const DroneHero: React.FC = () => {
   };
 
   return (
-    <section className="relative min-h-[90vh] sm:min-h-[96vh] flex flex-col justify-between overflow-hidden bg-[#071519] text-white pt-24 pb-12">
+    <section className="relative min-h-[92vh] sm:min-h-[96vh] flex flex-col justify-between overflow-hidden bg-[#071519] text-white pt-24 pb-12">
       {/* Full-Bleed Background Image of Indian Grandparents with Home & Garden */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -40,9 +36,9 @@ export const DroneHero: React.FC = () => {
           priority
           className="object-cover object-center sm:object-right scale-100 transition-transform duration-1000"
         />
-        {/* Cinematic Gradient Overlays for perfect text readability while preserving image beauty */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#071519]/95 via-[#071519]/75 to-[#071519]/30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#071519] via-transparent to-[#071519]/70" />
+        {/* Soft directional gradient: rich on the left for text legibility, crystal clear on the right to show grandparents */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#071519]/95 via-[#071519]/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#071519]/90 via-transparent to-[#071519]/60" />
       </div>
 
       {/* Top Location & Project Status Bar */}
@@ -53,7 +49,7 @@ export const DroneHero: React.FC = () => {
             <span className="font-mono text-[11px] uppercase tracking-widest">UPCOMING PRE-LAUNCH PROJECT</span>
           </div>
 
-          <div className="flex items-center gap-4 sm:gap-6 text-white/80 text-xs">
+          <div className="flex items-center gap-4 sm:gap-6 text-white/85 text-xs">
             <a
               href={projectOverview.googleMapsUrl}
               target="_blank"
@@ -71,144 +67,73 @@ export const DroneHero: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Hero Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-8 sm:py-14 my-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Left Column: Emotional Story & Headline */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="space-y-3">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#C58F58]/20 border border-[#C58F58]/40 text-[#E0AB77] text-xs font-bold uppercase tracking-widest backdrop-blur-md">
-                <Heart className="w-3.5 h-3.5 text-[#C58F58] fill-[#C58F58]" />
-                Senior Living Citizen Foundation
-              </div>
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif-heading font-normal tracking-tight text-[#FAF8F5] leading-[1.12]">
-                A Better Place for the <span className="italic font-serif text-[#C58F58]">People Who Raised You.</span>
-              </h1>
+      {/* Main Hero Content: Left-Aligned & Unobstructed */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-10 sm:py-16 my-auto">
+        <div className="max-w-2xl lg:max-w-3xl space-y-6">
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#C58F58]/20 border border-[#C58F58]/40 text-[#E0AB77] text-xs font-bold uppercase tracking-widest backdrop-blur-md">
+              <Heart className="w-3.5 h-3.5 text-[#C58F58] fill-[#C58F58]" />
+              Senior Living Citizen Foundation
             </div>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif-heading font-normal tracking-tight text-[#FAF8F5] leading-[1.12]">
+              A Better Place for the <span className="italic font-serif text-[#C58F58]">People Who Raised You.</span>
+            </h1>
+          </div>
 
-            <p className="text-base sm:text-lg text-white/85 font-normal leading-relaxed max-w-2xl drop-shadow-sm">
-              An upcoming senior-living community designed around comfort, accessibility, wellness, and peace of mind. Offering <strong>64 residential plots</strong> and <strong>senior apartments</strong> with an on-site <strong>30,000 sq. ft. Ayurvedic hospital</strong> and <strong>Mandir</strong> near Reliance MET City, SH-22 Jhajjar.
-            </p>
+          <p className="text-base sm:text-lg text-white/90 font-normal leading-relaxed max-w-2xl drop-shadow-sm">
+            An upcoming senior-living community designed around comfort, accessibility, wellness, and peace of mind. Offering <strong>64 residential plots</strong> and <strong>senior apartments</strong> with an on-site <strong>30,000 sq. ft. Ayurvedic hospital</strong> and <strong>Mandir</strong> near Reliance MET City, SH-22 Jhajjar.
+          </p>
 
-            {/* 3 Key Metrics */}
-            <div className="grid grid-cols-3 gap-3 pt-2">
-              <div className="p-3.5 rounded-2xl bg-[#0D2329]/80 border border-white/15 backdrop-blur-md text-center sm:text-left">
-                <div className="text-2xl sm:text-3xl font-serif-heading font-bold text-white">64</div>
-                <div className="text-[11px] text-white/70 uppercase tracking-wider mt-0.5 font-medium">Residential Plots</div>
-              </div>
-              <div className="p-3.5 rounded-2xl bg-[#0D2329]/80 border border-white/15 backdrop-blur-md text-center sm:text-left">
-                <div className="text-2xl sm:text-3xl font-serif-heading font-bold text-emerald-400">30k</div>
-                <div className="text-[11px] text-white/70 uppercase tracking-wider mt-0.5 font-medium">Sqft Hospital (G+2)</div>
-              </div>
-              <div className="p-3.5 rounded-2xl bg-[#0D2329]/80 border border-white/15 backdrop-blur-md text-center sm:text-left">
-                <div className="text-2xl sm:text-3xl font-serif-heading font-bold text-[#C58F58]">G+2</div>
-                <div className="text-[11px] text-white/70 uppercase tracking-wider mt-0.5 font-medium">Senior Residences</div>
-              </div>
+          {/* 3 Clean Metric Badges */}
+          <div className="grid grid-cols-3 gap-3 pt-2 max-w-lg">
+            <div className="p-3.5 rounded-2xl bg-[#0D2329]/80 border border-white/15 backdrop-blur-md text-center sm:text-left shadow-lg">
+              <div className="text-2xl sm:text-3xl font-serif-heading font-bold text-white">64</div>
+              <div className="text-[11px] text-white/70 uppercase tracking-wider mt-0.5 font-medium">Residential Plots</div>
             </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
-              <Button
-                size="lg"
-                className="bg-[#2C5E50] hover:bg-[#3D7363] text-white py-4 px-7 text-sm sm:text-base font-semibold shadow-xl shadow-[#2C5E50]/40"
-                onClick={() => scrollToSection('building-vision')}
-                leftIcon={<Building2 className="w-5 h-5" />}
-              >
-                Explore the Project ↓
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-white/30 bg-black/30 backdrop-blur-md text-white hover:bg-white/15 py-4 px-6 text-sm font-medium"
-                onClick={() => openLeadDrawer({ title: 'Book Free Private Site Walkthrough', actionType: 'book-site-visit' })}
-                leftIcon={<Calendar className="w-4 h-4 text-[#C58F58]" />}
-              >
-                Book a Site Visit
-              </Button>
-              <Button
-                variant="ghost"
-                size="lg"
-                className="text-emerald-300 hover:text-white hover:bg-white/10 py-4 px-4 text-sm font-semibold backdrop-blur-sm"
-                onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizen Foundation...' })}
-                leftIcon={<MessageSquare className="w-4 h-4 text-[#25D366]" />}
-              >
-                Chat on WhatsApp
-              </Button>
+            <div className="p-3.5 rounded-2xl bg-[#0D2329]/80 border border-white/15 backdrop-blur-md text-center sm:text-left shadow-lg">
+              <div className="text-2xl sm:text-3xl font-serif-heading font-bold text-emerald-400">30k</div>
+              <div className="text-[11px] text-white/70 uppercase tracking-wider mt-0.5 font-medium">Sqft Hospital (G+2)</div>
+            </div>
+            <div className="p-3.5 rounded-2xl bg-[#0D2329]/80 border border-white/15 backdrop-blur-md text-center sm:text-left shadow-lg">
+              <div className="text-2xl sm:text-3xl font-serif-heading font-bold text-[#C58F58]">G+2</div>
+              <div className="text-[11px] text-white/70 uppercase tracking-wider mt-0.5 font-medium">Senior Residences</div>
             </div>
           </div>
 
-          {/* Right Column: Live Inventory Snapshot Card */}
-          <div className="lg:col-span-5 bg-[#071519]/85 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-7 shadow-2xl space-y-5">
-            <div className="flex items-center justify-between pb-4 border-b border-white/10">
-              <div>
-                <span className="text-[10px] uppercase font-bold text-[#C58F58] tracking-widest block font-mono">
-                  CURRENT RELEASE STATUS
-                </span>
-                <h3 className="text-xl font-serif-heading font-bold text-white mt-0.5">
-                  Phase 1 Allotments Open
-                </h3>
-              </div>
-              <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold border border-emerald-500/30">
-                Active Phase
-              </span>
-            </div>
-
-            {/* Inventory Status Breakdown */}
-            <div className="grid grid-cols-3 gap-2 text-center text-xs">
-              <div className="p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/30">
-                <div className="text-xl font-bold text-emerald-400">{plotsSummary.availableCount}</div>
-                <div className="text-[10px] text-emerald-200/80 uppercase tracking-wider mt-0.5 font-medium">Plots Avail.</div>
-              </div>
-              <div className="p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/30">
-                <div className="text-xl font-bold text-emerald-400">01–03</div>
-                <div className="text-[10px] text-emerald-200/80 uppercase tracking-wider mt-0.5 font-medium">Ground Units</div>
-              </div>
-              <div className="p-3 rounded-xl bg-amber-950/60 border border-amber-500/30">
-                <div className="text-xl font-bold text-amber-400">04–09</div>
-                <div className="text-[10px] text-amber-200/80 uppercase tracking-wider mt-0.5 font-medium">Future Release</div>
-              </div>
-            </div>
-
-            {/* Key Assurance Points */}
-            <div className="space-y-2 text-xs text-white/85">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span><strong>64 Freehold Plots:</strong> 120–425 sq. yd. across Blocks A to F</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span><strong>Building:</strong> G+2 with 2 Lifts, Stilt Parking &amp; 6&quot; Rise Stairs</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span><strong>Healthcare:</strong> On-site G+2 Ayurvedic hospital &amp; 9 Panchakarma suites</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span><strong>Sacred Space:</strong> Community Mandir sited within 5-min walk</span>
-              </div>
-            </div>
-
-            <div className="pt-2 border-t border-white/10 flex items-center justify-between">
-              <button
-                onClick={() => scrollToSection('availability')}
-                className="text-xs font-semibold text-[#C58F58] hover:text-white flex items-center gap-1 transition-colors"
-              >
-                Browse 64 Plots Master Plan <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => openWhatsApp({ actionType: 'request-pricing', message: 'Please share the price list and payment plan for plots and apartments...' })}
-                className="text-xs font-bold text-white hover:underline"
-              >
-                Get Price List (PDF) →
-              </button>
-            </div>
+          {/* Action CTAs */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
+            <Button
+              size="lg"
+              className="bg-[#2C5E50] hover:bg-[#3D7363] text-white py-4 px-7 text-sm sm:text-base font-semibold shadow-xl shadow-[#2C5E50]/40"
+              onClick={() => scrollToSection('building-vision')}
+              leftIcon={<Building2 className="w-5 h-5" />}
+            >
+              Explore the Project ↓
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-white/30 bg-black/40 backdrop-blur-md text-white hover:bg-white/15 py-4 px-6 text-sm font-medium"
+              onClick={() => openLeadDrawer({ title: 'Book Free Private Site Walkthrough', actionType: 'book-site-visit' })}
+              leftIcon={<Calendar className="w-4 h-4 text-[#C58F58]" />}
+            >
+              Book a Site Visit
+            </Button>
+            <Button
+              variant="ghost"
+              size="lg"
+              className="text-emerald-300 hover:text-white hover:bg-white/10 py-4 px-4 text-sm font-semibold backdrop-blur-sm"
+              onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizen Foundation...' })}
+              leftIcon={<MessageSquare className="w-4 h-4 text-[#25D366]" />}
+            >
+              Chat on WhatsApp
+            </Button>
           </div>
         </div>
       </div>
 
-      {/* Bottom Scroll Indicator */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between text-xs text-white/60 pt-2 border-t border-white/10">
+      {/* Bottom Status & Scroll Indicator */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between text-xs text-white/70 pt-2 border-t border-white/10">
         <span>📍 Kheri Asra, Near Reliance MET City, SH-22 Jhajjar, Haryana 124104</span>
         <button
           onClick={() => scrollToSection('location')}
