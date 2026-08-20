@@ -12,6 +12,7 @@ import { EcosystemShowcase } from '@/components/property/EcosystemShowcase';
 import { WhySeniorLivingBenefits } from '@/components/property/WhySeniorLivingBenefits';
 import { FinancePaymentPlans } from '@/components/property/FinancePaymentPlans';
 import { ArchitectSection } from '@/components/property/ArchitectSection';
+import { TrustTransparency } from '@/components/property/TrustTransparency';
 import { propertyFaqs, projectOverview } from '@/data/propertyData';
 import { Accordion } from '@/components/ui/Accordion';
 import { useModal } from '@/context/ModalContext';
@@ -71,7 +72,10 @@ export default function HomePage() {
       {/* 11. ARCHITECT CREDENTIALS & THE VISION ARCHITECTS */}
       <ArchitectSection />
 
-      {/* 12. PROPERTY SPECIFIC FAQS */}
+      {/* 12. TRUST & TRANSPARENCY — SECTION 8 / 80G / FREEHOLD TITLE */}
+      <TrustTransparency />
+
+      {/* 13. PROPERTY SPECIFIC FAQS */}
       <section className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E8E2D8]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-3 mb-14">
