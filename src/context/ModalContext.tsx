@@ -4,21 +4,21 @@ import React, { createContext, useContext, useState } from 'react';
 
 export interface PropertyLeadContext {
   title?: string;
-  service?: string;
   unitId?: string;
   unitName?: string;
   unitType?: string;
   floorName?: string;
-  actionType?: 'reserve-unit' | 'book-site-visit' | 'inquire-residence' | 'request-pricing' | 'general';
+  floorLevel?: string;
+  plotNumber?: string;
+  plotBlock?: string;
+  plotSize?: string;
+  planName?: string;
+  actionType?: 'reserve-unit' | 'reserve-plot' | 'book-site-visit' | 'inquire-residence' | 'request-pricing' | 'request-trust-docs' | 'rental-plan' | 'general';
   message?: string;
   city?: string;
 }
 
 interface ModalContextType {
-  isEmergencyOpen: boolean;
-  openEmergency: () => void;
-  closeEmergency: () => void;
-
   isWhatsAppOpen: boolean;
   whatsAppContext: PropertyLeadContext;
   openWhatsApp: (context?: PropertyLeadContext) => void;
@@ -33,14 +33,10 @@ interface ModalContextType {
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isEmergencyOpen, setIsEmergencyOpen] = useState(false);
   const [isWhatsAppOpen, setIsWhatsAppOpen] = useState(false);
   const [whatsAppContext, setWhatsAppContext] = useState<PropertyLeadContext>({});
   const [isLeadDrawerOpen, setIsLeadDrawerOpen] = useState(false);
   const [leadDrawerContext, setLeadDrawerContext] = useState<PropertyLeadContext>({});
-
-  const openEmergency = () => setIsEmergencyOpen(true);
-  const closeEmergency = () => setIsEmergencyOpen(false);
 
   const openWhatsApp = (ctx?: PropertyLeadContext) => {
     setWhatsAppContext(ctx || {});
@@ -57,9 +53,6 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <ModalContext.Provider
       value={{
-        isEmergencyOpen,
-        openEmergency,
-        closeEmergency,
         isWhatsAppOpen,
         whatsAppContext,
         openWhatsApp,
@@ -82,3 +75,4 @@ export const useModal = () => {
   }
   return context;
 };
+

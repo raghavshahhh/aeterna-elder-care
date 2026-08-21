@@ -2,14 +2,17 @@
 
 import React, { useState } from 'react';
 import { DroneHero } from '@/components/property/DroneHero';
+import { ProjectIntroduction } from '@/components/property/ProjectIntroduction';
 import { EmotionalFamilyStory } from '@/components/property/EmotionalFamilyStory';
-import { ValuesAndVision } from '@/components/property/ValuesAndVision';
+import { WhySeniorLivingBenefits } from '@/components/property/WhySeniorLivingBenefits';
 import { LocationConnectivity } from '@/components/property/LocationConnectivity';
-import { AvailabilityMatrix } from '@/components/property/AvailabilityMatrix';
+import { RealVsProposed } from '@/components/property/RealVsProposed';
+import { FutureHomeJourney } from '@/components/3d/FutureHomeJourney';
 import { BuildingCGIViewer } from '@/components/property/BuildingCGIViewer';
 import { ResidenceUnitExplorer } from '@/components/property/ResidenceUnitExplorer';
+import { WhatYouGetPillars } from '@/components/property/WhatYouGetPillars';
 import { EcosystemShowcase } from '@/components/property/EcosystemShowcase';
-import { WhySeniorLivingBenefits } from '@/components/property/WhySeniorLivingBenefits';
+import { AvailabilityMatrix } from '@/components/property/AvailabilityMatrix';
 import { FinancePaymentPlans } from '@/components/property/FinancePaymentPlans';
 import { ArchitectSection } from '@/components/property/ArchitectSection';
 import { TrustTransparency } from '@/components/property/TrustTransparency';
@@ -26,7 +29,8 @@ import {
   PhoneCall,
   CheckCircle2,
   ShieldCheck,
-  Compass
+  Compass,
+  ArrowRight
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -39,55 +43,62 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-[#FAF8F5] text-[#0D2329] selection:bg-[#2C5E50] selection:text-white">
-      {/* 1. WARM EMOTIONAL HERO WITH INDIAN SENIOR GRANDPARENTS */}
+      {/* 01 — REAL DRONE HERO (WITH VIDEO SLOT, BADGES & ELEVATED TYPOGRAPHY) */}
       <DroneHero />
 
-      {/* 2. EMOTIONAL FAMILY STORY & SUKOON PROMISE */}
+      {/* 02 — PROJECT INTRODUCTION (MASTER PLOTTED SANCTUARY & HOSPITAL OVERVIEW) */}
+      <ProjectIntroduction />
+
+      {/* 03 — WHY THIS KIND OF LIVING / WHY SENIOR LIVING (FAMILY PERSPECTIVE) */}
       <EmotionalFamilyStory />
-
-      {/* 3. FOUNDATION VALUES & VISION STATEMENT */}
-      <ValuesAndVision />
-
-      {/* 4. REAL LOCATION & CONNECTIVITY (KHERI ASRA / RELIANCE MET CITY / SH-22) */}
-      <LocationConnectivity />
-
-      {/* 5. 64 FREEHOLD RESIDENTIAL PLOTS MASTER PLAN (BLOCKS A TO F) */}
-      <AvailabilityMatrix />
-
-      {/* 6. 9-UNIT SENIOR RESIDENCES ELEVATION (UNITS 01-03 CURRENT RELEASE) */}
-      <BuildingCGIViewer onSelectFloor={handleFloorSelectFromCGI} />
-
-      {/* 7. 1 BHK & 1 RK RESIDENCE VISUALIZER (ROOM DIMENSIONS, SENIOR SPECS & PRICING) */}
-      <ResidenceUnitExplorer />
-
-      {/* 8. HEALTHCARE AT YOUR DOORSTEP (6 SIMPLIFIED HIGHLIGHTS + HOSPITAL CAD ACCESS) */}
-      <EcosystemShowcase />
-
-      {/* 9. NOT A RETIREMENT HOME: 8 DEEP BENEFITS & COMPARISON */}
       <WhySeniorLivingBenefits />
 
-      {/* 10. FINANCE, HOME LOANS & 3 PAYMENT PLANS */}
+      {/* 04 — REAL LOCATION & SURROUNDINGS (KHERI ASRA / RELIANCE MET CITY / SH-22) */}
+      <LocationConnectivity />
+
+      {/* 05 — WHAT EXISTS TODAY VS. WHAT WE ARE BUILDING (TRANSPARENT PRE-LAUNCH STAGING) */}
+      <RealVsProposed />
+
+      {/* GUIDED 3D JOURNEY — WALK INTO YOUR FUTURE HOME */}
+      <FutureHomeJourney />
+
+      {/* 06 & 07 — PROPOSED BUILDING VISUAL & INTERACTIVE 4-TIER FLOOR EXPLORER */}
+      <BuildingCGIViewer onSelectFloor={handleFloorSelectFromCGI} />
+
+      {/* 08 & 09 — RESIDENCE UNIT EXPLORER & MEASURED FLOOR PLAN VISUALIZER */}
+      <ResidenceUnitExplorer />
+
+      {/* 10 — WHAT YOU GET (5 CONCISE BENEFIT PILLARS: HOME, CARE, WELLNESS, COMMUNITY, CONVENIENCE) */}
+      <WhatYouGetPillars />
+
+      {/* 11 — HEALTHCARE, AYURVEDA & MANDIR ECOSYSTEM (ON-SITE HOSPITAL & CAD ACCESS) */}
+      <EcosystemShowcase />
+
+      {/* 12 & 13 — 64-PLOT MASTER PLAN & PLOT-BY-PLOT INVENTORY EXPLORER */}
+      <AvailabilityMatrix />
+
+      {/* 14, 15 & 16 — TRANSPARENT PRICING, 3 PAYMENT OPTIONS & RENTAL PROPOSITION */}
       <FinancePaymentPlans />
 
-      {/* 11. ARCHITECT CREDENTIALS & THE VISION ARCHITECTS */}
+      {/* ARCHITECT CREDENTIALS & PRINCIPAL PROFILE (THE VISION ARCHITECTS) */}
       <ArchitectSection />
 
-      {/* 12. TRUST & TRANSPARENCY — SECTION 8 / 80G / FREEHOLD TITLE */}
+      {/* 17 — TRUST & TRANSPARENCY (SECTION 8 / FORM 10AC/80G / DARPAN NPO / FREEHOLD TITLE) */}
       <TrustTransparency />
 
-      {/* 13. PROPERTY SPECIFIC FAQS */}
+      {/* 18 — FREQUENTLY ASKED QUESTIONS (FAMILY-TAILORED Q&AS) */}
       <section className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E8E2D8]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-3 mb-14">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-wider">
-              <HelpCircle className="w-3.5 h-3.5" />
-              Frequently Asked Questions
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-widest">
+              <HelpCircle className="w-3.5 h-3.5 text-[#C58F58]" />
+              18 • Frequently Asked Questions
             </div>
-            <h2 className="text-3xl sm:text-4xl font-serif-heading font-normal text-[#0D2329]">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-normal text-[#0D2329]">
               Everything You Need to <span className="italic font-serif text-[#C58F58]">Know.</span>
             </h2>
-            <p className="text-xs sm:text-sm text-[#53676E]">
-              Clear answers for sons, daughters, and families planning for their parents&apos; future home.
+            <p className="text-xs sm:text-sm text-[#53676E] max-w-2xl mx-auto leading-relaxed">
+              Clear, transparent answers for sons, daughters, and families planning for their parents&apos; future sanctuary.
             </p>
           </div>
 
@@ -103,12 +114,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 13. FINAL CONVERSION & SITE WALKTHROUGH BANNER */}
+      {/* 19 & 20 — BOOK SITE VISIT & FINAL WHATSAPP CONVERSION ENGINE */}
       <section className="py-20 sm:py-28 bg-gradient-to-br from-[#0D2329] via-[#14353E] to-[#071519] text-white relative overflow-hidden">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8 relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15 text-xs font-mono text-[#C58F58] uppercase tracking-widest">
             <Calendar className="w-3.5 h-3.5" />
-            Phase 1 Pre-Launch Allotments Open
+            19 &amp; 20 • Phase 1 Pre-Launch Allotments Open
           </div>
 
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif-heading font-normal text-[#FAF8F5] tracking-tight leading-tight">
@@ -117,21 +128,21 @@ export default function HomePage() {
           </h2>
 
           <p className="text-sm sm:text-base text-white/80 max-w-2xl mx-auto font-light leading-relaxed">
-            Freehold registered land, proposed on-site Ayurvedic hospital, daily mandir, and like-minded companions at the same stage of life.
+            Freehold registered land, proposed on-site Ayurvedic hospital, daily community mandir, and like-minded companions living at the same unhurried pace.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <button
-              onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to book a private site visit to Kheri Asra with my family...' })}
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[#2C5E50] hover:bg-[#3D7363] text-white font-bold text-sm transition-all shadow-xl flex items-center justify-center gap-2.5"
+              onClick={() => openWhatsApp({ actionType: 'book-site-visit', message: 'Hello, I want to book a private site visit to Kheri Asra with my family...' })}
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[#2C5E50] hover:bg-[#3D7363] text-white font-bold text-sm transition-all shadow-xl flex items-center justify-center gap-2.5 cursor-pointer"
             >
               <MessageSquare className="w-4 h-4 text-[#25D366]" />
               Book Site Walk on WhatsApp →
             </button>
 
             <button
-              onClick={() => openLeadDrawer({ title: 'Schedule Site Visit to Kheri Asra, Jhajjar', actionType: 'book-site-visit' })}
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm transition-all border border-white/20 flex items-center justify-center gap-2"
+              onClick={() => openLeadDrawer({ title: 'Schedule Private Site Walk in Kheri Asra, Jhajjar', actionType: 'book-site-visit' })}
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm transition-all border border-white/20 flex items-center justify-center gap-2 cursor-pointer"
             >
               <PhoneCall className="w-4 h-4 text-[#C58F58]" />
               Request Car Pickup &amp; Visit
@@ -154,3 +165,4 @@ export default function HomePage() {
     </main>
   );
 }
+

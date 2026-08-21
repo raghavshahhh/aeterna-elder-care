@@ -3,23 +3,32 @@
 import React from 'react';
 import { projectOverview } from '@/data/propertyData';
 import { useModal } from '@/context/ModalContext';
-import { ShieldCheck, FileCheck2, Landmark, MessageSquare } from 'lucide-react';
+import { ShieldCheck, FileCheck2, Landmark, MessageSquare, BadgeCheck } from 'lucide-react';
 
 const credentials = [
   {
     icon: Landmark,
-    title: 'Section 8 Registered Organisation',
+    title: 'Section 8 Non-Profit',
+    authority: 'Ministry of Corporate Affairs',
     description: 'Senior Living Citizen Foundation is incorporated as a Company Limited by Guarantee under Section 8 of the Companies Act, 2013.'
   },
   {
     icon: FileCheck2,
-    title: '80G Tax Exemption (Provisional)',
-    description: 'Holds provisional approval under Section 80G of the Income Tax Act for eligible charitable contributions to the Foundation.'
+    title: '80G Provisional Approval',
+    authority: 'Income Tax Department',
+    description: 'Holds provisional approval under Section 80G (Form 10AC) valid AY 2026-27 to 2028-29 for eligible donations and contributions.'
+  },
+  {
+    icon: BadgeCheck,
+    title: 'DARPAN Registered NPO',
+    authority: 'NITI Aayog (Govt. of India)',
+    description: 'Registered on the NITI Aayog NGO-DARPAN portal under Health & Family Welfare and Aged/Elderly working sectors.'
   },
   {
     icon: ShieldCheck,
-    title: 'Freehold, Registered Title',
-    description: 'Plots and residences are sold as freehold property with clear, registered title — not a leasehold or society-managed unit.'
+    title: 'Freehold Clear Title',
+    authority: 'Revenue Dept. Haryana',
+    description: 'All 64 plots and residences are sold with direct legal registration and individual title ownership — never a leasehold.'
   }
 ];
 
@@ -28,45 +37,55 @@ export const TrustTransparency: React.FC = () => {
 
   return (
     <section id="trust" className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E8E2D8]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-3 mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-wider">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            Trust &amp; Transparency
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-widest">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#C58F58]" />
+            17 • Trust &amp; Statutory Credentials
           </div>
-          <h2 className="text-3xl sm:text-4xl font-serif-heading font-normal text-[#0D2329]">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-normal text-[#0D2329]">
             An Organisation You Can <span className="italic font-serif text-[#C58F58]">Verify.</span>
           </h2>
-          <p className="text-xs sm:text-sm text-[#53676E] max-w-2xl mx-auto">
-            Registration certificates are available for review on request at our sales office. We do not publish government identity documents (PAN, CIN, registration certificates) publicly to protect the organisation from document misuse.
+          <p className="text-xs sm:text-sm text-[#53676E] max-w-2xl mx-auto leading-relaxed">
+            Registration certificates and freehold title chains are available for review on request at our Gurugram site office or directly via WhatsApp. Government tax/banking IDs are protected against unauthorized web scraping.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {credentials.map((item, idx) => {
             const Icon = item.icon;
             return (
-              <div key={idx} className="bg-white rounded-2xl border border-[#E8E2D8] p-6 space-y-3">
-                <div className="w-10 h-10 rounded-xl bg-[#EAF2EE] text-[#2C5E50] flex items-center justify-center">
-                  <Icon className="w-5 h-5" />
+              <div key={idx} className="bg-white rounded-3xl border border-[#E8E2D8] p-6 shadow-sm hover:shadow-md transition-all space-y-3 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-[#EAF2EE] text-[#2C5E50] flex items-center justify-center">
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#C58F58]">{item.authority}</span>
+                    <h3 className="text-base font-serif-heading font-bold text-[#0D2329] mt-0.5">{item.title}</h3>
+                  </div>
+                  <p className="text-xs text-[#53676E] leading-relaxed">{item.description}</p>
                 </div>
-                <h3 className="text-sm font-bold text-[#0D2329]">{item.title}</h3>
-                <p className="text-xs text-[#53676E] leading-relaxed">{item.description}</p>
+                <div className="pt-3 border-t border-[#E8E2D8] text-[11px] font-semibold text-emerald-800 flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Verified Legal Entity</span>
+                </div>
               </div>
             );
           })}
         </div>
 
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
           <button
-            onClick={() => openWhatsApp({ actionType: 'general', message: `Hello, I would like to review the Section 8 and 80G registration documents for ${projectOverview.legalName}.` })}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold shadow-md transition-all"
+            onClick={() => openWhatsApp({ actionType: 'request-trust-docs', message: `Hello, I would like to review the Section 8, Form 10AC/80G, and Freehold Title verification documents for ${projectOverview.legalName}.` })}
+            className="inline-flex items-center gap-2 px-6 py-4 rounded-2xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold shadow-xl transition-all cursor-pointer"
           >
             <MessageSquare className="w-4 h-4 text-[#25D366]" />
-            Request Registration Documents on WhatsApp
+            Request Registration &amp; Title Documents on WhatsApp →
           </button>
         </div>
       </div>
     </section>
   );
 };
+

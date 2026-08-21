@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { paymentPlans, loanParameters, taxBenefits } from '@/data/propertyData';
+import { paymentPlans, loanParameters, taxBenefits, additionalCharges, rentalProposition } from '@/data/propertyData';
 import { useModal } from '@/context/ModalContext';
-import { Calculator, CheckCircle2, FileText, BadgePercent, MessageSquare, ArrowRight, Shield } from 'lucide-react';
+import { Calculator, CheckCircle2, FileText, BadgePercent, MessageSquare, ArrowRight, Shield, Car, Info } from 'lucide-react';
 
 export const FinancePaymentPlans: React.FC = () => {
   const { openWhatsApp, openLeadDrawer } = useModal();
@@ -36,20 +36,20 @@ export const FinancePaymentPlans: React.FC = () => {
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-widest">
             <BadgePercent className="w-3.5 h-3.5 text-[#C58F58]" />
-            Finance &amp; Payment Options
+            14, 15 &amp; 16 • Pricing, Payment Options &amp; Rental Proposition
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-bold text-[#0D2329] tracking-tight">
-            Home loans, <span className="italic font-serif text-[#C58F58]">made straightforward.</span>
+            Transparent Pricing. <span className="italic font-serif text-[#C58F58]">Straightforward Plans.</span>
           </h2>
           <p className="text-sm sm:text-base text-[#53676E] leading-relaxed">
-            We&apos;ve worked to make financing as simple as ownership. Major banks &amp; NBFCs offer home loans for plotted developments and senior residences.
+            Down Payment Plan starting at ₹25 Lakhs for senior residences (EOI ₹1 Lakh). 100% freehold land registration, flexible 50:50 and milestone-linked construction plans.
           </p>
         </div>
 
         {/* 3 Structured Payment Plans */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           {paymentPlans.map((plan) => {
-            const isFeatured = plan.id === 'plan-b';
+            const isFeatured = Boolean(plan.badge);
             return (
               <div
                 key={plan.id}
@@ -119,6 +119,44 @@ export const FinancePaymentPlans: React.FC = () => {
               </div>
             );
           })}
+        </div>
+
+        {/* Parking, Terrace Rights & Rental Proposition */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
+          <div className="lg:col-span-5 bg-white rounded-3xl p-7 border border-[#E8E2D8] shadow-sm space-y-4">
+            <div className="flex items-center gap-2 text-xs font-bold font-mono uppercase tracking-widest text-[#2C5E50]">
+              <Car className="w-4 h-4 text-[#C58F58]" />
+              Parking &amp; Terrace Rights
+            </div>
+            <div className="divide-y divide-[#E8E2D8] text-xs">
+              {additionalCharges.map((item, idx) => (
+                <div key={idx} className="py-3 flex items-center justify-between gap-4">
+                  <div>
+                    <div className="font-semibold text-[#0D2329]">{item.item}</div>
+                    <div className="text-[#53676E] mt-0.5">{item.note}</div>
+                  </div>
+                  <span className="font-mono font-bold text-[#2C5E50] whitespace-nowrap">{item.priceDisplay}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="lg:col-span-7 bg-[#EAF2EE] rounded-3xl p-7 border border-[#CDE0D7] space-y-4">
+            <h4 className="text-xl font-serif-heading font-bold text-[#0D2329]">{rentalProposition.headline}</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {rentalProposition.stages.map((stage, idx) => (
+                <div key={idx} className="p-4 rounded-xl bg-white/80 border border-[#CDE0D7]">
+                  <div className="text-[10px] font-mono uppercase tracking-widest text-[#53676E]">{stage.stage}</div>
+                  <div className="text-lg font-serif-heading font-bold text-[#2C5E50] mt-1">{stage.monthlyAmount}</div>
+                  <div className="text-xs text-[#53676E] mt-1 leading-relaxed">{stage.note}</div>
+                </div>
+              ))}
+            </div>
+            <div className="flex items-start gap-2 p-3 rounded-xl bg-white/60 border border-[#CDE0D7] text-[11px] text-[#53676E] leading-relaxed">
+              <Info className="w-3.5 h-3.5 text-[#2C5E50] mt-0.5 flex-shrink-0" />
+              {rentalProposition.disclaimer}
+            </div>
+          </div>
         </div>
 
         {/* EMI Calculator & Loan Parameters */}

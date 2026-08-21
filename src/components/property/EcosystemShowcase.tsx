@@ -43,8 +43,8 @@ export const EcosystemShowcase: React.FC = () => {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-widest">
-            <Stethoscope className="w-3.5 h-3.5" />
-            Healthcare at Your Doorstep
+            <Stethoscope className="w-3.5 h-3.5 text-[#C58F58]" />
+            11 • Healthcare, Wellness &amp; Mandir Ecosystem
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-normal text-[#0D2329] tracking-tight">
             Care When It Matters. <span className="italic font-serif text-[#C58F58]">Inside the Gate.</span>

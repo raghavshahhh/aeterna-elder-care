@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useModal } from '@/context/ModalContext';
 import { useToast } from '@/context/ToastContext';
 import { Modal } from '@/components/ui/Modal';
@@ -9,49 +9,45 @@ import { Input } from '@/components/ui/Input';
 import { projectOverview } from '@/data/propertyData';
 import {
   MessageSquare,
-  Send,
   CheckCircle2,
   ShieldCheck,
   Building2,
-  Calendar,
-  Sparkles,
-  MapPin
+  Sparkles
 } from 'lucide-react';
 
-export const WhatsAppModal: React.FC = () => {
-  const { isWhatsAppOpen, whatsAppContext, closeWhatsApp } = useModal();
+interface WhatsAppModalFormProps {
+  onClose: () => void;
+}
+
+const WhatsAppModalForm: React.FC<WhatsAppModalFormProps> = ({ onClose }) => {
+  const { whatsAppContext } = useModal();
   const { showToast } = useToast();
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState(whatsAppContext.city || 'Delhi NCR');
-  const [selectedUnit, setSelectedUnit] = useState(whatsAppContext.unitName || 'Residence 01 (1 BHK)');
+  const [selectedUnit, setSelectedUnit] = useState(
+    whatsAppContext.unitName
+      ? `${whatsAppContext.unitName} (${whatsAppContext.unitType || 'Residence'})`
+      : whatsAppContext.plotNumber
+      ? `${whatsAppContext.plotNumber} (${whatsAppContext.plotBlock || 'Plot'})`
+      : 'Residence 01 (1 BHK — Ground Floor)'
+  );
   const [inquiryType, setInquiryType] = useState(
     whatsAppContext.actionType === 'reserve-unit'
       ? 'Priority Residence Reservation'
+      : whatsAppContext.actionType === 'reserve-plot'
+      ? 'Priority Plot Allotment Inquiry'
       : whatsAppContext.actionType === 'book-site-visit'
       ? 'Schedule Site & Blueprint Visit'
       : whatsAppContext.actionType === 'request-pricing'
       ? 'Detailed Pricing & Payment Milestones'
+      : whatsAppContext.actionType === 'request-trust-docs'
+      ? 'Section 8 & Registration Document Review'
       : 'General Project & Living Inquiry'
   );
   const [preferredDate, setPreferredDate] = useState('');
-  const [customNotes, setCustomNotes] = useState('');
-
-  useEffect(() => {
-    if (whatsAppContext.unitName) {
-      setSelectedUnit(`${whatsAppContext.unitName} (${whatsAppContext.unitType || 'Care Suite'})`);
-    }
-    if (whatsAppContext.city) setCity(whatsAppContext.city);
-    if (whatsAppContext.message) setCustomNotes(whatsAppContext.message);
-    if (whatsAppContext.actionType === 'reserve-unit') {
-      setInquiryType('Priority Residence Reservation');
-    } else if (whatsAppContext.actionType === 'book-site-visit') {
-      setInquiryType('Schedule Site & Blueprint Visit');
-    } else if (whatsAppContext.actionType === 'request-pricing') {
-      setInquiryType('Detailed Pricing & Payment Milestones');
-    }
-  }, [whatsAppContext]);
+  const [customNotes, setCustomNotes] = useState(whatsAppContext.message || '');
 
   const handleLaunchWhatsApp = (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,15 +81,11 @@ _Please connect me with the Senior Project Advisor for blueprint walkthrough & r
     });
 
     window.open(whatsappUrl, '_blank');
-    closeWhatsApp();
+    onClose();
   };
 
   return (
-    <Modal
-      isOpen={isWhatsAppOpen}
-      onClose={closeWhatsApp}
-      maxWidth="lg"
-    >
+    <>
       <div className="flex items-center gap-3.5 mb-5 pb-4 border-b border-[#E8E2D8]">
         <div className="w-12 h-12 rounded-2xl bg-[#EAF2EE] border border-[#CDE0D7] flex items-center justify-center text-[#2C5E50] shrink-0">
           <Building2 className="w-6 h-6" />
@@ -120,7 +112,11 @@ _Please connect me with the Senior Project Advisor for blueprint walkthrough & r
           <div className="leading-relaxed">
             {whatsAppContext.unitName ? (
               <span>
-                You are inquiring for <strong>{whatsAppContext.unitName}</strong> ({whatsAppContext.unitType || 'Residence'}). Your priority context is locked.
+                You are inquiring for <strong>{whatsAppContext.unitName}</strong> ({whatsAppContext.unitType || 'Residence'}). Priority context locked.
+              </span>
+            ) : whatsAppContext.plotNumber ? (
+              <span>
+                You are inquiring for <strong>{whatsAppContext.plotNumber}</strong> ({whatsAppContext.plotBlock || 'Plot'}). Priority context locked.
               </span>
             ) : (
               <span>
@@ -149,7 +145,7 @@ _Please connect me with the Senior Project Advisor for blueprint walkthrough & r
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div>
-            <label className="block text-xs font-semibold text-[#0D2329] mb-1.5">Selected Residence</label>
+            <label className="block text-xs font-semibold text-[#0D2329] mb-1.5">Selected Property / Residence</label>
             <select
               value={selectedUnit}
               onChange={(e) => setSelectedUnit(e.target.value)}
@@ -158,6 +154,7 @@ _Please connect me with the Senior Project Advisor for blueprint walkthrough & r
               <option value="Residence 01 (1 BHK Suite — Ground)">Residence 01 (1 BHK — Ground Floor)</option>
               <option value="Residence 02 (1 RK Studio — Ground)">Residence 02 (1 RK — Ground Floor)</option>
               <option value="Residence 03 (1 BHK Corner — Ground)">Residence 03 (1 BHK Corner — Ground)</option>
+              <option value="Residential Plot (120 to 425 sq. yd.)">Residential Plot (120 to 425 sq. yd.)</option>
               <option value="1 BHK Care Suite (General Inquiry)">1 BHK Care Suite (General)</option>
               <option value="1 RK Executive Studio (General Inquiry)">1 RK Executive Studio (General)</option>
               <option value="Future Release Phase 2 (Units 04-09)">Future Release (Units 04–09)</option>
@@ -172,8 +169,10 @@ _Please connect me with the Senior Project Advisor for blueprint walkthrough & r
               className="w-full bg-[#FBF9F5] border border-[#E2D7C5] rounded-2xl px-4 py-3 text-sm text-[#0D2329] focus:outline-none focus:border-[#2C5E50]"
             >
               <option value="Priority Residence Reservation">Priority Residence Reservation</option>
+              <option value="Priority Plot Allotment Inquiry">Priority Plot Allotment Inquiry</option>
               <option value="Schedule Site & Blueprint Visit">Schedule Site & Blueprint Visit</option>
               <option value="Detailed Pricing & Payment Milestones">Detailed Pricing & Payment Milestones</option>
+              <option value="Section 8 & Registration Document Review">Section 8 & Registration Review</option>
               <option value="General Project & Living Inquiry">General Living & Medical Inquiry</option>
             </select>
           </div>
@@ -221,7 +220,7 @@ _Please connect me with the Senior Project Advisor for blueprint walkthrough & r
           <Button
             type="submit"
             size="lg"
-            className="w-full bg-[#2C5E50] hover:bg-[#1D4B57] text-white shadow-lg shadow-[#2C5E50]/20 py-4 font-semibold"
+            className="w-full bg-[#2C5E50] hover:bg-[#1D4B57] text-white shadow-lg shadow-[#2C5E50]/20 py-4 font-semibold cursor-pointer"
             leftIcon={<MessageSquare className="w-5 h-5" />}
           >
             Connect with Project Advisor on WhatsApp →
@@ -232,7 +231,22 @@ _Please connect me with the Senior Project Advisor for blueprint walkthrough & r
           </p>
         </div>
       </form>
+    </>
+  );
+};
+
+export const WhatsAppModal: React.FC = () => {
+  const { isWhatsAppOpen, closeWhatsApp } = useModal();
+
+  return (
+    <Modal
+      isOpen={isWhatsAppOpen}
+      onClose={closeWhatsApp}
+      maxWidth="lg"
+    >
+      {isWhatsAppOpen && <WhatsAppModalForm onClose={closeWhatsApp} />}
     </Modal>
   );
 };
+
 

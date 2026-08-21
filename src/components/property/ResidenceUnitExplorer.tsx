@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { residenceUnits } from '@/data/propertyData';
 import { useModal } from '@/context/ModalContext';
 import { ResidenceUnit } from '@/types';
+import { Interior3DViewer } from '@/components/3d/Interior3DViewer';
 import {
   Home,
   CheckCircle2,
@@ -15,7 +16,8 @@ import {
   ArrowRight,
   Maximize2,
   MessageSquare,
-  Calendar
+  Calendar,
+  Rotate3d
 } from 'lucide-react';
 
 interface ResidenceUnitExplorerProps {
@@ -26,7 +28,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
   initialUnitId = '1bhk-apt'
 }) => {
   const [selectedUnitId, setSelectedUnitId] = useState<string>(initialUnitId);
-  const [activeTab, setActiveTab] = useState<'overview' | 'room-sizes' | 'senior-features'>('overview');
+  const [activeTab, setActiveTab] = useState<'3d-interior' | 'overview' | 'room-sizes' | 'senior-features'>('3d-interior');
 
   const { openWhatsApp, openLeadDrawer } = useModal();
 
@@ -38,15 +40,15 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div className="max-w-2xl space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-wider">
-              <Building2 className="w-3.5 h-3.5" />
-              Senior Residences Visualizer
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-widest">
+              <Building2 className="w-3.5 h-3.5 text-[#C58F58]" />
+              08 &amp; 09 • Residence &amp; 3D Interior Visualizer
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-normal text-[#0D2329] tracking-tight">
               1 RK &amp; 1 BHK — <span className="italic font-serif text-[#C58F58]">Compact, Considered, Complete.</span>
             </h2>
             <p className="text-sm sm:text-base text-[#53676E] leading-relaxed">
-              G+2 residential buildings with stilt car parking, two lifts, and gradual stairs (10&quot; tread, 6&quot; rise). Single-floor living inside each home — built for the body, not the brochure.
+              Experience the 360° interactive 3D rooms below. Single-floor living inside each residence with zero-threshold bathrooms, grab rails, and wheelchair-wide hallways.
             </p>
           </div>
 
@@ -58,7 +60,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                 <button
                   key={unit.id}
                   onClick={() => setSelectedUnitId(unit.id)}
-                  className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+                  className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                     isSelected
                       ? 'bg-[#2C5E50] text-white shadow-sm'
                       : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
@@ -90,20 +92,31 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
               </div>
 
               {/* View Switcher Tabs */}
-              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#FAF8F5] border border-[#E8E2D8]">
+              <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-[#FAF8F5] border border-[#E8E2D8]">
+                <button
+                  onClick={() => setActiveTab('3d-interior')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                    activeTab === '3d-interior'
+                      ? 'bg-[#C58F58] text-[#071519] shadow-sm font-bold'
+                      : 'text-[#53676E] hover:text-[#0D2329]'
+                  }`}
+                >
+                  <Rotate3d className="w-3.5 h-3.5" />
+                  3D Room Orbit
+                </button>
                 <button
                   onClick={() => setActiveTab('overview')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                     activeTab === 'overview'
                       ? 'bg-[#2C5E50] text-white shadow-sm'
                       : 'text-[#53676E] hover:text-[#0D2329]'
                   }`}
                 >
-                  Proposed 3D View
+                  Photo Render
                 </button>
                 <button
                   onClick={() => setActiveTab('room-sizes')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                     activeTab === 'room-sizes'
                       ? 'bg-[#2C5E50] text-white shadow-sm'
                       : 'text-[#53676E] hover:text-[#0D2329]'
@@ -113,16 +126,26 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                 </button>
                 <button
                   onClick={() => setActiveTab('senior-features')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                     activeTab === 'senior-features'
                       ? 'bg-[#2C5E50] text-white shadow-sm'
                       : 'text-[#53676E] hover:text-[#0D2329]'
                   }`}
                 >
-                  Senior Safety Design
+                  Safety Specs
                 </button>
               </div>
             </div>
+
+            {/* TAB 0: 3D Interior Interactive Canvas */}
+            {activeTab === '3d-interior' && (
+              <div className="space-y-4">
+                <Interior3DViewer
+                  unitType={activeUnit.type === '1-rk' ? '1-rk' : '1-bhk'}
+                  onToggle2DPlans={() => setActiveTab('room-sizes')}
+                />
+              </div>
+            )}
 
             {/* TAB 1: 3D Interior Preview */}
             {activeTab === 'overview' && (

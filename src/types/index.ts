@@ -1,269 +1,6 @@
-export type ServiceCategory = 
-  | 'critical-care'
-  | 'daily-living'
-  | 'medical-rehab'
-  | 'dementia-memory'
-  | 'diagnostics-meds'
-  | 'companionship';
-
-export interface ServiceTier {
-  name: string;
-  price: string;
-  period: string;
-  description: string;
-  features: string[];
-  recommended?: boolean;
-}
-
-export interface ServiceFAQ {
-  question: string;
-  answer: string;
-}
-
-export interface Service {
-  id: string;
-  slug: string;
-  title: string;
-  subtitle: string;
-  shortDescription: string;
-  category: ServiceCategory;
-  categoryName: string;
-  iconName: string;
-  heroImage: string;
-  badge?: string;
-  rating: number;
-  reviewCount: number;
-  startingPrice: string;
-  priceUnit: string;
-  clinicalLead: {
-    name: string;
-    role: string;
-    qualification: string;
-    experience: string;
-  };
-  highlights: string[];
-  whatIsIncluded: {
-    title: string;
-    items: string[];
-  }[];
-  whoIsThisFor: string[];
-  clinicalProtocol: {
-    step: number;
-    title: string;
-    description: string;
-  }[];
-  pricingTiers: ServiceTier[];
-  faqs: ServiceFAQ[];
-  relatedServiceSlugs: string[];
-}
-
-export interface PlanFeatureGroup {
-  category: string;
-  features: {
-    name: string;
-    silver: string | boolean;
-    gold: string | boolean;
-    platinum: string | boolean;
-    diamond: string | boolean;
-    tooltip?: string;
-  }[];
-}
-
-export interface CarePlan {
-  id: string;
-  slug: string;
-  name: string;
-  tagline: string;
-  badge?: string;
-  popular?: boolean;
-  priceMonthly: number;
-  priceAnnual: number;
-  annualSavings: number;
-  description: string;
-  idealFor: string;
-  doctorVisitsPerYear: number;
-  nursingHoursPerMonth: string;
-  emergencyResponseTime: string;
-  ambulanceCover: string;
-  teleconsults: string;
-  healthLockerAccess: boolean;
-  dedicatedCareManager: boolean;
-  dailyVitalsTracking: boolean;
-  keyDeliverables: string[];
-  fullFeatures: string[];
-  limitations: string[];
-}
-
-export interface CityLocation {
-  id: string;
-  slug: string;
-  name: string;
-  state: string;
-  region: string;
-  heroImage: string;
-  activeCaregivers: number;
-  partnerHospitals: number;
-  familiesServed: number;
-  avgResponseTimeMin: number;
-  localHubAddress: string;
-  helpline: string;
-  leadCoordinator: {
-    name: string;
-    title: string;
-    phone: string;
-    photo: string;
-  };
-  coveredLocalities: string[];
-  partnerHospitalList: {
-    name: string;
-    accreditation: string;
-    speciality: string;
-  }[];
-  localTestimonials: {
-    quote: string;
-    author: string;
-    locality: string;
-    rating: number;
-    serviceUsed: string;
-  }[];
-  faqs: {
-    question: string;
-    answer: string;
-  }[];
-}
-
-export interface ArticleSection {
-  heading: string;
-  paragraphs: string[];
-  bulletPoints?: string[];
-  calloutBox?: {
-    type: 'tip' | 'warning' | 'clinical-note';
-    title: string;
-    text: string;
-  };
-}
-
-export interface Article {
-  id: string;
-  slug: string;
-  title: string;
-  summary: string;
-  category: string;
-  readTimeMinutes: number;
-  publishDate: string;
-  heroImage: string;
-  author: {
-    name: string;
-    role: string;
-    credentials: string;
-  };
-  medicallyReviewedBy: {
-    name: string;
-    speciality: string;
-    hospital: string;
-  };
-  keyTakeaways: string[];
-  sections: ArticleSection[];
-  tags: string[];
-  relatedSlugs: string[];
-}
-
-export interface Testimonial {
-  id: string;
-  authorName: string;
-  authorRelation: string;
-  authorLocation: string;
-  authorImage: string;
-  elderName: string;
-  elderAge: number;
-  serviceUsed: string;
-  planName?: string;
-  rating: number;
-  quote: string;
-  fullStory: string;
-  verified: boolean;
-  videoDuration?: string;
-  videoThumb?: string;
-}
-
-export interface FAQItem {
-  id: string;
-  category: 'general' | 'services' | 'plans' | 'emergency' | 'caregivers' | 'payments';
-  question: string;
-  answer: string;
-}
-
-export interface FindCareSubmission {
-  relation: string;
-  elderAge: string;
-  mobilityStatus: string;
-  city: string;
-  locality: string;
-  servicesNeeded: string[];
-  urgency: 'immediate' | 'within-48-hours' | 'next-week' | 'exploring';
-  schedulePreference: '12-hr-day' | '12-hr-night' | '24-hr-livein' | 'visiting' | 'on-demand';
-  medicalConditions: string[];
-  contactName: string;
-  contactPhone: string;
-  contactWhatsApp: string;
-  contactEmail: string;
-  notes?: string;
-}
-
-export interface BookingSubmission {
-  serviceId: string;
-  serviceName: string;
-  tierName?: string;
-  city: string;
-  locality: string;
-  address: string;
-  startDate: string;
-  timeSlot: string;
-  patientName: string;
-  patientAge: string;
-  gender: string;
-  medicalConditions: string;
-  emergencyContactName: string;
-  emergencyContactPhone: string;
-  specialInstructions?: string;
-  amount: number;
-  paymentMethod: 'pay-online' | 'pay-after-assessment';
-}
-
-export interface PortalVitalRecord {
-  date: string;
-  bp: string;
-  sugar: string;
-  pulse: number;
-  spo2: number;
-  temperature: string;
-  status: 'normal' | 'attention' | 'optimal';
-  notes: string;
-}
-
-export interface PortalVisit {
-  id: string;
-  date: string;
-  time: string;
-  providerName: string;
-  role: string;
-  type: 'Doctor Visit' | 'Physio Session' | 'Nursing Check' | 'Lab Sample Collection';
-  status: 'Upcoming' | 'Completed' | 'In Progress';
-  notes?: string;
-}
-
-export interface PortalDocument {
-  id: string;
-  title: string;
-  type: 'Prescription' | 'Lab Report' | 'Discharge Summary' | 'Care Plan';
-  date: string;
-  doctorName: string;
-  fileSize: string;
-}
-
-// ----------------------------------------------------
-// Property Showcase & Senior Residence Models
-// ----------------------------------------------------
+// ============================================================================
+// SENIOR LIVING CITIZEN FOUNDATION — MASTER TYPE DEFINITIONS
+// ============================================================================
 
 export type UnitType = '1-rk' | '1-bhk' | '2-bhk';
 export type UnitStatus = 'available' | 'future_release' | 'on_hold' | 'sold';
@@ -289,8 +26,8 @@ export interface BuildingUnit {
   carpetAreaSqFt: number;
   facing: string;
   status: UnitStatus; // 'available' for 01-03, 'future_release' for 04-09
-  badge: string; // "Available (Phase 1)" or "Coming Soon (Future Release)"
-  priceDisplay: string; // "₹XX,XX,XXX" or "Request Pre-Launch Price"
+  badge: string; // "Available • Phase 1" or "⏳ Future Release (Phase 2)"
+  priceDisplay: string; // "₹25 Lakhs (Down Payment Plan)" or "Price to be Confirmed"
   rooms: RoomDetail[];
   seniorFeatures: string[];
   blueprint2d: string;
@@ -308,7 +45,7 @@ export interface PlotItem {
   facing: string; // "North-East" | "Park Facing" | "Corner" | "East"
   roadWidth: string; // "33 ft Main Road" | "11 ft Lane"
   status: 'available' | 'on_hold' | 'sold';
-  priceEstimate: string; // "Request Price"
+  priceEstimate: string; // "₹36.0 Lakhs"
   isCorner?: boolean;
   isParkFacing?: boolean;
 }
@@ -390,6 +127,50 @@ export interface RoadmapMilestone {
 }
 
 // ----------------------------------------------------
+// Real vs. Proposed Transparency Types
+// ----------------------------------------------------
+
+export interface RealVsProposedItem {
+  category: string;
+  whatExistsToday: {
+    title: string;
+    description: string;
+    badge: string;
+    icon: string;
+  };
+  whatWeAreBuilding: {
+    title: string;
+    description: string;
+    badge: string;
+    icon: string;
+  };
+}
+
+// ----------------------------------------------------
+// 5 Benefit Groups (What You Get)
+// ----------------------------------------------------
+
+export interface BenefitGroupPillar {
+  id: 'home' | 'care' | 'wellness' | 'community' | 'convenience';
+  title: string;
+  tagline: string;
+  iconName: string;
+  highlights: string[];
+}
+
+// ----------------------------------------------------
+// Trust & Organization Credentials
+// ----------------------------------------------------
+
+export interface TrustCredential {
+  iconName: string;
+  title: string;
+  authority: string;
+  description: string;
+  badge: string;
+}
+
+// ----------------------------------------------------
 // Official Foundation Models & Content Extensions
 // ----------------------------------------------------
 
@@ -436,3 +217,34 @@ export interface ArchitectProfile {
   email: string;
   services: string[];
 }
+
+export interface WhatsAppLeadContext {
+  actionType?: 'general' | 'reserve-unit' | 'reserve-plot' | 'book-site-visit' | 'request-pricing' | 'request-trust-docs' | 'rental-plan';
+  title?: string;
+  unitName?: string;
+  unitType?: string;
+  plotNumber?: string;
+  plotBlock?: string;
+  plotSize?: string;
+  floorLevel?: string;
+  city?: string;
+  message?: string;
+}
+
+export interface FAQItem {
+  id?: string;
+  category?: string;
+  question: string;
+  answer: string;
+}
+
+export interface SiteVisitRequest {
+  name: string;
+  phone: string;
+  email?: string;
+  interestType: string;
+  preferredDate?: string;
+  city: string;
+  notes?: string;
+}
+

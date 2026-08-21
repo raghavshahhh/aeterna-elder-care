@@ -44,9 +44,9 @@ export const LocationConnectivity: React.FC = () => {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div className="max-w-2xl space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-wider">
-              <Compass className="w-3.5 h-3.5" />
-              Strategic Location &amp; Peaceful Sanctuary
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-widest">
+              <Compass className="w-3.5 h-3.5 text-[#C58F58]" />
+              04 • Real Location &amp; Highway Connectivity
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-normal text-[#0D2329] tracking-tight">
               Near Reliance MET City, <span className="italic font-serif text-[#C58F58]">SH-22 Jhajjar.</span>

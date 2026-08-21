@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { useModal } from '@/context/ModalContext';
 import { projectOverview } from '@/data/propertyData';
@@ -12,11 +12,21 @@ import {
   MessageSquare,
   ArrowDown,
   ShieldCheck,
-  Heart
+  Heart,
+  Video
 } from 'lucide-react';
 
 export const DroneHero: React.FC = () => {
   const { openWhatsApp, openLeadDrawer } = useModal();
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {
+        // Autoplay may be restricted by browser policy; fallback poster remains active
+      });
+    }
+  }, []);
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -27,26 +37,40 @@ export const DroneHero: React.FC = () => {
 
   return (
     <section className="relative min-h-[92vh] sm:min-h-[96vh] flex flex-col justify-between overflow-hidden bg-[#071519] text-white pt-24 pb-12">
-      {/* Full-Bleed Background Image of Indian Grandparents with Home & Garden */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/images/indian-grandparents-hero.jpg"
-          alt="Indian Grandparents enjoying peaceful retirement home and garden at Senior Living Citizen Foundation"
-          fill
-          priority
-          className="object-cover object-center sm:object-right scale-100 transition-transform duration-1000"
-        />
-        {/* Soft directional gradient: rich on the left for text legibility, crystal clear on the right to show grandparents */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#071519]/95 via-[#071519]/70 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#071519]/90 via-transparent to-[#071519]/60" />
+      {/* Cinematic Full-Bleed Video Slot with Image Fallback */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {projectOverview.droneVideoUrl ? (
+          <video
+            ref={videoRef}
+            src={projectOverview.droneVideoUrl}
+            poster={projectOverview.heroPosterImage}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover object-center"
+          />
+        ) : (
+          <Image
+            src={projectOverview.heroPosterImage || '/images/indian-grandparents-hero.jpg'}
+            alt="Indian Grandparents enjoying peaceful senior living sanctuary at Senior Living Citizen Foundation"
+            fill
+            priority
+            className="object-cover object-center sm:object-right scale-100 transition-transform duration-1000"
+          />
+        )}
+
+        {/* Soft directional gradients for crisp text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#071519]/95 via-[#071519]/75 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#071519]/95 via-transparent to-[#071519]/60" />
       </div>
 
       {/* Top Location & Project Status Bar */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-2 sm:pt-4">
         <div className="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-white/10 text-xs">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 font-semibold tracking-wide backdrop-blur-md">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-300 font-semibold tracking-wide backdrop-blur-md">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-mono text-[11px] uppercase tracking-widest">UPCOMING PRE-LAUNCH PROJECT</span>
+            <span className="font-mono text-[11px] uppercase tracking-widest">01 • UPCOMING PRE-LAUNCH PROJECT</span>
           </div>
 
           <div className="flex items-center gap-4 sm:gap-6 text-white/85 text-xs">
@@ -81,14 +105,14 @@ export const DroneHero: React.FC = () => {
           </div>
 
           <p className="text-base sm:text-lg text-white/90 font-normal leading-relaxed max-w-2xl drop-shadow-sm">
-            An upcoming senior-living community designed around comfort, accessibility, wellness, and peace of mind. Offering <strong>64 residential plots</strong> and <strong>senior apartments</strong> with an on-site <strong>30,000 sq. ft. Ayurvedic hospital</strong> and <strong>Mandir</strong> near Reliance MET City, SH-22 Jhajjar.
+            An upcoming senior-living community designed around comfort, accessibility, wellness, and peace of mind. Offering <strong>64 residential freehold plots</strong> and <strong>senior residences</strong> with an on-site proposed <strong>30,000 sq. ft. Ayurvedic hospital</strong> and <strong>Community Mandir</strong> near Reliance MET City, SH-22 Jhajjar.
           </p>
 
-          {/* 3 Clean Metric Badges */}
+          {/* 3 Metric Badges */}
           <div className="grid grid-cols-3 gap-3 pt-2 max-w-lg">
             <div className="p-3.5 rounded-2xl bg-[#0D2329]/80 border border-white/15 backdrop-blur-md text-center sm:text-left shadow-lg">
               <div className="text-2xl sm:text-3xl font-serif-heading font-bold text-white">64</div>
-              <div className="text-[11px] text-white/70 uppercase tracking-wider mt-0.5 font-medium">Residential Plots</div>
+              <div className="text-[11px] text-white/70 uppercase tracking-wider mt-0.5 font-medium">Freehold Plots</div>
             </div>
             <div className="p-3.5 rounded-2xl bg-[#0D2329]/80 border border-white/15 backdrop-blur-md text-center sm:text-left shadow-lg">
               <div className="text-2xl sm:text-3xl font-serif-heading font-bold text-emerald-400">30k</div>
@@ -104,7 +128,7 @@ export const DroneHero: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
             <Button
               size="lg"
-              className="bg-[#2C5E50] hover:bg-[#3D7363] text-white py-4 px-7 text-sm sm:text-base font-semibold shadow-xl shadow-[#2C5E50]/40"
+              className="bg-[#2C5E50] hover:bg-[#3D7363] text-white py-4 px-7 text-sm sm:text-base font-semibold shadow-xl shadow-[#2C5E50]/40 cursor-pointer"
               onClick={() => scrollToSection('building-vision')}
               leftIcon={<Building2 className="w-5 h-5" />}
             >
@@ -113,8 +137,8 @@ export const DroneHero: React.FC = () => {
             <Button
               variant="outline"
               size="lg"
-              className="border-white/30 bg-black/40 backdrop-blur-md text-white hover:bg-white/15 py-4 px-6 text-sm font-medium"
-              onClick={() => openLeadDrawer({ title: 'Book Free Private Site Walkthrough', actionType: 'book-site-visit' })}
+              className="border-white/30 bg-black/40 backdrop-blur-md text-white hover:bg-white/15 py-4 px-6 text-sm font-medium cursor-pointer"
+              onClick={() => openLeadDrawer({ title: 'Book Free Private Site Walkthrough in Kheri Asra', actionType: 'book-site-visit' })}
               leftIcon={<Calendar className="w-4 h-4 text-[#C58F58]" />}
             >
               Book a Site Visit
@@ -122,8 +146,8 @@ export const DroneHero: React.FC = () => {
             <Button
               variant="ghost"
               size="lg"
-              className="text-emerald-300 hover:text-white hover:bg-white/10 py-4 px-4 text-sm font-semibold backdrop-blur-sm"
-              onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizen Foundation...' })}
+              className="text-emerald-300 hover:text-white hover:bg-white/10 py-4 px-4 text-sm font-semibold backdrop-blur-sm cursor-pointer"
+              onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizen Foundation plots and senior apartments...' })}
               leftIcon={<MessageSquare className="w-4 h-4 text-[#25D366]" />}
             >
               Chat on WhatsApp
@@ -140,7 +164,7 @@ export const DroneHero: React.FC = () => {
         </span>
         <button
           onClick={() => scrollToSection('location')}
-          className="flex items-center gap-1.5 text-[#C58F58] hover:text-white transition-colors"
+          className="flex items-center gap-1.5 text-[#C58F58] hover:text-white transition-colors cursor-pointer"
         >
           <span>Scroll to explore</span>
           <ArrowDown className="w-3.5 h-3.5 animate-bounce" />
@@ -149,3 +173,4 @@ export const DroneHero: React.FC = () => {
     </section>
   );
 };
+

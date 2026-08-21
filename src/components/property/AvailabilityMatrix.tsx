@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { allPlots, plotsSummary, projectOverview } from '@/data/propertyData';
 import { PlotItem } from '@/types';
 import { PlotDetailDrawer } from '@/components/property/PlotDetailDrawer';
+import { MasterPlan3DViewer } from '@/components/3d/MasterPlan3DViewer';
 import { useModal } from '@/context/ModalContext';
 import { Button } from '@/components/ui/Button';
 import {
@@ -19,12 +20,15 @@ import {
   Trees,
   Maximize2,
   ArrowRight,
-  ShieldCheck
+  ShieldCheck,
+  Rotate3d,
+  Grid
 } from 'lucide-react';
 
 export const AvailabilityMatrix: React.FC = () => {
   const [selectedBlock, setSelectedBlock] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
 
   // Drawer State
   const [selectedPlot, setSelectedPlot] = useState<PlotItem | null>(null);
@@ -48,20 +52,56 @@ export const AvailabilityMatrix: React.FC = () => {
     <section id="plots-masterplan" className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E8E2D8] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
+        <div className="text-center max-w-3xl mx-auto space-y-4 mb-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-widest">
-            <Layers className="w-3.5 h-3.5" />
-            Freehold Plotted Community
+            <Layers className="w-3.5 h-3.5 text-[#C58F58]" />
+            12 &amp; 13 • 64-Plot Master Plan &amp; Availability
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-normal text-[#0D2329] tracking-tight">
             Find Your Plot in the <span className="italic font-serif text-[#C58F58]">Master Plan.</span>
           </h2>
           <p className="text-sm sm:text-base text-[#53676E] leading-relaxed">
-            64 Freehold residential plots across Blocks A to F (120 to 425 sq. yd.). Click any plot below to view dimensions, facing, pre-launch price, and reserve directly on WhatsApp.
+            64 Freehold residential plots across Blocks A to F (120 to 425 sq. yd.). Explore the 3D isometric layout below, click any plot to inspect dimensions and pricing, or switch to the 2D grid.
           </p>
+
+          {/* 3D / 2D View Switch */}
+          <div className="pt-2 flex items-center justify-center">
+            <div className="inline-flex items-center bg-[#EAF2EE] p-1.5 rounded-2xl border border-[#CDE0D7] shadow-sm gap-1.5 text-xs font-bold">
+              <button
+                onClick={() => setViewMode('3d')}
+                className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all cursor-pointer ${
+                  viewMode === '3d'
+                    ? 'bg-[#2C5E50] text-white shadow-md'
+                    : 'text-[#53676E] hover:text-[#0D2329]'
+                }`}
+              >
+                <Rotate3d className="w-4 h-4 text-[#C58F58]" />
+                Interactive 3D Master Plan
+              </button>
+              <button
+                onClick={() => setViewMode('2d')}
+                className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all cursor-pointer ${
+                  viewMode === '2d'
+                    ? 'bg-[#2C5E50] text-white shadow-md'
+                    : 'text-[#53676E] hover:text-[#0D2329]'
+                }`}
+              >
+                <Grid className="w-4 h-4" />
+                2D Inventory Grid
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* Master Plan Container Card */}
+        {viewMode === '3d' ? (
+          <div className="mb-8">
+            <MasterPlan3DViewer
+              onSelectPlot={(plot) => handlePlotClick(plot)}
+              onToggle2DView={() => setViewMode('2d')}
+            />
+          </div>
+        ) : (
+        /* Master Plan Container Card */
         <div className="bg-white rounded-3xl border border-[#E8E2D8] shadow-xl p-6 sm:p-8 space-y-6">
           {/* Top Bar with Status Counts & Filters */}
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-6 border-b border-[#E8E2D8]">
@@ -77,51 +117,15 @@ export const AvailabilityMatrix: React.FC = () => {
               </p>
             </div>
 
-            {/* Status Filter Pills */}
-            <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-              <button
-                onClick={() => setSelectedStatus('all')}
-                className={`px-3 py-1.5 rounded-full border transition-all ${
-                  selectedStatus === 'all'
-                    ? 'bg-[#0D2329] text-white border-[#0D2329]'
-                    : 'bg-white text-[#53676E] border-[#E8E2D8]'
-                }`}
-              >
-                All ({plotsSummary.totalPlots})
-              </button>
-              <button
-                onClick={() => setSelectedStatus('available')}
-                className={`px-3 py-1.5 rounded-full border transition-all flex items-center gap-1.5 ${
-                  selectedStatus === 'available'
-                    ? 'bg-emerald-700 text-white border-emerald-700'
-                    : 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                }`}
-              >
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                {plotsSummary.availableCount} Available
-              </button>
-              <button
-                onClick={() => setSelectedStatus('on_hold')}
-                className={`px-3 py-1.5 rounded-full border transition-all flex items-center gap-1.5 ${
-                  selectedStatus === 'on_hold'
-                    ? 'bg-amber-700 text-white border-amber-700'
-                    : 'bg-amber-50 text-amber-800 border-amber-200'
-                }`}
-              >
-                <span className="w-2 h-2 rounded-full bg-amber-500" />
-                {plotsSummary.onHoldCount} On Hold
-              </button>
-              <button
-                onClick={() => setSelectedStatus('sold')}
-                className={`px-3 py-1.5 rounded-full border transition-all flex items-center gap-1.5 ${
-                  selectedStatus === 'sold'
-                    ? 'bg-rose-700 text-white border-rose-700'
-                    : 'bg-rose-50 text-rose-800 border-rose-200'
-                }`}
-              >
-                <span className="w-2 h-2 rounded-full bg-rose-400" />
-                {plotsSummary.soldCount} Allotted
-              </button>
+            {/* Honest Status Badge */}
+            <div className="flex items-center gap-2 text-xs">
+              <span className="px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-900 border border-emerald-200 font-bold flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                Phase 1 Allotment Open • 64 Plots
+              </span>
+              <span className="text-[11px] text-[#53676E] hidden sm:inline">
+                (Individual demarcation verified on-site)
+              </span>
             </div>
           </div>
 
@@ -233,6 +237,7 @@ export const AvailabilityMatrix: React.FC = () => {
             </div>
           </div>
         </div>
+        )}
       </div>
 
       {/* Plot Detail Drawer */}

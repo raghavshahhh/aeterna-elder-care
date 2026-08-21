@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { buildingUnits, projectOverview } from '@/data/propertyData';
 import { BuildingUnit, FloorLevel } from '@/types';
 import { UnitDetailDrawer } from '@/components/property/UnitDetailDrawer';
+import { Building3DViewer } from '@/components/3d/Building3DViewer';
 import { useModal } from '@/context/ModalContext';
 import {
   Building2,
@@ -17,7 +18,11 @@ import {
   ArrowRight,
   Car,
   Home,
-  MessageSquare
+  Lock,
+  MessageSquare,
+  Eye,
+  Rotate3d,
+  Box
 } from 'lucide-react';
 
 interface BuildingCGIViewerProps {
@@ -28,6 +33,7 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
   const [selectedFloor, setSelectedFloor] = useState<FloorLevel>('ground');
   const [selectedUnitForDrawer, setSelectedUnitForDrawer] = useState<BuildingUnit | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
 
   const { openWhatsApp } = useModal();
 
@@ -39,8 +45,18 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
   };
 
   const handleUnitClick = (unit: BuildingUnit) => {
-    setSelectedUnitForDrawer(unit);
-    setIsDrawerOpen(true);
+    if (unit.status === 'available') {
+      setSelectedUnitForDrawer(unit);
+      setIsDrawerOpen(true);
+    } else {
+      openWhatsApp({
+        actionType: 'reserve-unit',
+        unitName: unit.unitNumber,
+        unitType: unit.typeName,
+        floorLevel: unit.floorName,
+        message: `Hello, I want to join the Priority Waitlist for ${unit.unitNumber} (${unit.typeName} on ${unit.floorName}) in Senior Living Citizen Foundation...`
+      });
+    }
   };
 
   // Filter units by currently selected floor
@@ -53,28 +69,70 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#C58F58]/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
+        {/* Section 06: Proposed Building Visual & Architecture Overview */}
+        <div className="text-center max-w-3xl mx-auto space-y-4 mb-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs text-[#C58F58] font-bold uppercase tracking-widest">
             <Building2 className="w-3.5 h-3.5" />
-            9-Unit Senior Residence Building
+            06 &amp; 07 • 9-Unit Senior Residence Building
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-normal tracking-tight text-[#FAF8F5]">
-            Choose Your <span className="italic font-serif text-[#C58F58]">Senior Residence.</span>
+            4-Tier Building Explorer: <span className="italic font-serif text-[#C58F58]">Stilt + G+2 Elevation.</span>
           </h2>
           <p className="text-sm sm:text-base text-white/75 leading-relaxed">
-            G+2 residential building with stilt parking and two lifts. Units 01, 02, and 03 on the Ground Floor are currently open for Phase 1 booking.
+            Architecturally engineered by <strong>The Vision Architects</strong> with zero-barrier internal floors, gradual 6&quot; risers, dual lifts, and covered stilt parking. Ground floor units are currently available for Phase 1 allotment.
           </p>
+
+          {/* 3D vs 2D Toggle Switch */}
+          <div className="pt-2 flex items-center justify-center">
+            <div className="inline-flex items-center bg-white/10 p-1.5 rounded-2xl border border-white/15 backdrop-blur-md shadow-lg gap-1.5 text-xs font-bold">
+              <button
+                onClick={() => setViewMode('3d')}
+                className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all cursor-pointer ${
+                  viewMode === '3d'
+                    ? 'bg-[#C58F58] text-[#071519] shadow-md'
+                    : 'text-white/75 hover:text-white'
+                }`}
+              >
+                <Rotate3d className="w-4 h-4" />
+                Interactive 3D Orbit
+              </button>
+              <button
+                onClick={() => setViewMode('2d')}
+                className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all cursor-pointer ${
+                  viewMode === '2d'
+                    ? 'bg-[#2C5E50] text-white shadow-md'
+                    : 'text-white/75 hover:text-white'
+                }`}
+              >
+                <Layers className="w-4 h-4" />
+                2D Elevation Matrix
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* 4-Tier Building Elevation Matrix */}
-        <div className="max-w-4xl mx-auto mb-12 bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8 backdrop-blur-md space-y-4">
-          {/* Second Floor */}
+        {/* Render 3D Building Viewer when in 3D mode */}
+        {viewMode === '3d' ? (
+          <div className="mb-12">
+            <Building3DViewer
+              initialFloor={selectedFloor}
+              onSelectUnit={(unitId) => {
+                const u = buildingUnits.find((item) => item.id === unitId);
+                if (u) handleUnitClick(u);
+              }}
+              onToggle2DFallback={() => setViewMode('2d')}
+            />
+          </div>
+        ) : (
+          <>
+          {/* 2D 4-Tier Interactive Elevation Matrix */}
+          <div className="max-w-4xl mx-auto mb-12 bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8 backdrop-blur-md space-y-4">
+          {/* Second Floor (Phase 3 - Locked) */}
           <div
             onClick={() => handleFloorSelect('second')}
             className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col sm:flex-row items-center justify-between gap-4 ${
               selectedFloor === 'second'
-                ? 'bg-[#2C5E50]/40 border-[#C58F58] ring-1 ring-[#C58F58]'
+                ? 'bg-[#2C5E50]/50 border-[#C58F58] ring-1 ring-[#C58F58]'
                 : 'bg-white/5 border-white/10 hover:bg-white/10'
             }`}
           >
@@ -83,23 +141,26 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
                 2F
               </span>
               <div>
-                <h4 className="text-sm font-bold text-white">Second Floor (Units 07, 08, 09)</h4>
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm font-bold text-white">Second Floor (Units 07, 08, 09)</h4>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-white/70 font-mono flex items-center gap-1">
+                    <Lock className="w-3 h-3 text-amber-400" /> Phase 3 Release
+                  </span>
+                </div>
                 <p className="text-xs text-white/60">Top-floor sky suites with open horizon views</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] px-2.5 py-1 rounded-full bg-white/10 text-white/80 font-mono">
-                Phase 3 Release
-              </span>
+            <div className="flex items-center gap-2 text-xs font-bold text-amber-300">
+              <span>Waitlist Only →</span>
             </div>
           </div>
 
-          {/* First Floor */}
+          {/* First Floor (Phase 2 - Locked) */}
           <div
             onClick={() => handleFloorSelect('first')}
             className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col sm:flex-row items-center justify-between gap-4 ${
               selectedFloor === 'first'
-                ? 'bg-[#2C5E50]/40 border-[#C58F58] ring-1 ring-[#C58F58]'
+                ? 'bg-[#2C5E50]/50 border-[#C58F58] ring-1 ring-[#C58F58]'
                 : 'bg-white/5 border-white/10 hover:bg-white/10'
             }`}
           >
@@ -108,18 +169,21 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
                 1F
               </span>
               <div>
-                <h4 className="text-sm font-bold text-white">First Floor (Units 04, 05, 06)</h4>
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm font-bold text-white">First Floor (Units 04, 05, 06)</h4>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-white/70 font-mono flex items-center gap-1">
+                    <Lock className="w-3 h-3 text-amber-400" /> Phase 2 Release
+                  </span>
+                </div>
                 <p className="text-xs text-white/60">Elevated residences overlooking tree canopy</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] px-2.5 py-1 rounded-full bg-white/10 text-white/80 font-mono">
-                Phase 2 Release
-              </span>
+            <div className="flex items-center gap-2 text-xs font-bold text-amber-300">
+              <span>Waitlist Only →</span>
             </div>
           </div>
 
-          {/* Ground Floor (ACTIVE LAUNCH) */}
+          {/* Ground Floor (ACTIVE LAUNCH - Units 01, 02, 03 Available) */}
           <div
             onClick={() => handleFloorSelect('ground')}
             className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col sm:flex-row items-center justify-between gap-4 ${
@@ -137,14 +201,14 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
                   <h4 className="text-sm font-bold text-white">Ground Floor (Units 01, 02, 03)</h4>
                   <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-400 text-emerald-950 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-950" />
-                    CURRENT RELEASE
+                    CURRENT RELEASE • AVAILABLE
                   </span>
                 </div>
                 <p className="text-xs text-white/80 mt-0.5">Barrier-free ground access straight from garden walkway</p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-xs font-bold text-emerald-300">
-              <span>View 3 Units →</span>
+              <span>Explore 3 Available Units →</span>
             </div>
           </div>
 
@@ -153,7 +217,7 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
             onClick={() => handleFloorSelect('stilt')}
             className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col sm:flex-row items-center justify-between gap-4 ${
               selectedFloor === 'stilt'
-                ? 'bg-[#2C5E50]/40 border-[#C58F58] ring-1 ring-[#C58F58]'
+                ? 'bg-[#2C5E50]/50 border-[#C58F58] ring-1 ring-[#C58F58]'
                 : 'bg-white/5 border-white/10 hover:bg-white/10'
             }`}
           >
@@ -163,7 +227,7 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
               </span>
               <div>
                 <h4 className="text-sm font-bold text-white">Stilt Parking &amp; Dual Elevators Level</h4>
-                <p className="text-xs text-white/60">10+ Covered car parks, 3 security entry gates, 2 wheelchair lifts</p>
+                <p className="text-xs text-white/60">10+ Covered car parks, 3 vehicle gates, 2 wheelchair lifts</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -186,7 +250,7 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
                   className={`rounded-3xl border p-6 transition-all duration-300 cursor-pointer flex flex-col justify-between group ${
                     isAvail
                       ? 'bg-white/10 hover:bg-white/15 border-emerald-500/50 hover:border-emerald-400 hover:scale-[1.02] shadow-xl'
-                      : 'bg-white/5 border-white/10 opacity-75'
+                      : 'bg-white/5 border-white/10 opacity-75 hover:opacity-100 hover:border-amber-400/40'
                   }`}
                 >
                   <div className="space-y-4">
@@ -195,11 +259,12 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
                         {unit.typeName}
                       </span>
                       <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                          isAvail ? 'bg-emerald-500 text-white' : 'bg-white/10 text-white/70'
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${
+                          isAvail ? 'bg-emerald-500 text-white' : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
                         }`}
                       >
-                        {isAvail ? 'Available' : 'Future Phase'}
+                        {!isAvail && <Lock className="w-2.5 h-2.5" />}
+                        {isAvail ? 'Available' : 'Waitlist Only'}
                       </span>
                     </div>
 
@@ -213,9 +278,11 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
                     </div>
 
                     <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
-                      <div className="text-[10px] text-white/60 uppercase font-mono">Pre-Launch Price</div>
+                      <div className="text-[10px] text-white/60 uppercase font-mono">
+                        {isAvail ? 'Pre-Launch Price' : 'Release Status'}
+                      </div>
                       <div className="text-lg font-bold text-white font-serif-heading">
-                        {unit.priceDisplay}
+                        {isAvail ? unit.priceDisplay : 'Future Release Phase'}
                       </div>
                       <div className="text-[10px] text-emerald-400 flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3" /> Includes Stilt Parking &amp; Lift Access
@@ -235,7 +302,7 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
                   </div>
 
                   <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-[#C58F58] group-hover:translate-x-1 transition-transform">
-                    <span>Inspect Unit Layout</span>
+                    <span>{isAvail ? 'Inspect Unit Layout & Blueprints' : 'Join Phase Priority Waitlist'}</span>
                     <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
@@ -253,6 +320,8 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
             </p>
           </div>
         )}
+        </>
+        )}
       </div>
 
       {/* Unit Detail Drawer */}
@@ -264,3 +333,4 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
     </section>
   );
 };
+

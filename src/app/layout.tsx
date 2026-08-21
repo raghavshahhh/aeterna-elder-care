@@ -3,12 +3,11 @@ import './globals.css';
 import { ToastProvider } from '@/context/ToastContext';
 import { ModalProvider } from '@/context/ModalContext';
 import { ToastContainer } from '@/components/ui/Toast';
-import { EmergencyModal } from '@/components/shared/EmergencyModal';
 import { WhatsAppModal } from '@/components/shared/WhatsAppModal';
 import { LeadCaptureDrawer } from '@/components/shared/LeadCaptureDrawer';
 import { TopNotificationBar } from '@/components/layout/TopNotificationBar';
 import { Navbar } from '@/components/layout/Navbar';
-import { EmergencyBar } from '@/components/layout/EmergencyBar';
+import { QuickContactBar } from '@/components/layout/QuickContactBar';
 import { Footer } from '@/components/layout/Footer';
 
 export const viewport: Viewport = {
@@ -22,7 +21,7 @@ export const metadata: Metadata = {
     default: 'Senior Living Citizen Foundation — Plotted Sanctuary & Ayurvedic Hospital · Haryana',
     template: '%s | Senior Living Citizen Foundation'
   },
-  description: '64 residential plots and 1BHK/2BHK senior apartments with an on-site 30,000 sq. ft. G+2 Ayurvedic Hospital and Mandir near Reliance MET City, SH-22 Jhajjar, Haryana.',
+  description: '64 residential plots and 1 BHK/1 RK senior residences with an on-site 30,000 sq. ft. G+2 Ayurvedic Hospital and Mandir near Reliance MET City, SH-22 Jhajjar, Haryana.',
   keywords: [
     'Senior Living Citizen Foundation',
     'Senior living Haryana',
@@ -59,9 +58,8 @@ export default function RootLayout({
             <Navbar />
             <main className="flex-1 w-full">{children}</main>
             <Footer />
-            <EmergencyBar />
+            <QuickContactBar />
             <ToastContainer />
-            <EmergencyModal />
             <WhatsAppModal />
             <LeadCaptureDrawer />
           </ModalProvider>
@@ -70,3 +68,4 @@ export default function RootLayout({
     </html>
   );
 }
+

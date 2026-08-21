@@ -10,7 +10,10 @@ import {
   DeepBenefit,
   PaymentPlan,
   LoanParameter,
-  ArchitectProfile
+  ArchitectProfile,
+  RealVsProposedItem,
+  BenefitGroupPillar,
+  TrustCredential
 } from '@/types';
 
 // ============================================================================
@@ -39,8 +42,185 @@ export const projectOverview = {
   siteOfficePhone: '+91 99999558447',
   salesWhatsApp: '+91 99999558447',
   inquiryEmail: 'Yoffices@gmail.com',
+  droneVideoUrl: '', // Ready for client drone video asset
+  heroPosterImage: '/images/indian-grandparents-hero.jpg',
+  images: {
+    droneOverview: '/images/indian-grandparents-hero.jpg',
+    masterPlanCad: '/images/indian-garden-walking.jpg',
+    buildingCadElevation: '/images/indian-about-care.jpg',
+    buildingCgiRenders: [
+      '/images/indian-club-seniors.jpg',
+      '/images/indian-hospital-care.jpg'
+    ]
+  },
   disclaimer: 'This website presents an upcoming pre-launch project. Architectural drawings, 3D renderings, indicative interiors, and planned amenities represent proposed designs by The Vision Architects and are subject to final municipal and statutory approvals.'
 };
+
+// ============================================================================
+// 1B. REALITY VS. VISION (TRANSPARENCY COMPONENT DATA)
+// ============================================================================
+export const realVsProposedItems: RealVsProposedItem[] = [
+  {
+    category: 'Land & Demarcation',
+    whatExistsToday: {
+      title: 'Real Demarcated Freehold Land',
+      description: 'Physical perimeter demarcation completed in Kheri Asra, off SH-22. Freehold registry-ready plots with clear boundary markers.',
+      badge: 'Existing Today',
+      icon: 'MapPin'
+    },
+    whatWeAreBuilding: {
+      title: '64-Plot Plotted Township with 33ft Arterial Roads',
+      description: 'Gated planned township with underground utilities, paved wide walkways, 5ft–6ft green tree buffer zones, and 24x7 security.',
+      badge: 'Proposed Master Plan',
+      icon: 'Layers'
+    }
+  },
+  {
+    category: 'Residential Building',
+    whatExistsToday: {
+      title: 'Architectural CAD Blueprints & Soil Testing',
+      description: 'Full G+2 structural design by The Vision Architects. Soil testing, load calculations, and municipal submission drawings completed.',
+      badge: 'Planning Complete',
+      icon: 'FileText'
+    },
+    whatWeAreBuilding: {
+      title: '9 Barrier-Free Senior Residences (G+2 + Stilt)',
+      description: 'Stilt parking, dual 5×6ft wheelchair lifts, gradual 6" rise stairs, zero-step internal floor plans, and senior safety grab-rail bathrooms.',
+      badge: 'Proposed Architecture',
+      icon: 'Building2'
+    }
+  },
+  {
+    category: 'Healthcare & Wellness',
+    whatExistsToday: {
+      title: 'Strategic SH-22 Highway Location',
+      description: 'Direct highway frontage near Reliance MET City with rapid emergency road connectivity to Gurugram and Delhi tertiary hospitals.',
+      badge: 'Real Highway Access',
+      icon: 'Navigation'
+    },
+    whatWeAreBuilding: {
+      title: '30,000 Sq. Ft. On-Site Ayurvedic Hospital',
+      description: 'Planned G+2 hospital facility inside the township gate with 6 OPDs, 9 Kerala Panchakarma suites, diagnostic triage bay, and pharmacy.',
+      badge: 'Proposed Hospital',
+      icon: 'Stethoscope'
+    }
+  },
+  {
+    category: 'Spiritual & Community Life',
+    whatExistsToday: {
+      title: 'Pristine Rural AQI & Peaceful Countryside',
+      description: 'Surrounded by tranquil agricultural green belts of Jhajjar, offering unpolluted air and zero metropolitan traffic noise.',
+      badge: 'Real Environment',
+      icon: 'Trees'
+    },
+    whatWeAreBuilding: {
+      title: 'Community Mandir & 50-Seat Amphitheater',
+      description: 'Dedicated western temple within 5 minutes walk of every plot for daily morning aarti, evening satsangs, and festival gatherings.',
+      badge: 'Proposed Community',
+      icon: 'Heart'
+    }
+  }
+];
+
+// ============================================================================
+// 1C. WHAT YOU GET — 5 CONCISE BENEFIT PILLARS
+// ============================================================================
+export const whatYouGetPillars: BenefitGroupPillar[] = [
+  {
+    id: 'home',
+    title: 'Home',
+    tagline: 'Dignity of Freehold Land Ownership',
+    iconName: 'Home',
+    highlights: [
+      'Registered freehold plot or residence in your name',
+      'Clean generational inheritance with zero society disputes',
+      'Single-floor internal living with zero barrier steps',
+      'Covered stilt parking slot included with every residence'
+    ]
+  },
+  {
+    id: 'care',
+    title: 'Care',
+    tagline: 'The Doctor Lives Inside the Gate',
+    iconName: 'Stethoscope',
+    highlights: [
+      'Proposed 30,000 sq. ft. on-site Multi-Speciality Ayurvedic Hospital',
+      '6 Physician consultation OPDs and visiting geriatric specialists',
+      'Immediate emergency triage response bay within 2 minutes walk',
+      'On-site 24x7 pharmacy and diagnostic lab support'
+    ]
+  },
+  {
+    id: 'wellness',
+    title: 'Wellness',
+    tagline: 'Vedic Healing & Pure Country Air',
+    iconName: 'Sparkles',
+    highlights: [
+      '9 Dedicated authentic Kerala Panchakarma therapy suites',
+      'Shirodhara, Abhyanga, and joint mobility rehabilitation',
+      '5ft and 6ft continuous native tree green buffer zones',
+      'Morning yoga and pranayama deck on hospital terrace'
+    ]
+  },
+  {
+    id: 'community',
+    title: 'Community',
+    tagline: 'Neighbours at the Same Chapter of Life',
+    iconName: 'Users',
+    highlights: [
+      'Community Mandir sited 5 minutes walk from every plot',
+      'Daily morning aarti, evening bhajan, and satsang circles',
+      '50-seat open amphitheater for cultural celebrations',
+      'Quiet, watchful, like-minded peer community'
+    ]
+  },
+  {
+    id: 'convenience',
+    title: 'Convenience',
+    tagline: 'Built for Senior Ergonomics & Easy Living',
+    iconName: 'ShieldCheck',
+    highlights: [
+      'Dual 5×6ft elevators — always one operational backup',
+      'Gradual 6" rise stairs with wide 4ft accompaniment corridors',
+      'Wide 33ft main arterial roads with pedestrian-first paths',
+      'Seamless SH-22 connectivity to Gurugram & Reliance MET City'
+    ]
+  }
+];
+
+// ============================================================================
+// 1D. TRUST & TRANSPARENCY CREDENTIALS
+// ============================================================================
+export const trustCredentials: TrustCredential[] = [
+  {
+    iconName: 'Landmark',
+    title: 'Section 8 Registered Company',
+    authority: 'Ministry of Corporate Affairs (Govt. of India)',
+    description: 'Senior Living Citizen Foundation is incorporated as a non-profit Company Limited by Guarantee under Section 8 of the Companies Act, 2013.',
+    badge: 'Section 8 Company'
+  },
+  {
+    iconName: 'FileCheck2',
+    title: '80G Provisional Approval (Form 10AC)',
+    authority: 'Income Tax Department (Govt. of India)',
+    description: 'Holds provisional approval under Section 80G of the Income Tax Act (AY 2026-27 to 2028-29) for eligible charitable contributions to the Foundation.',
+    badge: '80G Form 10AC'
+  },
+  {
+    iconName: 'BadgeCheck',
+    title: 'DARPAN Registered NPO',
+    authority: 'NITI Aayog (Govt. of India)',
+    description: 'Registered on the NITI Aayog NGO-DARPAN portal under Health & Family Welfare and Aged/Elderly working sectors.',
+    badge: 'DARPAN Portal'
+  },
+  {
+    iconName: 'ShieldCheck',
+    title: 'Freehold Registered Title',
+    authority: 'Revenue Department, Haryana',
+    description: 'Plots and residences are sold with direct legal registration and individual title ownership — not a leasehold or temporary trust license.',
+    badge: 'Clear Title'
+  }
+];
 
 // ============================================================================
 // 2. FOUR CORE VALUES (FROM OFFICIAL FOUNDATION STORY)
@@ -141,41 +321,35 @@ export const comparisonPoints = {
 // ============================================================================
 export const paymentPlans: PaymentPlan[] = [
   {
-    id: 'plan-a',
-    code: 'Plan A',
+    id: 'down-payment',
+    code: 'Plan 1',
     title: 'Down Payment Plan',
-    ratio: '30:70',
-    description: 'Best for buyers arranging finance against the booking. Minimal outflow upfront.',
+    ratio: '100% Upfront',
+    description: '₹25 Lakh paid upfront. Immediate direct registry of a 14.4 sq. yd. undivided land share (out of the building\'s 130 sq. yd. plot) on payment.',
     steps: [
-      { milestone: 'On Booking', percentage: '10%' },
-      { milestone: 'Within 30 Days', percentage: '20%' },
-      { milestone: 'On Possession', percentage: '70%' }
+      { milestone: 'On Booking (Full Amount)', percentage: '100%' }
     ]
   },
   {
-    id: 'plan-b',
-    code: 'Plan B',
-    title: 'Construction-Linked Plan',
+    id: 'flexi',
+    code: 'Plan 2',
+    title: 'Flexi Payment Plan',
     ratio: '50:50',
-    description: 'Spread payments as construction progresses. Most popular choice among families.',
+    description: 'Split across the construction timeline. Complete direct registry executed on full payment clearance and completion of construction.',
     badge: 'Most Popular',
     steps: [
-      { milestone: 'On Booking', percentage: '20%' },
-      { milestone: 'Foundation Complete', percentage: '15%' },
-      { milestone: 'Structure Complete', percentage: '15%' },
-      { milestone: 'On Possession', percentage: '50%' }
+      { milestone: 'Prior to Start of Construction', percentage: '50%' },
+      { milestone: 'Post Completion of Construction', percentage: '50%' }
     ]
   },
   {
-    id: 'plan-c',
-    code: 'Plan C',
-    title: 'Full Payment Plan',
-    ratio: '100%',
-    description: 'Full payment within 30 days of booking. Best rates, priority plot selection, and special upfront discount.',
-    badge: 'Special Discount',
-    highlight: 'Special discount on full payment. Ask our advisory desk.',
+    id: 'clp',
+    code: 'Plan 3',
+    title: 'Construction Linked Plan (CLP)',
+    ratio: 'Milestone-Based',
+    description: 'Stage payments tied directly to physical on-site construction progress, as per the builder-developer schedule. Legal registry executed on completion.',
     steps: [
-      { milestone: 'On Booking (Within 30 Days)', percentage: '100%' }
+      { milestone: 'Per Pre-Agreed Construction Milestones', percentage: 'Staged' }
     ]
   }
 ];
@@ -203,6 +377,38 @@ export const taxBenefits = [
     benefit: 'Up to ₹2.0 Lakhs per financial year on interest paid for self-occupied home.'
   }
 ];
+
+// ============================================================================
+// 5B. PARKING & TERRACE RIGHTS
+// ============================================================================
+export const additionalCharges = [
+  { item: 'Uncovered Parking', priceDisplay: 'Included Free', note: 'One uncovered parking space with every apartment.' },
+  { item: 'Covered Parking', priceDisplay: '₹3,00,000 / slot', note: 'Optional, purchased separately.' },
+  { item: 'Terrace Rights', priceDisplay: '₹3,00,000', note: 'Registered separately from the apartment. Availability depends on floor.' }
+];
+
+// ============================================================================
+// 5C. RENTAL / OCCUPANCY PROPOSITION
+// Wording intentionally avoids "guaranteed" / "assured" / "investment return" —
+// pending client legal review of the source Rental Plan document's framing.
+// See CLIENT CONFIRMATION REQUIRED note in TrustTransparency section.
+// ============================================================================
+export const rentalProposition = {
+  headline: 'Rental Support Proposition',
+  disclaimer: 'The following payout structure is proposed by the Foundation as a rental/occupancy management service, not an investment scheme or deposit product. Final terms are subject to a signed agreement and client legal review.',
+  stages: [
+    {
+      stage: 'Pre-Possession',
+      monthlyAmount: '₹25,000 / month',
+      note: 'From booking until physical possession, across any payment plan.'
+    },
+    {
+      stage: 'Post-Possession',
+      monthlyAmount: '₹12,500 / month',
+      note: 'Foundation manages senior-occupancy tenancy on the owner\'s behalf.'
+    }
+  ]
+};
 
 // ============================================================================
 // 6. ARCHITECT & CREDENTIALS
@@ -237,12 +443,12 @@ export const buildingUnits: BuildingUnit[] = [
     floorName: 'Ground Floor',
     type: '1-bhk',
     typeName: '1 BHK Compact Senior Residence (Type A)',
-    superAreaSqFt: 330,
-    carpetAreaSqFt: 270,
+    superAreaSqFt: 400,
+    carpetAreaSqFt: 276,
     facing: 'East / Morning Sun & Garden View',
     status: 'available',
     badge: 'Available • Phase 1',
-    priceDisplay: '₹29.5 Lakhs (Pre-Launch)',
+    priceDisplay: '₹25 Lakhs (Down Payment Plan)',
     keyHighlights: [
       'Zero-step barrier-free access directly from ground elevator lobby',
       'Dual 5×6ft wheelchair-accessible lifts in building',
@@ -293,12 +499,12 @@ export const buildingUnits: BuildingUnit[] = [
     floorName: 'Ground Floor',
     type: '1-bhk',
     typeName: '1 BHK Premium Senior Residence (Type A)',
-    superAreaSqFt: 330,
-    carpetAreaSqFt: 270,
+    superAreaSqFt: 400,
+    carpetAreaSqFt: 276,
     facing: 'North-East / Courtyard View',
     status: 'available',
     badge: 'Available • Phase 1',
-    priceDisplay: '₹29.5 Lakhs (Pre-Launch)',
+    priceDisplay: '₹25 Lakhs (Down Payment Plan)',
     keyHighlights: [
       'Quiet courtyard-facing orientation with abundant cross-ventilation',
       'Dual elevators and gradual 10" tread / 6" rise stairs',
@@ -353,7 +559,7 @@ export const buildingUnits: BuildingUnit[] = [
     facing: 'North / Green Belt View',
     status: 'available',
     badge: 'Available • Phase 1',
-    priceDisplay: '₹21.5 Lakhs (Pre-Launch)',
+    priceDisplay: 'Price to be Confirmed',
     keyHighlights: [
       'Compact, efficient studio suite ideal for single senior comfort',
       'All daily essentials within arm\'s reach on single floor',
@@ -399,8 +605,8 @@ export const buildingUnits: BuildingUnit[] = [
     floorName: 'First Floor',
     type: '1-bhk',
     typeName: '1 BHK Senior Residence (Type A)',
-    superAreaSqFt: 330,
-    carpetAreaSqFt: 270,
+    superAreaSqFt: 400,
+    carpetAreaSqFt: 276,
     facing: 'East / Tree Canopy View',
     status: 'future_release',
     badge: '⏳ Future Release (Phase 2)',
@@ -454,8 +660,8 @@ export const buildingUnits: BuildingUnit[] = [
     floorName: 'First Floor',
     type: '1-bhk',
     typeName: '1 BHK Senior Residence (Type A)',
-    superAreaSqFt: 330,
-    carpetAreaSqFt: 270,
+    superAreaSqFt: 400,
+    carpetAreaSqFt: 276,
     facing: 'North-East / Quiet Sector View',
     status: 'future_release',
     badge: '⏳ Future Release (Phase 2)',
@@ -560,8 +766,8 @@ export const buildingUnits: BuildingUnit[] = [
     floorName: 'Second Floor',
     type: '1-bhk',
     typeName: '1 BHK Sky Suite (Type A)',
-    superAreaSqFt: 330,
-    carpetAreaSqFt: 270,
+    superAreaSqFt: 400,
+    carpetAreaSqFt: 276,
     facing: 'East / Open Sky & Sunrise View',
     status: 'future_release',
     badge: '⏳ Future Release (Phase 3)',
@@ -615,8 +821,8 @@ export const buildingUnits: BuildingUnit[] = [
     floorName: 'Second Floor',
     type: '1-bhk',
     typeName: '1 BHK Sky Suite (Type A)',
-    superAreaSqFt: 330,
-    carpetAreaSqFt: 270,
+    superAreaSqFt: 400,
+    carpetAreaSqFt: 276,
     facing: 'North-East / Panoramic Horizon View',
     status: 'future_release',
     badge: '⏳ Future Release (Phase 3)',
@@ -835,13 +1041,13 @@ export const residenceUnits: ResidenceUnit[] = [
     floor: 'ground',
     floorNumber: 0,
     floorName: 'G+2 Building + Stilt Parking',
-    superAreaSqFt: 330,
-    carpetAreaSqFt: 270,
+    superAreaSqFt: 400,
+    carpetAreaSqFt: 276,
     facing: 'East / Garden Facing',
     status: 'available',
     releasePhase: 'Active Phase 1 Booking (Units 01, 02)',
     badge: 'Available • Phase 1',
-    startingPriceEstimate: '₹29.5 Lakhs (Pre-Launch)',
+    startingPriceEstimate: '₹25 Lakhs (Down Payment Plan)',
     monthlyCarePackageEstimate: 'Customized Wellness Package',
     seniorSafetyFeatures: [
       'Single-floor living inside — no internal steps or split levels',
@@ -899,7 +1105,7 @@ export const residenceUnits: ResidenceUnit[] = [
     status: 'available',
     releasePhase: 'Active Phase 1 Booking (Unit 03)',
     badge: 'Available • Phase 1',
-    startingPriceEstimate: '₹21.5 Lakhs (Pre-Launch)',
+    startingPriceEstimate: 'Price to be Confirmed',
     monthlyCarePackageEstimate: 'Customized Wellness Package',
     seniorSafetyFeatures: [
       'Compact open layout with zero interior partitions or obstructions',

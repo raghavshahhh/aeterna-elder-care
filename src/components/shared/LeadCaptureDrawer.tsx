@@ -192,7 +192,7 @@ export const LeadCaptureDrawer: React.FC = () => {
 
           <div className="pt-6 border-t border-[#E8E2D8] flex items-center gap-2.5 text-xs text-[#53676E]">
             <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>Official Aeterna Development Desk • 100% Privacy Assured</span>
+            <span>Official Senior Living Citizen Foundation Desk • 100% Privacy Assured</span>
           </div>
         </div>
       </div>
