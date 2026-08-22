@@ -2,104 +2,131 @@
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
+import { UnitType } from '@/types';
 import { useModal } from '@/context/ModalContext';
 import {
   Rotate3d,
-  Sparkles,
   Maximize2,
   Minimize2,
   RefreshCw,
-  Eye,
+  Sparkles,
   ShieldCheck,
-  Building2,
-  Info,
+  Eye,
   CheckCircle2,
-  Layers
+  Info,
+  Layers,
+  ArrowRight
 } from 'lucide-react';
 
 interface Interior3DViewerProps {
-  unitType?: '1-bhk' | '1-rk';
+  unitType?: UnitType;
+  initialRoom?: 'bedroom' | 'living' | 'kitchen' | 'bathroom';
+  onToggle2DBlueprint?: () => void;
   onToggle2DPlans?: () => void;
 }
 
 interface SafetyHotspot {
   id: string;
-  title: string;
-  description: string;
-  category: 'Bathroom Safety' | 'Ergonomics' | 'Emergency' | 'Accessibility';
+  name: string;
+  room: 'bedroom' | 'living' | 'kitchen' | 'bathroom';
   position: [number, number, number];
+  title: string;
+  detail: string;
+  standard: string;
 }
+
+const SAFETY_HOTSPOTS: SafetyHotspot[] = [
+  {
+    id: 'hs-1',
+    name: '32mm Continuous Grab Rails',
+    room: 'bathroom',
+    position: [1.8, 1.0, -1.2],
+    title: '32mm Stainless Steel Grab Rails',
+    detail: 'Continuous heavy-duty 150kg-rated wall grab bars flanking the toilet and shower zones for slip prevention.',
+    standard: 'NBC 2016 Senior Living Annex D'
+  },
+  {
+    id: 'hs-2',
+    name: 'Zero-Threshold Barrier-Free Shower',
+    room: 'bathroom',
+    position: [-1.4, 0.1, -1.4],
+    title: 'Zero-Threshold Flush Drain Shower',
+    detail: 'Complete elimination of step-over curbs to permit seamless wheelchair and walker roll-in access.',
+    standard: 'Barrier-Free ADA Accessibility Guidelines'
+  },
+  {
+    id: 'hs-3',
+    name: 'Ceiling-Drop Emergency SOS Cord',
+    room: 'bathroom',
+    position: [1.8, 1.8, 1.0],
+    title: 'Dual Emergency Pull Cord',
+    detail: 'Floor-to-ceiling pull cord reachable even if a resident is on the floor, alerting the nurse station immediately.',
+    standard: 'Smart Health Monitoring Spec'
+  },
+  {
+    id: 'hs-4',
+    name: 'Low-Reach Master Controls',
+    room: 'bedroom',
+    position: [-1.8, 0.9, 0.4],
+    title: 'Ergonomic Bedside Switch Console',
+    detail: 'Switches placed at 900mm height from floor level, allowing effortless operation without getting out of bed.',
+    standard: 'Universal Design Standard'
+  },
+  {
+    id: 'hs-5',
+    name: 'R11 Slip-Resistant Vitrified Tiles',
+    room: 'bedroom',
+    position: [0, 0.1, 0],
+    title: 'R11 Anti-Skid Floor Finish',
+    detail: 'Matte vitrified tiles with high wet-friction coefficient across all circulation corridors and wet zones.',
+    standard: 'DIN 51130 R11 Certification'
+  },
+  {
+    id: 'hs-6',
+    name: 'Ergonomic Work Triangle & Low Cabinets',
+    room: 'kitchen',
+    position: [0, 1.1, -1.5],
+    title: 'Countertop Pull-Out Drawers',
+    detail: 'Elimination of deep high reach overhead storage in favor of waist-height heavy-duty drawer slides.',
+    standard: 'Senior Ergonomics Protocol'
+  }
+];
 
 export const Interior3DViewer: React.FC<Interior3DViewerProps> = ({
   unitType = '1-bhk',
+  initialRoom = 'bedroom',
+  onToggle2DBlueprint,
   onToggle2DPlans
 }) => {
+  const handleToggle2D = onToggle2DBlueprint || onToggle2DPlans;
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { openWhatsApp, openLeadDrawer } = useModal();
+  const { openWhatsApp } = useModal();
 
-  const [activeUnitType, setActiveUnitType] = useState<'1-bhk' | '1-rk'>(unitType);
-  const [activeRoom, setActiveRoom] = useState<'bedroom' | 'living' | 'kitchen' | 'bathroom'>('bedroom');
-  const [selectedHotspot, setSelectedHotspot] = useState<SafetyHotspot | null>(null);
+  const [activeRoom, setActiveRoom] = useState<'bedroom' | 'living' | 'kitchen' | 'bathroom'>(initialRoom);
+  const [selectedHotspot, setSelectedHotspot] = useState<SafetyHotspot | null>(SAFETY_HOTSPOTS[3]);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const roomGroupsRef = useRef<{ [key: string]: THREE.Group }>({});
   const animationFrameId = useRef<number | null>(null);
 
   const orbitRef = useRef({
-    radius: 9.0,
+    radius: 4.8,
     theta: Math.PI / 4,
-    phi: Math.PI / 3.2,
-    target: new THREE.Vector3(0, 1.4, 0),
+    phi: Math.PI / 2.3, // Eye level human height (~1.45m)
+    target: new THREE.Vector3(0, 1.45, 0),
     isDragging: false,
     prevMouseX: 0,
     prevMouseY: 0,
-    targetRadius: 9.0,
+    targetRadius: 4.8,
     targetTheta: Math.PI / 4,
-    targetPhi: Math.PI / 3.2,
-    targetLookAt: new THREE.Vector3(0, 1.4, 0)
+    targetPhi: Math.PI / 2.3,
+    targetLookAt: new THREE.Vector3(0, 1.45, 0)
   });
-
-  const hotspots: SafetyHotspot[] = [
-    {
-      id: 'hs-grab-rails',
-      title: 'Continuous 32mm Stainless Grab Rails',
-      description: 'Firm wall-mounted support rails alongside the commode and shower zone, engineered to support 150kg load.',
-      category: 'Bathroom Safety',
-      position: [-2.2, 1.3, -2.4]
-    },
-    {
-      id: 'hs-zero-threshold',
-      title: 'Zero-Step Barrier-Free Shower Floor',
-      description: 'Continuous flush matte tile flooring with zero threshold lip, eliminating tripping hazards in wet areas.',
-      category: 'Accessibility',
-      position: [-1.8, 0.2, -1.8]
-    },
-    {
-      id: 'hs-low-switch',
-      title: 'Ergonomic Low-Reach Light Controls (800mm)',
-      description: 'Large rocker switches positioned at bedside reach level for effortless nighttime operation without straining.',
-      category: 'Ergonomics',
-      position: [2.4, 1.1, 0.5]
-    },
-    {
-      id: 'hs-emergency-pull',
-      title: '24x7 Emergency SOS Pull Cord',
-      description: 'Waterproof ceiling-hung emergency pull cord connected directly to building security and nursing concierge.',
-      category: 'Emergency',
-      position: [-2.4, 1.8, -1.5]
-    },
-    {
-      id: 'hs-anti-skid',
-      title: 'R11 Anti-Skid Vitrified Matte Flooring',
-      description: 'High-traction matte finish floor tiles designed specifically for elderly gait stability and walker traction.',
-      category: 'Accessibility',
-      position: [0, 0.1, 0]
-    }
-  ];
 
   const updateCameraPosition = useCallback(() => {
     const orbit = orbitRef.current;
@@ -125,11 +152,11 @@ export const Interior3DViewer: React.FC<Interior3DViewerProps> = ({
 
     const scene = new THREE.Scene();
     sceneRef.current = scene;
-    scene.background = new THREE.Color(0x0a1c22);
+    scene.background = new THREE.Color(0x0c1e24);
 
     const width = container.clientWidth || 800;
     const height = container.clientHeight || 550;
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 100);
     cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({
@@ -141,138 +168,324 @@ export const Interior3DViewer: React.FC<Interior3DViewerProps> = ({
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setSize(width, height);
     renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     rendererRef.current = renderer;
 
-    // Interior Warm Lighting
-    const ambient = new THREE.AmbientLight(0xfff8ee, 1.2);
-    scene.add(ambient);
+    // Warm Interior Ambient & Task Lighting
+    const ambientLight = new THREE.AmbientLight(0xfff3e0, 1.3);
+    scene.add(ambientLight);
 
-    const windowLight = new THREE.DirectionalLight(0xffecd2, 1.8);
-    windowLight.position.set(6, 6, 4);
+    const ceilingPendant = new THREE.PointLight(0xffeedd, 2.2, 12);
+    ceilingPendant.position.set(0, 2.7, 0);
+    ceilingPendant.castShadow = true;
+    ceilingPendant.shadow.bias = -0.002;
+    scene.add(ceilingPendant);
+
+    const bedsideWarm = new THREE.PointLight(0xffaa55, 1.4, 6);
+    bedsideWarm.position.set(-1.8, 1.3, -1.0);
+    scene.add(bedsideWarm);
+
+    const windowLight = new THREE.DirectionalLight(0xd9ecf2, 1.6);
+    windowLight.position.set(-5, 4, 3);
     windowLight.castShadow = true;
     scene.add(windowLight);
 
-    const softCeiling = new THREE.PointLight(0xffdfba, 0.8, 12);
-    softCeiling.position.set(0, 2.8, 0);
-    scene.add(softCeiling);
+    // Common Room Enclosure (5.5m × 3m × 5m room envelope)
+    const roomEnclosure = new THREE.Group();
 
-    // Materials Palette (Warm Scandinavian / Vedic Modern)
-    const wallMat = new THREE.MeshStandardMaterial({ color: 0xf5efe6, roughness: 0.9 });
-    const woodFloorMat = new THREE.MeshStandardMaterial({ color: 0x96714c, roughness: 0.5 });
-    const bathFloorMat = new THREE.MeshStandardMaterial({ color: 0x3d4a4e, roughness: 0.4 });
-    const furnitureMat = new THREE.MeshStandardMaterial({ color: 0x3d3024, roughness: 0.6 });
-    const fabricMat = new THREE.MeshStandardMaterial({ color: 0xd8cfc4, roughness: 0.8 });
-    const goldMat = new THREE.MeshStandardMaterial({ color: 0xc58f58, roughness: 0.3, metalness: 0.8 });
-
-    // ROOM ARCHITECTURAL SHELL (10ft × 10ft × 9ft box)
     // Floor
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(6, 6),
-      activeRoom === 'bathroom' ? bathFloorMat : woodFloorMat
-    );
+    const floorGeo = new THREE.PlaneGeometry(6.2, 6.2);
+    const floorMat = new THREE.MeshStandardMaterial({ color: 0x6e4e37, roughness: 0.4 }); // Warm wood plank
+    const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
-    scene.add(floor);
+    roomEnclosure.add(floor);
 
-    // Back Wall
-    const backWall = new THREE.Mesh(new THREE.BoxGeometry(6, 3, 0.1), wallMat);
-    backWall.position.set(0, 1.5, -3);
+    // Walls
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0xf5f0e6, roughness: 0.85 }); // Warm off-white
+    const accentWallMat = new THREE.MeshStandardMaterial({ color: 0x1f3c36, roughness: 0.8 }); // Forest green accent
+
+    const backWall = new THREE.Mesh(new THREE.PlaneGeometry(6.2, 3.0), accentWallMat);
+    backWall.position.set(0, 1.5, -3.1);
     backWall.receiveShadow = true;
-    scene.add(backWall);
+    roomEnclosure.add(backWall);
 
-    // Left Wall
-    const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.1, 3, 6), wallMat);
-    leftWall.position.set(-3, 1.5, 0);
+    const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(6.2, 3.0), wallMat);
+    leftWall.rotation.y = Math.PI / 2;
+    leftWall.position.set(-3.1, 1.5, 0);
     leftWall.receiveShadow = true;
-    scene.add(leftWall);
+    roomEnclosure.add(leftWall);
 
-    // Room-Specific Furniture & Layout
-    if (activeRoom === 'bedroom') {
-      // Orthopaedic Bed
-      const bedBase = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.45, 2.0), furnitureMat);
-      bedBase.position.set(0.8, 0.225, -1.8);
-      bedBase.castShadow = true;
-      scene.add(bedBase);
+    const rightWall = new THREE.Mesh(new THREE.PlaneGeometry(6.2, 3.0), wallMat);
+    rightWall.rotation.y = -Math.PI / 2;
+    rightWall.position.set(3.1, 1.5, 0);
+    rightWall.receiveShadow = true;
+    roomEnclosure.add(rightWall);
 
-      const mattress = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.35, 1.9), fabricMat);
-      mattress.position.set(0.8, 0.55, -1.8);
-      scene.add(mattress);
+    // Large Daylight Window on Left Wall
+    const windowFrame = new THREE.Mesh(
+      new THREE.BoxGeometry(0.1, 1.8, 2.4),
+      new THREE.MeshStandardMaterial({ color: 0x142024, roughness: 0.4 })
+    );
+    windowFrame.position.set(-3.05, 1.6, 0.4);
+    roomEnclosure.add(windowFrame);
 
-      // Nightstand with Lamp
-      const nightstand = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.6, 0.6), furnitureMat);
-      nightstand.position.set(2.4, 0.3, -2.5);
-      scene.add(nightstand);
-
-      // Wardrobe
-      const wardrobe = new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.4, 0.6), furnitureMat);
-      wardrobe.position.set(-2.0, 1.2, -2.6);
-      scene.add(wardrobe);
-    } else if (activeRoom === 'living') {
-      // Sofa Lounge
-      const sofa = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.7, 1.0), fabricMat);
-      sofa.position.set(0, 0.35, -1.8);
-      scene.add(sofa);
-
-      // Coffee Table
-      const table = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.4, 0.7), furnitureMat);
-      table.position.set(0, 0.2, -0.6);
-      scene.add(table);
-
-      // Armchair
-      const chair = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.7, 0.8), fabricMat);
-      chair.position.set(-1.8, 0.35, -0.6);
-      chair.rotation.y = Math.PI / 4;
-      scene.add(chair);
-    } else if (activeRoom === 'kitchen') {
-      // L-Shaped Kitchen Counter
-      const counter1 = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.85, 0.7), darkConcreteMat);
-      counter1.position.set(-0.5, 0.425, -2.6);
-      scene.add(counter1);
-
-      // Overhead Low-Reach Cabinets
-      const cab = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.7, 0.4), furnitureMat);
-      cab.position.set(-0.5, 1.8, -2.75);
-      scene.add(cab);
-    } else if (activeRoom === 'bathroom') {
-      // Vanity Sink
-      const vanity = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.85, 0.6), furnitureMat);
-      vanity.position.set(1.6, 0.425, -2.6);
-      scene.add(vanity);
-
-      // Grab Rails (3D tubes)
-      const railGeo = new THREE.CylinderGeometry(0.025, 0.025, 1.2, 16);
-      const rail1 = new THREE.Mesh(railGeo, goldMat);
-      rail1.rotation.z = Math.PI / 2;
-      rail1.position.set(-1.8, 1.0, -2.9);
-      scene.add(rail1);
-
-      const rail2 = new THREE.Mesh(railGeo, goldMat);
-      rail2.position.set(-2.4, 1.0, -1.8);
-      scene.add(rail2);
-    }
-
-    // 3D Hotspot Visual Markers
-    hotspots.forEach((hs) => {
-      const markerGroup = new THREE.Group();
-      markerGroup.position.set(hs.position[0], hs.position[1], hs.position[2]);
-
-      const sphere = new THREE.Mesh(
-        new THREE.SphereGeometry(0.1, 16, 16),
-        new THREE.MeshBasicMaterial({ color: 0xc58f58 })
-      );
-      markerGroup.add(sphere);
-
-      const ring = new THREE.Mesh(
-        new THREE.RingGeometry(0.12, 0.16, 16),
-        new THREE.MeshBasicMaterial({ color: 0xe0ab77, side: THREE.DoubleSide, transparent: true, opacity: 0.7 })
-      );
-      ring.rotation.x = -Math.PI / 2;
-      markerGroup.add(ring);
-
-      scene.add(markerGroup);
+    // Sheer Curtains
+    const curtainMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.65,
+      roughness: 0.9
     });
+    const curtain = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 2.4), curtainMat);
+    curtain.rotation.y = Math.PI / 2;
+    curtain.position.set(-2.98, 1.5, 0.4);
+    roomEnclosure.add(curtain);
 
-    // Event Handlers
+    scene.add(roomEnclosure);
+
+    // ROOM-SPECIFIC 3D FURNITURE GROUPS
+    const roomGroups: { [key: string]: THREE.Group } = {};
+
+    // 1. MASTER BEDROOM (Fabric Bed, Headboard, Nightstands, Wardrobe, Rug)
+    const bedGroup = new THREE.Group();
+
+    // Area Rug
+    const rug = new THREE.Mesh(
+      new THREE.PlaneGeometry(3.6, 3.2),
+      new THREE.MeshStandardMaterial({ color: 0xc8baaa, roughness: 0.95 })
+    );
+    rug.rotation.x = -Math.PI / 2;
+    rug.position.set(0, 0.02, -0.4);
+    rug.receiveShadow = true;
+    bedGroup.add(rug);
+
+    // Headboard
+    const headboard = new THREE.Mesh(
+      new THREE.BoxGeometry(2.4, 1.2, 0.2),
+      new THREE.MeshStandardMaterial({ color: 0x8f7259, roughness: 0.7 })
+    );
+    headboard.position.set(0, 0.8, -2.95);
+    headboard.castShadow = true;
+    bedGroup.add(headboard);
+
+    // Bed Base & Mattress
+    const bedBase = new THREE.Mesh(
+      new THREE.BoxGeometry(2.0, 0.45, 2.3),
+      new THREE.MeshStandardMaterial({ color: 0x22353b, roughness: 0.8 })
+    );
+    bedBase.position.set(0, 0.25, -1.7);
+    bedBase.castShadow = true;
+    bedBase.receiveShadow = true;
+    bedGroup.add(bedBase);
+
+    // Pillows & Duvet
+    const duvet = new THREE.Mesh(
+      new THREE.BoxGeometry(1.9, 0.15, 1.6),
+      new THREE.MeshStandardMaterial({ color: 0xf5eedc, roughness: 0.8 })
+    );
+    duvet.position.set(0, 0.52, -1.35);
+    duvet.castShadow = true;
+    bedGroup.add(duvet);
+
+    const pillowMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9 });
+    const p1 = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.15, 0.45), pillowMat);
+    p1.position.set(-0.55, 0.58, -2.5);
+    bedGroup.add(p1);
+    const p2 = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.15, 0.45), pillowMat);
+    p2.position.set(0.55, 0.58, -2.5);
+    bedGroup.add(p2);
+
+    // Nightstands & Bedside Lamps
+    const nightstandGeo = new THREE.BoxGeometry(0.55, 0.55, 0.5);
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x5a3d28, roughness: 0.6 });
+
+    const nsLeft = new THREE.Mesh(nightstandGeo, woodMat);
+    nsLeft.position.set(-1.45, 0.28, -2.7);
+    nsLeft.castShadow = true;
+    bedGroup.add(nsLeft);
+
+    const nsRight = new THREE.Mesh(nightstandGeo, woodMat);
+    nsRight.position.set(1.45, 0.28, -2.7);
+    nsRight.castShadow = true;
+    bedGroup.add(nsRight);
+
+    // Wardrobe on Right Wall
+    const wardrobe = new THREE.Mesh(
+      new THREE.BoxGeometry(0.8, 2.5, 2.2),
+      new THREE.MeshStandardMaterial({ color: 0x3d2c20, roughness: 0.5 })
+    );
+    wardrobe.position.set(2.65, 1.25, 0.8);
+    wardrobe.castShadow = true;
+    bedGroup.add(wardrobe);
+
+    scene.add(bedGroup);
+    roomGroups.bedroom = bedGroup;
+
+    // 2. LIVING SALON (3-Seater Sofa, Coffee Table, Armchair, TV Console)
+    const livingGroup = new THREE.Group();
+
+    // 3-Seater Sofa
+    const sofaMat = new THREE.MeshStandardMaterial({ color: 0x2c5e50, roughness: 0.7 });
+    const sofaBase = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.45, 0.9), sofaMat);
+    sofaBase.position.set(0, 0.25, -2.2);
+    sofaBase.castShadow = true;
+    livingGroup.add(sofaBase);
+
+    const sofaBack = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.6, 0.3), sofaMat);
+    sofaBack.position.set(0, 0.65, -2.55);
+    sofaBack.castShadow = true;
+    livingGroup.add(sofaBack);
+
+    // Coffee Table with Warm Wood
+    const table = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.35, 0.7), woodMat);
+    table.position.set(0, 0.2, -1.0);
+    table.castShadow = true;
+    livingGroup.add(table);
+
+    // Media Console on Front Wall
+    const mediaConsole = new THREE.Mesh(
+      new THREE.BoxGeometry(2.6, 0.5, 0.45),
+      new THREE.MeshStandardMaterial({ color: 0x1f2e33, roughness: 0.5 })
+    );
+    mediaConsole.position.set(0, 0.25, 2.6);
+    mediaConsole.castShadow = true;
+    livingGroup.add(mediaConsole);
+
+    // Flat Screen TV on Wall
+    const tv = new THREE.Mesh(
+      new THREE.BoxGeometry(1.8, 1.0, 0.08),
+      new THREE.MeshBasicMaterial({ color: 0x071519 })
+    );
+    tv.position.set(0, 1.5, 2.9);
+    livingGroup.add(tv);
+
+    scene.add(livingGroup);
+    roomGroups.living = livingGroup;
+
+    // 3. MODULAR KITCHEN (Quartz Counter, Cabinets, Sink, Hob)
+    const kitchenGroup = new THREE.Group();
+
+    // L-Shaped Quartz Counter
+    const counterMat = new THREE.MeshStandardMaterial({ color: 0xdedede, roughness: 0.2, metalness: 0.1 });
+    const counter1 = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.85, 0.7), counterMat);
+    counter1.position.set(-0.8, 0.425, -2.4);
+    counter1.castShadow = true;
+    kitchenGroup.add(counter1);
+
+    const counter2 = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.85, 2.2), counterMat);
+    counter2.position.set(-2.55, 0.425, -1.3);
+    counter2.castShadow = true;
+    kitchenGroup.add(counter2);
+
+    // Undermount Stainless Sink & Chrome Tap
+    const sink = new THREE.Mesh(
+      new THREE.BoxGeometry(0.6, 0.05, 0.45),
+      new THREE.MeshStandardMaterial({ color: 0x777777, metalness: 0.8, roughness: 0.2 })
+    );
+    sink.position.set(-0.8, 0.86, -2.4);
+    kitchenGroup.add(sink);
+
+    const tap = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.02, 0.02, 0.3, 8),
+      new THREE.MeshStandardMaterial({ color: 0xc58f58, metalness: 0.9, roughness: 0.1 })
+    );
+    tap.position.set(-0.8, 1.0, -2.6);
+    kitchenGroup.add(tap);
+
+    // Upper Low-Reach Cabinets
+    const cabinetMat = new THREE.MeshStandardMaterial({ color: 0x3d4f54, roughness: 0.6 });
+    const upperCab = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.7, 0.4), cabinetMat);
+    upperCab.position.set(-0.8, 1.9, -2.6);
+    upperCab.castShadow = true;
+    kitchenGroup.add(upperCab);
+
+    scene.add(kitchenGroup);
+    roomGroups.kitchen = kitchenGroup;
+
+    // 4. SENIOR-SAFE BATHROOM (Zero-Threshold Shower, Grab Bars, Anti-Skid Floor)
+    const bathGroup = new THREE.Group();
+
+    // R11 Anti-Skid Bathroom Tile Floor
+    const bathFloor = new THREE.Mesh(
+      new THREE.PlaneGeometry(6.0, 6.0),
+      new THREE.MeshStandardMaterial({ color: 0x88989b, roughness: 0.9 })
+    );
+    bathFloor.rotation.x = -Math.PI / 2;
+    bathFloor.position.y = 0.01;
+    bathFloor.receiveShadow = true;
+    bathGroup.add(bathFloor);
+
+    // Zero-Threshold Shower Glass Partition
+    const showerGlass = new THREE.Mesh(
+      new THREE.BoxGeometry(0.08, 2.1, 1.5),
+      new THREE.MeshPhysicalMaterial({
+        color: 0xffffff,
+        transmission: 0.85,
+        opacity: 0.9,
+        transparent: true,
+        roughness: 0.1
+      })
+    );
+    showerGlass.position.set(-1.0, 1.05, -1.8);
+    showerGlass.castShadow = true;
+    bathGroup.add(showerGlass);
+
+    // Wall-Mounted Shower Seat
+    const seatMat = new THREE.MeshStandardMaterial({ color: 0xFAF8F5, roughness: 0.5 });
+    const showerSeat = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.08, 0.45), seatMat);
+    showerSeat.position.set(-2.6, 0.45, -2.4);
+    showerSeat.castShadow = true;
+    bathGroup.add(showerSeat);
+
+    // 32mm Stainless Steel Grab Rails (Heavy-Duty)
+    const grabRailMat = new THREE.MeshStandardMaterial({
+      color: 0xc58f58,
+      metalness: 0.85,
+      roughness: 0.2
+    });
+    const createGrabRail = (gx: number, gy: number, gz: number, rotY = 0) => {
+      const rail = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.9, 8), grabRailMat);
+      rail.position.set(gx, gy, gz);
+      rail.rotation.z = Math.PI / 2;
+      rail.rotation.y = rotY;
+      rail.castShadow = true;
+      bathGroup.add(rail);
+    };
+
+    createGrabRail(-2.5, 0.9, -2.0); // Shower rail
+    createGrabRail(1.8, 0.85, -2.8); // Toilet rail
+
+    // Wall-Hung Commode
+    const commode = new THREE.Mesh(
+      new THREE.BoxGeometry(0.45, 0.4, 0.65),
+      new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 })
+    );
+    commode.position.set(1.8, 0.4, -2.6);
+    commode.castShadow = true;
+    bathGroup.add(commode);
+
+    // Emergency Pull Cord (Red drop cord)
+    const cord = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.008, 0.008, 1.8, 6),
+      new THREE.MeshBasicMaterial({ color: 0xff4444 })
+    );
+    cord.position.set(1.8, 1.8, -2.2);
+    bathGroup.add(cord);
+
+    const pullHandle = new THREE.Mesh(
+      new THREE.SphereGeometry(0.05, 8, 8),
+      new THREE.MeshBasicMaterial({ color: 0xff2222 })
+    );
+    pullHandle.position.set(1.8, 0.9, -2.2);
+    bathGroup.add(pullHandle);
+
+    scene.add(bathGroup);
+    roomGroups.bathroom = bathGroup;
+
+    roomGroupsRef.current = roomGroups;
+
+    // Mouse & Touch Handlers
     const handleMouseDown = (e: MouseEvent) => {
       orbitRef.current.isDragging = true;
       orbitRef.current.prevMouseX = e.clientX;
@@ -286,10 +499,10 @@ export const Interior3DViewer: React.FC<Interior3DViewerProps> = ({
       orbitRef.current.prevMouseX = e.clientX;
       orbitRef.current.prevMouseY = e.clientY;
 
-      orbitRef.current.targetTheta -= deltaX * 0.008;
+      orbitRef.current.targetTheta -= deltaX * 0.007;
       orbitRef.current.targetPhi = Math.max(
-        0.1,
-        Math.min(Math.PI / 2 - 0.05, orbitRef.current.targetPhi - deltaY * 0.008)
+        0.3,
+        Math.min(Math.PI / 2 + 0.1, orbitRef.current.targetPhi - deltaY * 0.007)
       );
     };
 
@@ -300,8 +513,8 @@ export const Interior3DViewer: React.FC<Interior3DViewerProps> = ({
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       orbitRef.current.targetRadius = Math.max(
-        5.0,
-        Math.min(15.0, orbitRef.current.targetRadius + e.deltaY * 0.01)
+        2.5,
+        Math.min(8.5, orbitRef.current.targetRadius + e.deltaY * 0.01)
       );
     };
 
@@ -323,9 +536,11 @@ export const Interior3DViewer: React.FC<Interior3DViewerProps> = ({
     const animate = () => {
       animationFrameId.current = requestAnimationFrame(animate);
 
-      if (!orbitRef.current.isDragging) {
-        orbitRef.current.targetTheta += 0.001;
-      }
+      // Room visibility switching
+      Object.keys(roomGroupsRef.current).forEach((key) => {
+        const grp = roomGroupsRef.current[key];
+        if (grp) grp.visible = key === activeRoom;
+      });
 
       updateCameraPosition();
       renderer.render(scene, camera);
@@ -345,22 +560,40 @@ export const Interior3DViewer: React.FC<Interior3DViewerProps> = ({
       scene.clear();
       renderer.dispose();
     };
-  }, [updateCameraPosition, activeRoom, activeUnitType]);
+  }, [updateCameraPosition, activeRoom]);
 
-  const darkConcreteMat = new THREE.MeshStandardMaterial({ color: 0x2c3b40, roughness: 0.7 });
-
-  const roomDimensions = {
-    bedroom: '10\'0" × 10\'10" Master Bedroom',
-    living: '9\'0" × 9\'10" Living Salon',
-    kitchen: '5\'0" × 9\'0" Modular Kitchen',
-    bathroom: '4\'0" × 7\'2" Senior-Safe Bath'
+  const handleSelectRoom = (room: 'bedroom' | 'living' | 'kitchen' | 'bathroom') => {
+    setActiveRoom(room);
+    if (room === 'bedroom') {
+      orbitRef.current.targetTheta = Math.PI / 4;
+      orbitRef.current.targetPhi = Math.PI / 2.3;
+      orbitRef.current.targetRadius = 4.8;
+      orbitRef.current.targetLookAt.set(0, 1.45, 0);
+    } else if (room === 'living') {
+      orbitRef.current.targetTheta = Math.PI / 3;
+      orbitRef.current.targetPhi = Math.PI / 2.3;
+      orbitRef.current.targetRadius = 5.0;
+      orbitRef.current.targetLookAt.set(0, 1.45, 0);
+    } else if (room === 'kitchen') {
+      orbitRef.current.targetTheta = -Math.PI / 4;
+      orbitRef.current.targetPhi = Math.PI / 2.4;
+      orbitRef.current.targetRadius = 4.2;
+      orbitRef.current.targetLookAt.set(-0.8, 1.3, -1.8);
+    } else if (room === 'bathroom') {
+      orbitRef.current.targetTheta = Math.PI / 2.8;
+      orbitRef.current.targetPhi = Math.PI / 2.2;
+      orbitRef.current.targetRadius = 4.0;
+      orbitRef.current.targetLookAt.set(0, 1.3, -1.5);
+    }
   };
+
+  const visibleHotspots = SAFETY_HOTSPOTS.filter((h) => h.room === activeRoom);
 
   return (
     <div
       ref={containerRef}
-      className={`relative w-full rounded-3xl bg-[#0A1C22] border border-[#14353E] shadow-2xl overflow-hidden ${
-        isFullscreen ? 'fixed inset-0 z-50 rounded-none h-screen' : 'h-[600px] sm:h-[700px]'
+      className={`relative w-full rounded-3xl bg-[#0C1E24] border border-[#14353E] shadow-2xl overflow-hidden ${
+        isFullscreen ? 'fixed inset-0 z-50 rounded-none h-screen' : 'h-[580px] sm:h-[680px]'
       }`}
     >
       <canvas
@@ -369,11 +602,11 @@ export const Interior3DViewer: React.FC<Interior3DViewerProps> = ({
       />
 
       {isLoading && (
-        <div className="absolute inset-0 bg-[#0A1C22] flex items-center justify-center text-white">
+        <div className="absolute inset-0 bg-[#0C1E24] flex items-center justify-center text-white">
           <div className="flex items-center gap-3">
             <RefreshCw className="w-5 h-5 animate-spin text-[#C58F58]" />
             <span className="text-sm font-mono uppercase tracking-widest text-[#FAF8F5]">
-              Loading 3D Interior...
+              Loading 360° Interior Room Walk...
             </span>
           </div>
         </div>
@@ -381,30 +614,30 @@ export const Interior3DViewer: React.FC<Interior3DViewerProps> = ({
 
       {/* Top Header HUD */}
       <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none z-20">
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#071519]/80 backdrop-blur-md border border-white/10 text-xs text-white pointer-events-auto shadow-lg">
+        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#071519]/90 backdrop-blur-md border border-[#C58F58]/30 text-xs text-white pointer-events-auto shadow-lg">
           <Sparkles className="w-4 h-4 text-[#C58F58]" />
           <span className="font-bold font-mono tracking-wider text-xs">
-            {activeUnitType === '1-bhk' ? '1 BHK Senior Residence (~400 sq. ft.)' : '1 RK Senior Studio (~240 sq. ft.)'}
+            360° Interior CGI • Eye-Level Human Perspective
           </span>
-          <span className="hidden sm:inline-block px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold uppercase">
-            Artist Impression
+          <span className="hidden sm:inline-block px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-mono uppercase">
+            Indicative Decor
           </span>
         </div>
 
         <div className="flex items-center gap-2 pointer-events-auto">
-          {onToggle2DPlans && (
+          {handleToggle2D && (
             <button
-              onClick={onToggle2DPlans}
+              onClick={handleToggle2D}
               className="px-3.5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/15 text-xs text-white font-medium transition-all flex items-center gap-1.5 shadow-lg cursor-pointer"
             >
               <Eye className="w-3.5 h-3.5 text-[#C58F58]" />
-              <span className="hidden sm:inline">View</span> 2D CAD Plans
+              <span className="hidden sm:inline">2D CAD</span> Floor Plan
             </button>
           )}
 
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="p-2.5 rounded-2xl bg-[#071519]/80 hover:bg-[#14353E] backdrop-blur-md border border-white/10 text-white transition-all shadow-lg cursor-pointer"
+            className="p-2.5 rounded-2xl bg-[#071519]/90 hover:bg-[#14353E] backdrop-blur-md border border-white/10 text-white transition-all shadow-lg cursor-pointer"
             title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen 3D'}
           >
             {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -412,100 +645,115 @@ export const Interior3DViewer: React.FC<Interior3DViewerProps> = ({
         </div>
       </div>
 
-      {/* Top Center Room Selector Tabs */}
-      <div className="absolute top-16 left-1/2 -translate-x-1/2 flex items-center bg-[#071519]/85 backdrop-blur-md border border-white/15 rounded-2xl p-1 shadow-2xl z-20 pointer-events-auto text-xs">
-        {[
-          { id: 'bedroom', label: 'Master Bedroom' },
-          { id: 'living', label: 'Living Salon' },
-          { id: 'kitchen', label: 'Modular Kitchen' },
-          { id: 'bathroom', label: 'Senior-Safe Bath' }
-        ].map((rm) => (
+      {/* Top Room Navigation Bar */}
+      <div className="absolute top-18 left-4 right-4 flex items-center justify-center gap-2 pointer-events-auto z-20">
+        <div className="flex items-center bg-[#071519]/90 p-1 rounded-2xl border border-white/15 backdrop-blur-md shadow-xl text-xs font-bold">
           <button
-            key={rm.id}
-            onClick={() => setActiveRoom(rm.id as any)}
-            className={`px-3.5 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
-              activeRoom === rm.id
-                ? 'bg-[#2C5E50] text-white font-bold shadow-md'
+            onClick={() => handleSelectRoom('bedroom')}
+            className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+              activeRoom === 'bedroom'
+                ? 'bg-[#2C5E50] text-white shadow-md'
                 : 'text-white/70 hover:text-white'
             }`}
           >
-            {rm.label}
+            Master Bedroom
           </button>
-        ))}
-      </div>
-
-      {/* Left Safety Hotspots List */}
-      <div className="absolute left-4 top-28 bottom-20 flex flex-col justify-center gap-2 pointer-events-auto z-20 max-w-[200px]">
-        <span className="text-[10px] font-mono uppercase tracking-widest text-[#C58F58] font-bold px-1">
-          Senior Ergonomics
-        </span>
-        {hotspots.map((hs) => (
           <button
-            key={hs.id}
-            onClick={() => setSelectedHotspot(hs)}
-            className={`p-2.5 rounded-2xl border text-left transition-all backdrop-blur-md shadow-md cursor-pointer ${
-              selectedHotspot?.id === hs.id
-                ? 'bg-[#C58F58] text-[#071519] border-[#E0AB77] font-bold scale-105'
-                : 'bg-[#071519]/80 border-white/10 text-white/80 hover:bg-[#14353E]'
+            onClick={() => handleSelectRoom('living')}
+            className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+              activeRoom === 'living'
+                ? 'bg-[#2C5E50] text-white shadow-md'
+                : 'text-white/70 hover:text-white'
             }`}
           >
-            <span className="text-[10px] uppercase font-mono tracking-tight block opacity-70">
-              {hs.category}
-            </span>
-            <span className="text-xs font-serif-heading font-bold block leading-snug mt-0.5">
-              {hs.title}
-            </span>
+            Living Salon
           </button>
-        ))}
+          <button
+            onClick={() => handleSelectRoom('kitchen')}
+            className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+              activeRoom === 'kitchen'
+                ? 'bg-[#2C5E50] text-white shadow-md'
+                : 'text-white/70 hover:text-white'
+            }`}
+          >
+            Modular Kitchen
+          </button>
+          <button
+            onClick={() => handleSelectRoom('bathroom')}
+            className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+              activeRoom === 'bathroom'
+                ? 'bg-[#2C5E50] text-white shadow-md'
+                : 'text-white/70 hover:text-white'
+            }`}
+          >
+            Senior-Safe Bath
+          </button>
+        </div>
       </div>
 
-      {/* Right Selected Hotspot Card */}
-      {selectedHotspot && (
-        <div className="absolute right-4 top-28 max-w-xs w-full bg-[#071519]/95 backdrop-blur-xl border border-[#C58F58]/40 rounded-3xl p-5 text-white shadow-2xl z-20 space-y-3 pointer-events-auto animate-in slide-in-from-right duration-200">
-          <div className="flex items-center justify-between pb-2 border-b border-white/10">
-            <span className="text-[10px] font-mono uppercase text-[#C58F58] font-bold tracking-widest">
-              {selectedHotspot.category}
+      {/* Floating Hotspots Tray on Right */}
+      {visibleHotspots.length > 0 && (
+        <div className="absolute right-4 top-32 max-w-xs w-full bg-[#071519]/95 backdrop-blur-xl border border-white/15 rounded-3xl p-5 text-white shadow-2xl z-20 space-y-3 pointer-events-auto">
+          <div className="flex items-center gap-2 pb-2 border-b border-white/10">
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <span className="text-xs font-bold font-serif-heading text-[#FAF8F5]">
+              Senior Ergonomic Highlights
             </span>
-            <button
-              onClick={() => setSelectedHotspot(null)}
-              className="text-xs text-white/50 hover:text-white"
-            >
-              ✕
-            </button>
           </div>
 
-          <h4 className="text-base font-serif-heading font-bold text-[#FAF8F5]">
-            {selectedHotspot.title}
-          </h4>
-          <p className="text-xs text-white/75 font-light leading-relaxed">
-            {selectedHotspot.description}
-          </p>
-
-          <div className="pt-2">
-            <button
-              onClick={() =>
-                openWhatsApp({
-                  actionType: 'reserve-unit',
-                  message: `Hello, I am reviewing the 3D Interior Visualizer and senior safety feature: "${selectedHotspot.title}". Please share complete turnkey fixtures catalog.`
-                })
-              }
-              className="w-full py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-all shadow-md text-center cursor-pointer"
-            >
-              Inquire on WhatsApp →
-            </button>
+          <div className="space-y-1.5">
+            {visibleHotspots.map((hs) => (
+              <button
+                key={hs.id}
+                onClick={() => setSelectedHotspot(hs)}
+                className={`w-full text-left p-2.5 rounded-2xl border transition-all cursor-pointer ${
+                  selectedHotspot?.id === hs.id
+                    ? 'bg-[#2C5E50] border-emerald-400 text-white font-bold shadow-md'
+                    : 'bg-white/5 border-white/10 text-white/75 hover:bg-white/10'
+                }`}
+              >
+                <div className="text-xs">{hs.name}</div>
+              </button>
+            ))}
           </div>
+
+          {selectedHotspot && (
+            <div className="p-3 rounded-2xl bg-white/5 border border-white/10 space-y-1.5 text-xs animate-in fade-in duration-200">
+              <h5 className="font-bold text-[#C58F58]">{selectedHotspot.title}</h5>
+              <p className="text-white/80 text-[11px] leading-relaxed font-light">
+                {selectedHotspot.detail}
+              </p>
+              <div className="pt-1 text-[10px] text-emerald-400 font-mono">
+                Standard: {selectedHotspot.standard}
+              </div>
+            </div>
+          )}
+
+          <button
+            onClick={() =>
+              openWhatsApp({
+                actionType: 'reserve-unit',
+                unitType: '1 BHK Senior Residence',
+                message: `Hello, I am reviewing the 360° Interior Design for the senior residence. Please share the detailed interior specifications schedule and fitting brands.`
+              })
+            }
+            className="w-full py-2.5 rounded-2xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+          >
+            Enquire About Fittings on WhatsApp →
+          </button>
         </div>
       )}
 
-      {/* Bottom Room Dimension HUD */}
+      {/* Bottom Controls Legend HUD */}
       <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[11px] text-white/60 pointer-events-none z-10 px-2">
         <div className="flex items-center gap-2 bg-[#071519]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
           <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" />
-          <span>360° Orbit • Measured Room: <strong>{roomDimensions[activeRoom]}</strong></span>
+          <span>Click &amp; Drag for 360° Room Walk • Scroll to Zoom In/Out</span>
         </div>
-        <div className="hidden md:flex items-center gap-1.5 bg-[#071519]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 text-white/50">
+
+        <div className="hidden md:flex items-center gap-1.5 bg-[#071519]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 text-white/60">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Proposed Design • Subject to Turnkey Selection</span>
+          <span>Proposed Interior Layout &amp; Safety Ergonomics</span>
         </div>
       </div>
     </div>

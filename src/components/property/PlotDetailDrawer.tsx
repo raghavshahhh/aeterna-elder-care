@@ -94,21 +94,9 @@ Please share pricing, payment milestones, and plot layout.`;
 
             {/* Status Pill & Key Badges */}
             <div className="flex flex-wrap items-center gap-2">
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${
-                  isAvail
-                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                    : isHold
-                    ? 'bg-amber-100 text-amber-800 border border-amber-300'
-                    : 'bg-rose-100 text-rose-800 border border-rose-300'
-                }`}
-              >
-                <span
-                  className={`w-2 h-2 rounded-full ${
-                    isAvail ? 'bg-emerald-500' : isHold ? 'bg-amber-500' : 'bg-rose-500'
-                  }`}
-                />
-                {isAvail ? 'Available for Booking' : isHold ? 'Currently On Hold' : 'Sold Out'}
+              <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                Phase 1 Priority Enquiry
               </span>
 
               {plot.isCorner && (
@@ -127,7 +115,7 @@ Please share pricing, payment milestones, and plot layout.`;
             <div className="p-4 rounded-2xl bg-[#0D2329] text-white flex items-center justify-between">
               <div>
                 <span className="text-[10px] uppercase font-mono tracking-wider text-[#C58F58]">
-                  Indicative Pre-Launch Price
+                  Indicative Pre-Launch Range
                 </span>
                 <div className="text-xl font-bold font-serif-heading text-white">
                   {plot.priceEstimate}

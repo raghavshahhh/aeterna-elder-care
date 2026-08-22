@@ -204,6 +204,17 @@ export const Navbar: React.FC = () => {
           </div>
 
           <Link
+            href="/documents"
+            className={cn(
+              'px-3.5 py-1.5 rounded-full transition-colors flex items-center gap-1',
+              pathname === '/documents' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
+            )}
+          >
+            <span>Docs</span>
+            <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-mono font-bold">🔒</span>
+          </Link>
+
+          <Link
             href="/contact"
             className={cn(
               'px-3.5 py-1.5 rounded-full transition-colors',

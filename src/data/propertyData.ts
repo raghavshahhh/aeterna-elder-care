@@ -937,10 +937,6 @@ export const allPlots: PlotItem[] = Array.from({ length: 64 }, (_, i) => {
   const blockIndex = Math.floor(i / 11);
   const block = (['Block A', 'Block B', 'Block C', 'Block D', 'Block E', 'Block F'][blockIndex] || 'Block A') as PlotItem['block'];
   
-  const isSold = [4, 12, 19, 27, 33, 41, 48, 52, 59, 63].includes(num);
-  const isHold = [8, 15, 23, 31, 38, 46, 50, 56, 61].includes(num);
-  const status: PlotItem['status'] = isSold ? 'sold' : isHold ? 'on_hold' : 'available';
-  
   const size = [120, 150, 180, 220, 250, 300, 425][i % 7];
   const dimensionsMap: Record<number, string> = {
     120: '24\' × 45\'',
@@ -967,8 +963,10 @@ export const allPlots: PlotItem[] = Array.from({ length: 64 }, (_, i) => {
     dimensions: dimensionsMap[size] || '30\' × 50\'',
     facing,
     roadWidth,
-    status,
-    priceEstimate: plotPricingMap[size] || '₹36.0 Lakhs',
+    status: 'phase1_enquiry',
+    statusLabel: 'Phase 1 Enquiry Open',
+    priceEstimate: `Indicative ${plotPricingMap[size] || '₹36.0L'}*`,
+    enquiryNote: 'Individual boundary demarcation and registry terms confirmed during private on-site walk.',
     isCorner,
     isParkFacing
   };
@@ -977,9 +975,8 @@ export const allPlots: PlotItem[] = Array.from({ length: 64 }, (_, i) => {
 export const plotsSummary = {
   totalPlots: 64,
   blocks: ['Block A', 'Block B', 'Block C', 'Block D', 'Block E', 'Block F'],
-  availableCount: allPlots.filter(p => p.status === 'available').length,
-  onHoldCount: allPlots.filter(p => p.status === 'on_hold').length,
-  soldCount: allPlots.filter(p => p.status === 'sold').length,
+  statusNote: 'Phase 1 Pre-Launch Enquiry Open across all 6 Blocks (120 to 425 sq. yd.)',
+  disclaimer: 'Plot dimensions and block demarcations are derived from approved CAD master layout. Individual availability and registration terms confirmed on site.',
   minSizeSqYd: 120,
   maxSizeSqYd: 425,
   internalRoads: '11 ft internal lanes to 33 ft wide main arterial road',

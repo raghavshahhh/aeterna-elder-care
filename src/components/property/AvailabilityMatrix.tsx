@@ -162,19 +162,11 @@ export const AvailabilityMatrix: React.FC = () => {
           {/* Interactive Grid of 64 Plots */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 max-h-[500px] overflow-y-auto pr-1">
             {filteredPlots.map((p) => {
-              const isAvail = p.status === 'available';
-              const isHold = p.status === 'on_hold';
               return (
                 <div
                   key={p.id}
                   onClick={() => handlePlotClick(p)}
-                  className={`p-3 rounded-2xl border text-center transition-all cursor-pointer flex flex-col justify-between group hover:shadow-md ${
-                    isAvail
-                      ? 'bg-emerald-50/50 hover:bg-emerald-100/70 border-emerald-300 hover:scale-[1.02]'
-                      : isHold
-                      ? 'bg-amber-50/50 hover:bg-amber-100/70 border-amber-300 opacity-85'
-                      : 'bg-rose-50/30 border-rose-200 opacity-60'
-                  }`}
+                  className="p-3 rounded-2xl border border-[#E8E2D8] bg-[#FAF8F5] hover:bg-white hover:border-[#2C5E50] text-center transition-all cursor-pointer flex flex-col justify-between group hover:shadow-md hover:scale-[1.02]"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center justify-between text-[10px] text-[#53676E] font-mono">
@@ -187,24 +179,16 @@ export const AvailabilityMatrix: React.FC = () => {
                     </div>
 
                     <div className="text-[10px] text-[#53676E] truncate">
-                      {p.facing}
+                      {p.facing} • {p.roadWidth.split(' ')[0]}ft
                     </div>
 
-                    <div className="text-[11px] font-bold text-[#2C5E50] pt-1">
+                    <div className="text-[11px] font-bold text-[#C58F58] pt-1">
                       {p.priceEstimate}
                     </div>
                   </div>
 
-                  <span
-                    className={`text-[9px] font-bold uppercase tracking-wider block mt-2 px-1.5 py-0.5 rounded ${
-                      isAvail
-                        ? 'bg-emerald-200/80 text-emerald-900'
-                        : isHold
-                        ? 'bg-amber-200/80 text-amber-900'
-                        : 'bg-rose-200/80 text-rose-900'
-                    }`}
-                  >
-                    {isAvail ? 'Available' : isHold ? 'On Hold' : 'Allotted'}
+                  <span className="text-[9px] font-bold uppercase tracking-wider block mt-2 px-1.5 py-0.5 rounded bg-[#EAF2EE] text-[#2C5E50]">
+                    Phase 1 Enquiry
                   </span>
                 </div>
               );

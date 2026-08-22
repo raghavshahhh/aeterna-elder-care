@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { projectOverview } from '@/data/propertyData';
 import { useModal } from '@/context/ModalContext';
 import { ShieldCheck, FileCheck2, Landmark, MessageSquare, BadgeCheck } from 'lucide-react';
@@ -75,14 +76,39 @@ export const TrustTransparency: React.FC = () => {
           })}
         </div>
 
-        <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <button
-            onClick={() => openWhatsApp({ actionType: 'request-trust-docs', message: `Hello, I would like to review the Section 8, Form 10AC/80G, and Freehold Title verification documents for ${projectOverview.legalName}.` })}
-            className="inline-flex items-center gap-2 px-6 py-4 rounded-2xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold shadow-xl transition-all cursor-pointer"
-          >
-            <MessageSquare className="w-4 h-4 text-[#25D366]" />
-            Request Registration &amp; Title Documents on WhatsApp →
-          </button>
+        {/* Owner Vault Trust Signal Banner */}
+        <div className="mt-10 p-6 sm:p-8 rounded-3xl bg-[#0D2329] text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border border-white/10 shadow-xl">
+          <div className="space-y-1.5 max-w-2xl">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[10px] font-mono text-[#C58F58] font-bold uppercase tracking-widest">
+                SECURE ARCHIVE REPOSITORY
+              </span>
+            </div>
+            <h3 className="text-xl font-serif-heading font-bold text-[#FAF8F5]">
+              Project Documentation &amp; Owner Vault
+            </h3>
+            <p className="text-xs text-white/70 font-light leading-relaxed">
+              Selected project documents, architectural CAD blueprints, and Tehsil revenue records are securely maintained in the Owner Document Vault. Contact the project desk for authorized access.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0 w-full md:w-auto">
+            <Link
+              href="/owner/login"
+              className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-bold transition-all text-center"
+            >
+              🔒 Owner Vault Login →
+            </Link>
+
+            <button
+              onClick={() => openWhatsApp({ actionType: 'request-trust-docs', message: `Hello, I would like to review the Section 8, Form 10AC/80G, and Freehold Title verification documents for ${projectOverview.legalName}.` })}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold shadow-xl transition-all cursor-pointer"
+            >
+              <MessageSquare className="w-4 h-4 text-[#25D366]" />
+              Request Docs on WhatsApp
+            </button>
+          </div>
         </div>
       </div>
     </section>

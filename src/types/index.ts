@@ -44,8 +44,10 @@ export interface PlotItem {
   dimensions: string; // "30' × 54'"
   facing: string; // "North-East" | "Park Facing" | "Corner" | "East"
   roadWidth: string; // "33 ft Main Road" | "11 ft Lane"
-  status: 'available' | 'on_hold' | 'sold';
-  priceEstimate: string; // "₹36.0 Lakhs"
+  status: 'phase1_enquiry' | 'future_phase' | 'custom_demarcation' | 'available' | 'on_hold' | 'sold';
+  statusLabel?: string; // "Phase 1 Enquiry Open"
+  priceEstimate: string; // "Indicative Range (Discussed on site walk)"
+  enquiryNote?: string;
   isCorner?: boolean;
   isParkFacing?: boolean;
 }
@@ -247,4 +249,42 @@ export interface SiteVisitRequest {
   city: string;
   notes?: string;
 }
+
+// ----------------------------------------------------
+// Owner Document Vault Types
+// ----------------------------------------------------
+export type VaultDocumentCategory =
+  | 'land_title'
+  | 'architecture'
+  | 'approvals'
+  | 'site_location'
+  | 'site_evidence'
+  | 'other';
+
+export interface VaultDocument {
+  id: string;
+  title: string;
+  category: VaultDocumentCategory;
+  categoryLabel: string;
+  description: string;
+  fileName: string;
+  fileUrl: string;
+  fileType: 'pdf' | 'image' | 'cad';
+  fileSize: string;
+  version: string;
+  uploadedAt: string;
+  uploadedBy: string;
+  visibility: 'owner_only' | 'authorized' | 'public';
+  pageCount?: number;
+  previewImageUrl?: string;
+}
+
+export interface OwnerSession {
+  isAuthenticated: boolean;
+  ownerId?: string;
+  email?: string;
+  role?: 'owner' | 'authorized_viewer';
+  expiresAt?: string;
+}
+
 

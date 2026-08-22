@@ -16,12 +16,12 @@ import {
   Compass,
   MapPin,
   CheckCircle2,
-  Clock,
   ShieldCheck,
   Trees,
   Heart,
   Eye,
-  Activity
+  Activity,
+  ArrowRight
 } from 'lucide-react';
 
 interface MasterPlan3DViewerProps {
@@ -40,7 +40,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
   const [selectedBlock, setSelectedBlock] = useState<string>('All');
   const [selectedPlotId, setSelectedPlotId] = useState<string>('plot-1');
   const [hoveredPlotNumber, setHoveredPlotNumber] = useState<number | null>(null);
-  const [viewPreset, setViewPreset] = useState<'isometric' | 'top' | 'hospital'>('isometric');
+  const [viewPreset, setViewPreset] = useState<'isometric' | 'top' | 'hospital' | 'highway'>('isometric');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -53,14 +53,14 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
   const animationFrameId = useRef<number | null>(null);
 
   const orbitRef = useRef({
-    radius: 70,
+    radius: 75,
     theta: Math.PI / 4.2,
     phi: Math.PI / 3.4,
     target: new THREE.Vector3(0, 0, 0),
     isDragging: false,
     prevMouseX: 0,
     prevMouseY: 0,
-    targetRadius: 70,
+    targetRadius: 75,
     targetTheta: Math.PI / 4.2,
     targetPhi: Math.PI / 3.4,
     targetLookAt: new THREE.Vector3(0, 0, 0)
@@ -91,7 +91,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     const scene = new THREE.Scene();
     sceneRef.current = scene;
     scene.background = new THREE.Color(0x071519);
-    scene.fog = new THREE.FogExp2(0x071519, 0.009);
+    scene.fog = new THREE.FogExp2(0x071519, 0.008);
 
     const width = container.clientWidth || 900;
     const height = container.clientHeight || 650;
@@ -110,32 +110,33 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     rendererRef.current = renderer;
 
-    // Lighting
-    const ambient = new THREE.AmbientLight(0xf2eada, 1.0);
+    // Environmental Lighting
+    const ambient = new THREE.AmbientLight(0xf5eedc, 1.2);
     scene.add(ambient);
 
-    const sun = new THREE.DirectionalLight(0xfff6e6, 1.9);
-    sun.position.set(40, 60, 45);
+    const sun = new THREE.DirectionalLight(0xfff5e6, 2.0);
+    sun.position.set(45, 65, 50);
     sun.castShadow = true;
     sun.shadow.mapSize.width = 2048;
     sun.shadow.mapSize.height = 2048;
     sun.shadow.camera.near = 10;
-    sun.shadow.camera.far = 160;
-    sun.shadow.camera.left = -50;
-    sun.shadow.camera.right = 50;
-    sun.shadow.camera.top = 50;
-    sun.shadow.camera.bottom = -50;
+    sun.shadow.camera.far = 180;
+    sun.shadow.camera.left = -60;
+    sun.shadow.camera.right = 60;
+    sun.shadow.camera.top = 60;
+    sun.shadow.camera.bottom = -60;
+    sun.shadow.bias = -0.0003;
     scene.add(sun);
 
-    const skyFill = new THREE.DirectionalLight(0x7da494, 0.7);
-    skyFill.position.set(-40, 30, -40);
+    const skyFill = new THREE.DirectionalLight(0x7da494, 0.75);
+    skyFill.position.set(-45, 35, -45);
     scene.add(skyFill);
 
     // Site Ground Terrain
-    const siteGroundGeo = new THREE.PlaneGeometry(160, 140);
+    const siteGroundGeo = new THREE.PlaneGeometry(180, 150);
     const siteGroundMat = new THREE.MeshStandardMaterial({
-      color: 0x091c22,
-      roughness: 0.85
+      color: 0x0a1c22,
+      roughness: 0.95
     });
     const siteGround = new THREE.Mesh(siteGroundGeo, siteGroundMat);
     siteGround.rotation.x = -Math.PI / 2;
@@ -143,153 +144,191 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     siteGround.receiveShadow = true;
     scene.add(siteGround);
 
-    const grid = new THREE.GridHelper(120, 40, 0x2c5e50, 0x14353e);
+    const grid = new THREE.GridHelper(140, 45, 0x2c5e50, 0x14353e);
     grid.position.y = 0.01;
     scene.add(grid);
 
-    // Green Buffer Belts (North & South)
-    const northGreen = new THREE.Mesh(
-      new THREE.BoxGeometry(110, 0.4, 6),
-      new THREE.MeshStandardMaterial({ color: 0x1f483d, roughness: 0.8 })
-    );
-    northGreen.position.set(0, 0.2, 34);
+    // Peripheral Stone Boundary Walls (11+ Acres Demarcation)
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0x3d4f54, roughness: 0.8 });
+    const createPerimeterWall = (x: number, z: number, w: number, d: number) => {
+      const wall = new THREE.Mesh(new THREE.BoxGeometry(w, 1.2, d), wallMat);
+      wall.position.set(x, 0.6, z);
+      wall.castShadow = true;
+      wall.receiveShadow = true;
+      scene.add(wall);
+    };
+
+    createPerimeterWall(0, 40, 120, 0.6); // North boundary
+    createPerimeterWall(0, -40, 120, 0.6); // South boundary
+    createPerimeterWall(-60, 0, 0.6, 80); // West boundary
+    createPerimeterWall(60, 0, 0.6, 80); // East boundary
+
+    // Green Buffer Belts (North & South 5ft-6ft bands)
+    const greenBufferMat = new THREE.MeshStandardMaterial({ color: 0x184034, roughness: 0.9 });
+    const northGreen = new THREE.Mesh(new THREE.BoxGeometry(118, 0.35, 7), greenBufferMat);
+    northGreen.position.set(0, 0.18, 36);
     northGreen.receiveShadow = true;
     scene.add(northGreen);
 
-    const southGreen = new THREE.Mesh(
-      new THREE.BoxGeometry(110, 0.4, 7),
-      new THREE.MeshStandardMaterial({ color: 0x1f483d, roughness: 0.8 })
-    );
-    southGreen.position.set(0, 0.2, -34);
+    const southGreen = new THREE.Mesh(new THREE.BoxGeometry(118, 0.35, 7), greenBufferMat);
+    southGreen.position.set(0, 0.18, -36);
     southGreen.receiveShadow = true;
     scene.add(southGreen);
 
-    // Main 33ft Arterial Highway Road
-    const mainRoad = new THREE.Mesh(
-      new THREE.BoxGeometry(110, 0.15, 6.5),
-      new THREE.MeshStandardMaterial({ color: 0x142024, roughness: 0.6 })
-    );
+    // Main 33ft Arterial Highway Road (State Highway 22 Frontage)
+    const roadMat = new THREE.MeshStandardMaterial({ color: 0x182428, roughness: 0.7 });
+    const mainRoad = new THREE.Mesh(new THREE.BoxGeometry(120, 0.15, 7.5), roadMat);
     mainRoad.position.set(0, 0.08, 0);
     mainRoad.receiveShadow = true;
     scene.add(mainRoad);
 
-    // Central Dashed Line
-    for (let x = -50; x <= 50; x += 5) {
+    // Central Dashed White Demarcation Line
+    for (let x = -55; x <= 55; x += 5) {
       const dash = new THREE.Mesh(
-        new THREE.PlaneGeometry(2.5, 0.2),
-        new THREE.MeshBasicMaterial({ color: 0xe0ab77 })
+        new THREE.PlaneGeometry(2.5, 0.22),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 0.9, transparent: true })
       );
       dash.rotation.x = -Math.PI / 2;
       dash.position.set(x, 0.17, 0);
       scene.add(dash);
     }
 
-    // Proposed 30,000 sq.ft. Ayurvedic Hospital 3D Model
+    // Sidewalk Curbs
+    const curbMat = new THREE.MeshStandardMaterial({ color: 0x3d4a4e, roughness: 0.6 });
+    const curbNorth = new THREE.Mesh(new THREE.BoxGeometry(120, 0.25, 0.6), curbMat);
+    curbNorth.position.set(0, 0.12, 4.0);
+    scene.add(curbNorth);
+
+    const curbSouth = new THREE.Mesh(new THREE.BoxGeometry(120, 0.25, 0.6), curbMat);
+    curbSouth.position.set(0, 0.12, -4.0);
+    scene.add(curbSouth);
+
+    // Proposed 30,000 sq. ft. Ayurvedic Hospital 3D Model
     const hospitalGroup = new THREE.Group();
     hospitalGroup.name = 'hospital-landmark';
+
     const hospMain = new THREE.Mesh(
-      new THREE.BoxGeometry(22, 6.5, 14),
-      new THREE.MeshStandardMaterial({ color: 0x243e38, roughness: 0.5 })
+      new THREE.BoxGeometry(24, 7.0, 15),
+      new THREE.MeshStandardMaterial({ color: 0x223d37, roughness: 0.6 })
     );
-    hospMain.position.set(40, 3.25, -16);
+    hospMain.position.set(42, 3.5, -18);
     hospMain.castShadow = true;
     hospMain.receiveShadow = true;
     hospitalGroup.add(hospMain);
 
     const hospWing = new THREE.Mesh(
-      new THREE.BoxGeometry(12, 6.5, 16),
+      new THREE.BoxGeometry(14, 7.0, 18),
       new THREE.MeshStandardMaterial({ color: 0x2c5e50, roughness: 0.5 })
     );
-    hospWing.position.set(45, 3.25, -1);
+    hospWing.position.set(47, 3.5, -2);
     hospWing.castShadow = true;
     hospWing.receiveShadow = true;
     hospitalGroup.add(hospWing);
 
-    // Hospital Cross Marker
-    const cross1 = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.8, 0.3), new THREE.MeshBasicMaterial({ color: 0xc58f58 }));
-    cross1.position.set(40, 6.8, -8.8);
-    hospitalGroup.add(cross1);
-    const cross2 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 2.5, 0.3), new THREE.MeshBasicMaterial({ color: 0xc58f58 }));
-    cross2.position.set(40, 6.8, -8.8);
-    hospitalGroup.add(cross2);
+    // Entrance Portico / Canopy
+    const canopy = new THREE.Mesh(
+      new THREE.BoxGeometry(8, 0.4, 6),
+      new THREE.MeshStandardMaterial({ color: 0xc58f58, roughness: 0.4, metalness: 0.5 })
+    );
+    canopy.position.set(38, 2.8, -10);
+    canopy.castShadow = true;
+    hospitalGroup.add(canopy);
+
+    // Hospital Red Cross Marker
+    const crossMat = new THREE.MeshBasicMaterial({ color: 0xc58f58 });
+    const c1 = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.8, 0.3), crossMat);
+    c1.position.set(42, 7.5, -10.4);
+    hospitalGroup.add(c1);
+    const c2 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 2.8, 0.3), crossMat);
+    c2.position.set(42, 7.5, -10.4);
+    hospitalGroup.add(c2);
+
     scene.add(hospitalGroup);
 
     // Community Mandir 3D Landmark (Western Edge)
     const mandirGroup = new THREE.Group();
     mandirGroup.name = 'mandir-landmark';
+
     const mandirBase = new THREE.Mesh(
-      new THREE.BoxGeometry(8, 2.5, 8),
-      new THREE.MeshStandardMaterial({ color: 0x4a3b2c, roughness: 0.6 })
+      new THREE.BoxGeometry(9, 2.5, 9),
+      new THREE.MeshStandardMaterial({ color: 0x4a3a2a, roughness: 0.6 })
     );
-    mandirBase.position.set(-45, 1.25, 16);
+    mandirBase.position.set(-46, 1.25, 18);
     mandirBase.castShadow = true;
     mandirGroup.add(mandirBase);
 
+    // Traditional Shikhara Pyramid Roof
     const shikhara = new THREE.Mesh(
-      new THREE.ConeGeometry(4.5, 5.0, 4),
-      new THREE.MeshStandardMaterial({ color: 0xc58f58, roughness: 0.3, metalness: 0.6 })
+      new THREE.ConeGeometry(5.0, 5.5, 4),
+      new THREE.MeshStandardMaterial({ color: 0xc58f58, roughness: 0.3, metalness: 0.7 })
     );
-    shikhara.position.set(-45, 5.0, 16);
+    shikhara.position.set(-46, 5.5, 18);
     shikhara.rotation.y = Math.PI / 4;
     shikhara.castShadow = true;
     mandirGroup.add(shikhara);
+
+    // Kalasha Gold Pinnacle
+    const kalasha = new THREE.Mesh(
+      new THREE.SphereGeometry(0.5, 12, 12),
+      new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.2, metalness: 0.9 })
+    );
+    kalasha.position.set(-46, 8.5, 18);
+    mandirGroup.add(kalasha);
+
     scene.add(mandirGroup);
 
     // 64 RESIDENTIAL PLOTS GENERATION (Blocks A to F)
     const plotMeshes: { [plotNumber: number]: THREE.Mesh } = {};
-    const materials = {
-      available: new THREE.MeshStandardMaterial({
-        color: 0x2c5e50,
-        roughness: 0.4,
-        metalness: 0.2,
-        emissive: 0x122e25,
-        emissiveIntensity: 0.2
-      }),
-      on_hold: new THREE.MeshStandardMaterial({
-        color: 0x8b6528,
-        roughness: 0.4,
-        metalness: 0.2,
-        emissive: 0x422d0d,
-        emissiveIntensity: 0.2
-      }),
-      sold: new THREE.MeshStandardMaterial({
-        color: 0x4a5559,
-        roughness: 0.7,
-        metalness: 0.1
-      })
-    };
+    const plotMatAvailable = new THREE.MeshStandardMaterial({
+      color: 0x245447,
+      roughness: 0.5,
+      metalness: 0.2,
+      emissive: 0x102821,
+      emissiveIntensity: 0.2
+    });
 
     allPlots.forEach((plot) => {
       const blockIndex = ['Block A', 'Block B', 'Block C', 'Block D', 'Block E', 'Block F'].indexOf(plot.block);
       const indexInBlock = (plot.number - 1) % 11;
       const isNorthRow = indexInBlock < 6;
-      
-      const width = Math.min(8.0, 3.8 + (plot.sizeSqYd / 100));
-      const depth = Math.min(9.0, 5.0 + (plot.sizeSqYd / 80));
-      
-      const blockStartX = -42 + (blockIndex * 15);
-      const posX = blockStartX + ((indexInBlock % 3) * 4.6);
-      const posZ = isNorthRow ? (14 + (Math.floor(indexInBlock / 3) * 7.5)) : (-14 - (Math.floor((indexInBlock - 6) / 3) * 7.5));
 
-      const plotGeo = new THREE.BoxGeometry(width, 0.8, depth);
-      const initialMat = plot.status === 'sold'
-        ? materials.sold
-        : plot.status === 'on_hold'
-        ? materials.on_hold
-        : materials.available;
+      const width = Math.min(8.2, 4.0 + plot.sizeSqYd / 95);
+      const depth = Math.min(9.2, 5.2 + plot.sizeSqYd / 80);
 
-      const plotMesh = new THREE.Mesh(plotGeo, initialMat.clone());
-      plotMesh.position.set(posX, 0.4, posZ);
+      const blockStartX = -44 + blockIndex * 15.5;
+      const posX = blockStartX + (indexInBlock % 3) * 4.8;
+      const posZ = isNorthRow
+        ? 15 + Math.floor(indexInBlock / 3) * 8.0
+        : -15 - Math.floor((indexInBlock - 6) / 3) * 8.0;
+
+      const plotGeo = new THREE.BoxGeometry(width, 0.7, depth);
+      const plotMesh = new THREE.Mesh(plotGeo, plotMatAvailable.clone());
+      plotMesh.position.set(posX, 0.35, posZ);
       plotMesh.castShadow = true;
       plotMesh.receiveShadow = true;
       plotMesh.userData = { plot };
 
+      // Perimeter Boundary Lines
       const edges = new THREE.EdgesGeometry(plotGeo);
       const line = new THREE.LineSegments(
         edges,
-        new THREE.LineBasicMaterial({ color: 0xFAF8F5, transparent: true, opacity: 0.3 })
+        new THREE.LineBasicMaterial({ color: 0xe0ab77, transparent: true, opacity: 0.4 })
       );
       plotMesh.add(line);
+
+      // Low Demarcation Corner Boundary Stones
+      const stoneGeo = new THREE.BoxGeometry(0.3, 0.9, 0.3);
+      const stoneMat = new THREE.MeshStandardMaterial({ color: 0xFAF8F5, roughness: 0.8 });
+      [
+        [-width / 2, 0.45, -depth / 2],
+        [width / 2, 0.45, -depth / 2],
+        [-width / 2, 0.45, depth / 2],
+        [width / 2, 0.45, depth / 2]
+      ].forEach(([sx, sy, sz]) => {
+        const stone = new THREE.Mesh(stoneGeo, stoneMat);
+        stone.position.set(sx, sy, sz);
+        plotMesh.add(stone);
+      });
 
       scene.add(plotMesh);
       plotMeshes[plot.number] = plotMesh;
@@ -297,7 +336,34 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
 
     plotMeshesRef.current = plotMeshes;
 
-    // Mouse Handlers
+    // Landscaping: Avenue Trees along Highway and Buffers
+    const treeMat = new THREE.MeshStandardMaterial({ color: 0x1f483d, roughness: 0.9, flatShading: true });
+    const trunkMat = new THREE.MeshStandardMaterial({ color: 0x4a3221, roughness: 0.8 });
+    const createAvenueTree = (tx: number, tz: number) => {
+      const tree = new THREE.Group();
+      tree.position.set(tx, 0.1, tz);
+
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 1.5, 8), trunkMat);
+      trunk.position.set(0, 0.75, 0);
+      trunk.castShadow = true;
+      tree.add(trunk);
+
+      const foliage = new THREE.Mesh(new THREE.SphereGeometry(1.2, 8, 8), treeMat);
+      foliage.position.set(0, 2.0, 0);
+      foliage.castShadow = true;
+      tree.add(foliage);
+
+      scene.add(tree);
+    };
+
+    for (let x = -50; x <= 50; x += 10) {
+      createAvenueTree(x, 6.0);
+      createAvenueTree(x, -6.0);
+      createAvenueTree(x, 37.0);
+      createAvenueTree(x, -37.0);
+    }
+
+    // Mouse Raycasting & Orbit Handlers
     const handleMouseDown = (e: MouseEvent) => {
       orbitRef.current.isDragging = true;
       orbitRef.current.prevMouseX = e.clientX;
@@ -337,7 +403,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
           if (hitPlot) {
             setSelectedPlotId(hitPlot.id);
             if (onSelectPlot) onSelectPlot(hitPlot);
-            
+
             orbitRef.current.targetLookAt.set(
               intersects[0].object.position.x,
               0,
@@ -353,7 +419,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       e.preventDefault();
       orbitRef.current.targetRadius = Math.max(
         25,
-        Math.min(110, orbitRef.current.targetRadius + e.deltaY * 0.04)
+        Math.min(115, orbitRef.current.targetRadius + e.deltaY * 0.04)
       );
     };
 
@@ -376,7 +442,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       animationFrameId.current = requestAnimationFrame(animate);
 
       if (!orbitRef.current.isDragging) {
-        orbitRef.current.targetTheta += 0.0008;
+        orbitRef.current.targetTheta += 0.0008; // Ambient rotation
       }
 
       updateCameraPosition();
@@ -399,23 +465,28 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     };
   }, [updateCameraPosition, onSelectPlot]);
 
-  const handlePresetView = (preset: 'isometric' | 'top' | 'hospital') => {
+  const handlePresetView = (preset: 'isometric' | 'top' | 'hospital' | 'highway') => {
     setViewPreset(preset);
     if (preset === 'isometric') {
       orbitRef.current.targetTheta = Math.PI / 4.2;
       orbitRef.current.targetPhi = Math.PI / 3.4;
-      orbitRef.current.targetRadius = 70;
+      orbitRef.current.targetRadius = 75;
       orbitRef.current.targetLookAt.set(0, 0, 0);
     } else if (preset === 'top') {
       orbitRef.current.targetTheta = 0;
       orbitRef.current.targetPhi = 0.12;
-      orbitRef.current.targetRadius = 85;
+      orbitRef.current.targetRadius = 90;
       orbitRef.current.targetLookAt.set(0, 0, 0);
     } else if (preset === 'hospital') {
       orbitRef.current.targetTheta = -Math.PI / 3;
       orbitRef.current.targetPhi = Math.PI / 3.2;
       orbitRef.current.targetRadius = 45;
-      orbitRef.current.targetLookAt.set(40, 2, -10);
+      orbitRef.current.targetLookAt.set(42, 3, -10);
+    } else if (preset === 'highway') {
+      orbitRef.current.targetTheta = 0;
+      orbitRef.current.targetPhi = Math.PI / 2.8;
+      orbitRef.current.targetRadius = 55;
+      orbitRef.current.targetLookAt.set(0, 1, 0);
     }
   };
 
@@ -446,18 +517,21 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
 
       {/* Top Header HUD */}
       <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none z-20">
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0D2329]/90 backdrop-blur-md border border-white/10 text-xs text-white pointer-events-auto shadow-lg">
+        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0D2329]/90 backdrop-blur-md border border-[#C58F58]/30 text-xs text-white pointer-events-auto shadow-lg">
           <Compass className="w-4 h-4 text-[#C58F58]" />
           <span className="font-bold font-mono tracking-wider text-xs">
-            64-Plot Freehold Master Plan (Blocks A–F)
+            64 Freehold Plots Master Plan (CAD-Derived)
+          </span>
+          <span className="hidden sm:inline-block px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-mono uppercase">
+            Proposed Vision
           </span>
         </div>
 
         <div className="flex items-center gap-2 pointer-events-auto">
-          <div className="hidden sm:flex items-center bg-[#0D2329]/90 backdrop-blur-md border border-white/10 rounded-2xl p-1 shadow-lg text-xs">
+          <div className="hidden sm:flex items-center bg-[#0D2329]/90 backdrop-blur-md border border-white/10 rounded-2xl p-1 shadow-lg text-xs font-semibold">
             <button
               onClick={() => handlePresetView('isometric')}
-              className={`px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
                 viewPreset === 'isometric' ? 'bg-[#2C5E50] text-white' : 'text-white/70 hover:text-white'
               }`}
             >
@@ -465,19 +539,27 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
             </button>
             <button
               onClick={() => handlePresetView('top')}
-              className={`px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
                 viewPreset === 'top' ? 'bg-[#2C5E50] text-white' : 'text-white/70 hover:text-white'
               }`}
             >
-              Top-Down Site Plan
+              Site Layout
             </button>
             <button
               onClick={() => handlePresetView('hospital')}
-              className={`px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
                 viewPreset === 'hospital' ? 'bg-[#2C5E50] text-white' : 'text-white/70 hover:text-white'
               }`}
             >
               Hospital Zone
+            </button>
+            <button
+              onClick={() => handlePresetView('highway')}
+              className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                viewPreset === 'highway' ? 'bg-[#2C5E50] text-white' : 'text-white/70 hover:text-white'
+              }`}
+            >
+              SH-22 Highway
             </button>
           </div>
 
@@ -487,7 +569,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
               className="px-3.5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/15 text-xs text-white font-medium transition-all flex items-center gap-1.5 shadow-lg cursor-pointer"
             >
               <Eye className="w-3.5 h-3.5 text-[#C58F58]" />
-              <span className="hidden sm:inline">2D Grid</span>
+              <span className="hidden sm:inline">2D CAD</span> Grid
             </button>
           )}
 
@@ -501,7 +583,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
         </div>
       </div>
 
-      {/* Left Block Filter HUD */}
+      {/* Left Block Filter Bar */}
       <div className="absolute left-4 top-20 flex flex-col gap-1.5 pointer-events-auto z-20 max-w-[140px]">
         <span className="text-[10px] font-mono uppercase tracking-widest text-[#C58F58] font-bold px-1">
           Filter Block
@@ -521,7 +603,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
         ))}
       </div>
 
-      {/* Right Selected Plot Detail Card */}
+      {/* Right Selected Plot Floating Card */}
       <div className="absolute right-4 top-20 max-w-xs w-full bg-[#0D2329]/95 backdrop-blur-xl border border-white/15 rounded-3xl p-5 text-white shadow-2xl z-20 space-y-4 pointer-events-auto">
         <div className="flex items-center justify-between pb-3 border-b border-white/10">
           <div>
@@ -538,7 +620,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 text-xs">
+        <div className="grid grid-cols-2 gap-2.5 text-xs">
           <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10">
             <span className="text-[10px] text-white/50 block">Plot Size</span>
             <strong className="text-sm text-[#FAF8F5]">{selectedPlot.sizeSqYd} sq. yd.</strong>
@@ -552,13 +634,17 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
             <strong className="text-sm text-[#FAF8F5]">{selectedPlot.facing}</strong>
           </div>
           <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10">
-            <span className="text-[10px] text-white/50 block">Indicative Range</span>
-            <strong className="text-sm text-[#C58F58]">{selectedPlot.priceEstimate}*</strong>
+            <span className="text-[10px] text-white/50 block">Road Frontage</span>
+            <strong className="text-sm text-[#C58F58]">{selectedPlot.roadWidth.split(' ')[0]} ft</strong>
           </div>
         </div>
-        <p className="text-[10px] text-white/50 italic leading-snug">
-          *Indicative estimate. Final pricing and demarcation confirmed during private site walk.
-        </p>
+
+        <div className="p-3 rounded-2xl bg-white/5 border border-white/10 space-y-1 text-xs">
+          <span className="text-[10px] text-white/50 uppercase font-mono block">Indicative Pricing Note</span>
+          <p className="text-white/80 leading-relaxed font-light text-[11px]">
+            Final pricing, exact boundary stones, and registration terms are confirmed during private on-site walk.
+          </p>
+        </div>
 
         <div className="pt-2 flex flex-col gap-2">
           <button
@@ -568,13 +654,13 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                 plotNumber: selectedPlot.plotNumber,
                 plotBlock: selectedPlot.block,
                 plotSize: `${selectedPlot.sizeSqYd} sq. yd.`,
-                message: `Hello, I am interested in ${selectedPlot.plotNumber} (${selectedPlot.block}, ${selectedPlot.sizeSqYd} sq. yd.) from the 3D Master Plan. Please share site demarcation map and availability confirmation.`
+                message: `Hello, I am interested in ${selectedPlot.plotNumber} (${selectedPlot.block}, ${selectedPlot.sizeSqYd} sq. yd.) from the 3D Master Plan. Please share site demarcation map and booking procedure.`
               })
             }
             className="w-full py-3 rounded-2xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#C58F58]" />
-            Inquire for {selectedPlot.plotNumber} on WhatsApp →
+            Enquire for {selectedPlot.plotNumber} on WhatsApp →
           </button>
 
           <button
@@ -593,11 +679,11 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
         </div>
       </div>
 
-      {/* Bottom Landmark & Instruction HUD */}
+      {/* Bottom Landmark & Orientation Banner */}
       <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[11px] text-white/60 pointer-events-none z-10 px-2">
         <div className="flex items-center gap-2 bg-[#0D2329]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
           <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" />
-          <span>Click any 3D Plot to Select • Drag to Orbit • Scroll to Zoom</span>
+          <span>Click any 3D Plot Parcel to Select • Drag to Orbit • Scroll to Zoom</span>
         </div>
 
         <div className="hidden md:flex items-center gap-4 bg-[#0D2329]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
