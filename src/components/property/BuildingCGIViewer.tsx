@@ -6,6 +6,7 @@ import { buildingUnits, projectOverview } from '@/data/propertyData';
 import { BuildingUnit, FloorLevel } from '@/types';
 import { UnitDetailDrawer } from '@/components/property/UnitDetailDrawer';
 import { Building3DViewer } from '@/components/3d/Building3DViewer';
+import { Cad3DToggle } from '@/components/ui/Cad3DToggle';
 import { useModal } from '@/context/ModalContext';
 import {
   Building2,
@@ -84,30 +85,12 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
 
           {/* 3D vs 2D Toggle Switch */}
           <div className="pt-2 flex items-center justify-center">
-            <div className="inline-flex items-center bg-white/10 p-1.5 rounded-2xl border border-white/15 backdrop-blur-md shadow-lg gap-1.5 text-xs font-bold">
-              <button
-                onClick={() => setViewMode('3d')}
-                className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all cursor-pointer ${
-                  viewMode === '3d'
-                    ? 'bg-[#C58F58] text-[#071519] shadow-md'
-                    : 'text-white/75 hover:text-white'
-                }`}
-              >
-                <Rotate3d className="w-4 h-4" />
-                Interactive 3D Orbit
-              </button>
-              <button
-                onClick={() => setViewMode('2d')}
-                className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all cursor-pointer ${
-                  viewMode === '2d'
-                    ? 'bg-[#2C5E50] text-white shadow-md'
-                    : 'text-white/75 hover:text-white'
-                }`}
-              >
-                <Layers className="w-4 h-4" />
-                2D Elevation Matrix
-              </button>
-            </div>
+            <Cad3DToggle
+              viewMode={viewMode}
+              onToggle={(mode) => setViewMode(mode)}
+              label3D="Interactive 3D Orbit"
+              label2D="2D Elevation Matrix"
+            />
           </div>
         </div>
 
@@ -141,10 +124,10 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
                 2F
               </span>
               <div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <h4 className="text-sm font-bold text-white">Second Floor (Units 07, 08, 09)</h4>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-white/70 font-mono flex items-center gap-1">
-                    <Lock className="w-3 h-3 text-amber-400" /> Phase 3 Release
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#C58F58]/20 text-[#C58F58] border border-[#C58F58]/40 font-mono flex items-center gap-1">
+                    <Lock className="w-2.5 h-2.5" /> Phase 3 • Waitlist
                   </span>
                 </div>
                 <p className="text-xs text-white/60">Top-floor sky suites with open horizon views</p>
@@ -169,10 +152,10 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
                 1F
               </span>
               <div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <h4 className="text-sm font-bold text-white">First Floor (Units 04, 05, 06)</h4>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-white/70 font-mono flex items-center gap-1">
-                    <Lock className="w-3 h-3 text-amber-400" /> Phase 2 Release
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#C58F58]/20 text-[#C58F58] border border-[#C58F58]/40 font-mono flex items-center gap-1">
+                    <Lock className="w-2.5 h-2.5" /> Phase 2 • Waitlist
                   </span>
                 </div>
                 <p className="text-xs text-white/60">Elevated residences overlooking tree canopy</p>
@@ -197,11 +180,11 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
                 GF
               </span>
               <div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <h4 className="text-sm font-bold text-white">Ground Floor (Units 01, 02, 03)</h4>
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-400 text-emerald-950 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-950" />
-                    CURRENT RELEASE • AVAILABLE
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#2C5E50] text-emerald-300 border border-emerald-500/40 font-mono flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Phase 1 • Priority Release
                   </span>
                 </div>
                 <p className="text-xs text-white/80 mt-0.5">Barrier-free ground access straight from garden walkway</p>

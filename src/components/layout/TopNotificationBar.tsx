@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useModal } from '@/context/ModalContext';
-import { projectOverview, plotsSummary } from '@/data/propertyData';
+import { projectOverview } from '@/data/propertyData';
 import { Phone, MapPin, MessageSquare, ShieldCheck, Heart, Sparkles } from 'lucide-react';
 
 export const TopNotificationBar: React.FC = () => {

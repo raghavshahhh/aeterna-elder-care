@@ -3,7 +3,6 @@
 import React from 'react';
 import { useModal } from '@/context/ModalContext';
 import { MessageSquare, Calendar } from 'lucide-react';
-import { projectOverview } from '@/data/propertyData';
 
 export const QuickContactBar: React.FC = () => {
   const { openWhatsApp, openLeadDrawer } = useModal();

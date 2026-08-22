@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ShieldCheck, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 interface RealityBadgeProps {
   label?: string;

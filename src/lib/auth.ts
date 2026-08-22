@@ -5,6 +5,10 @@ const OWNER_EMAIL = process.env.OWNER_EMAIL || 'owner@seniorliving.org';
 const OWNER_ID = process.env.OWNER_ID || 'SL-OWNER-2026';
 const OWNER_PASSWORD = process.env.OWNER_PASSWORD || 'Foundation@2026';
 
+if (process.env.NODE_ENV === 'development' && !process.env.OWNER_PASSWORD) {
+  console.warn('[auth] OWNER_PASSWORD env var not set — using demo fallback credentials.');
+}
+
 export interface ServerSessionUser {
   ownerId: string;
   email: string;
@@ -22,7 +26,7 @@ export function validateOwnerCredentials(identifier: string, pass: string): Serv
     cleanId === 'admin@seniorliving.org' ||
     cleanId === 'yoffices@gmail.com';
 
-  if (validUser && (pass === OWNER_PASSWORD || pass === 'Owner@Jhajjar2026')) {
+  if (validUser && pass === OWNER_PASSWORD) {
     return {
       ownerId: OWNER_ID,
       email: OWNER_EMAIL,
@@ -40,7 +44,7 @@ export function createSessionToken(user: ServerSessionUser): string {
   const payload = {
     ...user,
     issuedAt: Date.now(),
-    expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days
+    expiresAt: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
   };
   return Buffer.from(JSON.stringify(payload)).toString('base64');
 }

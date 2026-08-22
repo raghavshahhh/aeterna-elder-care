@@ -5,6 +5,7 @@ import { allPlots, plotsSummary, projectOverview } from '@/data/propertyData';
 import { PlotItem } from '@/types';
 import { PlotDetailDrawer } from '@/components/property/PlotDetailDrawer';
 import { MasterPlan3DViewer } from '@/components/3d/MasterPlan3DViewer';
+import { Cad3DToggle } from '@/components/ui/Cad3DToggle';
 import { useModal } from '@/context/ModalContext';
 import { Button } from '@/components/ui/Button';
 import {
@@ -66,30 +67,12 @@ export const AvailabilityMatrix: React.FC = () => {
 
           {/* 3D / 2D View Switch */}
           <div className="pt-2 flex items-center justify-center">
-            <div className="inline-flex items-center bg-[#EAF2EE] p-1.5 rounded-2xl border border-[#CDE0D7] shadow-sm gap-1.5 text-xs font-bold">
-              <button
-                onClick={() => setViewMode('3d')}
-                className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all cursor-pointer ${
-                  viewMode === '3d'
-                    ? 'bg-[#2C5E50] text-white shadow-md'
-                    : 'text-[#53676E] hover:text-[#0D2329]'
-                }`}
-              >
-                <Rotate3d className="w-4 h-4 text-[#C58F58]" />
-                Interactive 3D Master Plan
-              </button>
-              <button
-                onClick={() => setViewMode('2d')}
-                className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all cursor-pointer ${
-                  viewMode === '2d'
-                    ? 'bg-[#2C5E50] text-white shadow-md'
-                    : 'text-[#53676E] hover:text-[#0D2329]'
-                }`}
-              >
-                <Grid className="w-4 h-4" />
-                2D Inventory Grid
-              </button>
-            </div>
+            <Cad3DToggle
+              viewMode={viewMode}
+              onToggle={(mode) => setViewMode(mode)}
+              label3D="Interactive 3D Master Plan"
+              label2D="2D Inventory Grid"
+            />
           </div>
         </div>
 

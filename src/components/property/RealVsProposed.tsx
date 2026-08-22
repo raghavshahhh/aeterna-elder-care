@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { realVsProposedItems, projectOverview } from '@/data/propertyData';
 import { useModal } from '@/context/ModalContext';
 import {
@@ -24,21 +24,6 @@ import {
 
 export const RealVsProposed: React.FC = () => {
   const { openWhatsApp, openLeadDrawer } = useModal();
-  const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
-
-  const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'MapPin': return <MapPin className="w-5 h-5" />;
-      case 'Layers': return <Layers className="w-5 h-5" />;
-      case 'FileText': return <FileText className="w-5 h-5" />;
-      case 'Building2': return <Building2 className="w-5 h-5" />;
-      case 'Navigation': return <Navigation className="w-5 h-5" />;
-      case 'Stethoscope': return <Stethoscope className="w-5 h-5" />;
-      case 'Trees': return <Trees className="w-5 h-5" />;
-      case 'Heart': return <Heart className="w-5 h-5" />;
-      default: return <Sparkles className="w-5 h-5" />;
-    }
-  };
 
   return (
     <section id="reality-vs-vision" className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E8E2D8] relative overflow-hidden">

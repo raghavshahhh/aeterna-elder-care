@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { coreValues, projectOverview } from '@/data/propertyData';
 import { Sparkles, Shield, Heart, Users, Compass, ArrowRight, Building, CheckCircle2 } from 'lucide-react';
 

@@ -7,6 +7,8 @@ import { useModal } from '@/context/ModalContext';
 import { MasterPlan3DViewer } from '@/components/3d/MasterPlan3DViewer';
 import { Building3DViewer } from '@/components/3d/Building3DViewer';
 import { Interior3DViewer } from '@/components/3d/Interior3DViewer';
+import { RealityBadge } from '@/components/ui/RealityBadge';
+import { ProposedBadge } from '@/components/ui/ProposedBadge';
 import {
   Compass,
   Building2,
@@ -153,63 +155,68 @@ export const FutureHomeJourney: React.FC = () => {
           {/* VIEW STAGES */}
           {/* STEP 1: REAL LAND TODAY */}
           {currentStep === 'land' && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div className="lg:col-span-7 relative h-[360px] sm:h-[440px] rounded-2xl overflow-hidden border border-white/15 shadow-xl group">
-                <Image
-                  src={projectOverview.images.droneOverview}
-                  alt="Real Drone View of Kheri Asra Site"
-                  fill
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-emerald-600/90 backdrop-blur-md text-white text-[10px] font-mono font-bold uppercase tracking-wider">
-                  Verified Physical Land Today
-                </div>
-                <div className="absolute bottom-4 left-4 right-4 text-white text-xs sm:text-sm space-y-1">
-                  <p className="font-serif-heading font-bold text-base text-[#FAF8F5]">
-                    11+ Acres Demarcated Freehold Land on State Highway 22
-                  </p>
-                  <p className="text-white/80 text-xs">
-                    Clear green surroundings, low air pollution, and direct arterial road connectivity to Reliance MET City and Gurugram.
-                  </p>
-                </div>
+            <div className="space-y-6">
+              <div className="flex items-center">
+                <RealityBadge />
               </div>
-
-              <div className="lg:col-span-5 space-y-6">
-                <div className="space-y-3">
-                  <div className="inline-flex items-center gap-2 text-xs font-mono text-emerald-400 font-bold uppercase tracking-wider">
-                    <MapPin className="w-4 h-4" /> Kheri Asra, Jhajjar, Haryana
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div className="lg:col-span-7 relative h-[360px] sm:h-[440px] rounded-2xl overflow-hidden border border-white/15 shadow-xl group">
+                  <Image
+                    src={projectOverview.images.droneOverview}
+                    alt="Real Drone View of Kheri Asra Site"
+                    fill
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-emerald-600/90 backdrop-blur-md text-white text-[10px] font-mono font-bold uppercase tracking-wider">
+                    Verified Physical Land Today
                   </div>
-                  <h4 className="text-2xl font-serif-heading font-bold text-[#FAF8F5]">
-                    Begin Your Spatial Journey on Solid Ground
-                  </h4>
-                  <p className="text-xs sm:text-sm text-white/75 leading-relaxed font-light">
-                    Unlike typical speculative projects, the land here is physically demarcated and ready for scheduled on-site walks. Next, step into the proposed 3D master plan.
-                  </p>
+                  <div className="absolute bottom-4 left-4 right-4 text-white text-xs sm:text-sm space-y-1">
+                    <p className="font-serif-heading font-bold text-base text-[#FAF8F5]">
+                      11+ Acres Demarcated Freehold Land on State Highway 22
+                    </p>
+                    <p className="text-white/80 text-xs">
+                      Clear green surroundings, low air pollution, and direct arterial road connectivity to Reliance MET City and Gurugram.
+                    </p>
+                  </div>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2 text-xs text-white/80">
-                  <div className="flex items-center gap-2 text-emerald-400 font-bold">
-                    <CheckCircle2 className="w-4 h-4 shrink-0" /> Freehold Title &amp; Registry Pathway
+                <div className="lg:col-span-5 space-y-6">
+                  <div className="space-y-3">
+                    <div className="inline-flex items-center gap-2 text-xs font-mono text-emerald-400 font-bold uppercase tracking-wider">
+                      <MapPin className="w-4 h-4" /> Kheri Asra, Jhajjar, Haryana
+                    </div>
+                    <h4 className="text-2xl font-serif-heading font-bold text-[#FAF8F5]">
+                      Begin Your Spatial Journey on Solid Ground
+                    </h4>
+                    <p className="text-xs sm:text-sm text-white/75 leading-relaxed font-light">
+                      Unlike typical speculative projects, the land here is physically demarcated and ready for scheduled on-site walks. Next, step into the proposed 3D master plan.
+                    </p>
                   </div>
-                  <p className="text-white/65 leading-relaxed">
-                    Clear title chain ready for registry upon full payment with undivided share.
-                  </p>
-                </div>
 
-                <div className="pt-2 flex flex-col sm:flex-row gap-3">
-                  <button
-                    onClick={goToNextStep}
-                    className="flex-1 py-3.5 px-5 rounded-2xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] text-xs font-bold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    Step 2: Enter 3D Master Plan →
-                  </button>
-                  <button
-                    onClick={() => openLeadDrawer({ title: 'Schedule Private Site Walk to Jhajjar Land', actionType: 'book-site-visit' })}
-                    className="py-3.5 px-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-white text-xs font-medium transition-all text-center cursor-pointer"
-                  >
-                    Book Site Walk
-                  </button>
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2 text-xs text-white/80">
+                    <div className="flex items-center gap-2 text-emerald-400 font-bold">
+                      <CheckCircle2 className="w-4 h-4 shrink-0" /> Freehold Title &amp; Registry Pathway
+                    </div>
+                    <p className="text-white/65 leading-relaxed">
+                      Clear title chain ready for registry upon full payment with undivided share.
+                    </p>
+                  </div>
+
+                  <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                    <button
+                      onClick={goToNextStep}
+                      className="flex-1 py-3.5 px-5 rounded-2xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] text-xs font-bold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      Step 2: Enter 3D Master Plan →
+                    </button>
+                    <button
+                      onClick={() => openLeadDrawer({ title: 'Schedule Private Site Walk to Jhajjar Land', actionType: 'book-site-visit' })}
+                      className="py-3.5 px-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-white text-xs font-medium transition-all text-center cursor-pointer"
+                    >
+                      Book Site Walk
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -218,6 +225,9 @@ export const FutureHomeJourney: React.FC = () => {
           {/* STEP 2: 3D MASTER PLAN */}
           {currentStep === 'masterplan' && (
             <div className="space-y-6">
+              <div className="flex items-center">
+                <ProposedBadge />
+              </div>
               {!viewMode2D ? (
                 <MasterPlan3DViewer
                   onSelectPlot={(plot) => {
@@ -266,6 +276,9 @@ export const FutureHomeJourney: React.FC = () => {
           {/* STEP 3: 3D BUILDING */}
           {currentStep === 'building' && (
             <div className="space-y-6">
+              <div className="flex items-center">
+                <ProposedBadge />
+              </div>
               {!viewMode2D ? (
                 <Building3DViewer
                   initialFloor="ground"
@@ -310,6 +323,9 @@ export const FutureHomeJourney: React.FC = () => {
           {/* STEP 4: GROUND FLOOR */}
           {currentStep === 'floor' && (
             <div className="space-y-8">
+              <div className="flex items-center">
+                <ProposedBadge />
+              </div>
               <div className="p-6 rounded-2xl bg-gradient-to-r from-[#2C5E50]/40 to-[#14353E]/40 border border-emerald-400/40 space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-400 text-emerald-950 uppercase font-mono">
@@ -391,6 +407,9 @@ export const FutureHomeJourney: React.FC = () => {
           {/* STEP 5: SELECT & INSPECT UNIT */}
           {currentStep === 'unit' && (
             <div className="space-y-8">
+              <div className="flex items-center">
+                <ProposedBadge />
+              </div>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 <div className="lg:col-span-7 relative h-[360px] sm:h-[420px] rounded-3xl overflow-hidden border border-white/15 shadow-xl">
                   <Image
@@ -475,6 +494,9 @@ export const FutureHomeJourney: React.FC = () => {
           {/* STEP 6: 3D INTERIOR ROOM WALKTHROUGH */}
           {currentStep === 'interior' && (
             <div className="space-y-6">
+              <div className="flex items-center">
+                <ProposedBadge />
+              </div>
               <Interior3DViewer
                 unitType={selectedUnit.type === '1-rk' ? '1-rk' : '1-bhk'}
                 onToggle2DPlans={() => setViewMode2D(true)}

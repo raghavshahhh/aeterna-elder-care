@@ -395,7 +395,7 @@ export const additionalCharges = [
 // ============================================================================
 export const rentalProposition = {
   headline: 'Rental Support Proposition',
-  disclaimer: 'The following payout structure is proposed by the Foundation as a rental/occupancy management service, not an investment scheme or deposit product. Final terms are subject to a signed agreement and client legal review.',
+  disclaimer: 'The following payout structure is proposed by the Foundation as a rental/occupancy management service, not an investment scheme or deposit product. Final terms are subject to a signed agreement and client legal review. These figures are indicative and not guaranteed returns.',
   stages: [
     {
       stage: 'Pre-Possession',
@@ -447,8 +447,8 @@ export const buildingUnits: BuildingUnit[] = [
     carpetAreaSqFt: 276,
     facing: 'East / Morning Sun & Garden View',
     status: 'available',
-    badge: 'Available • Phase 1',
-    priceDisplay: '₹25 Lakhs (Down Payment Plan)',
+    badge: 'Phase 1 • Priority Enquiry',
+    priceDisplay: '₹25L* Indicative (Confirmed on site walk)',
     keyHighlights: [
       'Zero-step barrier-free access directly from ground elevator lobby',
       'Dual 5×6ft wheelchair-accessible lifts in building',
@@ -503,8 +503,8 @@ export const buildingUnits: BuildingUnit[] = [
     carpetAreaSqFt: 276,
     facing: 'North-East / Courtyard View',
     status: 'available',
-    badge: 'Available • Phase 1',
-    priceDisplay: '₹25 Lakhs (Down Payment Plan)',
+    badge: 'Phase 1 • Priority Enquiry',
+    priceDisplay: '₹25L* Indicative (Confirmed on site walk)',
     keyHighlights: [
       'Quiet courtyard-facing orientation with abundant cross-ventilation',
       'Dual elevators and gradual 10" tread / 6" rise stairs',
@@ -558,7 +558,7 @@ export const buildingUnits: BuildingUnit[] = [
     carpetAreaSqFt: 195,
     facing: 'North / Green Belt View',
     status: 'available',
-    badge: 'Available • Phase 1',
+    badge: 'Phase 1 • Priority Enquiry',
     priceDisplay: 'Price to be Confirmed',
     keyHighlights: [
       'Compact, efficient studio suite ideal for single senior comfort',
@@ -1043,8 +1043,8 @@ export const residenceUnits: ResidenceUnit[] = [
     facing: 'East / Garden Facing',
     status: 'available',
     releasePhase: 'Active Phase 1 Booking (Units 01, 02)',
-    badge: 'Available • Phase 1',
-    startingPriceEstimate: '₹25 Lakhs (Down Payment Plan)',
+    badge: 'Phase 1 • Priority Enquiry',
+    startingPriceEstimate: '₹25L* Indicative (Confirmed on site walk)',
     monthlyCarePackageEstimate: 'Customized Wellness Package',
     seniorSafetyFeatures: [
       'Single-floor living inside — no internal steps or split levels',
@@ -1101,7 +1101,7 @@ export const residenceUnits: ResidenceUnit[] = [
     facing: 'North / Countryside View',
     status: 'available',
     releasePhase: 'Active Phase 1 Booking (Unit 03)',
-    badge: 'Available • Phase 1',
+    badge: 'Phase 1 • Priority Enquiry',
     startingPriceEstimate: 'Price to be Confirmed',
     monthlyCarePackageEstimate: 'Customized Wellness Package',
     seniorSafetyFeatures: [

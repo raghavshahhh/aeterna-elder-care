@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { healthcareHighlights, projectOverview } from '@/data/propertyData';
 import { useModal } from '@/context/ModalContext';
@@ -23,7 +23,6 @@ import {
 
 export const EcosystemShowcase: React.FC = () => {
   const { openLeadDrawer, openWhatsApp } = useModal();
-  const [showCADModal, setShowCADModal] = useState(false);
 
   const getIcon = (iconName: string) => {
     switch (iconName) {

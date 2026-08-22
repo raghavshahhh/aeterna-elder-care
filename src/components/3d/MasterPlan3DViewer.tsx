@@ -29,6 +29,125 @@ interface MasterPlan3DViewerProps {
   onToggle2DView?: () => void;
 }
 
+// ─── Procedural Textures ──────────────────────────────────────────────────────
+
+function createEarthTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 256;
+  const ctx = canvas.getContext('2d')!;
+  ctx.fillStyle = '#3D5A3A';
+  ctx.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 10000; i++) {
+    const x = Math.random() * 256;
+    const y = Math.random() * 256;
+    const g = 45 + Math.random() * 40;
+    ctx.fillStyle = `rgb(${g - 10}, ${g + 15}, ${g - 15})`;
+    ctx.fillRect(x, y, 1.2, 1.8 + Math.random() * 1.5);
+  }
+  // Subtle earth patches
+  for (let i = 0; i < 200; i++) {
+    const x = Math.random() * 256;
+    const y = Math.random() * 256;
+    const b = 100 + Math.random() * 40;
+    ctx.fillStyle = `rgba(${b}, ${b - 15}, ${b - 30}, 0.25)`;
+    ctx.fillRect(x, y, 3 + Math.random() * 6, 3 + Math.random() * 4);
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(12, 10);
+  return tex;
+}
+
+function createAsphaltTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 128;
+  canvas.height = 128;
+  const ctx = canvas.getContext('2d')!;
+  ctx.fillStyle = '#2A2E30';
+  ctx.fillRect(0, 0, 128, 128);
+  for (let i = 0; i < 4000; i++) {
+    const x = Math.random() * 128;
+    const y = Math.random() * 128;
+    const v = 35 + Math.random() * 25;
+    ctx.fillStyle = `rgb(${v}, ${v + 2}, ${v + 4})`;
+    ctx.fillRect(x, y, 1, 1);
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(8, 2);
+  return tex;
+}
+
+function createPlotGrassTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 64;
+  canvas.height = 64;
+  const ctx = canvas.getContext('2d')!;
+  ctx.fillStyle = '#2A5040';
+  ctx.fillRect(0, 0, 64, 64);
+  for (let i = 0; i < 500; i++) {
+    const x = Math.random() * 64;
+    const y = Math.random() * 64;
+    const g = 35 + Math.random() * 40;
+    ctx.fillStyle = `rgb(${g - 8}, ${g + 20}, ${g - 5})`;
+    ctx.fillRect(x, y, 1, 1.5);
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  return tex;
+}
+
+function createSidewalkTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 64;
+  canvas.height = 64;
+  const ctx = canvas.getContext('2d')!;
+  ctx.fillStyle = '#9A9080';
+  ctx.fillRect(0, 0, 64, 64);
+  ctx.strokeStyle = 'rgba(80, 75, 65, 0.3)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < 64; x += 8) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, 64);
+    ctx.stroke();
+  }
+  for (let y = 0; y < 64; y += 12) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(64, y);
+    ctx.stroke();
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(10, 1);
+  return tex;
+}
+
+// ─── Disposal ─────────────────────────────────────────────────────────────────
+
+function disposeScene(scene: THREE.Scene) {
+  scene.traverse((obj) => {
+    if (obj instanceof THREE.Mesh) {
+      obj.geometry?.dispose();
+      if (Array.isArray(obj.material)) {
+        obj.material.forEach((m) => m.dispose());
+      } else if (obj.material) {
+        if (obj.material.map) obj.material.map.dispose();
+        obj.material.dispose();
+      }
+    }
+    if (obj instanceof THREE.LineSegments) {
+      obj.geometry?.dispose();
+      if (obj.material instanceof THREE.Material) obj.material.dispose();
+    }
+  });
+  scene.clear();
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
   onSelectPlot,
   onToggle2DView
@@ -39,7 +158,6 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
 
   const [selectedBlock, setSelectedBlock] = useState<string>('All');
   const [selectedPlotId, setSelectedPlotId] = useState<string>('plot-1');
-  const [hoveredPlotNumber, setHoveredPlotNumber] = useState<number | null>(null);
   const [viewPreset, setViewPreset] = useState<'isometric' | 'top' | 'hospital' | 'highway'>('isometric');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -51,6 +169,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
   const raycasterRef = useRef<THREE.Raycaster>(new THREE.Raycaster());
   const mouseRef = useRef<THREE.Vector2>(new THREE.Vector2());
   const animationFrameId = useRef<number | null>(null);
+  const selectedPlotMeshRef = useRef<THREE.Mesh | null>(null);
 
   const orbitRef = useRef({
     radius: 75,
@@ -88,10 +207,12 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
 
+    const isMobile = window.innerWidth < 768;
+
     const scene = new THREE.Scene();
     sceneRef.current = scene;
-    scene.background = new THREE.Color(0x071519);
-    scene.fog = new THREE.FogExp2(0x071519, 0.008);
+    scene.background = new THREE.Color(0x0b1e24);
+    scene.fog = new THREE.FogExp2(0x0b1e24, 0.006);
 
     const width = container.clientWidth || 900;
     const height = container.clientHeight || 650;
@@ -100,192 +221,329 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
-      antialias: true,
+      antialias: !isMobile,
       powerPreference: 'high-performance',
       alpha: false
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
     renderer.setSize(width, height);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
     rendererRef.current = renderer;
 
-    // Environmental Lighting
-    const ambient = new THREE.AmbientLight(0xf5eedc, 1.2);
+    // ─── Lighting ─────────────────────────────────────────────────────────
+
+    const hemiLight = new THREE.HemisphereLight(0xa8c4d0, 0x2a4a28, 0.8);
+    scene.add(hemiLight);
+
+    const ambient = new THREE.AmbientLight(0xf5eedc, 0.5);
     scene.add(ambient);
 
-    const sun = new THREE.DirectionalLight(0xfff5e6, 2.0);
+    const sun = new THREE.DirectionalLight(0xfff5e6, 2.2);
     sun.position.set(45, 65, 50);
     sun.castShadow = true;
-    sun.shadow.mapSize.width = 2048;
-    sun.shadow.mapSize.height = 2048;
+    sun.shadow.mapSize.width = isMobile ? 1024 : 2048;
+    sun.shadow.mapSize.height = isMobile ? 1024 : 2048;
     sun.shadow.camera.near = 10;
     sun.shadow.camera.far = 180;
-    sun.shadow.camera.left = -60;
-    sun.shadow.camera.right = 60;
-    sun.shadow.camera.top = 60;
-    sun.shadow.camera.bottom = -60;
+    sun.shadow.camera.left = -65;
+    sun.shadow.camera.right = 65;
+    sun.shadow.camera.top = 55;
+    sun.shadow.camera.bottom = -55;
     sun.shadow.bias = -0.0003;
     scene.add(sun);
 
-    const skyFill = new THREE.DirectionalLight(0x7da494, 0.75);
+    const skyFill = new THREE.DirectionalLight(0x7da494, 0.6);
     skyFill.position.set(-45, 35, -45);
     scene.add(skyFill);
 
-    // Site Ground Terrain
-    const siteGroundGeo = new THREE.PlaneGeometry(180, 150);
-    const siteGroundMat = new THREE.MeshStandardMaterial({
-      color: 0x0a1c22,
-      roughness: 0.95
-    });
-    const siteGround = new THREE.Mesh(siteGroundGeo, siteGroundMat);
+    // ─── Procedural Textures ──────────────────────────────────────────────
+
+    const earthTex = createEarthTexture();
+    const asphaltTex = createAsphaltTexture();
+    const plotGrassTex = createPlotGrassTexture();
+    const sidewalkTex = createSidewalkTexture();
+
+    // ─── Site Ground Terrain ──────────────────────────────────────────────
+
+    const siteGroundGeo = new THREE.PlaneGeometry(200, 160);
+    const siteGround = new THREE.Mesh(siteGroundGeo, new THREE.MeshStandardMaterial({
+      map: earthTex,
+      roughness: 0.92
+    }));
     siteGround.rotation.x = -Math.PI / 2;
-    siteGround.position.y = -0.1;
+    siteGround.position.y = -0.05;
     siteGround.receiveShadow = true;
     scene.add(siteGround);
 
-    const grid = new THREE.GridHelper(140, 45, 0x2c5e50, 0x14353e);
-    grid.position.y = 0.01;
-    scene.add(grid);
+    // ─── Boundary Walls ───────────────────────────────────────────────────
 
-    // Peripheral Stone Boundary Walls (11+ Acres Demarcation)
-    const wallMat = new THREE.MeshStandardMaterial({ color: 0x3d4f54, roughness: 0.8 });
-    const createPerimeterWall = (x: number, z: number, w: number, d: number) => {
-      const wall = new THREE.Mesh(new THREE.BoxGeometry(w, 1.2, d), wallMat);
-      wall.position.set(x, 0.6, z);
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0xb8ad98, roughness: 0.7 });
+    const wallCopingMat = new THREE.MeshStandardMaterial({ color: 0xd4cbb8, roughness: 0.55 });
+    const wallH = 1.8;
+
+    const createBoundaryWall = (x: number, z: number, w: number, d: number) => {
+      const wall = new THREE.Mesh(new THREE.BoxGeometry(w, wallH, d), wallMat);
+      wall.position.set(x, wallH / 2, z);
       wall.castShadow = true;
       wall.receiveShadow = true;
       scene.add(wall);
+
+      // Coping
+      const coping = new THREE.Mesh(new THREE.BoxGeometry(w + 0.3, 0.08, d + 0.3), wallCopingMat);
+      coping.position.set(x, wallH + 0.04, z);
+      scene.add(coping);
     };
 
-    createPerimeterWall(0, 40, 120, 0.6); // North boundary
-    createPerimeterWall(0, -40, 120, 0.6); // South boundary
-    createPerimeterWall(-60, 0, 0.6, 80); // West boundary
-    createPerimeterWall(60, 0, 0.6, 80); // East boundary
+    createBoundaryWall(0, 42, 124, 0.5);
+    createBoundaryWall(0, -42, 124, 0.5);
+    createBoundaryWall(-62, 0, 0.5, 84);
+    createBoundaryWall(62, 0, 0.5, 84);
 
-    // Green Buffer Belts (North & South 5ft-6ft bands)
-    const greenBufferMat = new THREE.MeshStandardMaterial({ color: 0x184034, roughness: 0.9 });
-    const northGreen = new THREE.Mesh(new THREE.BoxGeometry(118, 0.35, 7), greenBufferMat);
-    northGreen.position.set(0, 0.18, 36);
-    northGreen.receiveShadow = true;
-    scene.add(northGreen);
+    // Gate pillars (main entrance)
+    const pillarMat = new THREE.MeshStandardMaterial({ color: 0xc8bea6, roughness: 0.55 });
+    const bronzeMat = new THREE.MeshStandardMaterial({ color: 0xc58f58, roughness: 0.3, metalness: 0.7 });
+    [-3, 3].forEach((gx) => {
+      const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.8, 2.8, 0.8), pillarMat);
+      pillar.position.set(gx, 1.4, -42);
+      pillar.castShadow = true;
+      scene.add(pillar);
+      const cap = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.12, 1.0), bronzeMat);
+      cap.position.set(gx, 2.86, -42);
+      scene.add(cap);
+    });
 
-    const southGreen = new THREE.Mesh(new THREE.BoxGeometry(118, 0.35, 7), greenBufferMat);
-    southGreen.position.set(0, 0.18, -36);
-    southGreen.receiveShadow = true;
-    scene.add(southGreen);
+    // ─── Green Buffer Belts ───────────────────────────────────────────────
 
-    // Main 33ft Arterial Highway Road (State Highway 22 Frontage)
-    const roadMat = new THREE.MeshStandardMaterial({ color: 0x182428, roughness: 0.7 });
-    const mainRoad = new THREE.Mesh(new THREE.BoxGeometry(120, 0.15, 7.5), roadMat);
-    mainRoad.position.set(0, 0.08, 0);
+    const greenMat = new THREE.MeshStandardMaterial({
+      map: plotGrassTex,
+      color: 0x1e5a3a,
+      roughness: 0.88
+    });
+    [36, -36].forEach((bz) => {
+      const buffer = new THREE.Mesh(new THREE.BoxGeometry(118, 0.2, 6), greenMat);
+      buffer.position.set(0, 0.1, bz);
+      buffer.receiveShadow = true;
+      scene.add(buffer);
+    });
+
+    // ─── Main 33ft Arterial Road (SH-22 Frontage) ─────────────────────────
+
+    const mainRoad = new THREE.Mesh(
+      new THREE.BoxGeometry(124, 0.12, 8),
+      new THREE.MeshStandardMaterial({ map: asphaltTex, roughness: 0.72 })
+    );
+    mainRoad.position.set(0, 0.06, 0);
     mainRoad.receiveShadow = true;
     scene.add(mainRoad);
 
-    // Central Dashed White Demarcation Line
-    for (let x = -55; x <= 55; x += 5) {
-      const dash = new THREE.Mesh(
-        new THREE.PlaneGeometry(2.5, 0.22),
-        new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 0.9, transparent: true })
-      );
+    // Center dashed line
+    const dashMat = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 0.85, transparent: true });
+    for (let x = -58; x <= 58; x += 5) {
+      const dash = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 0.18), dashMat);
       dash.rotation.x = -Math.PI / 2;
-      dash.position.set(x, 0.17, 0);
+      dash.position.set(x, 0.14, 0);
       scene.add(dash);
     }
 
-    // Sidewalk Curbs
-    const curbMat = new THREE.MeshStandardMaterial({ color: 0x3d4a4e, roughness: 0.6 });
-    const curbNorth = new THREE.Mesh(new THREE.BoxGeometry(120, 0.25, 0.6), curbMat);
-    curbNorth.position.set(0, 0.12, 4.0);
-    scene.add(curbNorth);
+    // Edge lane markings
+    [-3.6, 3.6].forEach((lz) => {
+      for (let x = -58; x <= 58; x += 4) {
+        const edgeLine = new THREE.Mesh(
+          new THREE.PlaneGeometry(3.2, 0.08),
+          new THREE.MeshBasicMaterial({ color: 0xffdd88, opacity: 0.6, transparent: true })
+        );
+        edgeLine.rotation.x = -Math.PI / 2;
+        edgeLine.position.set(x, 0.14, lz);
+        scene.add(edgeLine);
+      }
+    });
 
-    const curbSouth = new THREE.Mesh(new THREE.BoxGeometry(120, 0.25, 0.6), curbMat);
-    curbSouth.position.set(0, 0.12, -4.0);
-    scene.add(curbSouth);
+    // Sidewalk curbs with paver texture
+    const sidewalkMat = new THREE.MeshStandardMaterial({ map: sidewalkTex, roughness: 0.65 });
+    [4.5, -4.5].forEach((cz) => {
+      const curb = new THREE.Mesh(new THREE.BoxGeometry(124, 0.3, 1.2), sidewalkMat);
+      curb.position.set(0, 0.15, cz);
+      curb.receiveShadow = true;
+      scene.add(curb);
+    });
 
-    // Proposed 30,000 sq. ft. Ayurvedic Hospital 3D Model
+    // Speed bumps near hospital
+    if (!isMobile) {
+      [35, 50].forEach((bx) => {
+        const bump = new THREE.Mesh(
+          new THREE.BoxGeometry(6, 0.08, 0.8),
+          new THREE.MeshStandardMaterial({ color: 0xccaa44, roughness: 0.6 })
+        );
+        bump.position.set(bx, 0.14, -1);
+        scene.add(bump);
+      });
+    }
+
+    // ─── Hospital with Architectural Detail ───────────────────────────────
+
     const hospitalGroup = new THREE.Group();
     hospitalGroup.name = 'hospital-landmark';
 
-    const hospMain = new THREE.Mesh(
-      new THREE.BoxGeometry(24, 7.0, 15),
-      new THREE.MeshStandardMaterial({ color: 0x223d37, roughness: 0.6 })
-    );
+    const hospWallMat = new THREE.MeshStandardMaterial({ color: 0xd8d2c4, roughness: 0.65 });
+    const hospAccentMat = new THREE.MeshStandardMaterial({ color: 0x223d37, roughness: 0.55 });
+
+    // Main block
+    const hospMain = new THREE.Mesh(new THREE.BoxGeometry(24, 7.0, 15), hospWallMat);
     hospMain.position.set(42, 3.5, -18);
     hospMain.castShadow = true;
     hospMain.receiveShadow = true;
     hospitalGroup.add(hospMain);
 
-    const hospWing = new THREE.Mesh(
-      new THREE.BoxGeometry(14, 7.0, 18),
-      new THREE.MeshStandardMaterial({ color: 0x2c5e50, roughness: 0.5 })
-    );
+    // Side wing
+    const hospWing = new THREE.Mesh(new THREE.BoxGeometry(14, 7.0, 18), hospWallMat);
     hospWing.position.set(47, 3.5, -2);
     hospWing.castShadow = true;
     hospWing.receiveShadow = true;
     hospitalGroup.add(hospWing);
 
-    // Entrance Portico / Canopy
-    const canopy = new THREE.Mesh(
-      new THREE.BoxGeometry(8, 0.4, 6),
-      new THREE.MeshStandardMaterial({ color: 0xc58f58, roughness: 0.4, metalness: 0.5 })
-    );
-    canopy.position.set(38, 2.8, -10);
+    // Windows on main block
+    const hospGlassMat = new THREE.MeshPhysicalMaterial({
+      color: 0x2a5a6a,
+      roughness: 0.1,
+      transmission: 0.6,
+      transparent: true,
+      opacity: 0.75
+    });
+    for (let wx = 33; wx <= 51; wx += 4.5) {
+      for (let wy = 1.5; wy <= 5.5; wy += 2.5) {
+        const win = new THREE.Mesh(new THREE.PlaneGeometry(2.5, 1.8), hospGlassMat);
+        win.position.set(wx, wy, -10.55);
+        hospitalGroup.add(win);
+      }
+    }
+
+    // Windows on side wing
+    for (let wz = -8; wz <= 6; wz += 4) {
+      for (let wy = 1.5; wy <= 5.5; wy += 2.5) {
+        const win = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1.8), hospGlassMat);
+        win.position.set(54.05, wy, wz);
+        win.rotation.y = Math.PI / 2;
+        hospitalGroup.add(win);
+      }
+    }
+
+    // Entrance portico with pillars
+    const canopyMat = new THREE.MeshStandardMaterial({ color: 0xc58f58, roughness: 0.35, metalness: 0.5 });
+    const canopy = new THREE.Mesh(new THREE.BoxGeometry(10, 0.35, 6), canopyMat);
+    canopy.position.set(38, 3.2, -10);
     canopy.castShadow = true;
     hospitalGroup.add(canopy);
 
-    // Hospital Red Cross Marker
-    const crossMat = new THREE.MeshBasicMaterial({ color: 0xc58f58 });
-    const c1 = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.8, 0.3), crossMat);
-    c1.position.set(42, 7.5, -10.4);
+    // Portico pillars
+    const hospPillarMat = new THREE.MeshStandardMaterial({ color: 0xe0d8c8, roughness: 0.5 });
+    [[-2.5, -2.5], [-2.5, 2.5], [2.5, -2.5], [2.5, 2.5]].forEach(([px, pz]) => {
+      const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.3, 3.2, 8), hospPillarMat);
+      pillar.position.set(38 + px, 1.6, -10 + pz);
+      pillar.castShadow = true;
+      hospitalGroup.add(pillar);
+    });
+
+    // Ambulance bay marking
+    if (!isMobile) {
+      const ambMark = new THREE.Mesh(
+        new THREE.PlaneGeometry(5, 3),
+        new THREE.MeshBasicMaterial({ color: 0xcc4444, opacity: 0.25, transparent: true })
+      );
+      ambMark.rotation.x = -Math.PI / 2;
+      ambMark.position.set(38, 0.12, -6.5);
+      hospitalGroup.add(ambMark);
+    }
+
+    // Cross symbol
+    const crossMat = new THREE.MeshStandardMaterial({ color: 0xc58f58, emissive: 0xc58f58, emissiveIntensity: 0.3 });
+    const c1 = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.8, 0.15), crossMat);
+    c1.position.set(42, 7.3, -10.55);
     hospitalGroup.add(c1);
-    const c2 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 2.8, 0.3), crossMat);
-    c2.position.set(42, 7.5, -10.4);
+    const c2 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 2.8, 0.15), crossMat);
+    c2.position.set(42, 7.3, -10.55);
     hospitalGroup.add(c2);
+
+    // Roof
+    const roofMat = new THREE.MeshStandardMaterial({ color: 0x8a7a68, roughness: 0.6 });
+    const hospRoof = new THREE.Mesh(new THREE.BoxGeometry(24.5, 0.3, 15.5), roofMat);
+    hospRoof.position.set(42, 7.15, -18);
+    hospitalGroup.add(hospRoof);
+    const wingRoof = new THREE.Mesh(new THREE.BoxGeometry(14.5, 0.3, 18.5), roofMat);
+    wingRoof.position.set(47, 7.15, -2);
+    hospitalGroup.add(wingRoof);
 
     scene.add(hospitalGroup);
 
-    // Community Mandir 3D Landmark (Western Edge)
+    // ─── Community Mandir (Western Edge) ──────────────────────────────────
+
     const mandirGroup = new THREE.Group();
     mandirGroup.name = 'mandir-landmark';
 
-    const mandirBase = new THREE.Mesh(
-      new THREE.BoxGeometry(9, 2.5, 9),
-      new THREE.MeshStandardMaterial({ color: 0x4a3a2a, roughness: 0.6 })
-    );
-    mandirBase.position.set(-46, 1.25, 18);
-    mandirBase.castShadow = true;
-    mandirGroup.add(mandirBase);
+    // Stepped plinth
+    const plinthMat = new THREE.MeshStandardMaterial({ color: 0xc8b898, roughness: 0.6 });
+    const plinth1 = new THREE.Mesh(new THREE.BoxGeometry(12, 0.4, 12), plinthMat);
+    plinth1.position.set(-46, 0.2, 18);
+    mandirGroup.add(plinth1);
+    const plinth2 = new THREE.Mesh(new THREE.BoxGeometry(10, 0.4, 10), plinthMat);
+    plinth2.position.set(-46, 0.6, 18);
+    mandirGroup.add(plinth2);
 
-    // Traditional Shikhara Pyramid Roof
+    // Main sanctum
+    const mandirWallMat = new THREE.MeshStandardMaterial({ color: 0xd8c8a8, roughness: 0.55 });
+    const sanctum = new THREE.Mesh(new THREE.BoxGeometry(8, 3.5, 8), mandirWallMat);
+    sanctum.position.set(-46, 2.55, 18);
+    sanctum.castShadow = true;
+    mandirGroup.add(sanctum);
+
+    // Mandapa columns (front)
+    const colMat = new THREE.MeshStandardMaterial({ color: 0xd4c4a4, roughness: 0.5 });
+    [-3, -1, 1, 3].forEach((cx) => {
+      const col = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 3.0, 8), colMat);
+      col.position.set(-46 + cx, 2.3, 22.2);
+      col.castShadow = true;
+      mandirGroup.add(col);
+    });
+
+    // Shikhara (curved tower instead of flat cone)
     const shikhara = new THREE.Mesh(
-      new THREE.ConeGeometry(5.0, 5.5, 4),
-      new THREE.MeshStandardMaterial({ color: 0xc58f58, roughness: 0.3, metalness: 0.7 })
+      new THREE.ConeGeometry(4.2, 6.0, 8),
+      new THREE.MeshStandardMaterial({ color: 0xc58f58, roughness: 0.3, metalness: 0.65 })
     );
-    shikhara.position.set(-46, 5.5, 18);
-    shikhara.rotation.y = Math.PI / 4;
+    shikhara.position.set(-46, 7.3, 18);
     shikhara.castShadow = true;
     mandirGroup.add(shikhara);
 
-    // Kalasha Gold Pinnacle
+    // Kalasha gold pinnacle
     const kalasha = new THREE.Mesh(
-      new THREE.SphereGeometry(0.5, 12, 12),
-      new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.2, metalness: 0.9 })
+      new THREE.SphereGeometry(0.4, 12, 12),
+      new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.15, metalness: 0.9 })
     );
-    kalasha.position.set(-46, 8.5, 18);
+    kalasha.position.set(-46, 10.5, 18);
     mandirGroup.add(kalasha);
+    // Kalasha neck
+    const neck = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.12, 0.25, 0.5, 8),
+      new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.15, metalness: 0.9 })
+    );
+    neck.position.set(-46, 10.05, 18);
+    mandirGroup.add(neck);
 
     scene.add(mandirGroup);
 
-    // 64 RESIDENTIAL PLOTS GENERATION (Blocks A to F)
+    // ─── 64 Residential Plots (Blocks A–F) ────────────────────────────────
+
     const plotMeshes: { [plotNumber: number]: THREE.Mesh } = {};
-    const plotMatAvailable = new THREE.MeshStandardMaterial({
-      color: 0x245447,
-      roughness: 0.5,
-      metalness: 0.2,
-      emissive: 0x102821,
-      emissiveIntensity: 0.2
+    const plotGrassBaseMat = new THREE.MeshStandardMaterial({
+      map: plotGrassTex,
+      color: 0x2a5447,
+      roughness: 0.85
     });
+    const plotBorderMat = new THREE.LineBasicMaterial({ color: 0xe0ab77, transparent: true, opacity: 0.5 });
+    const cornerStoneMat = new THREE.MeshStandardMaterial({ color: 0xf5f0e6, roughness: 0.75 });
+    const cornerStoneGeo = new THREE.BoxGeometry(0.25, 0.5, 0.25);
 
     allPlots.forEach((plot) => {
       const blockIndex = ['Block A', 'Block B', 'Block C', 'Block D', 'Block E', 'Block F'].indexOf(plot.block);
@@ -301,32 +559,28 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
         ? 15 + Math.floor(indexInBlock / 3) * 8.0
         : -15 - Math.floor((indexInBlock - 6) / 3) * 8.0;
 
-      const plotGeo = new THREE.BoxGeometry(width, 0.7, depth);
-      const plotMesh = new THREE.Mesh(plotGeo, plotMatAvailable.clone());
-      plotMesh.position.set(posX, 0.35, posZ);
-      plotMesh.castShadow = true;
+      // Flat ground-level plot (height 0.06 instead of 0.7)
+      const plotGeo = new THREE.BoxGeometry(width, 0.06, depth);
+      const plotMesh = new THREE.Mesh(plotGeo, plotGrassBaseMat.clone());
+      plotMesh.position.set(posX, 0.03, posZ);
       plotMesh.receiveShadow = true;
       plotMesh.userData = { plot };
 
-      // Perimeter Boundary Lines
+      // Subtle gold border
       const edges = new THREE.EdgesGeometry(plotGeo);
-      const line = new THREE.LineSegments(
-        edges,
-        new THREE.LineBasicMaterial({ color: 0xe0ab77, transparent: true, opacity: 0.4 })
-      );
+      const line = new THREE.LineSegments(edges, plotBorderMat.clone());
       plotMesh.add(line);
 
-      // Low Demarcation Corner Boundary Stones
-      const stoneGeo = new THREE.BoxGeometry(0.3, 0.9, 0.3);
-      const stoneMat = new THREE.MeshStandardMaterial({ color: 0xFAF8F5, roughness: 0.8 });
+      // Corner boundary stone posts (smaller, ground level)
       [
-        [-width / 2, 0.45, -depth / 2],
-        [width / 2, 0.45, -depth / 2],
-        [-width / 2, 0.45, depth / 2],
-        [width / 2, 0.45, depth / 2]
+        [-width / 2, 0.25, -depth / 2],
+        [width / 2, 0.25, -depth / 2],
+        [-width / 2, 0.25, depth / 2],
+        [width / 2, 0.25, depth / 2]
       ].forEach(([sx, sy, sz]) => {
-        const stone = new THREE.Mesh(stoneGeo, stoneMat);
+        const stone = new THREE.Mesh(cornerStoneGeo, cornerStoneMat);
         stone.position.set(sx, sy, sz);
+        stone.castShadow = true;
         plotMesh.add(stone);
       });
 
@@ -336,34 +590,97 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
 
     plotMeshesRef.current = plotMeshes;
 
-    // Landscaping: Avenue Trees along Highway and Buffers
-    const treeMat = new THREE.MeshStandardMaterial({ color: 0x1f483d, roughness: 0.9, flatShading: true });
-    const trunkMat = new THREE.MeshStandardMaterial({ color: 0x4a3221, roughness: 0.8 });
-    const createAvenueTree = (tx: number, tz: number) => {
-      const tree = new THREE.Group();
-      tree.position.set(tx, 0.1, tz);
+    // ─── Internal Roads (11ft lanes between blocks) ───────────────────────
 
-      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 1.5, 8), trunkMat);
+    const intRoadMat = new THREE.MeshStandardMaterial({ color: 0x3a3e40, roughness: 0.7 });
+    // North-south connector roads between blocks
+    for (let bi = 0; bi < 5; bi++) {
+      const rx = -44 + (bi + 1) * 15.5 - 7.75;
+      const road = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.08, 26), intRoadMat);
+      road.position.set(rx, 0.04, 18);
+      road.receiveShadow = true;
+      scene.add(road);
+    }
+
+    // ─── Landscaping ──────────────────────────────────────────────────────
+
+    const treeTrunkMat = new THREE.MeshStandardMaterial({ color: 0x5a3d28, roughness: 0.8 });
+
+    const createTree = (tx: number, tz: number, variant: 'round' | 'conifer' = 'round', s = 1.0) => {
+      const tree = new THREE.Group();
+      tree.position.set(tx, 0.05, tz);
+      tree.scale.set(s, s, s);
+
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.16, 1.5, 8), treeTrunkMat);
       trunk.position.set(0, 0.75, 0);
       trunk.castShadow = true;
       tree.add(trunk);
 
-      const foliage = new THREE.Mesh(new THREE.SphereGeometry(1.2, 8, 8), treeMat);
-      foliage.position.set(0, 2.0, 0);
-      foliage.castShadow = true;
-      tree.add(foliage);
+      if (variant === 'round') {
+        const foliageMat = new THREE.MeshStandardMaterial({ color: 0x1f5a3d, roughness: 0.85, flatShading: true });
+        const foliage = new THREE.Mesh(new THREE.SphereGeometry(1.3, 8, 8), foliageMat);
+        foliage.position.set(0, 2.1, 0);
+        foliage.castShadow = true;
+        tree.add(foliage);
+      } else {
+        const foliageMat = new THREE.MeshStandardMaterial({ color: 0x1e4a32, roughness: 0.85, flatShading: true });
+        const f1 = new THREE.Mesh(new THREE.ConeGeometry(1.2, 1.8, 7), foliageMat);
+        f1.position.set(0, 2.2, 0);
+        f1.castShadow = true;
+        tree.add(f1);
+        const f2 = new THREE.Mesh(new THREE.ConeGeometry(0.9, 1.4, 7), foliageMat);
+        f2.position.set(0, 3.0, 0);
+        tree.add(f2);
+      }
 
       scene.add(tree);
     };
 
-    for (let x = -50; x <= 50; x += 10) {
-      createAvenueTree(x, 6.0);
-      createAvenueTree(x, -6.0);
-      createAvenueTree(x, 37.0);
-      createAvenueTree(x, -37.0);
+    // Avenue trees along main road
+    for (let x = -55; x <= 55; x += 10) {
+      createTree(x, 6.5, 'round', 0.9);
+      createTree(x, -6.5, 'round', 0.9);
     }
 
-    // Mouse Raycasting & Orbit Handlers
+    // Trees along green buffers
+    for (let x = -50; x <= 50; x += 8) {
+      createTree(x, 37.5, 'conifer', 0.7);
+      createTree(x, -37.5, 'conifer', 0.7);
+    }
+
+    // Cluster trees near hospital and mandir
+    if (!isMobile) {
+      createTree(34, -22, 'round', 1.1);
+      createTree(55, -14, 'round', 1.0);
+      createTree(55, 6, 'conifer', 0.9);
+      createTree(-52, 12, 'round', 0.8);
+      createTree(-52, 24, 'conifer', 0.9);
+      createTree(-40, 25, 'round', 0.8);
+    }
+
+    // Hedge rows along buffer belts
+    if (!isMobile) {
+      const hedgeMat = new THREE.MeshStandardMaterial({ color: 0x1e4a32, roughness: 0.9 });
+      for (let hx = -55; hx <= 55; hx += 3) {
+        const hedge = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.5, 0.7), hedgeMat);
+        hedge.position.set(hx, 0.35, 33);
+        hedge.castShadow = true;
+        scene.add(hedge);
+      }
+    }
+
+    // ─── Contact Shadow under plots area ──────────────────────────────────
+
+    const contactShadow = new THREE.Mesh(
+      new THREE.PlaneGeometry(120, 80),
+      new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.08 })
+    );
+    contactShadow.rotation.x = -Math.PI / 2;
+    contactShadow.position.set(0, 0.01, 0);
+    scene.add(contactShadow);
+
+    // ─── Interaction Handlers ─────────────────────────────────────────────
+
     const handleMouseDown = (e: MouseEvent) => {
       orbitRef.current.isDragging = true;
       orbitRef.current.prevMouseX = e.clientX;
@@ -401,15 +718,30 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
         if (intersects.length > 0) {
           const hitPlot: PlotItem = intersects[0].object.userData.plot;
           if (hitPlot) {
+            // Reset previous selection
+            if (selectedPlotMeshRef.current) {
+              const mat = selectedPlotMeshRef.current.material as THREE.MeshStandardMaterial;
+              mat.emissive.setHex(0x000000);
+              mat.emissiveIntensity = 0;
+            }
+
+            // Highlight new selection
+            const hitMesh = intersects[0].object as THREE.Mesh;
+            const mat = hitMesh.material as THREE.MeshStandardMaterial;
+            mat.emissive.setHex(0xc58f58);
+            mat.emissiveIntensity = 0.4;
+            selectedPlotMeshRef.current = hitMesh;
+
             setSelectedPlotId(hitPlot.id);
             if (onSelectPlot) onSelectPlot(hitPlot);
 
+            // Smooth camera dolly to selected plot
             orbitRef.current.targetLookAt.set(
-              intersects[0].object.position.x,
+              hitMesh.position.x,
               0,
-              intersects[0].object.position.z
+              hitMesh.position.z
             );
-            orbitRef.current.targetRadius = 45;
+            orbitRef.current.targetRadius = 40;
           }
         }
       }
@@ -421,6 +753,45 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
         25,
         Math.min(115, orbitRef.current.targetRadius + e.deltaY * 0.04)
       );
+    };
+
+    // Touch support
+    let touchStartDist = 0;
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        orbitRef.current.isDragging = true;
+        orbitRef.current.prevMouseX = e.touches[0].clientX;
+        orbitRef.current.prevMouseY = e.touches[0].clientY;
+      } else if (e.touches.length === 2) {
+        touchStartDist = Math.hypot(
+          e.touches[1].clientX - e.touches[0].clientX,
+          e.touches[1].clientY - e.touches[0].clientY
+        );
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      if (e.touches.length === 1 && orbitRef.current.isDragging) {
+        const dx = e.touches[0].clientX - orbitRef.current.prevMouseX;
+        const dy = e.touches[0].clientY - orbitRef.current.prevMouseY;
+        orbitRef.current.prevMouseX = e.touches[0].clientX;
+        orbitRef.current.prevMouseY = e.touches[0].clientY;
+        orbitRef.current.targetTheta -= dx * 0.006;
+        orbitRef.current.targetPhi = Math.max(0.15, Math.min(Math.PI / 2 - 0.08, orbitRef.current.targetPhi - dy * 0.006));
+      } else if (e.touches.length === 2) {
+        const newDist = Math.hypot(
+          e.touches[1].clientX - e.touches[0].clientX,
+          e.touches[1].clientY - e.touches[0].clientY
+        );
+        const delta = touchStartDist - newDist;
+        orbitRef.current.targetRadius = Math.max(25, Math.min(115, orbitRef.current.targetRadius + delta * 0.08));
+        touchStartDist = newDist;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      orbitRef.current.isDragging = false;
     };
 
     const handleResize = () => {
@@ -436,13 +807,16 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
     canvas.addEventListener('wheel', handleWheel, { passive: false });
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: true });
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    canvas.addEventListener('touchend', handleTouchEnd);
     window.addEventListener('resize', handleResize);
 
     const animate = () => {
       animationFrameId.current = requestAnimationFrame(animate);
 
       if (!orbitRef.current.isDragging) {
-        orbitRef.current.targetTheta += 0.0008; // Ambient rotation
+        orbitRef.current.targetTheta += 0.0006;
       }
 
       updateCameraPosition();
@@ -458,9 +832,12 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
       canvas.removeEventListener('wheel', handleWheel);
+      canvas.removeEventListener('touchstart', handleTouchStart);
+      canvas.removeEventListener('touchmove', handleTouchMove);
+      canvas.removeEventListener('touchend', handleTouchEnd);
       window.removeEventListener('resize', handleResize);
 
-      scene.clear();
+      disposeScene(scene);
       renderer.dispose();
     };
   }, [updateCameraPosition, onSelectPlot]);
@@ -495,7 +872,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full rounded-3xl bg-[#071519] border border-[#14353E] shadow-2xl overflow-hidden ${
+      className={`relative w-full rounded-3xl bg-[#0B1E24] border border-[#14353E] shadow-2xl overflow-hidden ${
         isFullscreen ? 'fixed inset-0 z-50 rounded-none h-screen' : 'h-[620px] sm:h-[720px]'
       }`}
     >
@@ -505,7 +882,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       />
 
       {isLoading && (
-        <div className="absolute inset-0 bg-[#071519] flex items-center justify-center text-white">
+        <div className="absolute inset-0 bg-[#0B1E24] flex items-center justify-center text-white">
           <div className="flex items-center gap-3">
             <RefreshCw className="w-5 h-5 animate-spin text-[#C58F58]" />
             <span className="text-sm font-mono uppercase tracking-widest text-[#FAF8F5]">
@@ -603,7 +980,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
         ))}
       </div>
 
-      {/* Right Selected Plot Floating Card */}
+      {/* Right Selected Plot Card */}
       <div className="absolute right-4 top-20 max-w-xs w-full bg-[#0D2329]/95 backdrop-blur-xl border border-white/15 rounded-3xl p-5 text-white shadow-2xl z-20 space-y-4 pointer-events-auto">
         <div className="flex items-center justify-between pb-3 border-b border-white/10">
           <div>
@@ -614,9 +991,8 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
               {selectedPlot.plotNumber}
             </h4>
           </div>
-
           <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-            Phase 1 Allotment
+            Phase 1 Enquiry
           </span>
         </div>
 
@@ -683,7 +1059,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[11px] text-white/60 pointer-events-none z-10 px-2">
         <div className="flex items-center gap-2 bg-[#0D2329]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
           <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" />
-          <span>Click any 3D Plot Parcel to Select • Drag to Orbit • Scroll to Zoom</span>
+          <span>Click any Plot Parcel to Select • Drag to Orbit • Scroll to Zoom</span>
         </div>
 
         <div className="hidden md:flex items-center gap-4 bg-[#0D2329]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
