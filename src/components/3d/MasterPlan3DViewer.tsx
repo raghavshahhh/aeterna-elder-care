@@ -21,7 +21,8 @@ import {
   Heart,
   Eye,
   Activity,
-  ArrowRight
+  ArrowRight,
+  Home
 } from 'lucide-react';
 
 interface MasterPlan3DViewerProps {
@@ -158,7 +159,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
 
   const [selectedBlock, setSelectedBlock] = useState<string>('All');
   const [selectedPlotId, setSelectedPlotId] = useState<string>('plot-1');
-  const [viewPreset, setViewPreset] = useState<'isometric' | 'top' | 'hospital' | 'highway'>('isometric');
+  const [viewPreset, setViewPreset] = useState<'isometric' | 'top' | 'hospital' | 'highway' | 'residence'>('isometric');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -212,7 +213,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     const scene = new THREE.Scene();
     sceneRef.current = scene;
     scene.background = new THREE.Color(0x0b1e24);
-    scene.fog = new THREE.FogExp2(0x0b1e24, 0.006);
+    scene.fog = new THREE.FogExp2(0x0b1e24, 0.005);
 
     const width = container.clientWidth || 900;
     const height = container.clientHeight || 650;
@@ -230,15 +231,15 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.0;
+    renderer.toneMappingExposure = 1.05;
     rendererRef.current = renderer;
 
     // ─── Lighting ─────────────────────────────────────────────────────────
 
-    const hemiLight = new THREE.HemisphereLight(0xa8c4d0, 0x2a4a28, 0.8);
+    const hemiLight = new THREE.HemisphereLight(0xa8c4d0, 0x2a4a28, 0.85);
     scene.add(hemiLight);
 
-    const ambient = new THREE.AmbientLight(0xf5eedc, 0.5);
+    const ambient = new THREE.AmbientLight(0xf5eedc, 0.55);
     scene.add(ambient);
 
     const sun = new THREE.DirectionalLight(0xfff5e6, 2.2);
@@ -255,7 +256,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     sun.shadow.bias = -0.0003;
     scene.add(sun);
 
-    const skyFill = new THREE.DirectionalLight(0x7da494, 0.6);
+    const skyFill = new THREE.DirectionalLight(0x7da494, 0.65);
     skyFill.position.set(-45, 35, -45);
     scene.add(skyFill);
 
@@ -302,7 +303,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     createBoundaryWall(-62, 0, 0.5, 84);
     createBoundaryWall(62, 0, 0.5, 84);
 
-    // Gate pillars (main entrance)
+    // Gate pillars (main entrance from SH-22)
     const pillarMat = new THREE.MeshStandardMaterial({ color: 0xc8bea6, roughness: 0.55 });
     const bronzeMat = new THREE.MeshStandardMaterial({ color: 0xc58f58, roughness: 0.3, metalness: 0.7 });
     [-3, 3].forEach((gx) => {
@@ -314,6 +315,21 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       cap.position.set(gx, 2.86, -42);
       scene.add(cap);
     });
+
+    // Highway Entrance Signboard
+    const signPost1 = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 3.2, 8), bronzeMat);
+    signPost1.position.set(-4.5, 1.6, -40.5);
+    scene.add(signPost1);
+    const signPost2 = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 3.2, 8), bronzeMat);
+    signPost2.position.set(4.5, 1.6, -40.5);
+    scene.add(signPost2);
+
+    const signBoard = new THREE.Mesh(
+      new THREE.BoxGeometry(9.4, 1.2, 0.15),
+      new THREE.MeshStandardMaterial({ color: 0x071519, roughness: 0.3, metalness: 0.4 })
+    );
+    signBoard.position.set(0, 2.8, -40.5);
+    scene.add(signBoard);
 
     // ─── Green Buffer Belts ───────────────────────────────────────────────
 
@@ -370,25 +386,12 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       scene.add(curb);
     });
 
-    // Speed bumps near hospital
-    if (!isMobile) {
-      [35, 50].forEach((bx) => {
-        const bump = new THREE.Mesh(
-          new THREE.BoxGeometry(6, 0.08, 0.8),
-          new THREE.MeshStandardMaterial({ color: 0xccaa44, roughness: 0.6 })
-        );
-        bump.position.set(bx, 0.14, -1);
-        scene.add(bump);
-      });
-    }
-
-    // ─── Hospital with Architectural Detail ───────────────────────────────
+    // ─── Proposed 30,000 sq. ft. Hospital ─────────────────────────────────
 
     const hospitalGroup = new THREE.Group();
     hospitalGroup.name = 'hospital-landmark';
 
     const hospWallMat = new THREE.MeshStandardMaterial({ color: 0xd8d2c4, roughness: 0.65 });
-    const hospAccentMat = new THREE.MeshStandardMaterial({ color: 0x223d37, roughness: 0.55 });
 
     // Main block
     const hospMain = new THREE.Mesh(new THREE.BoxGeometry(24, 7.0, 15), hospWallMat);
@@ -437,7 +440,6 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     canopy.castShadow = true;
     hospitalGroup.add(canopy);
 
-    // Portico pillars
     const hospPillarMat = new THREE.MeshStandardMaterial({ color: 0xe0d8c8, roughness: 0.5 });
     [[-2.5, -2.5], [-2.5, 2.5], [2.5, -2.5], [2.5, 2.5]].forEach(([px, pz]) => {
       const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.3, 3.2, 8), hospPillarMat);
@@ -445,17 +447,6 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       pillar.castShadow = true;
       hospitalGroup.add(pillar);
     });
-
-    // Ambulance bay marking
-    if (!isMobile) {
-      const ambMark = new THREE.Mesh(
-        new THREE.PlaneGeometry(5, 3),
-        new THREE.MeshBasicMaterial({ color: 0xcc4444, opacity: 0.25, transparent: true })
-      );
-      ambMark.rotation.x = -Math.PI / 2;
-      ambMark.position.set(38, 0.12, -6.5);
-      hospitalGroup.add(ambMark);
-    }
 
     // Cross symbol
     const crossMat = new THREE.MeshStandardMaterial({ color: 0xc58f58, emissive: 0xc58f58, emissiveIntensity: 0.3 });
@@ -476,6 +467,49 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     hospitalGroup.add(wingRoof);
 
     scene.add(hospitalGroup);
+
+    // ─── G+2 + Stilt Senior Residence Building Massing ────────────────────
+
+    const resBuildingGroup = new THREE.Group();
+    resBuildingGroup.name = 'residence-building-massing';
+    resBuildingGroup.position.set(-22, 0, -22);
+
+    const bldWallMat = new THREE.MeshStandardMaterial({ color: 0xe5dfd3, roughness: 0.65 });
+    const bldAccentMat = new THREE.MeshStandardMaterial({ color: 0x24363d, roughness: 0.6 });
+
+    // Stilt parking base & columns
+    const stiltBase = new THREE.Mesh(new THREE.BoxGeometry(14, 0.3, 12), bldAccentMat);
+    stiltBase.position.set(0, 0.15, 0);
+    resBuildingGroup.add(stiltBase);
+
+    // Stilt support columns
+    [[-5.5, -4.5], [5.5, -4.5], [-5.5, 4.5], [5.5, 4.5], [0, 0]].forEach(([cx, cz]) => {
+      const col = new THREE.Mesh(new THREE.BoxGeometry(0.5, 2.2, 0.5), bldWallMat);
+      col.position.set(cx, 1.25, cz);
+      col.castShadow = true;
+      resBuildingGroup.add(col);
+    });
+
+    // 3 Residential Floors Massing (G+2)
+    const upperFloors = new THREE.Mesh(new THREE.BoxGeometry(14.2, 6.2, 12.2), bldWallMat);
+    upperFloors.position.set(0, 5.5, 0);
+    upperFloors.castShadow = true;
+    upperFloors.receiveShadow = true;
+    resBuildingGroup.add(upperFloors);
+
+    // Glazed window ribbons
+    for (let wy = 3.5; wy <= 7.5; wy += 2.0) {
+      const winFront = new THREE.Mesh(new THREE.PlaneGeometry(10, 0.9), hospGlassMat);
+      winFront.position.set(0, wy, 6.12);
+      resBuildingGroup.add(winFront);
+    }
+
+    // Lift overrun core
+    const liftCore = new THREE.Mesh(new THREE.BoxGeometry(3.5, 1.8, 3.5), bldAccentMat);
+    liftCore.position.set(0, 9.5, 0);
+    resBuildingGroup.add(liftCore);
+
+    scene.add(resBuildingGroup);
 
     // ─── Community Mandir (Western Edge) ──────────────────────────────────
 
@@ -507,7 +541,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       mandirGroup.add(col);
     });
 
-    // Shikhara (curved tower instead of flat cone)
+    // Shikhara (curved tower)
     const shikhara = new THREE.Mesh(
       new THREE.ConeGeometry(4.2, 6.0, 8),
       new THREE.MeshStandardMaterial({ color: 0xc58f58, roughness: 0.3, metalness: 0.65 })
@@ -523,7 +557,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     );
     kalasha.position.set(-46, 10.5, 18);
     mandirGroup.add(kalasha);
-    // Kalasha neck
+
     const neck = new THREE.Mesh(
       new THREE.CylinderGeometry(0.12, 0.25, 0.5, 8),
       new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.15, metalness: 0.9 })
@@ -571,7 +605,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       const line = new THREE.LineSegments(edges, plotBorderMat.clone());
       plotMesh.add(line);
 
-      // Corner boundary stone posts (smaller, ground level)
+      // Corner boundary stone posts
       [
         [-width / 2, 0.25, -depth / 2],
         [width / 2, 0.25, -depth / 2],
@@ -593,7 +627,6 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     // ─── Internal Roads (11ft lanes between blocks) ───────────────────────
 
     const intRoadMat = new THREE.MeshStandardMaterial({ color: 0x3a3e40, roughness: 0.7 });
-    // North-south connector roads between blocks
     for (let bi = 0; bi < 5; bi++) {
       const rx = -44 + (bi + 1) * 15.5 - 7.75;
       const road = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.08, 26), intRoadMat);
@@ -648,7 +681,6 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       createTree(x, -37.5, 'conifer', 0.7);
     }
 
-    // Cluster trees near hospital and mandir
     if (!isMobile) {
       createTree(34, -22, 'round', 1.1);
       createTree(55, -14, 'round', 1.0);
@@ -656,17 +688,6 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       createTree(-52, 12, 'round', 0.8);
       createTree(-52, 24, 'conifer', 0.9);
       createTree(-40, 25, 'round', 0.8);
-    }
-
-    // Hedge rows along buffer belts
-    if (!isMobile) {
-      const hedgeMat = new THREE.MeshStandardMaterial({ color: 0x1e4a32, roughness: 0.9 });
-      for (let hx = -55; hx <= 55; hx += 3) {
-        const hedge = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.5, 0.7), hedgeMat);
-        hedge.position.set(hx, 0.35, 33);
-        hedge.castShadow = true;
-        scene.add(hedge);
-      }
     }
 
     // ─── Contact Shadow under plots area ──────────────────────────────────
@@ -718,14 +739,12 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
         if (intersects.length > 0) {
           const hitPlot: PlotItem = intersects[0].object.userData.plot;
           if (hitPlot) {
-            // Reset previous selection
             if (selectedPlotMeshRef.current) {
               const mat = selectedPlotMeshRef.current.material as THREE.MeshStandardMaterial;
               mat.emissive.setHex(0x000000);
               mat.emissiveIntensity = 0;
             }
 
-            // Highlight new selection
             const hitMesh = intersects[0].object as THREE.Mesh;
             const mat = hitMesh.material as THREE.MeshStandardMaterial;
             mat.emissive.setHex(0xc58f58);
@@ -735,7 +754,6 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
             setSelectedPlotId(hitPlot.id);
             if (onSelectPlot) onSelectPlot(hitPlot);
 
-            // Smooth camera dolly to selected plot
             orbitRef.current.targetLookAt.set(
               hitMesh.position.x,
               0,
@@ -816,7 +834,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       animationFrameId.current = requestAnimationFrame(animate);
 
       if (!orbitRef.current.isDragging) {
-        orbitRef.current.targetTheta += 0.0006;
+        orbitRef.current.targetTheta += 0.0005;
       }
 
       updateCameraPosition();
@@ -842,7 +860,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     };
   }, [updateCameraPosition, onSelectPlot]);
 
-  const handlePresetView = (preset: 'isometric' | 'top' | 'hospital' | 'highway') => {
+  const handlePresetView = (preset: 'isometric' | 'top' | 'hospital' | 'highway' | 'residence') => {
     setViewPreset(preset);
     if (preset === 'isometric') {
       orbitRef.current.targetTheta = Math.PI / 4.2;
@@ -864,6 +882,11 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       orbitRef.current.targetPhi = Math.PI / 2.8;
       orbitRef.current.targetRadius = 55;
       orbitRef.current.targetLookAt.set(0, 1, 0);
+    } else if (preset === 'residence') {
+      orbitRef.current.targetTheta = Math.PI / 3;
+      orbitRef.current.targetPhi = Math.PI / 3.0;
+      orbitRef.current.targetRadius = 42;
+      orbitRef.current.targetLookAt.set(-22, 3, -22);
     }
   };
 
@@ -931,6 +954,14 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
               Hospital Zone
             </button>
             <button
+              onClick={() => handlePresetView('residence')}
+              className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                viewPreset === 'residence' ? 'bg-[#2C5E50] text-white' : 'text-white/70 hover:text-white'
+              }`}
+            >
+              Residence Building
+            </button>
+            <button
               onClick={() => handlePresetView('highway')}
               className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
                 viewPreset === 'highway' ? 'bg-[#2C5E50] text-white' : 'text-white/70 hover:text-white'
@@ -992,7 +1023,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
             </h4>
           </div>
           <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-            Phase 1 Enquiry
+            Phase 1 Priority
           </span>
         </div>
 
@@ -1065,6 +1096,9 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
         <div className="hidden md:flex items-center gap-4 bg-[#0D2329]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
           <span className="flex items-center gap-1.5 text-white/80">
             <Activity className="w-3.5 h-3.5 text-[#C58F58]" /> 30k Sq. Ft. Hospital
+          </span>
+          <span className="flex items-center gap-1.5 text-white/80">
+            <Home className="w-3.5 h-3.5 text-emerald-400" /> Residence Building
           </span>
           <span className="flex items-center gap-1.5 text-white/80">
             <Heart className="w-3.5 h-3.5 text-[#C58F58]" /> Community Mandir

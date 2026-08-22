@@ -6,6 +6,7 @@ import { locationLandmarks, projectOverview } from '@/data/propertyData';
 import { useModal } from '@/context/ModalContext';
 import { Button } from '@/components/ui/Button';
 import { RealityBadge } from '@/components/ui/RealityBadge';
+import { ProposedBadge } from '@/components/ui/ProposedBadge';
 import {
   MapPin,
   Car,
@@ -20,12 +21,13 @@ import {
   Building2,
   Navigation,
   Globe,
-  Layers
+  Layers,
+  Map as MapIcon
 } from 'lucide-react';
 
 export const LocationConnectivity: React.FC = () => {
   const { openLeadDrawer } = useModal();
-  const [mapTab, setMapTab] = useState<'corridor' | 'satellite' | 'boundary'>('corridor');
+  const [mapTab, setMapTab] = useState<'map' | 'corridor' | 'satellite' | 'boundary'>('map');
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
@@ -82,7 +84,7 @@ export const LocationConnectivity: React.FC = () => {
           </div>
         </div>
 
-        {/* Interactive Map / Satellite / Boundary Switcher Bar */}
+        {/* Interactive Map / Satellite / Corridor / Boundary Switcher */}
         <div className="bg-white rounded-3xl border border-[#E8E2D8] shadow-xl p-6 sm:p-8 space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-[#E8E2D8]">
             <div className="flex items-center gap-2">
@@ -93,6 +95,15 @@ export const LocationConnectivity: React.FC = () => {
             </div>
 
             <div className="inline-flex items-center bg-[#FAF8F5] p-1 rounded-2xl border border-[#E8E2D8] text-xs font-bold shadow-sm">
+              <button
+                onClick={() => setMapTab('map')}
+                className={`px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer ${
+                  mapTab === 'map' ? 'bg-[#2C5E50] text-white shadow-md' : 'text-[#53676E] hover:text-[#0D2329]'
+                }`}
+              >
+                <MapIcon className="w-3.5 h-3.5" />
+                Live Map
+              </button>
               <button
                 onClick={() => setMapTab('corridor')}
                 className={`px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer ${
@@ -123,7 +134,36 @@ export const LocationConnectivity: React.FC = () => {
             </div>
           </div>
 
-          {/* Map Content Display */}
+          {/* Map Tab: Interactive Google Map */}
+          {mapTab === 'map' && (
+            <div className="relative h-[420px] rounded-2xl overflow-hidden border border-[#E8E2D8] bg-[#0A1C22]">
+              <iframe
+                title="Project Location on Google Maps - Kheri Asra, Jhajjar"
+                src="https://maps.google.com/maps?q=Kheri%20Asra,%20Jhajjar,%20Haryana&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="100%"
+                className="border-0 w-full h-full"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+              <div className="absolute bottom-3 left-3 right-3 bg-[#0D2329]/90 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs pointer-events-auto">
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-[#C58F58] shrink-0" />
+                  <span>State Highway 22 (SH-22), Kheri Asra, Jhajjar, Haryana 124104</span>
+                </div>
+                <a
+                  href={projectOverview.googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-1.5 rounded-xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] font-bold text-[11px] flex items-center gap-1 transition-all shrink-0"
+                >
+                  Open in Google Maps App <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* Map Tab: Highway Corridor */}
           {mapTab === 'corridor' && (
             <div className="bg-[#071519] rounded-2xl p-6 sm:p-8 text-white relative overflow-hidden">
               <div className="max-w-3xl space-y-6">
@@ -187,6 +227,7 @@ export const LocationConnectivity: React.FC = () => {
             </div>
           )}
 
+          {/* Map Tab: Satellite Context */}
           {mapTab === 'satellite' && (
             <div className="relative h-[380px] rounded-2xl overflow-hidden border border-[#E8E2D8]">
               <Image
@@ -220,6 +261,7 @@ export const LocationConnectivity: React.FC = () => {
             </div>
           )}
 
+          {/* Map Tab: 11+ Acres Boundary & Layout Map */}
           {mapTab === 'boundary' && (
             <div className="p-6 sm:p-8 rounded-2xl bg-[#0D2329] text-white space-y-4">
               <div className="flex items-center justify-between">

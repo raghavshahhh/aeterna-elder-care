@@ -22,7 +22,9 @@ import {
   CheckCircle2,
   X,
   Plus,
-  RefreshCw
+  RefreshCw,
+  Trash2,
+  Lock
 } from 'lucide-react';
 
 export default function OwnerDocumentsPage() {
@@ -69,6 +71,20 @@ export default function OwnerDocumentsPage() {
     await fetch('/api/owner/logout', { method: 'POST' });
     router.push('/owner/login');
     router.refresh();
+  };
+
+  const handleDeleteDoc = async (id: string, title: string) => {
+    if (!confirm(`Are you sure you want to remove "${title}" from the Vault?`)) return;
+    try {
+      const res = await fetch(`/api/owner/documents?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) {
+        setDocuments((prev) => prev.filter((d) => d.id !== id));
+        if (selectedDoc?.id === id) setSelectedDoc(null);
+      }
+    } catch (err) {
+      console.error('Failed to delete document', err);
+    }
   };
 
   const handleUploadSubmit = async (e: React.FormEvent) => {
@@ -139,14 +155,14 @@ export default function OwnerDocumentsPage() {
     },
     {
       id: 'site_evidence',
-      label: 'Site Evidence & Drone',
+      label: 'Site Evidence',
       count: documents.filter((d) => d.category === 'site_evidence').length
     }
   ];
 
   return (
     <div className="min-h-screen bg-[#071519] text-white">
-      {/* Top Owner Header Bar */}
+      {/* Top Owner Header */}
       <header className="border-b border-white/10 bg-[#0D2329]/80 backdrop-blur-md sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -337,6 +353,14 @@ export default function OwnerDocumentsPage() {
                     >
                       <Download className="w-3.5 h-3.5" />
                     </button>
+
+                    <button
+                      onClick={() => handleDeleteDoc(doc.id, doc.title)}
+                      className="p-2.5 rounded-2xl bg-rose-500/10 hover:bg-rose-500/25 border border-rose-500/20 text-rose-300 transition-all cursor-pointer"
+                      title="Delete Document"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -484,8 +508,7 @@ export default function OwnerDocumentsPage() {
                     onChange={(e) => setUploadVersion(e.target.value)}
                     placeholder="v1.0"
                     className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/15 text-white text-xs focus:outline-none focus:border-[#C58F58]"
-                  >
-                  </input>
+                  />
                 </div>
               </div>
 

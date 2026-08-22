@@ -3,7 +3,7 @@ import { verifySessionToken } from '@/lib/auth';
 import { INITIAL_VAULT_DOCUMENTS } from '@/data/vaultDocuments';
 
 // In-memory runtime store for new uploads during session
-const runtimeDocuments = [...INITIAL_VAULT_DOCUMENTS];
+let runtimeDocuments = [...INITIAL_VAULT_DOCUMENTS];
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get('sl_owner_session')?.value;
@@ -39,5 +39,34 @@ export async function GET(request: NextRequest) {
     success: true,
     total: filtered.length,
     documents: filtered
+  });
+}
+
+export async function DELETE(request: NextRequest) {
+  const token = request.cookies.get('sl_owner_session')?.value;
+  const user = verifySessionToken(token);
+
+  if (!user) {
+    return NextResponse.json(
+      { error: 'Unauthorized. Owner authentication required for deletion.' },
+      { status: 401 }
+    );
+  }
+
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+
+  if (!id) {
+    return NextResponse.json(
+      { error: 'Document ID is required.' },
+      { status: 400 }
+    );
+  }
+
+  runtimeDocuments = runtimeDocuments.filter((d) => d.id !== id);
+
+  return NextResponse.json({
+    success: true,
+    message: 'Document successfully removed from Owner Vault.'
   });
 }
