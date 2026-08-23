@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  outputFileTracingIncludes: {
+    '/api/owner/documents/view': ['./private-assets/**', './public/project-assets/**']
+  },
   images: {
     remotePatterns: [
       {

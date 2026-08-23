@@ -245,14 +245,22 @@ export const FutureHomeJourney: React.FC = () => {
                 <div className="p-8 rounded-2xl bg-white/5 border border-white/10 text-center space-y-4">
                   <Image
                     src={projectOverview.images.masterPlanCad}
-                    alt="2D Master Plan CAD"
-                    width={800}
-                    height={450}
-                    className="rounded-xl mx-auto border border-white/10"
+                    alt="2D Master Plan CAD — Architectural Drawing Source Document"
+                    width={1000}
+                    height={700}
+                    className="rounded-xl mx-auto border border-white/10 object-contain bg-white"
                   />
                   <p className="text-xs text-white/70">
-                    Approved 2D CAD Layout Map by The Vision Architects showing 64 plots (Blocks A–F) and 30k sq. ft. hospital boundary.
+                    Architectural Drawing / Source Document by The Vision Architects showing 64 plots (Blocks A–F) and the proposed 30,000 sq. ft. hospital boundary.
                   </p>
+                  <a
+                    href={projectOverview.cadDownloads.masterplan}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C58F58] hover:text-white transition-colors"
+                  >
+                    Download Full Master Plan CAD (PDF) →
+                  </a>
                 </div>
               )}
 
@@ -289,17 +297,37 @@ export const FutureHomeJourney: React.FC = () => {
                   onToggle2DFallback={() => setViewMode2D(true)}
                 />
               ) : (
-                <div className="p-8 rounded-2xl bg-white/5 border border-white/10 text-center space-y-4">
-                  <Image
-                    src={projectOverview.images.buildingCadElevation}
-                    alt="2D CAD Building Elevation"
-                    width={800}
-                    height={450}
-                    className="rounded-xl mx-auto border border-white/10"
-                  />
+                <div className="p-8 rounded-2xl bg-white/5 border border-white/10 text-center space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Image
+                        src={projectOverview.images.stiltFloorCad}
+                        alt="Stilt Floor CAD — Parking Level Architectural Drawing"
+                        width={700}
+                        height={900}
+                        className="rounded-xl mx-auto border border-white/10 object-contain bg-white"
+                      />
+                      <p className="text-[11px] text-white/60">Stilt Floor — Parking Level</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Image
+                        src={projectOverview.images.buildingCadElevation}
+                        alt="Typical Floor CAD — Ground/First/Second Floor Architectural Drawing"
+                        width={700}
+                        height={900}
+                        className="rounded-xl mx-auto border border-white/10 object-contain bg-white"
+                      />
+                      <p className="text-[11px] text-white/60">Typical Floor — 3 Units (Ground / First / Second)</p>
+                    </div>
+                  </div>
                   <p className="text-xs text-white/70">
-                    2D Front Elevation CAD Drawing by The Vision Architects (Stilt + Ground + First + Second Floors).
+                    Architectural Drawing / Source Document by The Vision Architects — Stilt Parking + Ground + First + Second Floors.
                   </p>
+                  <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5">
+                    <a href={projectOverview.cadDownloads.groundFloor} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#C58F58] hover:text-white transition-colors">Ground Floor PDF →</a>
+                    <a href={projectOverview.cadDownloads.firstFloor} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#C58F58] hover:text-white transition-colors">First Floor PDF →</a>
+                    <a href={projectOverview.cadDownloads.secondFloor} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#C58F58] hover:text-white transition-colors">Second Floor PDF →</a>
+                  </div>
                 </div>
               )}
 

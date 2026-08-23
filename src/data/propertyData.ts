@@ -42,16 +42,26 @@ export const projectOverview = {
   siteOfficePhone: '+91 99999558447',
   salesWhatsApp: '+91 99999558447',
   inquiryEmail: 'Yoffices@gmail.com',
-  droneVideoUrl: '', // Ready for client drone video asset
-  heroPosterImage: '/images/indian-grandparents-hero.jpg',
+  droneVideoUrl: '/project-assets/real-site/drone/hero-loop.mp4',
+  fullDroneTourUrl: '/project-assets/real-site/drone/full-tour.mp4',
+  droneYoutubeUrl: 'https://youtu.be/jiEwQ6RA2HI',
+  heroPosterImage: '/project-assets/real-site/drone/poster.jpg',
   images: {
     droneOverview: '/images/indian-grandparents-hero.jpg',
-    masterPlanCad: '/images/indian-garden-walking.jpg',
-    buildingCadElevation: '/images/indian-about-care.jpg',
+    masterPlanCad: '/project-assets/architecture/cad/previews/masterplan-real.jpg',
+    buildingCadElevation: '/project-assets/architecture/cad/previews/typical-floor-cad.jpg',
+    stiltFloorCad: '/project-assets/architecture/cad/previews/stilt-floor-cad.jpg',
+    revenueMapCad: '/project-assets/architecture/cad/previews/kheri-asra-revenue-map.jpg',
     buildingCgiRenders: [
       '/images/indian-club-seniors.jpg',
       '/images/indian-hospital-care.jpg'
     ]
+  },
+  cadDownloads: {
+    masterplan: '/project-assets/architecture/cad/slcf-masterplan-site-layout.pdf',
+    groundFloor: '/project-assets/architecture/floor-plans/ground-floor-plan.pdf',
+    firstFloor: '/project-assets/architecture/floor-plans/first-floor-plan.pdf',
+    secondFloor: '/project-assets/architecture/floor-plans/second-floor-plan.pdf'
   },
   disclaimer: 'This website presents an upcoming pre-launch project. Architectural drawings, 3D renderings, indicative interiors, and planned amenities represent proposed designs by The Vision Architects and are subject to final municipal and statutory approvals.'
 };

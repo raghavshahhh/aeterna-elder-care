@@ -19,7 +19,8 @@ import {
   ArrowRight,
   Eye,
   Calendar,
-  MessageSquare
+  MessageSquare,
+  Video
 } from 'lucide-react';
 
 export const RealVsProposed: React.FC = () => {
@@ -49,14 +50,22 @@ export const RealVsProposed: React.FC = () => {
           {/* REAL SITE PHOTO */}
           <div className="relative rounded-3xl overflow-hidden min-h-[300px] sm:min-h-[380px] border border-[#E8E2D8] shadow-lg group">
             <img
-              src={projectOverview.images.droneOverview}
-              alt="Real Jhajjar Site Land"
+              src={projectOverview.heroPosterImage}
+              alt="Real Jhajjar Site Land — Drone Footage"
               className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
             <div className="absolute top-4 left-4 px-3.5 py-1.5 rounded-full bg-emerald-700 text-white text-xs font-mono font-bold uppercase tracking-wider shadow-md">
               Real Site Today (Kheri Asra)
             </div>
+            <a
+              href={projectOverview.droneYoutubeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute top-4 right-4 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/25 text-white text-[11px] font-bold uppercase tracking-wider hover:bg-black/80 transition-colors"
+            >
+              <Video className="w-3.5 h-3.5 text-[#C58F58]" /> Watch Drone Tour
+            </a>
             <div className="absolute bottom-5 left-5 right-5 text-white space-y-1">
               <h4 className="font-serif-heading text-xl font-bold text-[#FAF8F5]">
                 11+ Acres Demarcated Freehold Farmland

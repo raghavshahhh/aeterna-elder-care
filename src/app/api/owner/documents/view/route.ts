@@ -1,6 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { readFile } from 'fs/promises';
+import path from 'path';
 import { verifySessionToken } from '@/lib/auth';
 import { getVaultDocumentById } from '@/lib/vaultStore';
+
+// Only these project-root-relative directories may ever be read from disk.
+const ALLOWED_ROOTS = ['private-assets', 'public/project-assets'];
+
+function resolveSafeFilePath(filePath: string): string | null {
+  const resolved = path.resolve(process.cwd(), filePath);
+  const isAllowed = ALLOWED_ROOTS.some((root) =>
+    resolved.startsWith(path.resolve(process.cwd(), root) + path.sep)
+  );
+  return isAllowed ? resolved : null;
+}
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get('sl_owner_session')?.value;
@@ -32,8 +45,31 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // Create clean protected document representation
   const disposition = isDownload ? 'attachment' : 'inline';
+
+  // Serve the real source file when one has been archived on disk
+  if (doc.filePath) {
+    const safePath = resolveSafeFilePath(doc.filePath);
+    if (!safePath) {
+      return NextResponse.json({ error: 'Invalid document path.' }, { status: 400 });
+    }
+
+    try {
+      const fileBuffer = await readFile(safePath);
+      return new NextResponse(new Uint8Array(fileBuffer), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': `${disposition}; filename="${encodeURIComponent(doc.fileName)}"`,
+          'X-Content-Type-Options': 'nosniff',
+          'Cache-Control': 'private, no-store, max-age=0, must-revalidate',
+          'Pragma': 'no-cache'
+        }
+      });
+    } catch {
+      return NextResponse.json({ error: 'Source file could not be read from the vault.' }, { status: 500 });
+    }
+  }
 
   // Return a secure stream with anti-sniff headers
   const documentSummaryHtml = `<!DOCTYPE html>

@@ -121,6 +121,32 @@ export const FinancePaymentPlans: React.FC = () => {
           })}
         </div>
 
+        {/* EOI Reservation via UPI */}
+        <div className="mb-16 rounded-3xl bg-[#0D2329] border border-white/15 p-7 sm:p-9 grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-7 items-center">
+          <img
+            src="/project-assets/commercial/payment-plans/eoi-payment-qr.jpeg"
+            alt="Scan and Pay — Senior Living Citizens Foundation UPI QR (Collection Account ...0166)"
+            className="w-40 h-auto rounded-xl border border-white/15 mx-auto sm:mx-0"
+          />
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C58F58]/20 border border-[#C58F58]/40 text-[#E0AB77] text-[11px] font-bold uppercase tracking-widest">
+              Reserve with ₹1 Lakh EOI
+            </div>
+            <h4 className="text-xl font-serif-heading font-bold text-white">
+              Scan &amp; Pay via UPI — M/S. Senior Living Citizens Foundation
+            </h4>
+            <p className="text-xs text-white/70 leading-relaxed">
+              Official ICICI Bank collection account (ending ...0166). We strongly recommend confirming your unit/plot selection with our sales desk on WhatsApp before paying, so we can send you a signed receipt and hold your allotment.
+            </p>
+            <button
+              onClick={() => openWhatsApp({ actionType: 'request-pricing', message: 'Hello, I am ready to pay the ₹1 Lakh EOI to reserve a unit/plot at Senior Living Citizen Foundation. Please confirm the unit and send a payment receipt process.' })}
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#C58F58] hover:bg-[#B37E47] text-[#071519] text-xs font-bold transition-all"
+            >
+              <MessageSquare className="w-4 h-4" /> Confirm on WhatsApp Before Paying
+            </button>
+          </div>
+        </div>
+
         {/* Parking, Terrace Rights & Rental Proposition */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
           <div className="lg:col-span-5 bg-white rounded-3xl p-7 border border-[#E8E2D8] shadow-sm space-y-4">

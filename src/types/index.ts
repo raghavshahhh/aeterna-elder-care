@@ -277,6 +277,8 @@ export interface VaultDocument {
   visibility: 'owner_only' | 'authorized' | 'public';
   pageCount?: number;
   previewImageUrl?: string;
+  /** Path to the real source file inside private-assets/ (server-only, never exposed to client). */
+  filePath?: string;
 }
 
 export interface OwnerSession {
