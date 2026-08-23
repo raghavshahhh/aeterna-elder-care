@@ -2,12 +2,16 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useModal } from '@/context/ModalContext';
 import { projectOverview } from '@/data/propertyData';
 import { Phone, MapPin, MessageSquare, ShieldCheck, Heart, Sparkles } from 'lucide-react';
 
 export const TopNotificationBar: React.FC = () => {
+  const pathname = usePathname();
   const { openWhatsApp, openLeadDrawer } = useModal();
+
+  if (pathname?.startsWith('/owner')) return null;
 
   return (
     <aside aria-label="Announcement & Hotline Bar" className="bg-[#071519] text-[#FBF9F5] text-[11px] sm:text-xs py-2 px-4 border-b border-[#163942] relative z-40">

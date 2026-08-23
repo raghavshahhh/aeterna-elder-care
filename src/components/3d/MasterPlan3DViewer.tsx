@@ -171,6 +171,11 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
   const mouseRef = useRef<THREE.Vector2>(new THREE.Vector2());
   const animationFrameId = useRef<number | null>(null);
   const selectedPlotMeshRef = useRef<THREE.Mesh | null>(null);
+  const onSelectPlotRef = useRef(onSelectPlot);
+
+  useEffect(() => {
+    onSelectPlotRef.current = onSelectPlot;
+  }, [onSelectPlot]);
 
   const orbitRef = useRef({
     radius: 75,
@@ -752,7 +757,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
             selectedPlotMeshRef.current = hitMesh;
 
             setSelectedPlotId(hitPlot.id);
-            if (onSelectPlot) onSelectPlot(hitPlot);
+            if (onSelectPlotRef.current) onSelectPlotRef.current(hitPlot);
 
             orbitRef.current.targetLookAt.set(
               hitMesh.position.x,
@@ -858,7 +863,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       disposeScene(scene);
       renderer.dispose();
     };
-  }, [updateCameraPosition, onSelectPlot]);
+  }, [updateCameraPosition]);
 
   const handlePresetView = (preset: 'isometric' | 'top' | 'hospital' | 'highway' | 'residence') => {
     setViewPreset(preset);

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useToast } from '@/context/ToastContext';
 import { useModal } from '@/context/ModalContext';
 import { projectOverview, architectProfile } from '@/data/propertyData';
@@ -22,9 +23,12 @@ import {
 } from 'lucide-react';
 
 export const Footer: React.FC = () => {
+  const pathname = usePathname();
   const { showToast } = useToast();
   const { openWhatsApp, openLeadDrawer } = useModal();
   const [email, setEmail] = useState('');
+
+  if (pathname?.startsWith('/owner')) return null;
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();

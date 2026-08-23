@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifySessionToken } from '@/lib/auth';
-import { INITIAL_VAULT_DOCUMENTS } from '@/data/vaultDocuments';
-
-// In-memory runtime store for new uploads during session
-let runtimeDocuments = [...INITIAL_VAULT_DOCUMENTS];
+import { listVaultDocuments, deleteVaultDocument } from '@/lib/vaultStore';
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get('sl_owner_session')?.value;
@@ -18,27 +15,18 @@ export async function GET(request: NextRequest) {
 
   const { searchParams } = new URL(request.url);
   const category = searchParams.get('category');
-  const search = searchParams.get('search')?.toLowerCase();
+  const search = searchParams.get('search');
 
-  let filtered = [...runtimeDocuments];
+  // Input length guards
+  const cleanSearch = search && search.length < 200 ? search : null;
+  const cleanCategory = category && category.length < 50 ? category : null;
 
-  if (category && category !== 'all') {
-    filtered = filtered.filter((d) => d.category === category);
-  }
-
-  if (search) {
-    filtered = filtered.filter(
-      (d) =>
-        d.title.toLowerCase().includes(search) ||
-        d.description.toLowerCase().includes(search) ||
-        d.fileName.toLowerCase().includes(search)
-    );
-  }
+  const documents = listVaultDocuments(cleanCategory, cleanSearch);
 
   return NextResponse.json({
     success: true,
-    total: filtered.length,
-    documents: filtered
+    total: documents.length,
+    documents
   });
 }
 
@@ -46,9 +34,9 @@ export async function DELETE(request: NextRequest) {
   const token = request.cookies.get('sl_owner_session')?.value;
   const user = verifySessionToken(token);
 
-  if (!user) {
+  if (!user || user.role !== 'owner') {
     return NextResponse.json(
-      { error: 'Unauthorized. Owner authentication required for deletion.' },
+      { error: 'Unauthorized. Owner authorization required for deletion.' },
       { status: 401 }
     );
   }
@@ -56,14 +44,20 @@ export async function DELETE(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
 
-  if (!id) {
+  if (!id || typeof id !== 'string' || id.length > 100) {
     return NextResponse.json(
-      { error: 'Document ID is required.' },
+      { error: 'Valid Document ID is required.' },
       { status: 400 }
     );
   }
 
-  runtimeDocuments = runtimeDocuments.filter((d) => d.id !== id);
+  const deleted = deleteVaultDocument(id);
+  if (!deleted) {
+    return NextResponse.json(
+      { error: 'Document not found or already removed.' },
+      { status: 404 }
+    );
+  }
 
   return NextResponse.json({
     success: true,

@@ -6,14 +6,14 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { identifier, password } = body;
 
-    if (!identifier || !password) {
+    if (!identifier || typeof identifier !== 'string' || !password || typeof password !== 'string') {
       return NextResponse.json(
         { error: 'Owner ID/Email and Password are required.' },
         { status: 400 }
       );
     }
 
-    const user = validateOwnerCredentials(identifier, password);
+    const user = validateOwnerCredentials(identifier.trim(), password);
     if (!user) {
       return NextResponse.json(
         { error: 'Invalid Owner ID or Password. Access denied.' },
@@ -33,17 +33,17 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Set secure HTTP-only cookie
+    // Set secure HTTP-only cookie with 24-hour TTL
     response.cookies.set('sl_owner_session', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: 7 * 24 * 60 * 60 // 7 days
+      maxAge: 24 * 60 * 60 // 24 hours
     });
 
     return response;
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Server authentication failed.' },
       { status: 500 }

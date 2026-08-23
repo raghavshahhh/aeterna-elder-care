@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers';
+import crypto from 'crypto';
 
 const OWNER_SECRET = process.env.OWNER_VAULT_SECRET || 'slcf-jhajjar-secure-vault-token-2026';
 const OWNER_EMAIL = process.env.OWNER_EMAIL || 'owner@seniorliving.org';
@@ -15,10 +15,17 @@ export interface ServerSessionUser {
   role: 'owner' | 'authorized_viewer';
 }
 
+interface SessionPayload extends ServerSessionUser {
+  issuedAt: number;
+  expiresAt: number;
+  nonce: string;
+}
+
 /**
  * Validates credentials on the server
  */
 export function validateOwnerCredentials(identifier: string, pass: string): ServerSessionUser | null {
+  if (!identifier || !pass) return null;
   const cleanId = identifier.trim().toLowerCase();
   const validUser =
     cleanId === OWNER_EMAIL.toLowerCase() ||
@@ -38,26 +45,56 @@ export function validateOwnerCredentials(identifier: string, pass: string): Serv
 }
 
 /**
- * Encodes a simple secure session token
+ * Encodes a tamper-proof HMAC-SHA256 signed session token
  */
 export function createSessionToken(user: ServerSessionUser): string {
-  const payload = {
+  const payload: SessionPayload = {
     ...user,
     issuedAt: Date.now(),
-    expiresAt: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
+    expiresAt: Date.now() + 24 * 60 * 60 * 1000, // strictly 24 hours TTL
+    nonce: crypto.randomBytes(16).toString('hex')
   };
-  return Buffer.from(JSON.stringify(payload)).toString('base64');
+  const payloadBase64 = Buffer.from(JSON.stringify(payload)).toString('base64url');
+  const signature = crypto
+    .createHmac('sha256', OWNER_SECRET)
+    .update(payloadBase64)
+    .digest('base64url');
+  return `${payloadBase64}.${signature}`;
 }
 
 /**
- * Validates a session token string
+ * Validates an HMAC-SHA256 signed session token with constant-time comparison
  */
 export function verifySessionToken(token: string | undefined): ServerSessionUser | null {
-  if (!token) return null;
+  if (!token || typeof token !== 'string') return null;
+  const parts = token.split('.');
+  if (parts.length !== 2) return null;
+
+  const [payloadBase64, signature] = parts;
+  if (!payloadBase64 || !signature) return null;
+
   try {
-    const raw = Buffer.from(token, 'base64').toString('utf-8');
-    const data = JSON.parse(raw);
-    if (data && data.expiresAt && data.expiresAt > Date.now() && data.ownerId) {
+    const expectedSignature = crypto
+      .createHmac('sha256', OWNER_SECRET)
+      .update(payloadBase64)
+      .digest('base64url');
+
+    const sigBuf = Buffer.from(signature);
+    const expBuf = Buffer.from(expectedSignature);
+    if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
+      return null;
+    }
+
+    const raw = Buffer.from(payloadBase64, 'base64url').toString('utf-8');
+    const data = JSON.parse(raw) as SessionPayload;
+
+    if (
+      data &&
+      typeof data.expiresAt === 'number' &&
+      data.expiresAt > Date.now() &&
+      data.ownerId &&
+      (data.role === 'owner' || data.role === 'authorized_viewer')
+    ) {
       return {
         ownerId: data.ownerId,
         email: data.email,

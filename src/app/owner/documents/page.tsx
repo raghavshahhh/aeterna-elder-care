@@ -24,7 +24,8 @@ import {
   Plus,
   RefreshCw,
   Trash2,
-  Lock
+  Lock,
+  ExternalLink
 } from 'lucide-react';
 
 export default function OwnerDocumentsPage() {
@@ -85,6 +86,14 @@ export default function OwnerDocumentsPage() {
     } catch (err) {
       console.error('Failed to delete document', err);
     }
+  };
+
+  const handleDownloadDoc = (doc: VaultDocument) => {
+    window.open(`/api/owner/documents/view?id=${encodeURIComponent(doc.id)}&download=true`, '_blank');
+  };
+
+  const handleInspectDoc = (doc: VaultDocument) => {
+    setSelectedDoc(doc);
   };
 
   const handleUploadSubmit = async (e: React.FormEvent) => {
@@ -339,17 +348,17 @@ export default function OwnerDocumentsPage() {
 
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => setSelectedDoc(doc)}
+                      onClick={() => handleInspectDoc(doc)}
                       className="flex-1 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <Eye className="w-3.5 h-3.5 text-[#C58F58]" />
-                      Inspect PDF
+                      Inspect Record
                     </button>
 
                     <button
-                      onClick={() => alert(`Initiating secure download of ${doc.fileName}...`)}
+                      onClick={() => handleDownloadDoc(doc)}
                       className="p-2.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-all cursor-pointer"
-                      title="Download PDF"
+                      title="Download Verified PDF Record"
                     >
                       <Download className="w-3.5 h-3.5" />
                     </button>
@@ -401,39 +410,48 @@ export default function OwnerDocumentsPage() {
               </button>
             </div>
 
-            {/* Document Viewer Frame Simulation */}
-            <div className="p-8 rounded-2xl bg-[#071519] border border-white/10 text-center space-y-4">
-              <div className="max-w-md mx-auto space-y-2">
-                <div className="w-16 h-16 rounded-3xl bg-[#2C5E50]/30 border border-emerald-400/30 text-emerald-400 flex items-center justify-center mx-auto">
-                  <ShieldCheck className="w-8 h-8" />
+            {/* In-App Protected Document Preview Stream */}
+            <div className="rounded-2xl border border-white/10 overflow-hidden bg-[#071519]">
+              <div className="p-4 bg-[#0A1C22] border-b border-white/10 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <span className="font-mono text-white/80">{selectedDoc.fileName}</span>
                 </div>
-                <h4 className="text-lg font-serif-heading font-bold text-white">
-                  {selectedDoc.fileName}
-                </h4>
-                <p className="text-xs text-white/70 leading-relaxed font-light">
-                  {selectedDoc.description}
-                </p>
-                <div className="pt-2 text-[11px] text-white/50 font-mono space-y-1">
-                  <p>Archived by: {selectedDoc.uploadedBy} on {selectedDoc.uploadedAt}</p>
-                  <p>File Size: {selectedDoc.fileSize} • {selectedDoc.pageCount} Pages • Format: PDF (Signed)</p>
-                </div>
+                <span className="text-[10px] font-mono text-[#C58F58] uppercase">
+                  Authenticated Stream
+                </span>
               </div>
 
-              <div className="pt-4 flex items-center justify-center gap-3">
-                <button
-                  onClick={() => alert(`Opening secure high-resolution viewer for ${selectedDoc.fileName}...`)}
-                  className="px-5 py-3 rounded-2xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-all shadow-lg flex items-center gap-2 cursor-pointer"
-                >
-                  <Eye className="w-4 h-4 text-[#C58F58]" />
-                  Open Fullscreen PDF Viewer
-                </button>
-                <button
-                  onClick={() => alert(`Downloading verified copy of ${selectedDoc.fileName}...`)}
-                  className="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-white text-xs font-bold transition-all flex items-center gap-2 cursor-pointer"
-                >
-                  <Download className="w-4 h-4" />
-                  Download Archive Copy
-                </button>
+              <div className="p-6 sm:p-8 space-y-4">
+                <div className="max-w-xl mx-auto text-center space-y-2">
+                  <h4 className="text-lg font-serif-heading font-bold text-white">
+                    {selectedDoc.title}
+                  </h4>
+                  <p className="text-xs text-white/70 leading-relaxed font-light">
+                    {selectedDoc.description}
+                  </p>
+                  <div className="pt-2 text-[11px] text-white/50 font-mono space-y-1">
+                    <p>Archived by: {selectedDoc.uploadedBy} on {selectedDoc.uploadedAt}</p>
+                    <p>File Size: {selectedDoc.fileSize} • {selectedDoc.pageCount} Pages • Security: {selectedDoc.visibility.toUpperCase()}</p>
+                  </div>
+                </div>
+
+                <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <button
+                    onClick={() => window.open(`/api/owner/documents/view?id=${encodeURIComponent(selectedDoc.id)}`, '_blank')}
+                    className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Eye className="w-4 h-4 text-[#C58F58]" />
+                    Open Dedicated Tab Viewer
+                  </button>
+                  <button
+                    onClick={() => handleDownloadDoc(selectedDoc)}
+                    className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download Archive Copy
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -472,6 +490,7 @@ export default function OwnerDocumentsPage() {
                 <input
                   type="text"
                   required
+                  maxLength={150}
                   value={uploadTitle}
                   onChange={(e) => setUploadTitle(e.target.value)}
                   placeholder="e.g. Phase 1 Electrical Grid Blueprint"
@@ -504,6 +523,7 @@ export default function OwnerDocumentsPage() {
                   </label>
                   <input
                     type="text"
+                    maxLength={10}
                     value={uploadVersion}
                     onChange={(e) => setUploadVersion(e.target.value)}
                     placeholder="v1.0"
@@ -518,6 +538,7 @@ export default function OwnerDocumentsPage() {
                 </label>
                 <textarea
                   required
+                  maxLength={1000}
                   rows={3}
                   value={uploadDescription}
                   onChange={(e) => setUploadDescription(e.target.value)}
@@ -532,6 +553,7 @@ export default function OwnerDocumentsPage() {
                 </label>
                 <input
                   type="file"
+                  accept=".pdf,.png,.jpg,.jpeg,.dwg"
                   className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/15 text-white/80 text-xs file:mr-4 file:py-1 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#2C5E50] file:text-white"
                 />
               </div>

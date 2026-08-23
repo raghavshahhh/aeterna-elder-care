@@ -62,6 +62,8 @@ export const Navbar: React.FC = () => {
     setOpenDropdown((prev) => (prev === name ? null : name));
   };
 
+  if (pathname?.startsWith('/owner')) return null;
+
   return (
     <header className="sticky top-0 z-50 w-full px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 transition-all duration-300">
       {/* Floating Rounded Capsule Navbar Container */}

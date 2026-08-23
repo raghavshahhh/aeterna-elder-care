@@ -2,46 +2,50 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Heart, ArrowRight, Search, PhoneCall } from 'lucide-react';
+import { projectOverview } from '@/data/propertyData';
+import { Heart, ArrowRight, MapPin, PhoneCall, Compass } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <div className="min-h-[70vh] flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-[70vh] flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 bg-[#FAF8F5]">
       <div className="max-w-xl w-full text-center space-y-8 bg-white rounded-3xl p-8 sm:p-12 border border-[#E8E2D8] shadow-xl">
-        <div className="w-16 h-16 rounded-3xl bg-[#EAF2EE] text-[#3D685A] flex items-center justify-center mx-auto">
+        <div className="w-16 h-16 rounded-3xl bg-[#EAF2EE] text-[#2C5E50] flex items-center justify-center mx-auto shadow-inner">
           <Heart className="w-8 h-8 fill-[#C58F58] text-[#C58F58]" />
         </div>
 
         <div className="space-y-2">
           <Badge variant="gold" size="md">
-            404 Page Not Found
+            404 • Page Not Found
           </Badge>
           <h1 className="text-3xl sm:text-4xl font-serif-heading font-bold text-[#0D2329]">
-            Looking for Elder Care Support?
+            Looking for Senior Living Foundation?
           </h1>
-          <p className="text-sm text-[#5C6F75] font-light leading-relaxed">
-            The page you are looking for may have been moved or updated. Let us help you find the right clinical service or care plan.
+          <p className="text-sm text-[#53676E] font-light leading-relaxed">
+            The page you are looking for may have moved. Explore our 64 freehold plots, barrier-free residential apartments, or verified project documentation.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
           <Link href="/">
             <Button variant="primary" size="md" className="w-full">
-              Back to Homepage
+              Back to Master Overview
             </Button>
           </Link>
-          <Link href="/services">
+          <Link href="/plots">
             <Button variant="outline" size="md" className="w-full">
-              Explore All Services
+              64-Plot Master Plan
             </Button>
           </Link>
         </div>
 
-        <div className="pt-6 border-t border-[#E8E2D8] text-xs text-[#5C6F75] flex items-center justify-center gap-2">
-          <span>Need immediate assistance?</span>
-          <a href="tel:+911140849900" className="font-bold text-[#0D2329] hover:underline flex items-center gap-1">
-            <PhoneCall className="w-3.5 h-3.5 text-red-600" />
-            <span>+91 11 4084 9900</span>
+        <div className="pt-6 border-t border-[#E8E2D8] text-xs text-[#53676E] flex items-center justify-center gap-2">
+          <span>Direct Foundation Desk:</span>
+          <a
+            href={`tel:${projectOverview.siteOfficePhone.replace(/\s+/g, '')}`}
+            className="font-bold text-[#0D2329] hover:underline flex items-center gap-1"
+          >
+            <PhoneCall className="w-3.5 h-3.5 text-[#C58F58]" />
+            <span>{projectOverview.siteOfficePhone}</span>
           </a>
         </div>
       </div>

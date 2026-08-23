@@ -1,11 +1,15 @@
 'use client';
 
 import React from 'react';
+import { usePathname } from 'next/navigation';
 import { useModal } from '@/context/ModalContext';
 import { MessageSquare, Calendar } from 'lucide-react';
 
 export const QuickContactBar: React.FC = () => {
+  const pathname = usePathname();
   const { openWhatsApp, openLeadDrawer } = useModal();
+
+  if (pathname?.startsWith('/owner')) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-40 flex items-center gap-3 pointer-events-auto">
