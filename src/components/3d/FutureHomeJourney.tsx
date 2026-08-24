@@ -457,6 +457,7 @@ export const FutureHomeJourney: React.FC = () => {
                     <p className="text-xs text-white/80">
                       Single-floor layout with 32mm stainless grab bars, zero-threshold bath, and gradual risers.
                     </p>
+                    <p className="text-[10px] text-white/50 italic">Unit configuration subject to final architectural allocation.</p>
                   </div>
                 </div>
 

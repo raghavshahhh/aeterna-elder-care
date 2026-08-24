@@ -10,8 +10,8 @@ interface ProposedBadgeProps {
 }
 
 export const ProposedBadge: React.FC<ProposedBadgeProps> = ({
-  label = 'PROPOSED DEVELOPMENT',
-  sublabel = 'CAD-DERIVED SPATIAL VISUALIZATION • ARTIST IMPRESSION',
+  label = 'PROPOSED / INDICATIVE ARTIST IMPRESSION',
+  sublabel = 'CAD-DERIVED SPATIAL VISUALIZATION',
   className = ''
 }) => {
   return (

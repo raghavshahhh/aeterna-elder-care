@@ -89,6 +89,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                 <h3 className="text-2xl sm:text-3xl font-serif-heading font-bold text-[#0D2329] mt-0.5">
                   {activeUnit.unitNumber}
                 </h3>
+                <p className="text-[10px] text-[#53676E]/80 italic mt-0.5">Unit configuration subject to final architectural allocation.</p>
               </div>
 
               {/* View Switcher Tabs */}
@@ -184,7 +185,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                 </div>
 
                 <div className="text-[10px] text-[#899B9F] italic text-right">
-                  *Artist impression &amp; indicative interior visualization. Final turnkey fittings as per approved specification.
+                  *Artist impression &amp; indicative interior visualization. Unit configuration subject to final architectural allocation. Final turnkey fittings as per approved specification.
                 </div>
               </div>
             )}

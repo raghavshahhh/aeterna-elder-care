@@ -83,6 +83,7 @@ Please share the pre-launch pricing, payment milestones, and floor plan.`
                       {unit.floorName.toUpperCase()}
                     </span>
                     <span className="text-xs text-[#53676E]">• {unit.typeName}</span>
+                  <span className="text-[9px] text-[#53676E]/70 italic">(subject to final architectural allocation)</span>
                   </div>
                   <h3 className="text-2xl font-serif-heading font-bold text-[#0D2329] mt-0.5">
                     {unit.unitNumber}

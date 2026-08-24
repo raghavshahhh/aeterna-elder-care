@@ -1335,6 +1335,9 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
             <p className="text-xs text-white/75 font-light leading-relaxed">
               ~{selectedUnit.superAreaSqFt} sq. ft. super area (~{selectedUnit.carpetAreaSqFt} sq. ft. carpet). {selectedUnit.facing}. Single-floor barrier-free layout.
             </p>
+            <p className="text-[10px] text-[#C58F58]/90 font-mono italic">
+              *Unit configuration subject to final architectural allocation.
+            </p>
           </div>
 
           <div className="pt-2 flex flex-col gap-2">
