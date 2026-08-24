@@ -506,12 +506,55 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     mandirGroup.add(kalasha);
     scene.add(mandirGroup);
 
-    // ─── 7. Proposed 9-Unit G+2 Residential Building Massing ────────────────
-    const residenceBlock = new THREE.Mesh(new THREE.BoxGeometry(16, 9.5, 12), buildingWallMat);
-    residenceBlock.position.set(-32, 4.75, -16);
-    residenceBlock.castShadow = true;
-    residenceBlock.receiveShadow = true;
-    scene.add(residenceBlock);
+    // ─── 7. Proposed 9-Unit G+2 Residential Building (Plots 63 & 64) ────────
+    const residenceGroup = new THREE.Group();
+    residenceGroup.name = 'proposed-residence-building';
+    residenceGroup.position.set(31.5, 0, -22); // Sited on Plots 63 & 64
+
+    // Stilt Level with open column bays
+    const stiltSlab = new THREE.Mesh(new THREE.BoxGeometry(14, 0.25, 10), buildingWallMat);
+    stiltSlab.position.set(0, 1.8, 0);
+    residenceGroup.add(stiltSlab);
+
+    [-5.5, 0, 5.5].forEach((cx) => {
+      [-3.8, 3.8].forEach((cz) => {
+        const col = new THREE.Mesh(new THREE.BoxGeometry(0.35, 1.8, 0.35), buildingWallMat);
+        col.position.set(cx, 0.9, cz);
+        col.castShadow = true;
+        residenceGroup.add(col);
+      });
+    });
+
+    // Ground Floor (Units 01-03)
+    const gf = new THREE.Mesh(new THREE.BoxGeometry(13.6, 1.6, 9.4), buildingWallMat);
+    gf.position.set(0, 2.7, 0);
+    gf.castShadow = true;
+    residenceGroup.add(gf);
+
+    // First Floor (Units 04-06)
+    const ff = new THREE.Mesh(new THREE.BoxGeometry(13.6, 1.6, 9.4), buildingWallMat);
+    ff.position.set(0, 4.3, 0);
+    ff.castShadow = true;
+    residenceGroup.add(ff);
+
+    // Second Floor (Units 07-09)
+    const sf = new THREE.Mesh(new THREE.BoxGeometry(13.6, 1.6, 9.4), buildingWallMat);
+    sf.position.set(0, 5.9, 0);
+    sf.castShadow = true;
+    residenceGroup.add(sf);
+
+    // Roof Parapet & Lift Headroom
+    const rf = new THREE.Mesh(new THREE.BoxGeometry(14, 0.3, 9.8), buildingWallMat);
+    rf.position.set(0, 6.85, 0);
+    rf.castShadow = true;
+    residenceGroup.add(rf);
+
+    const liftCore = new THREE.Mesh(new THREE.BoxGeometry(3.2, 1.2, 2.8), bronzeAccentMat);
+    liftCore.position.set(0, 7.6, -2.5);
+    liftCore.castShadow = true;
+    residenceGroup.add(liftCore);
+
+    scene.add(residenceGroup);
 
     // ─── 8. 64 Freehold Residential Plots (Blocks A to F) ───────────────────
     const plotMeshes: { [plotNumber: number]: THREE.Mesh } = {};
@@ -779,10 +822,10 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       orbitRef.current.targetRadius = 55;
       orbitRef.current.targetLookAt.set(0, 2, 32);
     } else if (preset === 'residence') {
-      orbitRef.current.targetTheta = Math.PI / 4;
+      orbitRef.current.targetTheta = -Math.PI / 3.5;
       orbitRef.current.targetPhi = Math.PI / 3.2;
       orbitRef.current.targetRadius = 40;
-      orbitRef.current.targetLookAt.set(-32, 4, -16);
+      orbitRef.current.targetLookAt.set(31.5, 4, -22);
     }
   };
 
