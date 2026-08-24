@@ -64,13 +64,22 @@ export default function OwnerLoginPage() {
 
       {/* Top Brand Bar */}
       <div className="max-w-md mx-auto w-full flex items-center justify-between pb-8">
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-xl bg-[#2C5E50] text-white flex items-center justify-center font-serif font-bold text-sm">
-            S
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-9 h-9 rounded-xl bg-white/95 border border-white/20 p-1 flex items-center justify-center shadow-md">
+            <img
+              src="/project-assets/brand/logo-icon.png"
+              alt="Senior Living Citizen Foundation"
+              className="w-full h-full object-contain"
+            />
           </div>
-          <span className="text-sm font-serif-heading font-bold text-[#FAF8F5] group-hover:text-[#C58F58] transition-colors">
-            Senior Living Citizen Foundation
-          </span>
+          <div>
+            <span className="text-sm font-serif-heading font-bold text-[#FAF8F5] group-hover:text-[#C58F58] transition-colors block leading-tight">
+              Senior Living Citizen Foundation
+            </span>
+            <span className="text-[9px] uppercase font-mono tracking-widest text-[#C58F58] font-bold block">
+              Haryana · Owner Portal
+            </span>
+          </div>
         </Link>
 
         <Link

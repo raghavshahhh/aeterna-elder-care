@@ -188,12 +188,16 @@ export default function OwnerDocumentsPage() {
       <header className="border-b border-white/10 bg-[#0D2329]/80 backdrop-blur-md sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-9 h-9 rounded-2xl bg-[#2C5E50] text-white flex items-center justify-center font-serif font-bold text-base shadow-md">
-                S
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="w-10 h-10 rounded-2xl bg-white/95 border border-white/20 p-1 flex items-center justify-center shadow-md">
+                <img
+                  src="/project-assets/brand/logo-icon.png"
+                  alt="Senior Living Citizen Foundation"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
-                <span className="text-xs font-mono uppercase text-[#C58F58] font-bold tracking-widest block">
+                <span className="text-[10px] font-mono uppercase text-[#C58F58] font-bold tracking-widest block">
                   PROJECT RECORD REPOSITORY
                 </span>
                 <h1 className="text-sm sm:text-base font-serif-heading font-bold text-[#FAF8F5]">

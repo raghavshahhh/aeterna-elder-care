@@ -19,7 +19,7 @@ export default function PlotsPage() {
             Find <span className="italic font-serif text-[#C58F58]">Your</span> Plot.
           </h1>
           <p className="text-sm sm:text-base text-white/80 max-w-2xl mx-auto leading-relaxed">
-            64 residential freehold plots across 6 blocks (Blocks A to F) — from compact 120 sq. yd. homes to generous 425 sq. yd. corner plots. Updated in real time.
+            64 residential freehold plots across 6 blocks (Blocks A to F) — from compact 120 sq. yd. homes to generous 425 sq. yd. corner plots. Phase 1 priority allotment and site visit booking open.
           </p>
         </div>
       </section>

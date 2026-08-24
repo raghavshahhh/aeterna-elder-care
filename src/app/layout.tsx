@@ -17,6 +17,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://seniorlivingcitizensfoundation.com'),
   title: {
     default: 'Senior Living Citizen Foundation — Plotted Sanctuary & Ayurvedic Hospital · Haryana',
     template: '%s | Senior Living Citizen Foundation'
@@ -37,10 +38,25 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    url: 'https://seniorlivingcitizensfoundation.com',
-    title: 'Senior Living Citizen Foundation — A Home for the Second Half of Life',
-    description: '64 residential plots with on-site Ayurvedic Hospital and Mandir near Reliance MET City, SH-22 Jhajjar, Haryana.',
-    siteName: 'Senior Living Citizen Foundation'
+    siteName: 'Senior Living Citizen Foundation',
+    images: [
+      {
+        url: '/project-assets/brand/logo-full-trimmed.png',
+        width: 1200,
+        height: 630,
+        alt: 'Senior Living Citizen Foundation'
+      }
+    ]
+  },
+  icons: {
+    icon: [
+      { url: '/project-assets/brand/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/project-assets/brand/favicon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/project-assets/brand/favicon-512.png', sizes: '512x512', type: 'image/png' }
+    ],
+    apple: [
+      { url: '/project-assets/brand/favicon-192.png', sizes: '192x192', type: 'image/png' }
+    ]
   }
 };
 
