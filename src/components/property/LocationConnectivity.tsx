@@ -176,38 +176,37 @@ export const LocationConnectivity: React.FC = () => {
                   </h3>
                 </div>
 
-                {/* Corridor Flow Stepper */}
+                {/* Corridor Flow Stepper — named waypoints only, no invented distances/times */}
                 <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 pt-2">
                   <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-center space-y-1">
                     <span className="text-[10px] text-white/50 block font-mono">START</span>
                     <strong className="text-sm text-[#FAF8F5] block">Delhi / IGI</strong>
-                    <span className="text-[10px] text-white/60">~45 km</span>
                   </div>
 
                   <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-center space-y-1">
                     <span className="text-[10px] text-white/50 block font-mono">VIA</span>
                     <strong className="text-sm text-[#FAF8F5] block">Gurugram / Sec-45</strong>
-                    <span className="text-[10px] text-white/60">~35 km</span>
                   </div>
 
                   <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-center space-y-1">
                     <span className="text-[10px] text-white/50 block font-mono">VIA</span>
                     <strong className="text-sm text-[#FAF8F5] block">Farrukhnagar</strong>
-                    <span className="text-[10px] text-white/60">~18 km</span>
                   </div>
 
                   <div className="p-3 rounded-2xl bg-[#C58F58]/20 border border-[#C58F58]/40 text-center space-y-1">
                     <span className="text-[10px] text-[#C58F58] block font-mono font-bold">NEARBY HUB</span>
                     <strong className="text-sm text-[#FAF8F5] block">Reliance MET City</strong>
-                    <span className="text-[10px] text-[#C58F58]">~8 km</span>
                   </div>
 
                   <div className="p-3 rounded-2xl bg-[#2C5E50] border border-emerald-400 text-center space-y-1 shadow-lg">
                     <span className="text-[10px] text-emerald-200 block font-mono font-bold">PROJECT SITE</span>
                     <strong className="text-sm text-white block">Kheri Asra (SH-22)</strong>
-                    <span className="text-[10px] text-emerald-200">11+ Acres Land</span>
                   </div>
                 </div>
+
+                <p className="text-[11px] text-white/50 italic">
+                  Distances and drive times vary by traffic and route. Use live navigation below for accurate, real-time figures.
+                </p>
 
                 <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-white/70 border-t border-white/10">
                   <div className="flex items-center gap-2">

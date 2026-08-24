@@ -1,5 +1,10 @@
 import type { Metadata, Viewport } from 'next';
+import { Lora, Plus_Jakarta_Sans, Outfit } from 'next/font/google';
 import './globals.css';
+
+const lora = Lora({ subsets: ['latin'], variable: '--font-lora', display: 'swap' });
+const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-jakarta', display: 'swap' });
+const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit', display: 'swap' });
 import { ToastProvider } from '@/context/ToastContext';
 import { ModalProvider } from '@/context/ModalContext';
 import { ToastContainer } from '@/components/ui/Toast';
@@ -66,7 +71,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${lora.variable} ${jakarta.variable} ${outfit.variable}`}>
       <body className="min-h-screen flex flex-col bg-[#FBF9F5] text-[#142126] font-sans antialiased selection:bg-[#C58F58]/20 selection:text-[#0D2329]">
         <ToastProvider>
           <ModalProvider>

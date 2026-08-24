@@ -76,16 +76,16 @@ export const RealVsProposed: React.FC = () => {
             </div>
           </div>
 
-          {/* PROPOSED 3D CGI VISION */}
-          <div className="relative rounded-3xl overflow-hidden min-h-[300px] sm:min-h-[380px] border border-[#14353E] shadow-lg group bg-[#0D2329]">
+          {/* PROPOSED DEVELOPMENT — REAL ARCHITECT CAD, NOT STOCK IMAGERY */}
+          <div className="relative rounded-3xl overflow-hidden min-h-[300px] sm:min-h-[380px] border border-[#14353E] shadow-lg group bg-white">
             <img
-              src={projectOverview.images.buildingCgiRenders[0]}
-              alt="Proposed Building 3D Vision"
-              className="absolute inset-0 w-full h-full object-cover object-center opacity-90 group-hover:scale-105 transition-transform duration-700"
+              src={projectOverview.images.masterPlanCad}
+              alt="Proposed Masterplan — Architectural CAD Drawing by The Vision Architects"
+              className="absolute inset-0 w-full h-full object-contain opacity-95 group-hover:scale-105 transition-transform duration-700"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
             <div className="absolute top-4 left-4 px-3.5 py-1.5 rounded-full bg-[#C58F58] text-[#071519] text-xs font-mono font-bold uppercase tracking-wider shadow-md">
-              Proposed Development (CGI Vision)
+              Proposed Development (Architect CAD)
             </div>
             <div className="absolute bottom-5 left-5 right-5 text-white space-y-1">
               <h4 className="font-serif-heading text-xl font-bold text-[#FAF8F5]">

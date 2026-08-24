@@ -1197,8 +1197,8 @@ export const locationLandmarks: LocationLandmark[] = [
   {
     category: 'transit',
     name: 'Reliance MET City (Model Economic Township)',
-    distance: '3.5 km',
-    travelTime: '5 mins drive',
+    distance: 'Approx. 3.5 km*',
+    travelTime: 'Approx. 5 mins drive*',
     significance: 'World-class industrial, commercial, and healthcare development hub in North India.'
   },
   {
