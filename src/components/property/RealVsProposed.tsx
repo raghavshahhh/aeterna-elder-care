@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { realVsProposedItems, projectOverview } from '@/data/propertyData';
 import { useModal } from '@/context/ModalContext';
 import {
@@ -58,14 +59,12 @@ export const RealVsProposed: React.FC = () => {
             <div className="absolute top-4 left-4 px-3.5 py-1.5 rounded-full bg-emerald-700 text-white text-xs font-mono font-bold uppercase tracking-wider shadow-md">
               Real Site Today (Kheri Asra)
             </div>
-            <a
-              href={projectOverview.droneYoutubeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/gallery"
               className="absolute top-4 right-4 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/25 text-white text-[11px] font-bold uppercase tracking-wider hover:bg-black/80 transition-colors"
             >
-              <Video className="w-3.5 h-3.5 text-[#C58F58]" /> Watch Drone Tour
-            </a>
+              <Video className="w-3.5 h-3.5 text-[#C58F58]" /> Watch Full Drone Video →
+            </Link>
             <div className="absolute bottom-5 left-5 right-5 text-white space-y-1">
               <h4 className="font-serif-heading text-xl font-bold text-[#FAF8F5]">
                 11+ Acres Demarcated Freehold Farmland

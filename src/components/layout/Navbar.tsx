@@ -126,6 +126,16 @@ export const Navbar: React.FC = () => {
           </Link>
 
           <Link
+            href="/gallery"
+            className={cn(
+              'px-3 py-1.5 rounded-full transition-colors',
+              pathname === '/gallery' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
+            )}
+          >
+            Gallery
+          </Link>
+
+          <Link
             href="/amenities"
             className={cn(
               'px-3 py-1.5 rounded-full transition-colors',
@@ -251,6 +261,15 @@ export const Navbar: React.FC = () => {
             >
               <Layers className="w-4 h-4 text-[#2C5E50]" />
               <span>Plots (64 Freehold Plots)</span>
+            </Link>
+
+            <Link
+              href="/gallery"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5] font-semibold"
+            >
+              <MapPin className="w-4 h-4 text-[#C58F58]" />
+              <span>Gallery (Real Drone &amp; Site Evidence)</span>
             </Link>
 
             <Link
