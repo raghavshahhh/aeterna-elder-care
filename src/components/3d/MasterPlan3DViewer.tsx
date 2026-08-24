@@ -467,23 +467,23 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     // Stepped Sandstone Plinth
     const mandirPlinthMat = new THREE.MeshStandardMaterial({ color: 0xd8c8b0, roughness: 0.65 });
     const plinth1 = new THREE.Mesh(new THREE.BoxGeometry(14, 0.4, 14), mandirPlinthMat);
-    plinth1.position.set(-44, 0.2, 16);
+    plinth1.position.set(30, 0.2, 26);
     mandirGroup.add(plinth1);
 
     const plinth2 = new THREE.Mesh(new THREE.BoxGeometry(11.5, 0.4, 11.5), mandirPlinthMat);
-    plinth2.position.set(-44, 0.6, 16);
+    plinth2.position.set(30, 0.6, 26);
     mandirGroup.add(plinth2);
 
     // Mandapa Sanctum Hall
     const mandirHall = new THREE.Mesh(new THREE.BoxGeometry(9, 3.8, 9), mandirPlinthMat);
-    mandirHall.position.set(-44, 2.7, 16);
+    mandirHall.position.set(30, 2.7, 26);
     mandirHall.castShadow = true;
     mandirGroup.add(mandirHall);
 
     // Mandapa Pillars
     [-3.2, -1.1, 1.1, 3.2].forEach((cx) => {
       const pCol = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 3.2, 8), mandirPlinthMat);
-      pCol.position.set(-44 + cx, 2.3, 20.8);
+      pCol.position.set(30 + cx, 2.3, 30.8);
       pCol.castShadow = true;
       mandirGroup.add(pCol);
     });
@@ -493,7 +493,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       new THREE.ConeGeometry(4.4, 6.8, 8),
       new THREE.MeshStandardMaterial({ color: 0xc58f58, roughness: 0.35, metalness: 0.55 })
     );
-    shikhara.position.set(-44, 8.0, 16);
+    shikhara.position.set(30, 8.0, 26);
     shikhara.castShadow = true;
     mandirGroup.add(shikhara);
 
@@ -502,7 +502,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       new THREE.SphereGeometry(0.45, 12, 12),
       new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.15, metalness: 0.9 })
     );
-    kalasha.position.set(-44, 11.6, 16);
+    kalasha.position.set(30, 11.6, 26);
     mandirGroup.add(kalasha);
     scene.add(mandirGroup);
 
@@ -815,7 +815,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       orbitRef.current.targetTheta = Math.PI / 3;
       orbitRef.current.targetPhi = Math.PI / 3.2;
       orbitRef.current.targetRadius = 45;
-      orbitRef.current.targetLookAt.set(-44, 4, 16);
+      orbitRef.current.targetLookAt.set(30, 4, 26);
     } else if (preset === 'highway') {
       orbitRef.current.targetTheta = Math.PI / 2.05;
       orbitRef.current.targetPhi = Math.PI / 2.6;
