@@ -1377,7 +1377,8 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
       <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[11px] text-white/60 pointer-events-none z-10 px-2">
         <div className="flex items-center gap-2 bg-[#071519]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
           <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" />
-          <span>Click &amp; Drag to Orbit • Scroll to Zoom • Select Floors &amp; Units</span>
+          <span className="hidden sm:inline">Click &amp; Drag to Orbit • Scroll to Zoom • Select Floors &amp; Units</span>
+          <span className="sm:hidden">Drag to Orbit • Pinch to Zoom • Tap Floors &amp; Units</span>
         </div>
         <div className="hidden md:flex items-center gap-1.5 bg-[#071519]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 text-white/60">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />

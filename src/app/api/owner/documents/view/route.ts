@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { readFile } from 'fs/promises';
 import path from 'path';
 import { verifySessionToken } from '@/lib/auth';
-import { getVaultDocumentById } from '@/lib/vaultStore';
+import { getVaultDocumentById, readUploadedFile } from '@/lib/vaultStore';
 
 // Only these project-root-relative directories may ever be read from disk.
 const ALLOWED_ROOTS = ['private-assets', 'public/project-assets'];
@@ -13,6 +13,23 @@ function resolveSafeFilePath(filePath: string): string | null {
     resolved.startsWith(path.resolve(process.cwd(), root) + path.sep)
   );
   return isAllowed ? resolved : null;
+}
+
+// Never trust a stored/user-supplied Content-Type. Derive it from a fixed extension allowlist
+// so a malicious upload (e.g. type: "text/html") can't be served inline and executed as a document.
+const SAFE_INLINE_TYPES: Record<string, string> = {
+  pdf: 'application/pdf',
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg'
+};
+
+function resolveContentType(fileName: string): { contentType: string; forceAttachment: boolean } {
+  const ext = fileName.split('.').pop()?.toLowerCase() || '';
+  const safeType = SAFE_INLINE_TYPES[ext];
+  return safeType
+    ? { contentType: safeType, forceAttachment: false }
+    : { contentType: 'application/octet-stream', forceAttachment: true };
 }
 
 export async function GET(request: NextRequest) {
@@ -37,7 +54,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const doc = getVaultDocumentById(id);
+  const doc = await getVaultDocumentById(id);
   if (!doc) {
     return NextResponse.json(
       { error: 'Document not found in Owner Vault repository.' },
@@ -46,6 +63,27 @@ export async function GET(request: NextRequest) {
   }
 
   const disposition = isDownload ? 'attachment' : 'inline';
+
+  // Serve an owner-uploaded file streamed from private Blob storage
+  if (doc.blobPath) {
+    const file = await readUploadedFile(doc.blobPath);
+    if (!file) {
+      return NextResponse.json({ error: 'Uploaded file could not be found in storage.' }, { status: 404 });
+    }
+
+    const { contentType, forceAttachment } = resolveContentType(doc.fileName);
+    return new NextResponse(file.stream, {
+      status: 200,
+      headers: {
+        'Content-Type': contentType,
+        'Content-Disposition': `${forceAttachment ? 'attachment' : disposition}; filename="${encodeURIComponent(doc.fileName)}"`,
+        'X-Content-Type-Options': 'nosniff',
+        'Content-Security-Policy': "default-src 'none'; sandbox",
+        'Cache-Control': 'private, no-store, max-age=0, must-revalidate',
+        'Pragma': 'no-cache'
+      }
+    });
+  }
 
   // Serve the real source file when one has been archived on disk
   if (doc.filePath) {

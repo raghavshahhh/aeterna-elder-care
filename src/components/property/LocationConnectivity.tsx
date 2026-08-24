@@ -94,10 +94,10 @@ export const LocationConnectivity: React.FC = () => {
               </span>
             </div>
 
-            <div className="inline-flex items-center bg-[#FAF8F5] p-1 rounded-2xl border border-[#E8E2D8] text-xs font-bold shadow-sm">
+            <div className="flex items-center gap-1 bg-[#FAF8F5] p-1 rounded-2xl border border-[#E8E2D8] text-xs font-bold shadow-sm max-w-full overflow-x-auto no-scrollbar">
               <button
                 onClick={() => setMapTab('map')}
-                className={`px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   mapTab === 'map' ? 'bg-[#2C5E50] text-white shadow-md' : 'text-[#53676E] hover:text-[#0D2329]'
                 }`}
               >
@@ -106,7 +106,7 @@ export const LocationConnectivity: React.FC = () => {
               </button>
               <button
                 onClick={() => setMapTab('corridor')}
-                className={`px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   mapTab === 'corridor' ? 'bg-[#2C5E50] text-white shadow-md' : 'text-[#53676E] hover:text-[#0D2329]'
                 }`}
               >
@@ -115,7 +115,7 @@ export const LocationConnectivity: React.FC = () => {
               </button>
               <button
                 onClick={() => setMapTab('satellite')}
-                className={`px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   mapTab === 'satellite' ? 'bg-[#2C5E50] text-white shadow-md' : 'text-[#53676E] hover:text-[#0D2329]'
                 }`}
               >
@@ -124,7 +124,7 @@ export const LocationConnectivity: React.FC = () => {
               </button>
               <button
                 onClick={() => setMapTab('boundary')}
-                className={`px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   mapTab === 'boundary' ? 'bg-[#2C5E50] text-white shadow-md' : 'text-[#53676E] hover:text-[#0D2329]'
                 }`}
               >

@@ -49,7 +49,7 @@ export const Button: React.FC<ButtonProps> = ({
     <>
       {isLoading && <Loader2 className="w-4 h-4 animate-spin shrink-0" />}
       {!isLoading && leftIcon && <span className="shrink-0">{leftIcon}</span>}
-      <span className="truncate">{children}</span>
+      <span className="text-center">{children}</span>
       {!isLoading && rightIcon && <span className="shrink-0">{rightIcon}</span>}
     </>
   );

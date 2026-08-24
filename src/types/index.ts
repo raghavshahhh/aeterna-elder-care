@@ -279,6 +279,8 @@ export interface VaultDocument {
   previewImageUrl?: string;
   /** Path to the real source file inside private-assets/ (server-only, never exposed to client). */
   filePath?: string;
+  /** Pathname of the file inside private Vercel Blob storage, for owner-uploaded documents. */
+  blobPath?: string;
 }
 
 export interface OwnerSession {

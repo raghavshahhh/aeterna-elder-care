@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
   const cleanSearch = search && search.length < 200 ? search : null;
   const cleanCategory = category && category.length < 50 ? category : null;
 
-  const documents = listVaultDocuments(cleanCategory, cleanSearch);
+  const documents = await listVaultDocuments(cleanCategory, cleanSearch);
 
   return NextResponse.json({
     success: true,
@@ -51,7 +51,7 @@ export async function DELETE(request: NextRequest) {
     );
   }
 
-  const deleted = deleteVaultDocument(id);
+  const deleted = await deleteVaultDocument(id);
   if (!deleted) {
     return NextResponse.json(
       { error: 'Document not found or already removed.' },

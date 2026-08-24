@@ -62,7 +62,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (file && file.size > 50 * 1024 * 1024) {
+    if (!file || !(file instanceof File)) {
+      return NextResponse.json(
+        { error: 'A file is required.' },
+        { status: 400 }
+      );
+    }
+
+    if (file.size > 50 * 1024 * 1024) {
       return NextResponse.json(
         { error: 'File size exceeds maximum allowed limit of 50 MB.' },
         { status: 400 }
@@ -70,8 +77,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Sanitize filename against directory traversal / injection
-    const rawFileName = file ? file.name : `${title.replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`;
-    const cleanFileName = rawFileName.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const ALLOWED_EXTENSIONS = ['pdf', 'png', 'jpg', 'jpeg', 'dwg'];
+    const ext = cleanFileName.split('.').pop()?.toLowerCase() || '';
+    if (!ALLOWED_EXTENSIONS.includes(ext)) {
+      return NextResponse.json(
+        { error: 'Unsupported file type. Allowed: PDF, PNG, JPG, DWG.' },
+        { status: 400 }
+      );
+    }
 
     const docId = `doc-vault-${Date.now()}`;
 
@@ -83,21 +97,21 @@ export async function POST(request: NextRequest) {
       description,
       fileName: cleanFileName,
       fileUrl: `/api/owner/documents/view?id=${docId}`,
-      fileType: 'pdf',
-      fileSize: file ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : '4.5 MB',
+      fileType: cleanFileName.toLowerCase().endsWith('.pdf') ? 'pdf' : 'image',
+      fileSize: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
       version: version.substring(0, 10),
       uploadedAt: new Date().toISOString().split('T')[0],
       uploadedBy: user.email || 'Owner Desk',
-      visibility,
-      pageCount: 8
+      visibility
     };
 
-    addVaultDocument(newDoc);
+    const fileBuffer = Buffer.from(await file.arrayBuffer());
+    const savedDoc = await addVaultDocument(newDoc, fileBuffer, file.type || 'application/pdf');
 
     return NextResponse.json({
       success: true,
       message: 'Document successfully archived in Owner Vault.',
-      document: newDoc
+      document: savedDoc
     });
   } catch {
     return NextResponse.json(

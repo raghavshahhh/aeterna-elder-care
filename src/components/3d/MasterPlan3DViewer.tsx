@@ -1095,7 +1095,8 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[11px] text-white/60 pointer-events-none z-10 px-2">
         <div className="flex items-center gap-2 bg-[#0D2329]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
           <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" />
-          <span>Click any Plot Parcel to Select • Drag to Orbit • Scroll to Zoom</span>
+          <span className="hidden sm:inline">Click any Plot Parcel to Select • Drag to Orbit • Scroll to Zoom</span>
+          <span className="sm:hidden">Tap a Plot to Select • Drag to Orbit • Pinch to Zoom</span>
         </div>
 
         <div className="hidden md:flex items-center gap-4 bg-[#0D2329]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">

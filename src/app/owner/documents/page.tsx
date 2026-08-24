@@ -43,6 +43,8 @@ export default function OwnerDocumentsPage() {
   const [uploadDescription, setUploadDescription] = useState('');
   const [uploadVersion, setUploadVersion] = useState('v1.0');
   const [uploadVisibility, setUploadVisibility] = useState<'owner_only' | 'authorized' | 'public'>('owner_only');
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
   const fetchDocuments = async () => {
@@ -98,6 +100,13 @@ export default function OwnerDocumentsPage() {
 
   const handleUploadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setUploadError(null);
+
+    if (!uploadFile) {
+      setUploadError('Please select a file to upload.');
+      return;
+    }
+
     setIsUploading(true);
 
     try {
@@ -107,6 +116,7 @@ export default function OwnerDocumentsPage() {
       formData.append('description', uploadDescription);
       formData.append('version', uploadVersion);
       formData.append('visibility', uploadVisibility);
+      formData.append('file', uploadFile);
 
       const res = await fetch('/api/owner/upload', {
         method: 'POST',
@@ -119,9 +129,12 @@ export default function OwnerDocumentsPage() {
         setIsUploadModalOpen(false);
         setUploadTitle('');
         setUploadDescription('');
+        setUploadFile(null);
+      } else {
+        setUploadError(data.error || 'Upload failed. Please try again.');
       }
     } catch {
-      // Error handling
+      setUploadError('Upload failed. Please check your connection and try again.');
     } finally {
       setIsUploading(false);
     }
@@ -554,9 +567,16 @@ export default function OwnerDocumentsPage() {
                 <input
                   type="file"
                   accept=".pdf,.png,.jpg,.jpeg,.dwg"
+                  onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
                   className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/15 text-white/80 text-xs file:mr-4 file:py-1 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#2C5E50] file:text-white"
                 />
               </div>
+
+              {uploadError && (
+                <div className="px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs">
+                  {uploadError}
+                </div>
+              )}
 
               <div className="pt-3">
                 <button

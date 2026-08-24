@@ -1,12 +1,18 @@
 import crypto from 'crypto';
 
-const OWNER_SECRET = process.env.OWNER_VAULT_SECRET || 'slcf-jhajjar-secure-vault-token-2026';
+const isProduction = process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV !== 'development';
+
+if (isProduction && (!process.env.OWNER_VAULT_SECRET || !process.env.OWNER_EMAIL || !process.env.OWNER_ID || !process.env.OWNER_PASSWORD)) {
+  throw new Error('[auth] OWNER_VAULT_SECRET, OWNER_EMAIL, OWNER_ID, and OWNER_PASSWORD must all be set in production.');
+}
+
+const OWNER_SECRET = process.env.OWNER_VAULT_SECRET || 'slcf-local-dev-only-secret';
 const OWNER_EMAIL = process.env.OWNER_EMAIL || 'owner@seniorliving.org';
 const OWNER_ID = process.env.OWNER_ID || 'SL-OWNER-2026';
 const OWNER_PASSWORD = process.env.OWNER_PASSWORD || 'Foundation@2026';
 
-if (process.env.NODE_ENV === 'development' && !process.env.OWNER_PASSWORD) {
-  console.warn('[auth] OWNER_PASSWORD env var not set — using demo fallback credentials.');
+if (!isProduction && !process.env.OWNER_PASSWORD) {
+  console.warn('[auth] OWNER_PASSWORD env var not set — using demo fallback credentials (local/dev only).');
 }
 
 export interface ServerSessionUser {
