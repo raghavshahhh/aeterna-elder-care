@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { residenceUnits } from '@/data/propertyData';
+import { residenceUnits, twoPlotOneBlockConfig } from '@/data/propertyData';
 import { useModal } from '@/context/ModalContext';
 import { ResidenceUnit } from '@/types';
 import { Interior3DViewer } from '@/components/3d/Interior3DViewer';
@@ -306,6 +306,34 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                   Book Site Visit to Kheri Asra
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 2-Plot, 1-Block Premium Configuration */}
+        <div className="mt-14 rounded-3xl bg-[#0D2329] border border-white/15 p-7 sm:p-9">
+          <div className="flex items-center gap-2 text-xs font-bold font-mono uppercase tracking-widest text-[#E0AB77] mb-2">
+            <Layers className="w-4 h-4 text-[#C58F58]" />
+            {twoPlotOneBlockConfig.headline}
+          </div>
+          <p className="text-xs sm:text-sm text-white/70 leading-relaxed max-w-2xl mb-6">
+            {twoPlotOneBlockConfig.description}
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+              <div className="text-[10px] font-mono uppercase tracking-widest text-white/50">
+                {twoPlotOneBlockConfig.standard.label}
+              </div>
+              <div className="text-sm text-white/85 font-semibold">{twoPlotOneBlockConfig.standard.plots}</div>
+              <div className="text-xs text-white/60">{twoPlotOneBlockConfig.standard.units}</div>
+            </div>
+            <div className="p-5 rounded-2xl bg-[#C58F58]/10 border border-[#C58F58]/30 space-y-2">
+              <div className="text-[10px] font-mono uppercase tracking-widest text-[#E0AB77]">
+                {twoPlotOneBlockConfig.premium.label}
+              </div>
+              <div className="text-sm text-white font-semibold">{twoPlotOneBlockConfig.premium.plots}</div>
+              <div className="text-xs text-white/70">{twoPlotOneBlockConfig.premium.units}</div>
+              <div className="text-[11px] text-[#E0AB77] pt-1 leading-relaxed">{twoPlotOneBlockConfig.premium.advantage}</div>
             </div>
           </div>
         </div>

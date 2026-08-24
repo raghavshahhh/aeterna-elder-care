@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { paymentPlans, loanParameters, taxBenefits, additionalCharges, rentalProposition } from '@/data/propertyData';
+import { paymentPlans, loanParameters, taxBenefits, additionalCharges, rentalProposition, buybackPolicy } from '@/data/propertyData';
 import { useModal } from '@/context/ModalContext';
-import { Calculator, CheckCircle2, FileText, BadgePercent, MessageSquare, ArrowRight, Shield, Car, Info } from 'lucide-react';
+import { Calculator, CheckCircle2, FileText, BadgePercent, MessageSquare, ArrowRight, Shield, Car, Info, RotateCcw } from 'lucide-react';
 
 export const FinancePaymentPlans: React.FC = () => {
   const { openWhatsApp, openLeadDrawer } = useModal();
@@ -320,6 +320,22 @@ export const FinancePaymentPlans: React.FC = () => {
                     <div className="text-[#53676E] leading-relaxed">{tax.benefit}</div>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* Buyback Exit Policy */}
+            <div className="bg-[#0D2329] text-white rounded-3xl p-7 border border-white/15 space-y-3">
+              <div className="flex items-center gap-2 text-xs font-bold font-mono uppercase tracking-widest text-[#E0AB77]">
+                <RotateCcw className="w-4 h-4 text-[#C58F58]" />
+                {buybackPolicy.headline}
+              </div>
+              <p className="text-xs text-white/75 leading-relaxed">{buybackPolicy.description}</p>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C58F58]/20 border border-[#C58F58]/40 text-[#E0AB77] text-xs font-bold">
+                {buybackPolicy.interestRange}
+              </div>
+              <div className="flex items-start gap-2 pt-2 text-[11px] text-white/55 leading-relaxed">
+                <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+                {buybackPolicy.disclaimer}
               </div>
             </div>
           </div>

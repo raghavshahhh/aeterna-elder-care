@@ -389,6 +389,38 @@ export const taxBenefits = [
 ];
 
 // ============================================================================
+// 5D. BUYBACK / EXIT POLICY
+// Per Website Brief V1.0: "If the owner wishes to exit or in any emergency,
+// the foundation offers full buyback of the down payment plus FD rate interest."
+// ============================================================================
+export const buybackPolicy = {
+  headline: 'Guaranteed Buyback Exit Policy',
+  description: 'If the owner wishes to exit or in case of an emergency, the Foundation offers a full buyback of the ₹25 Lakh down payment plus prevailing Fixed Deposit rate interest.',
+  interestRange: '7% – 8% p.a. (FD Rate)',
+  disclaimer: 'Buyback terms are as per the Foundation\'s stated policy and are subject to a signed exit agreement at the time of purchase. Please request the buyback clause in writing before booking.'
+};
+
+// ============================================================================
+// 5E. 2-PLOT 1-BLOCK PREMIUM CONFIGURATION
+// Per Website Brief V1.0: merges 2 adjacent plots into 1 unified block of 18 units.
+// ============================================================================
+export const twoPlotOneBlockConfig = {
+  headline: '2-Plot, 1-Block Premium Configuration',
+  description: 'An optional premium layout that merges 2 adjacent building plots into a single unified architectural block — increasing common-area efficiency and creating larger shared corridors.',
+  standard: {
+    label: 'Standard 1-Plot Configuration',
+    plots: '1 Singular Plot per Building',
+    units: '9 Service Apartments'
+  },
+  premium: {
+    label: 'Premium 2-Plot, 1-Block Configuration',
+    plots: '2 Adjacent Plots Merged',
+    units: '18 Service Apartments',
+    advantage: 'Higher super-to-carpet efficiency and visibly larger common spaces & living corridors.'
+  }
+};
+
+// ============================================================================
 // 5B. PARKING & TERRACE RIGHTS
 // ============================================================================
 export const additionalCharges = [
