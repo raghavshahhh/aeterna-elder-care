@@ -23,7 +23,8 @@ import {
   ArrowRight,
   ShieldCheck,
   Rotate3d,
-  Grid
+  Grid,
+  FileText
 } from 'lucide-react';
 
 export const AvailabilityMatrix: React.FC = () => {
@@ -110,6 +111,39 @@ export const AvailabilityMatrix: React.FC = () => {
                 (Individual demarcation verified on-site)
               </span>
             </div>
+          </div>
+
+          {/* Architectural 2D Masterplan Drawing Callout */}
+          <div className="rounded-2xl border border-[#E8E2D8] bg-[#FAF8F5] p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-14 h-14 rounded-xl bg-[#0D2329] border border-white/10 overflow-hidden shrink-0 flex items-center justify-center relative">
+                <img
+                  src="/project-assets/architecture/cad/previews/masterplan-real.jpg"
+                  alt="Architectural Masterplan CAD Drawing Preview"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <span className="text-[10px] font-mono text-[#C58F58] font-bold uppercase tracking-wider block">
+                  APPROVED 2D ARCHITECTURAL MASTERPLAN // THE VISION ARCHITECTS
+                </span>
+                <h4 className="text-sm font-bold text-[#0D2329]">
+                  64-Plot Site Demarcation &amp; 33ft/24ft Road Network Drawing
+                </h4>
+                <p className="text-[11px] text-[#53676E] mt-0.5">
+                  Source: Client-Supplied Architectural CAD • Scale: 1:500
+                </p>
+              </div>
+            </div>
+            <a
+              href="/project-assets/architecture/cad/slcf-masterplan-site-layout.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2.5 rounded-xl bg-[#0D2329] hover:bg-[#1D4B57] text-white text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 shadow-sm"
+            >
+              <FileText className="w-3.5 h-3.5 text-[#C58F58]" />
+              Open Scaled CAD PDF ↗
+            </a>
           </div>
 
           {/* Block Switcher Bar */}
