@@ -78,9 +78,11 @@ export const Navbar: React.FC = () => {
       >
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5 group focus:outline-none shrink-0">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#0D2329] text-[#FBF9F5] flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-            <Heart className="w-4 h-4 sm:w-5 sm:h-5 fill-[#C58F58] text-[#C58F58]" />
-          </div>
+          <img
+            src="/project-assets/brand/logo-icon.png"
+            alt="Senior Living Citizen Foundation"
+            className="w-9 h-9 sm:w-11 sm:h-11 object-contain group-hover:scale-105 transition-transform"
+          />
           <div className="leading-tight">
             <span className="text-base sm:text-xl font-serif-heading font-extrabold tracking-tight text-[#0D2329]">
               Senior Living<span className="text-[#C58F58]">.</span>

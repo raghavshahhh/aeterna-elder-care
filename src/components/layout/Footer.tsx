@@ -7,7 +7,6 @@ import { useToast } from '@/context/ToastContext';
 import { useModal } from '@/context/ModalContext';
 import { projectOverview, architectProfile } from '@/data/propertyData';
 import {
-  Heart,
   Phone,
   Mail,
   MapPin,
@@ -102,8 +101,12 @@ export const Footer: React.FC = () => {
           {/* Brand & Project Vision */}
           <div className="lg:col-span-4 space-y-5">
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center">
-                <Heart className="w-5 h-5 fill-[#C58F58] text-[#C58F58]" />
+              <div className="w-11 h-11 rounded-2xl bg-white/95 border border-white/15 flex items-center justify-center p-1.5">
+                <img
+                  src="/project-assets/brand/logo-icon.png"
+                  alt="Senior Living Citizen Foundation"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
                 <span className="text-xl font-serif-heading font-bold text-white">
