@@ -177,17 +177,17 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2.5 text-xs text-white/70">
               <li>
                 <Link href="/plots" className="hover:text-white transition-colors">
-                  Available Plots (64 Plots)
+                  Residential Plots (64 Plots)
                 </Link>
               </li>
               <li>
                 <Link href="/apartments" className="hover:text-white transition-colors">
-                  Apartments (1 BHK / 1 RK)
+                  Residences (1 BHK / 1 RK)
                 </Link>
               </li>
               <li>
                 <Link href="/amenities" className="hover:text-white transition-colors">
-                  Amenities &amp; Hospital
+                  Care &amp; Wellness Ecosystem
                 </Link>
               </li>
               <li>
@@ -196,8 +196,8 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/#master-plan" className="hover:text-white transition-colors">
-                  Hospital CAD Blueprints
+                <Link href="/#building-vision" className="hover:text-white transition-colors">
+                  3D Building Model
                 </Link>
               </li>
             </ul>
@@ -215,8 +215,8 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/benefits" className="hover:text-white transition-colors">
-                  8 Core Foundation Benefits
+                <Link href="/documents" className="hover:text-white transition-colors">
+                  Trust Center (Public Records)
                 </Link>
               </li>
               <li>
@@ -225,8 +225,8 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/#roadmap" className="hover:text-white transition-colors">
-                  Development Roadmap
+                <Link href="/benefits" className="hover:text-white transition-colors">
+                  8 Core Foundation Benefits
                 </Link>
               </li>
               <li>

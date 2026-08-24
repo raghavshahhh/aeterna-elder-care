@@ -93,7 +93,7 @@ export const WhatYouGetPillars: React.FC = () => {
         <div className="p-6 rounded-3xl bg-[#0D2329] text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
           <div className="space-y-1 text-center sm:text-left">
             <h4 className="text-lg font-serif-heading font-bold text-[#FAF8F5]">
-              Want the full specification dossier with fixture brands and architectural blueprints?
+              Want the full specification dossier with room dimensions and architectural blueprints?
             </h4>
             <p className="text-xs text-white/70">
               Download our complete pre-launch brochure or request direct clarification on WhatsApp.

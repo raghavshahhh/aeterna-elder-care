@@ -83,7 +83,7 @@ export const EmotionalFamilyStory: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-[#0D2329]/80 via-transparent to-transparent" />
               <div className="absolute bottom-4 left-4 right-4">
                 <span className="px-2.5 py-1 rounded-md bg-rose-700/90 text-white text-[11px] font-bold shadow-sm">
-                  30,000 Sq. Ft. Hospital On-Site
+                  Planned 30,000 Sq. Ft. Hospital
                 </span>
               </div>
             </div>
@@ -94,7 +94,7 @@ export const EmotionalFamilyStory: React.FC = () => {
                   Immediate Medical Care
                 </h3>
                 <p className="text-xs sm:text-sm text-[#53676E] leading-relaxed">
-                  No panicking in city traffic for emergency medical help. The on-site G+2 hospital has ICU, Dialysis, CT/MRI, 6 OPDs, and 24x7 pharmacies right inside the gates.
+                  No panicking in city traffic for emergency medical help. The planned on-site G+2 hospital will provide ICU, Dialysis, Diagnostics, 6 OPDs, and 24x7 medical coverage right inside the gates.
                 </p>
               </div>
 

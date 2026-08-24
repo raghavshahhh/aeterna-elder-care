@@ -95,15 +95,15 @@ export const TrustTransparency: React.FC = () => {
 
           <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0 w-full md:w-auto">
             <Link
-              href="/owner/login"
-              className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-bold transition-all text-center"
+              href="/documents"
+              className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] text-xs font-bold transition-all text-center"
             >
-              🔒 Owner Vault Login →
+              Verify Public Records →
             </Link>
 
             <button
               onClick={() => openWhatsApp({ actionType: 'request-trust-docs', message: `Hello, I would like to review the Section 8, Form 10AC/80G, and Freehold Title verification documents for ${projectOverview.legalName}.` })}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold shadow-xl transition-all cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-bold transition-all cursor-pointer"
             >
               <MessageSquare className="w-4 h-4 text-[#25D366]" />
               Request Docs on WhatsApp

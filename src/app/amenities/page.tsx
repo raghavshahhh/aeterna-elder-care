@@ -74,7 +74,7 @@ export default function AmenitiesPage() {
               <Layers className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-xl font-serif-heading font-bold text-[#0D2329]">11ft to 33ft Wide Roads</h3>
+              <h3 className="text-xl font-serif-heading font-bold text-[#0D2329]">24ft to 33ft Wide Roads</h3>
               <p className="text-xs text-[#53676E] leading-relaxed mt-1.5">
                 Designed for senior walkers with shaded paths, zero traffic congestion, and full emergency ambulance clearance.
               </p>

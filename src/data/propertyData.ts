@@ -394,9 +394,9 @@ export const taxBenefits = [
 // the foundation offers full buyback of the down payment plus FD rate interest."
 // ============================================================================
 export const buybackPolicy = {
-  headline: 'Guaranteed Buyback Exit Policy',
+  headline: 'Structured Buyback Exit Policy',
   description: 'If the owner wishes to exit or in case of an emergency, the Foundation offers a full buyback of the ₹25 Lakh down payment plus prevailing Fixed Deposit rate interest.',
-  interestRange: '7% – 8% p.a. (FD Rate)',
+  interestRange: '7% – 8% p.a. (FD Rate Indicative)',
   disclaimer: 'Buyback terms are as per the Foundation\'s stated policy and are subject to a signed exit agreement at the time of purchase. Please request the buyback clause in writing before booking.'
 };
 
