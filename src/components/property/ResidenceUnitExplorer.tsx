@@ -6,6 +6,7 @@ import { residenceUnits, twoPlotOneBlockConfig } from '@/data/propertyData';
 import { useModal } from '@/context/ModalContext';
 import { ResidenceUnit } from '@/types';
 import { Interior3DViewer } from '@/components/3d/Interior3DViewer';
+import { Unit2DCadBlueprint } from '@/components/property/Unit2DCadBlueprint';
 import {
   Home,
   CheckCircle2,
@@ -17,7 +18,8 @@ import {
   Maximize2,
   MessageSquare,
   Calendar,
-  Rotate3d
+  Rotate3d,
+  FileText
 } from 'lucide-react';
 
 interface ResidenceUnitExplorerProps {
@@ -28,7 +30,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
   initialUnitId = '1bhk-apt'
 }) => {
   const [selectedUnitId, setSelectedUnitId] = useState<string>(initialUnitId);
-  const [activeTab, setActiveTab] = useState<'3d-interior' | 'overview' | 'room-sizes' | 'senior-features'>('3d-interior');
+  const [activeTab, setActiveTab] = useState<'3d-interior' | '2d-blueprint' | 'overview' | 'room-sizes' | 'senior-features'>('3d-interior');
 
   const { openWhatsApp, openLeadDrawer } = useModal();
 
@@ -106,6 +108,17 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                   3D Room Orbit
                 </button>
                 <button
+                  onClick={() => setActiveTab('2d-blueprint')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                    activeTab === '2d-blueprint'
+                      ? 'bg-[#2C5E50] text-white shadow-sm font-bold'
+                      : 'text-[#53676E] hover:text-[#0D2329]'
+                  }`}
+                >
+                  <Layers className="w-3.5 h-3.5 text-[#C58F58]" />
+                  2D CAD Blueprint
+                </button>
+                <button
                   onClick={() => setActiveTab('overview')}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                     activeTab === 'overview'
@@ -143,8 +156,31 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
               <div className="space-y-4">
                 <Interior3DViewer
                   unitType={activeUnit.type === '1-rk' ? '1-rk' : '1-bhk'}
+                  onToggle2DBlueprint={() => setActiveTab('2d-blueprint')}
                   onToggle2DPlans={() => setActiveTab('room-sizes')}
                 />
+              </div>
+            )}
+
+            {/* TAB 1: 2D CAD Blueprint */}
+            {activeTab === '2d-blueprint' && (
+              <div className="space-y-4">
+                <Unit2DCadBlueprint
+                  unitType={activeUnit.type === '1-rk' ? '1-rk' : '1-bhk'}
+                  onSelectRoom={() => setActiveTab('3d-interior')}
+                  interactive={true}
+                />
+                <div className="flex items-center justify-between p-4 rounded-xl bg-[#FAF8F5] border border-[#E8E2D8] text-xs">
+                  <span className="text-[#53676E]">
+                    Click any room on the 2D CAD floor plan to inspect in 3D orbit.
+                  </span>
+                  <button
+                    onClick={() => setActiveTab('3d-interior')}
+                    className="font-bold text-[#2C5E50] hover:text-[#C58F58] transition-colors cursor-pointer flex items-center gap-1"
+                  >
+                    Launch 3D Room Orbit →
+                  </button>
+                </div>
               </div>
             )}
 
