@@ -5,15 +5,18 @@ import { INITIAL_VAULT_DOCUMENTS } from '@/data/vaultDocuments';
 const INDEX_BLOB_PATH = 'vault-index/documents.json';
 
 // Seed documents (committed to the repo, either mock cards or real filePath assets)
-// are always present. Uploaded documents are layered on top from persistent private Blob storage.
 async function readUploadedDocuments(): Promise<VaultDocument[]> {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) return [];
   try {
-    const result = await get(INDEX_BLOB_PATH, { access: 'private', useCache: false });
+    const result = await Promise.race([
+      get(INDEX_BLOB_PATH, { access: 'private', useCache: false }),
+      new Promise<null>((_, reject) => setTimeout(() => reject(new Error('timeout')), 1500))
+    ]);
     if (!result) return [];
     const text = await new Response(result.stream).text();
     return JSON.parse(text) as VaultDocument[];
   } catch {
-    // Index does not exist yet (first upload never happened)
+    // Index does not exist yet or offline fallback
     return [];
   }
 }
