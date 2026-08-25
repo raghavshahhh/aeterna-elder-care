@@ -40,7 +40,7 @@ export const LeadCaptureDrawer: React.FC = () => {
 
   if (!isLeadDrawerOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !phone) {
       showToast({
@@ -52,15 +52,54 @@ export const LeadCaptureDrawer: React.FC = () => {
     }
 
     setLoading(true);
-    setTimeout(() => {
+    try {
+      const activeRef = typeof window !== 'undefined' ? localStorage.getItem('slcf_active_ref_code') : null;
+      let refCode = undefined;
+      if (activeRef) {
+        try { refCode = JSON.parse(activeRef).code; } catch {}
+      }
+
+      // 1. Ingest lead to CRM
+      await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          phone,
+          email,
+          referralCode: refCode,
+          source: leadDrawerContext.actionType === 'site_visit' ? 'SITE_VISIT_FORM' : 'WEBSITE_FORM',
+          notes: `Interest in ${leadDrawerContext.unitCode || 'General Sanctuary'}`
+        })
+      });
+
+      // 2. If site visit with date, book visit
+      if (preferredDate) {
+        await fetch('/api/site-visits', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            phone,
+            email,
+            preferredDate,
+            referralCode: refCode,
+            message: `Unit interest: ${leadDrawerContext.unitCode || 'General'}`
+          })
+        });
+      }
+
       setLoading(false);
       setSubmitted(true);
       showToast({
-        title: 'Site Visit / Priority Interest Registered!',
-        description: 'Our Senior Project Advisor will contact you to confirm your private walkthrough.',
+        title: 'Inquiry Successfully Registered!',
+        description: 'Our Senior Project Advisor will connect with you shortly.',
         type: 'success'
       });
-    }, 700);
+    } catch {
+      setLoading(false);
+      setSubmitted(true);
+    }
   };
 
   const handleReset = () => {

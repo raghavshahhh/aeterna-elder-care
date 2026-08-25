@@ -10,6 +10,7 @@ import { ModalProvider } from '@/context/ModalContext';
 import { ToastContainer } from '@/components/ui/Toast';
 import { WhatsAppModal } from '@/components/shared/WhatsAppModal';
 import { LeadCaptureDrawer } from '@/components/shared/LeadCaptureDrawer';
+import { ReferralTracker } from '@/components/shared/ReferralTracker';
 import { TopNotificationBar } from '@/components/layout/TopNotificationBar';
 import { Navbar } from '@/components/layout/Navbar';
 import { QuickContactBar } from '@/components/layout/QuickContactBar';
@@ -83,6 +84,7 @@ export default function RootLayout({
             <ToastContainer />
             <WhatsAppModal />
             <LeadCaptureDrawer />
+            <ReferralTracker />
           </ModalProvider>
         </ToastProvider>
       </body>

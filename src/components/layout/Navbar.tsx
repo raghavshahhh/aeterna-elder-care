@@ -18,9 +18,10 @@ import {
   Home,
   MapPin,
   Sparkles,
-  BadgePercent,
+  Award,
   Activity,
-  Layers
+  Layers,
+  ArrowRight
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -29,7 +30,7 @@ export const Navbar: React.FC = () => {
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<'project' | 'info' | null>(null);
+  const [locationsOpen, setLocationsOpen] = useState(false);
 
   const navRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +46,7 @@ export const Navbar: React.FC = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (navRef.current && !navRef.current.contains(event.target as Node)) {
-        setOpenDropdown(null);
+        setLocationsOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -55,14 +56,16 @@ export const Navbar: React.FC = () => {
   // Close all menus on route change
   useEffect(() => {
     setMobileMenuOpen(false);
-    setOpenDropdown(null);
+    setLocationsOpen(false);
   }, [pathname]);
 
-  const toggleDropdown = (name: 'project' | 'info') => {
-    setOpenDropdown((prev) => (prev === name ? null : name));
-  };
-
-  if (pathname?.startsWith('/owner')) return null;
+  if (
+    pathname?.startsWith('/owner') ||
+    pathname?.startsWith('/admin') ||
+    pathname?.startsWith('/portal')
+  ) {
+    return null;
+  }
 
   return (
     <header className="sticky top-0 z-30 w-full px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 transition-all duration-300">
@@ -88,7 +91,7 @@ export const Navbar: React.FC = () => {
               Senior Living<span className="text-[#C58F58]">.</span>
             </span>
             <span className="hidden md:block text-[8px] uppercase tracking-[0.18em] font-bold text-[#2C5E50]">
-              Citizen Foundation · Haryana
+              Citizen Foundation · National
             </span>
           </div>
         </Link>
@@ -104,6 +107,83 @@ export const Navbar: React.FC = () => {
           >
             Home
           </Link>
+
+          {/* Locations Dropdown Menu */}
+          <div className="relative">
+            <button
+              onClick={() => setLocationsOpen(!locationsOpen)}
+              className={cn(
+                'px-3 py-1.5 rounded-full transition-colors flex items-center gap-1 cursor-pointer',
+                pathname?.startsWith('/locations') || pathname?.startsWith('/projects')
+                  ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]'
+                  : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
+              )}
+            >
+              <span>Sanctuaries</span>
+              <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', locationsOpen && 'rotate-180')} />
+            </button>
+
+            {locationsOpen && (
+              <div className="absolute top-full left-0 mt-3 w-80 rounded-3xl bg-white border border-[#E8E2D8] shadow-2xl p-3 space-y-1 z-50 animate-fade-in">
+                <div className="px-3 py-1.5 text-[9px] font-mono uppercase tracking-widest text-[#53676E] font-bold">
+                  Active &amp; Upcoming Communities
+                </div>
+
+                <Link
+                  href="/projects/kheri-asra"
+                  onClick={() => setLocationsOpen(false)}
+                  className="p-3 rounded-2xl hover:bg-[#FAF8F5] transition-colors flex items-start gap-3 group block"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-[#EAF2EE] text-[#2C5E50] flex items-center justify-center shrink-0 mt-0.5">
+                    <Building2 className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-xs text-[#0D2329] group-hover:text-[#2C5E50]">
+                        Haryana (Delhi NCR)
+                      </span>
+                      <span className="px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-800 text-[8px] font-mono font-bold">
+                        Pre-Launch
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#53676E]">64 Plots &amp; G+2 Senior Residences</p>
+                  </div>
+                </Link>
+
+                <Link
+                  href="/projects/goa-residence"
+                  onClick={() => setLocationsOpen(false)}
+                  className="p-3 rounded-2xl hover:bg-[#FAF8F5] transition-colors flex items-start gap-3 group block"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-[#FAF2EB] text-[#C58F58] flex items-center justify-center shrink-0 mt-0.5">
+                    <Home className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-xs text-[#0D2329] group-hover:text-[#C58F58]">
+                        Goa (Coastal Haven)
+                      </span>
+                      <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-800 text-[8px] font-mono font-bold">
+                        Ready to Move
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#53676E]">Assisted Suites &amp; Daily Nursing</p>
+                  </div>
+                </Link>
+
+                <div className="pt-2 border-t border-[#E8E2D8]">
+                  <Link
+                    href="/locations"
+                    onClick={() => setLocationsOpen(false)}
+                    className="w-full py-2 px-3 rounded-xl bg-[#FAF8F5] hover:bg-[#EAF2EE] text-xs font-bold text-[#2C5E50] flex items-center justify-between transition-colors font-mono"
+                  >
+                    <span>View All Sanctuaries</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
 
           <Link
             href="/apartments"
@@ -126,16 +206,6 @@ export const Navbar: React.FC = () => {
           </Link>
 
           <Link
-            href="/gallery"
-            className={cn(
-              'px-3 py-1.5 rounded-full transition-colors',
-              pathname === '/gallery' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
-            )}
-          >
-            Gallery
-          </Link>
-
-          <Link
             href="/amenities"
             className={cn(
               'px-3 py-1.5 rounded-full transition-colors',
@@ -146,70 +216,59 @@ export const Navbar: React.FC = () => {
           </Link>
 
           <Link
-            href="/location"
-            className={cn(
-              'px-3 py-1.5 rounded-full transition-colors',
-              pathname === '/location' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
-            )}
-          >
-            Location
-          </Link>
-
-          <Link
             href="/finance"
             className={cn(
               'px-3 py-1.5 rounded-full transition-colors',
               pathname === '/finance' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
             )}
           >
-            Finance
+            Finance &amp; Returns
           </Link>
 
           <Link
             href="/documents"
             className={cn(
-              'px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5',
+              'px-3 py-1.5 rounded-full transition-colors',
               pathname === '/documents' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
             )}
           >
-            <span>Trust Center</span>
+            Trust Center
           </Link>
 
           <Link
-            href="/contact"
+            href="/referrals"
             className={cn(
-              'px-3 py-1.5 rounded-full transition-colors',
-              pathname === '/contact' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
+              'px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5',
+              pathname === '/referrals' ? 'text-[#C58F58] font-bold bg-[#FAF2EB]' : 'text-[#C58F58] hover:bg-[#FAF2EB]'
             )}
           >
-            Contact
+            <Sparkles className="w-3.5 h-3.5 text-[#C58F58]" />
+            <span>Referrals (₹50)</span>
           </Link>
         </nav>
 
-        {/* Action CTAs */}
+        {/* Right CTA Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
           <a
-            href={`tel:${projectOverview.siteOfficePhone}`}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FAF8F5] hover:bg-[#EAF2EE] text-[#0D2329] text-xs font-mono font-bold transition-colors border border-[#E8E2D8]"
+            href="tel:+919999955847"
+            className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FAF8F5] border border-[#E8E2D8] text-xs font-bold text-[#0D2329] hover:border-[#2C5E50] transition-colors"
           >
-            <PhoneCall className="w-3.5 h-3.5 text-[#C58F58]" />
-            <span>{projectOverview.siteOfficePhone}</span>
+            <PhoneCall className="w-3 h-3 text-[#C58F58]" />
+            <span>+91 99999 55847</span>
           </a>
 
-          <Button
-            size="sm"
-            className="bg-[#2C5E50] hover:bg-[#1D4B57] text-white shadow-md text-xs py-2 px-3.5 sm:px-4 font-bold"
-            onClick={() => openLeadDrawer({ title: 'Schedule Site Visit to Kheri Asra, Jhajjar', actionType: 'book-site-visit' })}
-            leftIcon={<Calendar className="w-3.5 h-3.5 text-[#C58F58]" />}
-          >
-            Book Visit
-          </Button>
-
-          {/* Mobile Hamburger Button */}
           <button
-            type="button"
+            onClick={() => openLeadDrawer({ actionType: 'site_visit' })}
+            className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+          >
+            <Calendar className="w-3.5 h-3.5 text-[#E0AB77]" />
+            <span>Book Visit</span>
+          </button>
+
+          {/* Mobile Menu Toggle Button */}
+          <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-full text-[#0D2329] hover:bg-[#FAF8F5] transition-colors focus:outline-none cursor-pointer"
+            className="lg:hidden p-2 rounded-full hover:bg-[#FAF8F5] text-[#0D2329] focus:outline-none"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -217,130 +276,43 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer Dropdown */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-4 top-20 z-50 bg-white/98 backdrop-blur-2xl border border-[#E8E2D8] rounded-3xl shadow-2xl p-6 animate-in fade-in zoom-in-95 duration-200 max-h-[85vh] overflow-y-auto">
-          <div className="flex items-center justify-between pb-4 border-b border-[#E8E2D8]">
-            <div className="flex items-center gap-2">
-              <Heart className="w-4 h-4 fill-[#C58F58] text-[#C58F58]" />
-              <span className="font-serif-heading font-bold text-sm text-[#0D2329]">
-                Senior Living Citizen Foundation
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(false)}
-              className="p-1.5 rounded-lg text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          <div className="py-4 space-y-2 text-sm font-semibold">
-            <Link
-              href="/"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2.5 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5] font-semibold"
-            >
+        <div className="lg:hidden fixed inset-x-3 top-20 bg-white rounded-3xl border border-[#E8E2D8] shadow-2xl p-6 space-y-4 z-40 animate-fade-in max-h-[80vh] overflow-y-auto">
+          <div className="space-y-1 text-sm font-semibold text-[#0D2329]">
+            <Link href="/" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
               Home
             </Link>
-
-            <Link
-              href="/apartments"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5] font-semibold"
-            >
-              <Home className="w-4 h-4 text-[#C58F58]" />
-              <span>Residences (1 BHK &amp; 1 RK)</span>
+            <Link href="/locations" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5] text-[#2C5E50] font-bold">
+              Explore Sanctuaries (Haryana &amp; Goa)
             </Link>
-
-            <Link
-              href="/plots"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5] font-semibold"
-            >
-              <Layers className="w-4 h-4 text-[#2C5E50]" />
-              <span>Plots (64 Freehold Plots)</span>
+            <Link href="/apartments" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
+              Residences (1 RK / 1 BHK)
             </Link>
-
-            <Link
-              href="/gallery"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5] font-semibold"
-            >
-              <MapPin className="w-4 h-4 text-[#C58F58]" />
-              <span>Gallery (Real Drone &amp; Site Evidence)</span>
+            <Link href="/plots" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
+              Freehold Plots (64 Plots)
             </Link>
-
-            <Link
-              href="/amenities"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5] font-semibold"
-            >
-              <Activity className="w-4 h-4 text-emerald-600" />
-              <span>Care &amp; Wellness (Hospital &amp; Mandir)</span>
+            <Link href="/amenities" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
+              Care &amp; Wellness
             </Link>
-
-            <Link
-              href="/location"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5] font-semibold"
-            >
-              <MapPin className="w-4 h-4 text-[#C58F58]" />
-              <span>Location &amp; Map (SH-22 Jhajjar)</span>
+            <Link href="/finance" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
+              Finance &amp; Returns (₹25L Plan)
             </Link>
-
-            <Link
-              href="/finance"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5] font-semibold"
-            >
-              <BadgePercent className="w-4 h-4 text-[#2C5E50]" />
-              <span>Finance &amp; Payment Plans</span>
+            <Link href="/documents" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
+              Trust Center &amp; Legal
             </Link>
-
-            <Link
-              href="/documents"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5] font-semibold"
-            >
-              <Sparkles className="w-4 h-4 text-[#C58F58]" />
-              <span>Trust Center (Public Records)</span>
-            </Link>
-
-            <Link
-              href="/about"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2.5 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5] text-xs text-[#53676E]"
-            >
-              About the Foundation
-            </Link>
-
-            <Link
-              href="/contact"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2.5 rounded-xl text-[#0D2329] hover:bg-[#FAF8F5] text-xs text-[#53676E]"
-            >
-              Contact &amp; Site Office
+            <Link href="/referrals" className="block py-2.5 px-4 rounded-xl bg-[#FAF2EB] text-[#C58F58] font-bold">
+              Referral Program (₹50 per Lead)
             </Link>
           </div>
 
-          <div className="pt-4 border-t border-[#E8E2D8] flex flex-col gap-2">
-            <Button
-              className="w-full bg-[#2C5E50] hover:bg-[#1D4B57] text-white py-3 text-xs font-bold"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                openLeadDrawer({ title: 'Schedule Site Visit to Kheri Asra, Jhajjar', actionType: 'book-site-visit' });
-              }}
-            >
-              Book a Site Visit
-            </Button>
+          <div className="pt-4 border-t border-[#E8E2D8] space-y-2">
             <a
-              href={`tel:${projectOverview.siteOfficePhone}`}
-              className="w-full py-3 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8] text-[#0D2329] text-xs font-mono font-bold text-center flex items-center justify-center gap-2"
+              href="tel:+919999955847"
+              className="w-full py-3 rounded-2xl bg-[#FAF8F5] text-[#0D2329] font-bold text-xs flex items-center justify-center gap-2 border border-[#E8E2D8]"
             >
               <PhoneCall className="w-4 h-4 text-[#C58F58]" />
-              Call: {projectOverview.siteOfficePhone}
+              <span>Call Desk: +91 99999 55847</span>
             </a>
           </div>
         </div>

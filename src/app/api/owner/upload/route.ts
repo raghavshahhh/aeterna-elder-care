@@ -22,10 +22,10 @@ const CATEGORY_LABELS: Record<VaultDocumentCategory, string> = {
 };
 
 export async function POST(request: NextRequest) {
-  const token = request.cookies.get('sl_owner_session')?.value;
+  const token = request.cookies.get('slcf_session')?.value || request.cookies.get('sl_owner_session')?.value;
   const user = verifySessionToken(token);
 
-  if (!user || user.role !== 'owner') {
+  if (!user || (user.role !== 'OWNER' && user.role !== 'SUPER_ADMIN')) {
     return NextResponse.json(
       { error: 'Unauthorized. Owner authentication required for uploading.' },
       { status: 401 }

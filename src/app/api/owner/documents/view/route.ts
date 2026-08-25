@@ -140,7 +140,7 @@ export async function GET(request: NextRequest) {
       <div><strong>Pages:</strong> ${doc.pageCount || 1} Pages Verified</div>
     </div>
     <div class="watermark">
-      🔒 CONFIDENTIAL • AUTHENTICATED ACCESS GRANTED TO: ${user.email} (${user.ownerId})
+      🔒 CONFIDENTIAL • AUTHENTICATED ACCESS GRANTED TO: ${user.email} (${user.id})
     </div>
   </div>
 </body>

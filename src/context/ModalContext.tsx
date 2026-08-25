@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState } from 'react';
 export interface PropertyLeadContext {
   title?: string;
   unitId?: string;
+  unitCode?: string;
   unitName?: string;
   unitType?: string;
   floorName?: string;
@@ -13,7 +14,17 @@ export interface PropertyLeadContext {
   plotBlock?: string;
   plotSize?: string;
   planName?: string;
-  actionType?: 'reserve-unit' | 'reserve-plot' | 'book-site-visit' | 'inquire-residence' | 'request-pricing' | 'request-trust-docs' | 'rental-plan' | 'general';
+  actionType?:
+    | 'reserve-unit'
+    | 'reserve-plot'
+    | 'book-site-visit'
+    | 'site_visit'
+    | 'inquire-residence'
+    | 'request-pricing'
+    | 'request-trust-docs'
+    | 'rental-plan'
+    | 'general'
+    | 'brochure';
   message?: string;
   city?: string;
 }

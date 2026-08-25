@@ -3,7 +3,7 @@ import { verifySessionToken } from '@/lib/auth';
 import { listVaultDocuments, deleteVaultDocument } from '@/lib/vaultStore';
 
 export async function GET(request: NextRequest) {
-  const token = request.cookies.get('sl_owner_session')?.value;
+  const token = request.cookies.get('slcf_session')?.value || request.cookies.get('sl_owner_session')?.value;
   const user = verifySessionToken(token);
 
   if (!user) {
@@ -31,10 +31,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  const token = request.cookies.get('sl_owner_session')?.value;
+  const token = request.cookies.get('slcf_session')?.value || request.cookies.get('sl_owner_session')?.value;
   const user = verifySessionToken(token);
 
-  if (!user || user.role !== 'owner') {
+  if (!user || (user.role !== 'OWNER' && user.role !== 'SUPER_ADMIN')) {
     return NextResponse.json(
       { error: 'Unauthorized. Owner authorization required for deletion.' },
       { status: 401 }

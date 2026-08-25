@@ -27,7 +27,13 @@ export const Footer: React.FC = () => {
   const { openWhatsApp, openLeadDrawer } = useModal();
   const [email, setEmail] = useState('');
 
-  if (pathname?.startsWith('/owner')) return null;
+  if (
+    pathname?.startsWith('/owner') ||
+    pathname?.startsWith('/admin') ||
+    pathname?.startsWith('/portal')
+  ) {
+    return null;
+  }
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();

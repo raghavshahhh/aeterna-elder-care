@@ -11,7 +11,13 @@ export const TopNotificationBar: React.FC = () => {
   const pathname = usePathname();
   const { openWhatsApp, openLeadDrawer } = useModal();
 
-  if (pathname?.startsWith('/owner')) return null;
+  if (
+    pathname?.startsWith('/owner') ||
+    pathname?.startsWith('/admin') ||
+    pathname?.startsWith('/portal')
+  ) {
+    return null;
+  }
 
   return (
     <aside aria-label="Announcement & Hotline Bar" className="bg-[#071519] text-[#FBF9F5] text-[11px] sm:text-xs py-2 px-4 border-b border-[#163942] relative z-30">

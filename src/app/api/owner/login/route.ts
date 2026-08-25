@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { validateOwnerCredentials, createSessionToken } from '@/lib/auth';
+import { authenticateUser, createSessionToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const user = validateOwnerCredentials(identifier.trim(), password);
+    const user = authenticateUser(identifier.trim(), password);
     if (!user) {
       return NextResponse.json(
         { error: 'Invalid Owner ID or Password. Access denied.' },
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Owner authentication successful.',
       user: {
-        ownerId: user.ownerId,
+        ownerId: user.id,
         email: user.email,
         role: user.role
       }
@@ -40,6 +40,14 @@ export async function POST(request: NextRequest) {
       sameSite: 'lax',
       path: '/',
       maxAge: 24 * 60 * 60 // 24 hours
+    });
+
+    response.cookies.set('slcf_session', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 24 * 60 * 60
     });
 
     return response;
