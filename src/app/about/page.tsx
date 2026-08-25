@@ -132,48 +132,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Architecture & The Vision Architects */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-[#E8E2D8] shadow-md grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <div className="lg:col-span-7 space-y-5">
-            <span className="text-xs font-bold font-mono uppercase tracking-widest text-[#C58F58]">
-              ARCHITECTURE &amp; CONSULTANCY
-            </span>
-            <h3 className="text-2xl sm:text-3xl font-serif-heading font-bold text-[#0D2329]">
-              Drawn by <span className="italic font-serif text-[#2C5E50]">{architectProfile.firmName}</span>
-            </h3>
-            <p className="text-xs sm:text-sm text-[#53676E] leading-relaxed">
-              The site plan, CAD drawings, and apartment designs have been crafted by The Vision Architects &amp; Consultants, Farrukhnagar — led by <strong>{architectProfile.principalArchitect} ({architectProfile.credentials})</strong>.
-            </p>
-            <div className="flex flex-wrap gap-2 pt-2">
-              {architectProfile.services.map((s, idx) => (
-                <span key={idx} className="px-3 py-1 rounded-full bg-[#FAF8F5] border border-[#E8E2D8] text-xs text-[#0D2329] font-medium">
-                  {s}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="lg:col-span-5 p-6 rounded-2xl bg-[#0D2329] text-white space-y-4">
-            <h4 className="font-serif text-lg font-bold text-[#FAF8F5]">Contact &amp; Studio</h4>
-            <div className="space-y-2 text-xs text-white/80">
-              <div className="flex items-center gap-2">
-                <PhoneCall className="w-4 h-4 text-emerald-400" />
-                <span>{architectProfile.phone}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-[#C58F58]" />
-                <span>{architectProfile.email}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-emerald-400" />
-                <span>{architectProfile.studioAddress}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-[#0D2329] rounded-3xl p-8 sm:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl">

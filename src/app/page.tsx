@@ -14,7 +14,6 @@ import { WhatYouGetPillars } from '@/components/property/WhatYouGetPillars';
 import { EcosystemShowcase } from '@/components/property/EcosystemShowcase';
 import { AvailabilityMatrix } from '@/components/property/AvailabilityMatrix';
 import { FinancePaymentPlans } from '@/components/property/FinancePaymentPlans';
-import { ArchitectSection } from '@/components/property/ArchitectSection';
 import { TrustTransparency } from '@/components/property/TrustTransparency';
 import { propertyFaqs, projectOverview } from '@/data/propertyData';
 import { Accordion } from '@/components/ui/Accordion';
@@ -79,9 +78,6 @@ export default function HomePage() {
 
       {/* 14, 15 & 16 — TRANSPARENT PRICING, 3 PAYMENT OPTIONS & RENTAL PROPOSITION */}
       <FinancePaymentPlans />
-
-      {/* ARCHITECT CREDENTIALS & PRINCIPAL PROFILE (THE VISION ARCHITECTS) */}
-      <ArchitectSection />
 
       {/* 17 — TRUST & TRANSPARENCY (SECTION 8 / FORM 10AC/80G / DARPAN NPO / FREEHOLD TITLE) */}
       <TrustTransparency />

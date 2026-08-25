@@ -101,11 +101,11 @@ export const Footer: React.FC = () => {
           {/* Brand & Project Vision */}
           <div className="lg:col-span-4 space-y-5">
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-2xl bg-white/95 border border-white/15 flex items-center justify-center p-1.5">
+              <div className="w-12 h-12 rounded-2xl bg-white/95 border border-white/15 flex items-center justify-center p-1 shrink-0 shadow-md">
                 <img
                   src="/project-assets/brand/logo-icon.png"
                   alt="Senior Living Citizen Foundation"
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain rounded-xl"
                 />
               </div>
               <div>
