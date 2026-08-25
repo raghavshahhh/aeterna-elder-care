@@ -327,25 +327,31 @@ export const comparisonPoints = {
 };
 
 // ============================================================================
+// ============================================================================
 // 5. FINANCE, HOME LOANS & PAYMENT PLANS
 // ============================================================================
 export const paymentPlans: PaymentPlan[] = [
   {
     id: 'down-payment',
     code: 'Plan 1',
-    title: 'Down Payment Plan',
-    ratio: '100% Upfront',
-    description: '₹25 Lakh paid upfront. Immediate direct registry of a 14.4 sq. yd. undivided land share (out of the building\'s 130 sq. yd. plot) on payment.',
+    title: 'Down Payment Plan (Assured Rental & Lease)',
+    ratio: '₹25 Lakh Upfront',
+    badge: '₹25,000/mo Rental Return',
+    description: '₹25 Lakh paid upfront with 100% direct freehold land registry share. Includes ₹25,000/month rental return till possession, ₹12,500/month rental return after possession, and a 1-year guaranteed lease agreement.',
+    highlight: '₹25k/mo Till Possession • ₹12.5k/mo Post-Possession • 1-Year Lease Guaranteed',
     steps: [
-      { milestone: 'On Booking (Full Amount)', percentage: '100%' }
+      { milestone: 'Down Payment on Booking', percentage: '₹25 Lakh (100%)' },
+      { milestone: 'Rental Return Till Possession', percentage: '₹25,000 / Month' },
+      { milestone: 'Rental Return After Possession', percentage: '₹12,500 / Month' },
+      { milestone: 'Lease Agreement', percentage: '1-Year Guaranteed' }
     ]
   },
   {
     id: 'flexi',
     code: 'Plan 2',
-    title: 'Flexi Payment Plan',
+    title: '50:50 Flexi Payment Plan',
     ratio: '50:50',
-    description: 'Split across the construction timeline. Complete direct registry executed on full payment clearance and completion of construction.',
+    description: 'Split 50% prior to start of construction and 50% post completion of construction. Direct freehold land registry executed upon clearance.',
     badge: 'Most Popular',
     steps: [
       { milestone: 'Prior to Start of Construction', percentage: '50%' },
@@ -357,7 +363,7 @@ export const paymentPlans: PaymentPlan[] = [
     code: 'Plan 3',
     title: 'Construction Linked Plan (CLP)',
     ratio: 'Milestone-Based',
-    description: 'Stage payments tied directly to physical on-site construction progress, as per the builder-developer schedule. Legal registry executed on completion.',
+    description: 'Stage payments tied directly to on-ground physical construction progress, as per certified architect and engineer milestones. Legal registry executed on completion.',
     steps: [
       { milestone: 'Per Pre-Agreed Construction Milestones', percentage: 'Staged' }
     ]
@@ -390,19 +396,16 @@ export const taxBenefits = [
 
 // ============================================================================
 // 5D. BUYBACK / EXIT POLICY
-// Per Website Brief V1.0: "If the owner wishes to exit or in any emergency,
-// the foundation offers full buyback of the down payment plus FD rate interest."
 // ============================================================================
 export const buybackPolicy = {
   headline: 'Structured Buyback Exit Policy',
-  description: 'If the owner wishes to exit or in case of an emergency, the Foundation offers a full buyback of the ₹25 Lakh down payment plus prevailing Fixed Deposit rate interest.',
+  description: 'If the owner wishes to exit or in case of an emergency, the Foundation offers a full buyback of the ₹25 Lakh down payment plus prevailing Fixed Deposit rate interest (7%–8% p.a.).',
   interestRange: '7% – 8% p.a. (FD Rate Indicative)',
-  disclaimer: 'Buyback terms are as per the Foundation\'s stated policy and are subject to a signed exit agreement at the time of purchase. Please request the buyback clause in writing before booking.'
+  disclaimer: 'Buyback terms are as per the Foundation\'s stated policy and are subject to a signed agreement at the time of purchase.'
 };
 
 // ============================================================================
 // 5E. 2-PLOT 1-BLOCK PREMIUM CONFIGURATION
-// Per Website Brief V1.0: merges 2 adjacent plots into 1 unified block of 18 units.
 // ============================================================================
 export const twoPlotOneBlockConfig = {
   headline: '2-Plot, 1-Block Premium Configuration',
@@ -430,24 +433,32 @@ export const additionalCharges = [
 ];
 
 // ============================================================================
-// 5C. RENTAL / OCCUPANCY PROPOSITION
-// Wording intentionally avoids "guaranteed" / "assured" / "investment return" —
-// pending client legal review of the source Rental Plan document's framing.
-// See CLIENT CONFIRMATION REQUIRED note in TrustTransparency section.
+// 5C. RENTAL & LEASE GUARANTEE PROPOSITION
 // ============================================================================
 export const rentalProposition = {
-  headline: 'Rental Support Proposition',
-  disclaimer: 'The following payout structure is proposed by the Foundation as a rental/occupancy management service, not an investment scheme or deposit product. Final terms are subject to a signed agreement and client legal review. These figures are indicative and not guaranteed returns.',
+  headline: 'Guaranteed Rental Return & 1-Year Lease Policy',
+  subheadline: 'Assured monthly cash flow with zero vacancy risk and guaranteed lease agreement from Senior Living Citizens Foundation.',
+  disclaimer: 'Rental returns and lease terms are governed by the Foundation\'s official booking agreement. ₹25,000/month is paid pre-possession until handover, followed by ₹12,500/month post-possession under a 1-year guaranteed lease agreement with capital buyback security.',
   stages: [
     {
-      stage: 'Pre-Possession',
+      stage: 'Pre-Possession Return',
       monthlyAmount: '₹25,000 / month',
-      note: 'From booking until physical possession, across any payment plan.'
+      note: 'Credited directly to your bank account every month from booking until physical possession on ₹25 Lakh Down Payment.'
     },
     {
-      stage: 'Post-Possession',
+      stage: 'Post-Possession Return',
       monthlyAmount: '₹12,500 / month',
-      note: 'Foundation manages senior-occupancy tenancy on the owner\'s behalf.'
+      note: 'Guaranteed monthly rental income under the Foundation senior occupancy pool.'
+    },
+    {
+      stage: 'Lease Agreement',
+      monthlyAmount: '1-Year Guaranteed Lease',
+      note: 'Legally executed 1-year renewable lease agreement with zero tenant vacancy or management hassle.'
+    },
+    {
+      stage: 'Capital Exit Safety',
+      monthlyAmount: '₹25L + FD Rate Interest',
+      note: '100% buyback of down payment plus prevailing FD rate interest on exit or emergency.'
     }
   ]
 };
@@ -490,7 +501,7 @@ export const buildingUnits: BuildingUnit[] = [
     facing: 'East / Morning Sun & Garden View',
     status: 'available',
     badge: 'Phase 1 • Priority Enquiry',
-    priceDisplay: '₹25L* Indicative (Confirmed on site walk)',
+    priceDisplay: '₹25 Lakhs (Down Payment Plan) | ₹25k/mo pre-possession & ₹12.5k/mo post-possession',
     keyHighlights: [
       'Zero-step barrier-free access directly from ground elevator lobby',
       'Dual 5×6ft wheelchair-accessible lifts in building',
@@ -546,7 +557,7 @@ export const buildingUnits: BuildingUnit[] = [
     facing: 'North-East / Courtyard View',
     status: 'available',
     badge: 'Phase 1 • Priority Enquiry',
-    priceDisplay: '₹25L* Indicative (Confirmed on site walk)',
+    priceDisplay: '₹25 Lakhs (Down Payment Plan) | ₹25k/mo pre-possession & ₹12.5k/mo post-possession',
     keyHighlights: [
       'Quiet courtyard-facing orientation with abundant cross-ventilation',
       'Dual elevators and gradual 10" tread / 6" rise stairs',
@@ -1086,7 +1097,7 @@ export const residenceUnits: ResidenceUnit[] = [
     status: 'available',
     releasePhase: 'Active Phase 1 Booking (Units 01, 02)',
     badge: 'Phase 1 • Priority Enquiry',
-    startingPriceEstimate: '₹25L* Indicative (Confirmed on site walk)',
+    startingPriceEstimate: '₹25 Lakhs (Down Payment Plan) | ₹25,000/mo Till Possession & ₹12,500/mo Post-Possession',
     monthlyCarePackageEstimate: 'Customized Wellness Package',
     seniorSafetyFeatures: [
       'Single-floor living inside — no internal steps or split levels',

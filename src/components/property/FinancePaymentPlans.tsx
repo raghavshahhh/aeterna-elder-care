@@ -42,7 +42,7 @@ export const FinancePaymentPlans: React.FC = () => {
             Transparent Pricing. <span className="italic font-serif text-[#C58F58]">Straightforward Plans.</span>
           </h2>
           <p className="text-sm sm:text-base text-[#53676E] leading-relaxed">
-            Down Payment Plan starting at ₹25 Lakhs for senior residences (EOI ₹1 Lakh). 100% freehold land registration, flexible 50:50 and milestone-linked construction plans.
+            Down Payment Plan starting at <strong>₹25 Lakhs</strong> for senior residences with <strong>₹25,000/month rental return till possession</strong>, <strong>₹12,500/month rental return after possession</strong>, and a <strong>1-year guaranteed lease agreement</strong>. 100% freehold land registration.
           </p>
         </div>
 
@@ -72,26 +72,26 @@ export const FinancePaymentPlans: React.FC = () => {
                   </div>
 
                   <div>
-                    <div className="text-4xl sm:text-5xl font-serif-heading font-bold tracking-tight">
+                    <div className={`text-3xl sm:text-4xl font-serif-heading font-bold tracking-tight ${isFeatured ? 'text-[#FAF8F5]' : 'text-[#0D2329]'}`}>
                       {plan.ratio}
                     </div>
-                    <h3 className={`text-xl font-serif-heading font-bold mt-1 ${isFeatured ? 'text-[#F2EADA]' : 'text-[#0D2329]'}`}>
+                    <h3 className={`text-lg font-serif-heading font-bold mt-1 ${isFeatured ? 'text-[#F2EADA]' : 'text-[#0D2329]'}`}>
                       {plan.title}
                     </h3>
                   </div>
 
-                  <p className={`text-xs sm:text-sm leading-relaxed ${isFeatured ? 'text-white/80' : 'text-[#53676E]'}`}>
+                  <p className={`text-xs sm:text-sm leading-relaxed ${isFeatured ? 'text-white/85' : 'text-[#53676E]'}`}>
                     {plan.description}
                   </p>
 
                   {/* Payment Milestone Steps */}
                   <div className="space-y-2.5 pt-4 border-t border-current/15">
                     {plan.steps.map((step, idx) => (
-                      <div key={idx} className="flex items-center justify-between text-xs font-medium">
+                      <div key={idx} className="flex items-center justify-between text-xs font-medium gap-2">
                         <span className={isFeatured ? 'text-white/80' : 'text-[#53676E]'}>
                           {step.milestone}
                         </span>
-                        <span className="font-mono font-bold text-emerald-400">
+                        <span className="font-mono font-bold text-emerald-400 shrink-0">
                           {step.percentage}
                         </span>
                       </div>
@@ -99,7 +99,7 @@ export const FinancePaymentPlans: React.FC = () => {
                   </div>
 
                   {plan.highlight && (
-                    <div className="p-3 rounded-xl bg-[#C58F58]/15 border border-[#C58F58]/30 text-xs text-[#E0AB77] font-medium">
+                    <div className="p-3 rounded-xl bg-[#C58F58]/20 border border-[#C58F58]/40 text-xs text-[#E0AB77] font-semibold">
                       {plan.highlight}
                     </div>
                   )}
@@ -107,9 +107,9 @@ export const FinancePaymentPlans: React.FC = () => {
 
                 <button
                   onClick={() => openWhatsApp({ actionType: 'request-pricing', message: `I want details on ${plan.title} (${plan.code}) for Senior Living Citizen Foundation...` })}
-                  className={`mt-8 w-full py-3.5 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                  className={`mt-8 w-full py-3.5 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                     isFeatured
-                      ? 'bg-[#C58F58] hover:bg-[#B37E47] text-white shadow-lg'
+                      ? 'bg-[#C58F58] hover:bg-[#B37E47] text-[#071519] shadow-lg font-bold'
                       : 'bg-[#2C5E50] hover:bg-[#1D4B57] text-white'
                   }`}
                 >
@@ -140,16 +140,69 @@ export const FinancePaymentPlans: React.FC = () => {
             </p>
             <button
               onClick={() => openWhatsApp({ actionType: 'request-pricing', message: 'Hello, I am ready to pay the ₹1 Lakh EOI to reserve a unit/plot at Senior Living Citizen Foundation. Please confirm the unit and send a payment receipt process.' })}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#C58F58] hover:bg-[#B37E47] text-[#071519] text-xs font-bold transition-all"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#C58F58] hover:bg-[#B37E47] text-[#071519] text-xs font-bold transition-all cursor-pointer"
             >
               <MessageSquare className="w-4 h-4" /> Confirm on WhatsApp Before Paying
             </button>
           </div>
         </div>
 
-        {/* Parking, Terrace Rights & Rental Proposition */}
+        {/* Guaranteed Rental & 1-Year Lease Proposition Showcase */}
+        <div className="mb-16 bg-[#0D2329] rounded-3xl p-7 sm:p-10 border border-[#C58F58]/30 shadow-2xl text-white space-y-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-[#C58F58]/10 blur-3xl pointer-events-none" />
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/15">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C58F58]/20 border border-[#C58F58]/40 text-[#E0AB77] text-xs font-mono font-bold uppercase tracking-wider">
+                <BadgePercent className="w-3.5 h-3.5" /> Assured Commercial Terms
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-serif-heading font-bold text-white mt-2">
+                {rentalProposition.headline}
+              </h3>
+              <p className="text-xs sm:text-sm text-white/75 mt-1 max-w-2xl">
+                {rentalProposition.subheadline}
+              </p>
+            </div>
+
+            <button
+              onClick={() =>
+                openWhatsApp({
+                  actionType: 'request-pricing',
+                  message: 'Hello, I want to inquire about the ₹25 Lakh Down Payment Plan with ₹25,000/month rental return till possession, ₹12,500/month rental return after possession, and 1-year guaranteed lease agreement.'
+                })
+              }
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all shadow-lg shrink-0 cursor-pointer"
+            >
+              <MessageSquare className="w-4 h-4" /> Get Rental Agreement Terms →
+            </button>
+          </div>
+
+          {/* 4 Pillars Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {rentalProposition.stages.map((stage, idx) => (
+              <div key={idx} className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2 hover:bg-white/10 transition-colors">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[#E0AB77] block font-bold">
+                  {stage.stage}
+                </span>
+                <div className="text-xl sm:text-2xl font-serif-heading font-bold text-emerald-400">
+                  {stage.monthlyAmount}
+                </div>
+                <p className="text-xs text-white/75 leading-relaxed">
+                  {stage.note}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-start gap-2 p-4 rounded-2xl bg-white/5 border border-white/10 text-xs text-white/70 leading-relaxed">
+            <Info className="w-4 h-4 text-[#C58F58] mt-0.5 shrink-0" />
+            <span>{rentalProposition.disclaimer}</span>
+          </div>
+        </div>
+
+        {/* Parking, Terrace Rights & Additional Info */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
-          <div className="lg:col-span-5 bg-white rounded-3xl p-7 border border-[#E8E2D8] shadow-sm space-y-4">
+          <div className="lg:col-span-6 bg-white rounded-3xl p-7 border border-[#E8E2D8] shadow-sm space-y-4">
             <div className="flex items-center gap-2 text-xs font-bold font-mono uppercase tracking-widest text-[#2C5E50]">
               <Car className="w-4 h-4 text-[#C58F58]" />
               Parking &amp; Terrace Rights
@@ -167,20 +220,20 @@ export const FinancePaymentPlans: React.FC = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-7 bg-[#EAF2EE] rounded-3xl p-7 border border-[#CDE0D7] space-y-4">
-            <h4 className="text-xl font-serif-heading font-bold text-[#0D2329]">{rentalProposition.headline}</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {rentalProposition.stages.map((stage, idx) => (
-                <div key={idx} className="p-4 rounded-xl bg-white/80 border border-[#CDE0D7]">
-                  <div className="text-[10px] font-mono uppercase tracking-widest text-[#53676E]">{stage.stage}</div>
-                  <div className="text-lg font-serif-heading font-bold text-[#2C5E50] mt-1">{stage.monthlyAmount}</div>
-                  <div className="text-xs text-[#53676E] mt-1 leading-relaxed">{stage.note}</div>
-                </div>
-              ))}
+          <div className="lg:col-span-6 bg-white rounded-3xl p-7 border border-[#E8E2D8] shadow-sm space-y-4">
+            <div className="flex items-center gap-2 text-xs font-bold font-mono uppercase tracking-widest text-[#2C5E50]">
+              <RotateCcw className="w-4 h-4 text-[#C58F58]" />
+              {buybackPolicy.headline}
             </div>
-            <div className="flex items-start gap-2 p-3 rounded-xl bg-white/60 border border-[#CDE0D7] text-[11px] text-[#53676E] leading-relaxed">
-              <Info className="w-3.5 h-3.5 text-[#2C5E50] mt-0.5 flex-shrink-0" />
-              {rentalProposition.disclaimer}
+            <p className="text-xs text-[#53676E] leading-relaxed">
+              {buybackPolicy.description}
+            </p>
+            <div className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D8] flex items-center justify-between">
+              <span className="text-xs font-semibold text-[#0D2329]">Capital Interest Rate:</span>
+              <span className="font-mono text-xs font-bold text-[#2C5E50]">{buybackPolicy.interestRange}</span>
+            </div>
+            <div className="text-[11px] text-[#899B9F] italic">
+              *{buybackPolicy.disclaimer}
             </div>
           </div>
         </div>
@@ -323,19 +376,27 @@ export const FinancePaymentPlans: React.FC = () => {
               </div>
             </div>
 
-            {/* Buyback Exit Policy */}
+            {/* Banking & Home Loan Support */}
             <div className="bg-[#0D2329] text-white rounded-3xl p-7 border border-white/15 space-y-3">
               <div className="flex items-center gap-2 text-xs font-bold font-mono uppercase tracking-widest text-[#E0AB77]">
-                <RotateCcw className="w-4 h-4 text-[#C58F58]" />
-                {buybackPolicy.headline}
+                <Shield className="w-4 h-4 text-[#C58F58]" />
+                Direct Banking &amp; Registry Assistance
               </div>
-              <p className="text-xs text-white/75 leading-relaxed">{buybackPolicy.description}</p>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C58F58]/20 border border-[#C58F58]/40 text-[#E0AB77] text-xs font-bold">
-                {buybackPolicy.interestRange}
-              </div>
-              <div className="flex items-start gap-2 pt-2 text-[11px] text-white/55 leading-relaxed">
-                <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-                {buybackPolicy.disclaimer}
+              <p className="text-xs text-white/75 leading-relaxed">
+                Our sales and finance desk provides end-to-end documentation assistance for home loans, registry drafting at Farrukhnagar Tehsil, and legal verification.
+              </p>
+              <div className="pt-2">
+                <button
+                  onClick={() =>
+                    openWhatsApp({
+                      actionType: 'request-pricing',
+                      message: 'Hello, I would like assistance with home loans, bank eligibility, and registry documentation for Senior Living Citizens Foundation.'
+                    })
+                  }
+                  className="inline-flex items-center gap-2 text-xs font-bold text-[#E0AB77] hover:text-white transition-colors cursor-pointer"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" /> Speak with our Finance Desk →
+                </button>
               </div>
             </div>
           </div>
