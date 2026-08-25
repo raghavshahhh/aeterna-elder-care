@@ -1,5 +1,5 @@
 import { projectOverview } from '@/data/propertyData';
-import { Video, MapPin, FileText, ShieldCheck } from 'lucide-react';
+import { Video, MapPin, FileText, ShieldCheck, ExternalLink } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -8,12 +8,12 @@ export const metadata: Metadata = {
 };
 
 function getYoutubeEmbedId(url: string): string | null {
-  const match = url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([a-zA-Z0-9_-]+)/);
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
   return match ? match[1] : null;
 }
 
 export default function GalleryPage() {
-  const youtubeId = getYoutubeEmbedId(projectOverview.droneYoutubeUrl);
+  const youtubeId = getYoutubeEmbedId(projectOverview.droneYoutubeUrl) || 'jiEwQ6RA2HI';
 
   const cadImages = [
     { src: '/project-assets/architecture/cad/previews/masterplan-real.jpg', label: '64-Plot Masterplan', source: 'The Vision Architects', status: 'ARCHITECTURAL DRAWING / SOURCE DOCUMENT' },
@@ -41,14 +41,47 @@ export default function GalleryPage() {
       </section>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-        {/* Full Drone Video Player */}
+        {/* Official YouTube Walkthrough Video Player */}
+        <section className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-950/80 border border-red-500/30 text-red-300 text-[11px] font-mono font-bold uppercase tracking-wider">
+                <Video className="w-3.5 h-3.5 text-red-400" /> Official YouTube Project Video
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-serif-heading font-bold text-[#0D2329] mt-2">
+                Ground &amp; Aerial Walkthrough Video
+              </h2>
+            </div>
+            <a
+              href={projectOverview.droneYoutubeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold tracking-wide transition-all shadow-lg self-start sm:self-auto cursor-pointer"
+            >
+              <ExternalLink className="w-4 h-4" /> Watch on YouTube App ↗
+            </a>
+          </div>
+
+          <div className="w-full h-[260px] sm:h-[440px] lg:h-[540px] rounded-3xl overflow-hidden border border-[#E8E2D8] shadow-2xl bg-black relative">
+            <iframe
+              src={`https://www.youtube.com/embed/${youtubeId}?rel=0&modestbranding=1`}
+              title="Senior Living Citizen Foundation — Official Site Drone & Ground Video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="w-full h-full border-0"
+            />
+          </div>
+          <p className="text-xs text-[#53676E]">Client-supplied full walkthrough video showing the demarcated freehold property in Kheri Asra, Jhajjar, and SH-22 highway approach.</p>
+        </section>
+
+        {/* Full Drone Video Local Player */}
         <section className="space-y-4">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/85 border border-emerald-500/40 text-emerald-700 text-[11px] font-mono font-bold uppercase tracking-wider">
-              <MapPin className="w-3 h-3" /> Real Site Today
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/85 border border-emerald-500/40 text-emerald-300 text-[11px] font-mono font-bold uppercase tracking-wider">
+              <MapPin className="w-3 h-3 text-emerald-400" /> High-Bitrate Aerial Drone Flyover
             </span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-serif-heading font-bold text-[#0D2329]">Full Drone Flyover</h2>
+          <h2 className="text-2xl sm:text-3xl font-serif-heading font-bold text-[#0D2329]">Direct Drone Aerial Video</h2>
           <div className="rounded-3xl overflow-hidden border border-[#E8E2D8] shadow-xl bg-black">
             <video
               controls
@@ -59,24 +92,8 @@ export default function GalleryPage() {
               <source src="/project-assets/real-site/drone/full-tour.mp4" type="video/mp4" />
             </video>
           </div>
-          <p className="text-xs text-[#53676E]">Client-supplied aerial footage captured at Kheri Asra, Jhajjar — the demarcated freehold land parcel and SH-22 frontage.</p>
+          <p className="text-xs text-[#53676E]">Raw 1080p aerial drone footage showing the perimeter demarcation and immediate surroundings.</p>
         </section>
-
-        {/* YouTube Embed */}
-        {youtubeId && (
-          <section className="space-y-4">
-            <h2 className="text-2xl sm:text-3xl font-serif-heading font-bold text-[#0D2329]">Project Video</h2>
-            <div className="rounded-3xl overflow-hidden border border-[#E8E2D8] shadow-xl bg-black aspect-video">
-              <iframe
-                src={`https://www.youtube.com/embed/${youtubeId}`}
-                title="Senior Living Citizen Foundation — Project Video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-              />
-            </div>
-          </section>
-        )}
 
         {/* Real CAD & Land Records */}
         <section className="space-y-4">

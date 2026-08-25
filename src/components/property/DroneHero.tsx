@@ -128,7 +128,7 @@ export const DroneHero: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
             <Button
               size="lg"
-              className="bg-[#2C5E50] hover:bg-[#3D7363] text-white py-4 px-7 text-sm sm:text-base font-semibold shadow-xl shadow-[#2C5E50]/40 cursor-pointer"
+              className="bg-[#2C5E50] hover:bg-[#3D7363] text-white py-4 px-6 text-sm sm:text-base font-semibold shadow-xl shadow-[#2C5E50]/40 cursor-pointer"
               onClick={() => scrollToSection('building-vision')}
               leftIcon={<Building2 className="w-5 h-5" />}
             >
@@ -137,11 +137,20 @@ export const DroneHero: React.FC = () => {
             <Button
               variant="outline"
               size="lg"
-              className="border-white/30 bg-black/40 backdrop-blur-md text-white hover:bg-white/15 py-4 px-6 text-sm font-medium cursor-pointer"
+              className="border-red-500/40 bg-red-950/40 backdrop-blur-md text-white hover:bg-red-900/50 py-4 px-5 text-sm font-medium cursor-pointer"
+              onClick={() => scrollToSection('reality-vs-vision')}
+              leftIcon={<Video className="w-4 h-4 text-red-400" />}
+            >
+              Watch Video
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-white/30 bg-black/40 backdrop-blur-md text-white hover:bg-white/15 py-4 px-5 text-sm font-medium cursor-pointer"
               onClick={() => openLeadDrawer({ title: 'Book Free Private Site Walkthrough in Kheri Asra', actionType: 'book-site-visit' })}
               leftIcon={<Calendar className="w-4 h-4 text-[#C58F58]" />}
             >
-              Book a Site Visit
+              Book Site Visit
             </Button>
             <Button
               variant="ghost"

@@ -21,7 +21,8 @@ import {
   Eye,
   Calendar,
   MessageSquare,
-  Video
+  Video,
+  ExternalLink
 } from 'lucide-react';
 
 export const RealVsProposed: React.FC = () => {
@@ -94,6 +95,43 @@ export const RealVsProposed: React.FC = () => {
                 64 Freehold plots, G+2 residence building with stilt parking, and 30k sq. ft. Ayurvedic Hospital &amp; Mandir.
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* Official YouTube Walkthrough Video Player */}
+        <div className="mb-14 bg-[#071519] border border-[#163942] rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-950/80 border border-red-500/30 text-red-300 text-xs font-bold uppercase tracking-wider">
+                <Video className="w-3.5 h-3.5 text-red-400" /> Official Site Drone &amp; Ground Walkthrough
+              </div>
+              <h3 className="text-xl sm:text-2xl font-serif-heading font-bold text-white mt-2">
+                Watch the Land, SH-22 Frontage &amp; Ground Video on YouTube
+              </h3>
+            </div>
+            <a
+              href={projectOverview.droneYoutubeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold tracking-wide transition-all shadow-lg self-start sm:self-auto cursor-pointer"
+            >
+              <ExternalLink className="w-4 h-4" /> Watch on YouTube (HD) ↗
+            </a>
+          </div>
+
+          <div className="w-full h-[260px] sm:h-[440px] lg:h-[540px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black relative">
+            <iframe
+              src="https://www.youtube.com/embed/jiEwQ6RA2HI?rel=0&modestbranding=1"
+              title="Senior Living Citizen Foundation — Official Site Drone & Ground Video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="w-full h-full border-0"
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-white/70 pt-2 border-t border-white/10">
+            <span>Demarcated freehold land &amp; SH-22 highway entrance • Kheri Asra, Jhajjar</span>
+            <span className="font-mono text-[#C58F58]">1080p Full HD • Verified Ground Evidence</span>
           </div>
         </div>
 
