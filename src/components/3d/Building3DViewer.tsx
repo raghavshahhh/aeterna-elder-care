@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import * as THREE from 'three';
 import { FloorLevel } from '@/types';
 import { buildingUnits } from '@/data/propertyData';
@@ -20,7 +21,11 @@ import {
   ArrowRight,
   Sun,
   Car,
-  Home
+  Home,
+  X,
+  CheckCircle2,
+  MessageSquare,
+  Phone
 } from 'lucide-react';
 
 interface Building3DViewerProps {
@@ -274,6 +279,11 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
   const [cameraPreset, setCameraPreset] = useState<'hero' | 'front' | 'entrance' | 'stilt' | 'exploded' | 'top'>('hero');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -298,6 +308,17 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
   useEffect(() => {
     onSelectUnitRef.current = onSelectUnit;
   }, [onSelectUnit]);
+
+  // Keyboard Escape listener for fullscreen
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFullscreen]);
 
   // Smooth Orbit Controls State
   const orbitRef = useRef({
@@ -359,7 +380,7 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
     renderer.setSize(width, height);
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
     rendererRef.current = renderer;
@@ -1107,240 +1128,400 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
 
   const selectedUnit = buildingUnits.find((u) => u.id === selectedUnitId) || buildingUnits[0];
 
+  // Determine CAD Floor Plan image based on active floor
+  const cadFloorPlanImage =
+    activeFloor === 'stilt'
+      ? '/project-assets/architecture/cad/previews/stilt-floor-cad.jpg'
+      : activeFloor === 'ground'
+      ? '/project-assets/architecture/cad/previews/ground-floor-preview.jpg'
+      : '/project-assets/architecture/cad/previews/typical-floor-cad.jpg';
+
+  const floorUnits = buildingUnits.filter((u) => u.floorLevel === activeFloor);
+
   return (
     <div
       ref={containerRef}
-      className={`relative w-full rounded-3xl overflow-hidden bg-[#071519] border border-[#163942] shadow-2xl transition-all duration-300 ${
-        isFullscreen ? 'fixed inset-0 z-50 rounded-none h-screen' : 'h-[620px] sm:h-[700px]'
+      className={`relative w-full overflow-hidden bg-[#071519] border border-[#163942] shadow-2xl transition-all duration-300 ${
+        isFullscreen
+          ? 'fixed inset-0 z-[99999] rounded-none h-screen w-screen flex flex-col lg:flex-row'
+          : 'rounded-3xl h-[620px] sm:h-[700px]'
       }`}
     >
-      {/* Three.js Canvas */}
-      <canvas ref={canvasRef} className="w-full h-full cursor-grab active:cursor-grabbing block" />
+      {/* Main 3D Canvas Viewport */}
+      <div className={`relative h-full ${isFullscreen ? 'flex-1 min-w-0 h-full' : 'w-full'}`}>
+        <canvas ref={canvasRef} className="w-full h-full cursor-grab active:cursor-grabbing block" />
 
-      {/* Loading Overlay */}
-      {isLoading && (
-        <div className="absolute inset-0 bg-[#071519] flex flex-col items-center justify-center gap-3 z-30">
-          <div className="w-10 h-10 border-2 border-[#C58F58] border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs font-mono text-[#FAF8F5] uppercase tracking-widest">
-            Rendering Architectural CGI Model...
-          </span>
-        </div>
-      )}
-
-      {/* Top Left Status & Proposed Badge */}
-      <div className="absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2 pointer-events-none">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0D2329]/90 border border-white/15 text-[11px] font-mono text-[#E0AB77] uppercase tracking-widest backdrop-blur-md shadow-lg pointer-events-auto">
-          <Building2 className="w-3.5 h-3.5 text-[#C58F58]" />
-          <span>PROPOSED / INDICATIVE ARTIST IMPRESSION</span>
-        </div>
-
-        <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-400/30 text-emerald-300 text-[11px] font-bold backdrop-blur-md shadow-lg pointer-events-auto">
-          <ShieldCheck className="w-3.5 h-3.5" />
-          <span>CAD Proportions · Ar. Yash Garg</span>
-        </div>
-      </div>
-
-      {/* Top Right Architectural Camera View Presets */}
-      <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 bg-[#0D2329]/90 backdrop-blur-md p-1.5 rounded-2xl border border-white/15 shadow-xl pointer-events-auto">
-        <button
-          onClick={() => handleApplyPreset('hero')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            cameraPreset === 'hero' && !isExploded
-              ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md'
-              : 'text-white/75 hover:text-white hover:bg-white/10'
-          }`}
-          title="3/4 Architectural Perspective View"
-        >
-          Hero 3/4
-        </button>
-
-        <button
-          onClick={() => handleApplyPreset('front')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            cameraPreset === 'front' && !isExploded
-              ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md'
-              : 'text-white/75 hover:text-white hover:bg-white/10'
-          }`}
-          title="Front Elevation"
-        >
-          Elevation
-        </button>
-
-        <button
-          onClick={() => handleApplyPreset('entrance')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            cameraPreset === 'entrance'
-              ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md'
-              : 'text-white/75 hover:text-white hover:bg-white/10'
-          }`}
-          title="Ground Entrance Eye-Level View"
-        >
-          Entrance
-        </button>
-
-        <button
-          onClick={() => handleApplyPreset('exploded')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            isExploded
-              ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md'
-              : 'text-[#E0AB77] hover:bg-white/10'
-          }`}
-          title="Exploded Vertical Tiers"
-        >
-          <Layers className="w-3.5 h-3.5 inline mr-1" />
-          Exploded
-        </button>
-
-        <button
-          onClick={() => handleApplyPreset('top')}
-          className={`hidden sm:block px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            cameraPreset === 'top'
-              ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md'
-              : 'text-white/75 hover:text-white hover:bg-white/10'
-          }`}
-          title="Top-Down Plan View"
-        >
-          Top Plan
-        </button>
-
-        <div className="h-4 w-px bg-white/20 mx-1" />
-
-        {onToggle2DFallback && (
-          <button
-            onClick={onToggle2DFallback}
-            className="px-2.5 py-1.5 rounded-xl text-xs text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-            title="Switch to 2D CAD Drawings"
-          >
-            2D CAD
-          </button>
+        {/* Loading Overlay */}
+        {isLoading && (
+          <div className="absolute inset-0 bg-[#071519] flex flex-col items-center justify-center gap-3 z-30">
+            <div className="w-10 h-10 border-2 border-[#C58F58] border-t-transparent rounded-full animate-spin" />
+            <span className="text-xs font-mono text-[#FAF8F5] uppercase tracking-widest">
+              Rendering Architectural CGI Model...
+            </span>
+          </div>
         )}
 
-        <button
-          onClick={() => setIsFullscreen(!isFullscreen)}
-          className="p-1.5 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-          title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
-        >
-          {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-        </button>
-      </div>
-
-      {/* Left 4-Tier Interactive Floor Selector */}
-      <div className="absolute left-4 top-20 z-20 flex flex-col gap-2 w-44 sm:w-52 pointer-events-auto">
-        <span className="text-[10px] font-mono uppercase text-[#C58F58] tracking-widest px-1 font-bold">
-          Select Floor Level:
-        </span>
-
-        {/* Second Floor (Phase 3 Waitlist) */}
-        <button
-          onClick={() => handleSelectFloor('second')}
-          className={`p-3 rounded-2xl border text-left transition-all backdrop-blur-md shadow-lg cursor-pointer ${
-            activeFloor === 'second'
-              ? 'bg-[#2C5E50] border-[#CDE0D7] text-white scale-105 shadow-xl ring-2 ring-[#C58F58]'
-              : 'bg-[#071519]/80 border-white/10 text-white/75 hover:bg-[#14353E]'
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold font-serif-heading">Second Floor</span>
-            <Lock className="w-3 h-3 text-[#C58F58]" />
+        {/* Top Left Status & Proposed Badge */}
+        <div className="absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2 pointer-events-none">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0D2329]/90 border border-white/15 text-[11px] font-mono text-[#E0AB77] uppercase tracking-widest backdrop-blur-md shadow-lg pointer-events-auto">
+            <Building2 className="w-3.5 h-3.5 text-[#C58F58]" />
+            <span>PROPOSED G+2 RESIDENCE CGI</span>
           </div>
-          <p className="text-[10px] text-white/60 mt-0.5">Units 07–09 • Phase 3 Waitlist</p>
-        </button>
 
-        {/* First Floor (Phase 2 Waitlist) */}
-        <button
-          onClick={() => handleSelectFloor('first')}
-          className={`p-3 rounded-2xl border text-left transition-all backdrop-blur-md shadow-lg cursor-pointer ${
-            activeFloor === 'first'
-              ? 'bg-[#2C5E50] border-[#CDE0D7] text-white scale-105 shadow-xl ring-2 ring-[#C58F58]'
-              : 'bg-[#071519]/80 border-white/10 text-white/75 hover:bg-[#14353E]'
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold font-serif-heading">First Floor</span>
-            <Lock className="w-3 h-3 text-[#C58F58]" />
+          <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-400/30 text-emerald-300 text-[11px] font-bold backdrop-blur-md shadow-lg pointer-events-auto">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>CAD Proportions · 88'-6" × 45'-0"</span>
           </div>
-          <p className="text-[10px] text-white/60 mt-0.5">Units 04–06 • Phase 2 Waitlist</p>
-        </button>
+        </div>
 
-        {/* Ground Floor (ACTIVE LAUNCH - Units 01-03) */}
-        <button
-          onClick={() => handleSelectFloor('ground')}
-          className={`p-3 rounded-2xl border text-left transition-all backdrop-blur-md shadow-xl cursor-pointer ${
-            activeFloor === 'ground'
-              ? 'bg-gradient-to-r from-[#2C5E50] to-[#1F483D] border-emerald-400 text-white ring-2 ring-emerald-400/40 scale-105'
-              : 'bg-[#071519]/90 border-emerald-500/30 text-white hover:bg-[#14353E]'
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold font-serif-heading text-emerald-300">Ground Floor</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          </div>
-          <p className="text-[10px] text-emerald-100 font-medium mt-0.5">Units 01–03 • Phase 1 Priority</p>
-        </button>
+        {/* Top Right Architectural Camera View Presets */}
+        <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 bg-[#0D2329]/90 backdrop-blur-md p-1.5 rounded-2xl border border-white/15 shadow-xl pointer-events-auto">
+          <button
+            onClick={() => handleApplyPreset('hero')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              cameraPreset === 'hero' && !isExploded
+                ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md'
+                : 'text-white/75 hover:text-white hover:bg-white/10'
+            }`}
+            title="3/4 Architectural Perspective View"
+          >
+            Hero 3/4
+          </button>
 
-        {/* Stilt Parking */}
-        <button
-          onClick={() => handleSelectFloor('stilt')}
-          className={`p-3 rounded-2xl border text-left transition-all backdrop-blur-md shadow-lg cursor-pointer ${
-            activeFloor === 'stilt'
-              ? 'bg-[#2C5E50] border-[#CDE0D7] text-white scale-105 shadow-xl ring-2 ring-[#C58F58]'
-              : 'bg-[#071519]/80 border-white/10 text-white/75 hover:bg-[#14353E]'
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold font-serif-heading">Stilt Parking</span>
-            <Car className="w-3.5 h-3.5 text-[#C58F58]" />
-          </div>
-          <p className="text-[10px] text-white/60 mt-0.5">Covered Bays • Dual Lift Lobby</p>
-        </button>
-      </div>
+          <button
+            onClick={() => handleApplyPreset('front')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              cameraPreset === 'front' && !isExploded
+                ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md'
+                : 'text-white/75 hover:text-white hover:bg-white/10'
+            }`}
+            title="Front Elevation"
+          >
+            Elevation
+          </button>
 
-      {/* Right Floating Unit Card (Ground Floor Phase 1 Units) */}
-      {activeFloor === 'ground' && (
-        <div className="absolute right-4 top-20 max-w-xs w-full bg-[#071519]/95 backdrop-blur-xl border border-white/15 rounded-3xl p-5 text-white shadow-2xl z-20 space-y-4 pointer-events-auto">
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/30 text-[10px] font-bold text-emerald-300 uppercase tracking-wider">
-                Phase 1 Priority
-              </span>
-              <span className="text-xs text-white/70 font-mono">Ground Floor</span>
+          <button
+            onClick={() => handleApplyPreset('entrance')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              cameraPreset === 'entrance'
+                ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md'
+                : 'text-white/75 hover:text-white hover:bg-white/10'
+            }`}
+            title="Ground Entrance Eye-Level View"
+          >
+            Entrance
+          </button>
+
+          <button
+            onClick={() => handleApplyPreset('exploded')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              isExploded
+                ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md'
+                : 'text-[#E0AB77] hover:bg-white/10'
+            }`}
+            title="Exploded Vertical Tiers"
+          >
+            <Layers className="w-3.5 h-3.5 inline mr-1" />
+            Exploded
+          </button>
+
+          <button
+            onClick={() => handleApplyPreset('top')}
+            className={`hidden sm:block px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              cameraPreset === 'top'
+                ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md'
+                : 'text-white/75 hover:text-white hover:bg-white/10'
+            }`}
+            title="Top-Down Plan View"
+          >
+            Top Plan
+          </button>
+
+          <div className="h-4 w-px bg-white/20 mx-1" />
+
+          {onToggle2DFallback && (
+            <button
+              onClick={onToggle2DFallback}
+              className="px-2.5 py-1.5 rounded-xl text-xs text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              title="Switch to 2D CAD Drawings"
+            >
+              2D CAD
+            </button>
+          )}
+
+          <button
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            className="p-1.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            title={isFullscreen ? 'Exit Fullscreen (Esc)' : 'Studio Fullscreen Mode'}
+          >
+            {isFullscreen ? <Minimize2 className="w-4 h-4 text-[#C58F58]" /> : <Maximize2 className="w-4 h-4" />}
+          </button>
+        </div>
+
+        {/* Left 4-Tier Interactive Floor Selector */}
+        <div className="absolute left-4 top-20 z-20 flex flex-col gap-2 w-44 sm:w-52 pointer-events-auto">
+          <span className="text-[10px] font-mono uppercase text-[#C58F58] tracking-widest px-1 font-bold">
+            Select Floor Level:
+          </span>
+
+          <button
+            onClick={() => handleSelectFloor('second')}
+            className={`p-3 rounded-2xl border text-left transition-all backdrop-blur-md shadow-lg cursor-pointer ${
+              activeFloor === 'second'
+                ? 'bg-[#2C5E50] border-[#CDE0D7] text-white scale-105 shadow-xl ring-2 ring-[#C58F58]'
+                : 'bg-[#071519]/80 border-white/10 text-white/75 hover:bg-[#14353E]'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold font-serif-heading">Second Floor</span>
+              <Lock className="w-3 h-3 text-[#C58F58]" />
             </div>
-            <span className="text-xs font-bold text-[#C58F58]">From ₹25L*</span>
-          </div>
+            <p className="text-[10px] text-white/60 mt-0.5">Units 07–09 • Phase 3 Waitlist</p>
+          </button>
 
-          {/* Unit Switcher */}
-          <div className="grid grid-cols-3 gap-2">
-            {buildingUnits.slice(0, 3).map((unit) => (
+          <button
+            onClick={() => handleSelectFloor('first')}
+            className={`p-3 rounded-2xl border text-left transition-all backdrop-blur-md shadow-lg cursor-pointer ${
+              activeFloor === 'first'
+                ? 'bg-[#2C5E50] border-[#CDE0D7] text-white scale-105 shadow-xl ring-2 ring-[#C58F58]'
+                : 'bg-[#071519]/80 border-white/10 text-white/75 hover:bg-[#14353E]'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold font-serif-heading">First Floor</span>
+              <Lock className="w-3 h-3 text-[#C58F58]" />
+            </div>
+            <p className="text-[10px] text-white/60 mt-0.5">Units 04–06 • Phase 2 Waitlist</p>
+          </button>
+
+          <button
+            onClick={() => handleSelectFloor('ground')}
+            className={`p-3 rounded-2xl border text-left transition-all backdrop-blur-md shadow-xl cursor-pointer ${
+              activeFloor === 'ground'
+                ? 'bg-gradient-to-r from-[#2C5E50] to-[#1F483D] border-emerald-400 text-white ring-2 ring-emerald-400/40 scale-105'
+                : 'bg-[#071519]/90 border-emerald-500/30 text-white hover:bg-[#14353E]'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold font-serif-heading text-emerald-300">Ground Floor</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            </div>
+            <p className="text-[10px] text-emerald-100 font-medium mt-0.5">Units 01–03 • Phase 1 Priority</p>
+          </button>
+
+          <button
+            onClick={() => handleSelectFloor('stilt')}
+            className={`p-3 rounded-2xl border text-left transition-all backdrop-blur-md shadow-lg cursor-pointer ${
+              activeFloor === 'stilt'
+                ? 'bg-[#2C5E50] border-[#CDE0D7] text-white scale-105 shadow-xl ring-2 ring-[#C58F58]'
+                : 'bg-[#071519]/80 border-white/10 text-white/75 hover:bg-[#14353E]'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold font-serif-heading">Stilt Parking</span>
+              <Car className="w-3.5 h-3.5 text-[#C58F58]" />
+            </div>
+            <p className="text-[10px] text-white/60 mt-0.5">Covered Bays • Dual Lift Lobby</p>
+          </button>
+        </div>
+
+        {/* Non-Fullscreen Floating Unit Card */}
+        {!isFullscreen && activeFloor === 'ground' && (
+          <div className="absolute right-4 top-20 max-w-xs w-full bg-[#071519]/95 backdrop-blur-xl border border-white/15 rounded-3xl p-5 text-white shadow-2xl z-20 space-y-4 pointer-events-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/30 text-[10px] font-bold text-emerald-300 uppercase tracking-wider">
+                  Phase 1 Priority
+                </span>
+                <span className="text-xs text-white/70 font-mono">Ground Floor</span>
+              </div>
+              <span className="text-xs font-bold text-[#C58F58]">From ₹25L*</span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2">
+              {buildingUnits.slice(0, 3).map((unit) => (
+                <button
+                  key={unit.id}
+                  onClick={() => handleSelectUnit(unit.id)}
+                  className={`py-2 px-2 rounded-xl text-center border transition-all cursor-pointer ${
+                    selectedUnitId === unit.id
+                      ? 'bg-[#C58F58] text-[#0D2329] border-[#E0AB77] font-bold shadow-md'
+                      : 'bg-white/5 border-white/10 text-white/80 hover:bg-white/10'
+                  }`}
+                >
+                  <div className="text-xs font-serif font-bold">{unit.code}</div>
+                  <div className="text-[9px] uppercase tracking-tight text-current opacity-80">
+                    {unit.type === '1-bhk' ? '1 BHK' : '1 RK'}
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div className="space-y-1.5">
+              <h4 className="font-serif-heading text-base font-bold text-[#FAF8F5]">
+                {selectedUnit.typeName}
+              </h4>
+              <p className="text-xs text-white/75 font-light leading-relaxed">
+                ~{selectedUnit.superAreaSqFt} sq. ft. super area (~{selectedUnit.carpetAreaSqFt} sq. ft. carpet). {selectedUnit.facing}. Single-floor barrier-free layout.
+              </p>
+            </div>
+
+            <div className="pt-2 flex flex-col gap-2">
               <button
-                key={unit.id}
-                onClick={() => handleSelectUnit(unit.id)}
-                className={`py-2 px-2 rounded-xl text-center border transition-all cursor-pointer ${
-                  selectedUnitId === unit.id
-                    ? 'bg-[#C58F58] text-[#0D2329] border-[#E0AB77] font-bold shadow-md'
-                    : 'bg-white/5 border-white/10 text-white/80 hover:bg-white/10'
-                }`}
+                onClick={() =>
+                  openWhatsApp({
+                    actionType: 'reserve-unit',
+                    unitName: selectedUnit.unitNumber,
+                    unitType: selectedUnit.typeName,
+                    floorLevel: selectedUnit.floorName,
+                    message: `Hello, I am inspecting the 3D Building Model for ${selectedUnit.unitNumber} (${selectedUnit.typeName}) on Ground Floor at Senior Living Citizen Foundation. Please share CAD drawings and priority allotment terms.`
+                  })
+                }
+                className="w-full py-3 rounded-2xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
               >
-                <div className="text-xs font-serif font-bold">{unit.code}</div>
-                <div className="text-[9px] uppercase tracking-tight text-current opacity-80">
-                  {unit.type === '1-bhk' ? '1 BHK' : '1 RK'}
-                </div>
+                <Sparkles className="w-3.5 h-3.5 text-[#C58F58]" />
+                Inquire {selectedUnit.unitNumber} on WhatsApp →
               </button>
-            ))}
+
+              <button
+                onClick={() => setIsFullscreen(true)}
+                className="w-full py-2.5 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-white text-xs font-medium transition-all text-center cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Maximize2 className="w-3.5 h-3.5 text-[#C58F58]" />
+                Open Full Studio Inspector
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Bottom HUD */}
+        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[11px] text-white/60 pointer-events-none z-10 px-2">
+          <div className="flex items-center gap-2 bg-[#071519]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
+            <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" />
+            <span className="hidden sm:inline">Drag to Orbit • Scroll to Zoom • Tap Floor Buttons to Isolate Levels</span>
+            <span className="sm:hidden">Drag to Orbit • Pinch to Zoom</span>
+          </div>
+          <div className="hidden md:flex items-center gap-1.5 bg-[#071519]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 text-white/60">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Architectural Blueprints by The Vision Architects</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── FULLSCREEN STUDIO INSPECTOR SIDEBAR (Right 30% on Laptop/Desktop) ─── */}
+      {isFullscreen && (
+        <aside className="w-full lg:w-[420px] xl:w-[460px] shrink-0 h-full bg-[#0A1C22]/98 border-t lg:border-t-0 lg:border-l border-white/15 p-6 overflow-y-auto flex flex-col justify-between backdrop-blur-2xl z-30 shadow-2xl text-white space-y-6">
+          <div className="space-y-5">
+            {/* Sidebar Top Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-white/15">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-[#2C5E50]/40 border border-emerald-400/40 text-[#C58F58] flex items-center justify-center">
+                  <Building2 className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-serif-heading font-bold text-base text-[#FAF8F5]">
+                    Residence Studio Inspector
+                  </h3>
+                  <span className="text-[10px] font-mono text-[#C58F58] uppercase tracking-wider block">
+                    G+2 Care Suites • CAD Aligned
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setIsFullscreen(false)}
+                className="p-2 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                title="Exit Fullscreen (Esc)"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Active Floor & Unit Details */}
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-400/30 text-[10px] font-bold uppercase">
+                  {selectedUnit.floorName}
+                </span>
+                <span className="text-xs text-[#C58F58] font-mono font-bold">{selectedUnit.typeName}</span>
+              </div>
+              <h4 className="text-xl font-serif-heading font-bold text-[#FAF8F5]">
+                {selectedUnit.unitNumber}
+              </h4>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="p-2.5 rounded-xl bg-black/20 border border-white/5">
+                  <span className="text-[10px] text-white/50 block font-mono">Carpet Area</span>
+                  <span className="font-bold text-white mt-0.5 block">{selectedUnit.carpetAreaSqFt} sq. ft.</span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-black/20 border border-white/5">
+                  <span className="text-[10px] text-white/50 block font-mono">Super Area</span>
+                  <span className="font-bold text-white mt-0.5 block">{selectedUnit.superAreaSqFt} sq. ft.</span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-black/20 border border-white/5">
+                  <span className="text-[10px] text-white/50 block font-mono">Balcony</span>
+                  <span className="font-bold text-white mt-0.5 block">55 sq. ft.</span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-black/20 border border-white/5">
+                  <span className="text-[10px] text-white/50 block font-mono">Facing</span>
+                  <span className="font-bold text-[#C58F58] mt-0.5 block">{selectedUnit.facing}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Synchronized 2D CAD Floor Plan Preview */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-white/60 font-mono">2D CAD Floor Blueprint ({selectedUnit.floorName})</span>
+                <span className="text-[#C58F58] font-bold">Synchronized</span>
+              </div>
+
+              <div className="relative w-full h-44 rounded-2xl overflow-hidden border border-white/20 bg-black/40 shadow-inner group">
+                <img
+                  src={cadFloorPlanImage}
+                  alt="CAD Floor Plan Preview"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-125"
+                />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-10 h-10 rounded-full border-2 border-[#C58F58] animate-ping opacity-75" />
+                  <div className="w-3.5 h-3.5 rounded-full bg-[#C58F58] text-[8px] font-bold text-black flex items-center justify-center shadow-lg absolute">
+                    ★
+                  </div>
+                </div>
+                <div className="absolute bottom-2 left-2 right-2 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] text-white/80 flex items-center justify-between">
+                  <span>Unit: {selectedUnit.unitNumber}</span>
+                  <span className="font-mono text-[#C58F58]">The Vision Architects</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Senior Safety Specifications Checklist */}
+            <div className="space-y-2">
+              <span className="text-xs font-mono uppercase tracking-wider text-[#C58F58] font-bold">
+                Elder-Friendly Structural Inclusions:
+              </span>
+              <div className="space-y-1.5 text-xs text-white/80">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>8-Passenger Stretcher-Compliant Elevator Core</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>1:12 Barrier-Free Entrance Ramp with Dual Railings</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>1200mm Wide Doorways for Wheelchair Access</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>Rooftop Solar Array &amp; Bougainvillea Walking Garden</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-1.5">
-            <h4 className="font-serif-heading text-base font-bold text-[#FAF8F5]">
-              {selectedUnit.typeName}
-            </h4>
-            <p className="text-xs text-white/75 font-light leading-relaxed">
-              ~{selectedUnit.superAreaSqFt} sq. ft. super area (~{selectedUnit.carpetAreaSqFt} sq. ft. carpet). {selectedUnit.facing}. Single-floor barrier-free layout.
-            </p>
-            <p className="text-[10px] text-[#C58F58]/90 font-mono italic">
-              *Unit configuration subject to final architectural allocation.
-            </p>
-          </div>
-
-          <div className="pt-2 flex flex-col gap-2">
+          {/* Sidebar Bottom CTA Actions */}
+          <div className="pt-4 border-t border-white/15 space-y-2.5">
             <button
               onClick={() =>
                 openWhatsApp({
@@ -1348,13 +1529,13 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
                   unitName: selectedUnit.unitNumber,
                   unitType: selectedUnit.typeName,
                   floorLevel: selectedUnit.floorName,
-                  message: `Hello, I am inspecting the 3D Building Model for ${selectedUnit.unitNumber} (${selectedUnit.typeName}) on Ground Floor at Senior Living Citizen Foundation. Please share CAD drawings and priority allotment terms.`
+                  message: `Hello, I am inspecting ${selectedUnit.unitNumber} (${selectedUnit.typeName}) on ${selectedUnit.floorName} in the 3D Building Viewer for Senior Living Citizen Foundation. Please share complete CAD floor dossier and priority allotment terms.`
                 })
               }
-              className="w-full py-3 rounded-2xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3.5 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all shadow-lg shadow-emerald-950/50 flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5 text-[#C58F58]" />
-              Inquire {selectedUnit.unitNumber} on WhatsApp →
+              <MessageSquare className="w-4 h-4" />
+              Inquire {selectedUnit.unitNumber} on WhatsApp (+91 99999 55847) →
             </button>
 
             <button
@@ -1366,26 +1547,14 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
                   actionType: 'book-site-visit'
                 })
               }
-              className="w-full py-2.5 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-white text-xs font-medium transition-all text-center cursor-pointer"
+              className="w-full py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/20 text-white text-xs font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              Book Ground Site Walk
+              <Phone className="w-3.5 h-3.5 text-[#C58F58]" />
+              Schedule Private Ground Site Walk
             </button>
           </div>
-        </div>
+        </aside>
       )}
-
-      {/* Bottom Architectural Source of Truth HUD */}
-      <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[11px] text-white/60 pointer-events-none z-10 px-2">
-        <div className="flex items-center gap-2 bg-[#071519]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
-          <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" />
-          <span className="hidden sm:inline">Drag to Orbit • Scroll to Zoom • Tap Floor Buttons to Isolate Levels</span>
-          <span className="sm:hidden">Drag to Orbit • Pinch to Zoom</span>
-        </div>
-        <div className="hidden md:flex items-center gap-1.5 bg-[#071519]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 text-white/60">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Architectural Blueprints by The Vision Architects &amp; Consultants</span>
-        </div>
-      </div>
     </div>
   );
 };

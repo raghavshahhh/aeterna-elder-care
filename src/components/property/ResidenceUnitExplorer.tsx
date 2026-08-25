@@ -76,7 +76,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
         {/* 2-Column Clean Visual Card */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Main Visual & Architectural Dimensions */}
-          <div className="lg:col-span-8 bg-white rounded-3xl border border-[#E8E2D8] shadow-xl overflow-hidden p-6 sm:p-8 space-y-6">
+          <div className="lg:col-span-8 bg-white rounded-3xl border border-[#E8E2D8] shadow-xl p-6 sm:p-8 space-y-6">
             {/* Unit Header Bar */}
             <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#E8E2D8]">
               <div>
@@ -289,7 +289,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                   className="w-full py-4 rounded-2xl bg-[#2C5E50] hover:bg-[#1D4B57] text-white text-sm font-semibold transition-all shadow-lg shadow-[#2C5E50]/20 flex items-center justify-center gap-2"
                 >
                   <MessageSquare className="w-4 h-4" />
-                  Enquire on WhatsApp (+91 99999558447) →
+                  Enquire on WhatsApp (+91 99999 55847) →
                 </button>
 
                 <button

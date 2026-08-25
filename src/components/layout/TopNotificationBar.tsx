@@ -14,7 +14,7 @@ export const TopNotificationBar: React.FC = () => {
   if (pathname?.startsWith('/owner')) return null;
 
   return (
-    <aside aria-label="Announcement & Hotline Bar" className="bg-[#071519] text-[#FBF9F5] text-[11px] sm:text-xs py-2 px-4 border-b border-[#163942] relative z-40">
+    <aside aria-label="Announcement & Hotline Bar" className="bg-[#071519] text-[#FBF9F5] text-[11px] sm:text-xs py-2 px-4 border-b border-[#163942] relative z-30">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Left side notice */}
         <div className="flex items-center gap-2 overflow-hidden whitespace-nowrap">
@@ -38,12 +38,12 @@ export const TopNotificationBar: React.FC = () => {
         {/* Right side quick contact hotline */}
         <div className="flex items-center gap-4 shrink-0 text-white/80">
           <a
-            href="tel:+9199999558447"
+            href="tel:+919999955847"
             className="flex items-center gap-1.5 text-white hover:text-[#C58F58] font-bold font-mono transition-colors"
           >
             <Phone className="w-3.5 h-3.5 text-[#C58F58]" />
             <span className="hidden sm:inline">Desk:</span>
-            <span>+91 99999558447</span>
+            <span>+91 99999 55847</span>
           </a>
 
           <span className="text-white/20 hidden sm:inline">|</span>

@@ -279,6 +279,56 @@ export const LocationConnectivity: React.FC = () => {
                 The land parcel perimeter is demarcated with physical concrete markers. The approved layout by <em>The Vision Architects</em> reserves zones for the proposed 30,000 sq. ft. Ayurvedic hospital, sacred mandir, 64 residential freehold plots, and 4-tier senior residence building.
               </p>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                <div className="rounded-2xl overflow-hidden border border-white/15 bg-black/40 p-3 space-y-2 group">
+                  <div className="relative h-44 rounded-xl overflow-hidden">
+                    <img
+                      src="/project-assets/architecture/cad/previews/kheri-asra-revenue-map.jpg"
+                      alt="Haryana Revenue Department Aks Shajra Demarcation Map"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute top-2 left-2 bg-black/75 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] text-emerald-300 font-mono font-bold">
+                      TEHSIL REVENUE AKS SHAJRA
+                    </div>
+                  </div>
+                  <div className="text-[11px] text-white/70 flex items-center justify-between">
+                    <span>Kheri Asra Mauza Map #114</span>
+                    <a
+                      href="/project-assets/architecture/cad/previews/kheri-asra-revenue-map.jpg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#C58F58] hover:underline font-bold"
+                    >
+                      View Full Map ↗
+                    </a>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl overflow-hidden border border-white/15 bg-black/40 p-3 space-y-2 group">
+                  <div className="relative h-44 rounded-xl overflow-hidden">
+                    <img
+                      src="/project-assets/architecture/cad/previews/masterplan-real.jpg"
+                      alt="The Vision Architects 64-Plot Masterplan Site Layout"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute top-2 left-2 bg-black/75 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] text-[#C58F58] font-mono font-bold">
+                      ARCHITECTURAL 64-PLOT CAD
+                    </div>
+                  </div>
+                  <div className="text-[11px] text-white/70 flex items-center justify-between">
+                    <span>1:500 Scale Site Layout</span>
+                    <a
+                      href="/project-assets/architecture/cad/slcf-masterplan-site-layout.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#C58F58] hover:underline font-bold"
+                    >
+                      Open PDF ↗
+                    </a>
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 text-xs">
                 <div className="p-3 rounded-2xl bg-white/5 border border-white/10">
                   <span className="text-[10px] text-white/50 block">North Boundary</span>

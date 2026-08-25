@@ -39,8 +39,8 @@ export const projectOverview = {
   totalBuildingUnits: 9,
   currentReleaseUnits: 'Units 01, 02, 03 (Ground Floor — Available for Phase 1 Booking)',
   futureReleaseUnits: 'Units 04–09 (First & Second Floors — Future Release Phases)',
-  siteOfficePhone: '+91 99999558447',
-  salesWhatsApp: '+91 99999558447',
+  siteOfficePhone: '+91 99999 55847',
+  salesWhatsApp: '+91 99999 55847',
   inquiryEmail: 'Yoffices@gmail.com',
   droneVideoUrl: '/project-assets/real-site/drone/hero-loop.mp4',
   fullDroneTourUrl: '/project-assets/real-site/drone/full-tour.mp4',
@@ -460,7 +460,7 @@ export const architectProfile: ArchitectProfile = {
   principalArchitect: 'Ar. Yash Garg',
   credentials: 'B.Arch, M.Arch',
   studioAddress: 'Near Civil Hospital, Farrukhnagar, Gurugram 122506',
-  phone: '+91 99999558447',
+  phone: '+91 99999 55847',
   email: 'Yoffices@gmail.com',
   services: [
     'Architectural Design & Master Planning',
@@ -1378,6 +1378,6 @@ export const propertyFaqs = [
   },
   {
     question: 'How do I schedule an on-site visit or talk to an advisor?',
-    answer: 'You can connect directly with our advisory desk on WhatsApp or Call at +91 99999558447 or visit our corporate office at Yoffices Tower, Opp. Ramada Hotel, Sector-45 Gurugram, Haryana. We also arrange car pickup from Delhi NCR.'
+    answer: 'You can connect directly with our advisory desk on WhatsApp or Call at +91 99999 55847 or visit our corporate office at Yoffices Tower, Opp. Ramada Hotel, Sector-45 Gurugram, Haryana. We also arrange car pickup from Delhi NCR.'
   }
 ];

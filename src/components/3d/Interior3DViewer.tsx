@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import * as THREE from 'three';
 import { UnitType } from '@/types';
 import { useModal } from '@/context/ModalContext';
@@ -21,7 +22,10 @@ import {
   Sofa,
   Utensils,
   Bath,
-  Lock
+  Lock,
+  X,
+  MessageSquare,
+  Phone
 } from 'lucide-react';
 
 interface Interior3DViewerProps {
@@ -290,6 +294,22 @@ export const Interior3DViewer: React.FC<Interior3DViewerProps> = ({
   const [activeHotspot, setActiveHotspot] = useState<SafetyHotspot | null>(null);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Keyboard Escape listener for fullscreen
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFullscreen]);
 
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -355,7 +375,7 @@ export const Interior3DViewer: React.FC<Interior3DViewerProps> = ({
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
     renderer.setSize(width, height);
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.2;
     rendererRef.current = renderer;
@@ -849,143 +869,323 @@ export const Interior3DViewer: React.FC<Interior3DViewerProps> = ({
     }
   };
 
+  const ROOM_METRICS: Record<'bedroom' | 'living' | 'kitchen' | 'bathroom', { title: string; imperial: string; metric: string; features: string[]; cadCoords: string }> = {
+    bedroom: {
+      title: 'Master Bedroom Sanctuary',
+      imperial: "12'-6\" × 14'-0\" (175 sq. ft.)",
+      metric: '3.8m × 4.2m',
+      features: ['Low-reach 900mm master switch panel', 'Anti-glare warm cove perimeter lighting', 'Wide 1200mm doorway for walker clearance', 'R11 slip-resistant vitrified flooring'],
+      cadCoords: 'North-East Suite Sector'
+    },
+    living: {
+      title: 'Sunlit Living & Lounge Area',
+      imperial: "14'-0\" × 16'-6\" (231 sq. ft.)",
+      metric: '4.2m × 5.0m',
+      features: ['Zero-threshold flush balcony sliding track', 'Continuous 1500mm wheelchair turning diameter', 'Ergonomic firm-cushioned armchairs', 'Panic SOS pull station at 400mm & 1200mm'],
+      cadCoords: 'South-East Balcony Frontage'
+    },
+    kitchen: {
+      title: 'Ergonomic Low-Height Kitchenette',
+      imperial: "8'-0\" × 9'-6\" (76 sq. ft.)",
+      metric: '2.4m × 2.9m',
+      features: ['800mm low-reach calacatta quartz countertop', 'Under-counter pull-out drawers (no high stretch)', 'Induction cooktop with auto cut-off', 'Single-lever high-neck swivel faucet'],
+      cadCoords: 'West Utility Corridor'
+    },
+    bathroom: {
+      title: 'Barrier-Free Accessible Bathroom',
+      imperial: "8'-0\" × 7'-6\" (60 sq. ft.)",
+      metric: '2.4m × 2.3m',
+      features: ['Zero-threshold flush linear shower channel', '32mm stainless steel grab bars (150kg tested)', 'Wall-mounted fold-down shower seat', 'Emergency ceiling pull cord linked to nurse desk'],
+      cadCoords: 'Central Wet Core'
+    }
+  };
+
+  const currentRoomSpec = ROOM_METRICS[activeRoom];
+
   return (
     <div
       ref={containerRef}
-      className={`relative w-full rounded-3xl overflow-hidden bg-[#071519] border border-[#163942] shadow-2xl transition-all duration-300 ${
-        isFullscreen ? 'fixed inset-0 z-50 rounded-none h-screen' : 'h-[620px] sm:h-[700px]'
+      className={`relative w-full overflow-hidden bg-[#071519] border border-[#163942] shadow-2xl transition-all duration-300 ${
+        isFullscreen
+          ? 'fixed inset-0 z-[99999] rounded-none h-screen w-screen flex flex-col lg:flex-row'
+          : 'rounded-3xl h-[620px] sm:h-[700px]'
       }`}
     >
-      <canvas ref={canvasRef} className="w-full h-full cursor-grab active:cursor-grabbing block" />
+      {/* Main 3D Canvas Viewport */}
+      <div className={`relative h-full ${isFullscreen ? 'flex-1 min-w-0 h-full' : 'w-full'}`}>
+        <canvas ref={canvasRef} className="w-full h-full cursor-grab active:cursor-grabbing block" />
 
-      {/* Loading Overlay */}
-      {isLoading && (
-        <div className="absolute inset-0 bg-[#071519] flex flex-col items-center justify-center gap-3 z-30">
-          <div className="w-10 h-10 border-2 border-[#C58F58] border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs font-mono text-[#FAF8F5] uppercase tracking-widest">
-            Rendering 3D Interior Walkthrough...
-          </span>
-        </div>
-      )}
-
-      {/* Top Left Header & Proposed Badge */}
-      <div className="absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2 pointer-events-none">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0D2329]/90 border border-white/15 text-[11px] font-mono text-[#E0AB77] uppercase tracking-widest backdrop-blur-md shadow-lg pointer-events-auto">
-          <Home className="w-3.5 h-3.5 text-[#C58F58]" />
-          <span>PROPOSED RESIDENCE INTERIOR CGI</span>
-        </div>
-
-        <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-400/30 text-emerald-300 text-[11px] font-bold backdrop-blur-md shadow-lg pointer-events-auto">
-          <ShieldCheck className="w-3.5 h-3.5" />
-          <span>Senior Universal Design Standards</span>
-        </div>
-      </div>
-
-      {/* Top Right Room Navigation Toolbar */}
-      <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 bg-[#0D2329]/90 backdrop-blur-md p-1.5 rounded-2xl border border-white/15 shadow-xl pointer-events-auto">
-        <button
-          onClick={() => handleSelectRoom('living')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-            activeRoom === 'living' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
-          }`}
-        >
-          <Sofa className="w-3.5 h-3.5" />
-          <span>Living</span>
-        </button>
-
-        <button
-          onClick={() => handleSelectRoom('bedroom')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-            activeRoom === 'bedroom' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
-          }`}
-        >
-          <Bed className="w-3.5 h-3.5" />
-          <span>Bedroom</span>
-        </button>
-
-        <button
-          onClick={() => handleSelectRoom('kitchen')}
-          className={`hidden sm:flex px-3 py-1.5 rounded-xl text-xs font-semibold items-center gap-1.5 transition-all cursor-pointer ${
-            activeRoom === 'kitchen' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
-          }`}
-        >
-          <Utensils className="w-3.5 h-3.5" />
-          <span>Kitchen</span>
-        </button>
-
-        <button
-          onClick={() => handleSelectRoom('bathroom')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-            activeRoom === 'bathroom' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
-          }`}
-        >
-          <Bath className="w-3.5 h-3.5" />
-          <span>Bathroom</span>
-        </button>
-
-        <div className="h-4 w-px bg-white/20 mx-1" />
-
-        {onToggle2DBlueprint && (
-          <button
-            onClick={onToggle2DBlueprint}
-            className="px-2.5 py-1.5 rounded-xl text-xs text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-          >
-            2D CAD Plan
-          </button>
+        {/* Loading Overlay */}
+        {isLoading && (
+          <div className="absolute inset-0 bg-[#071519] flex flex-col items-center justify-center gap-3 z-30">
+            <div className="w-10 h-10 border-2 border-[#C58F58] border-t-transparent rounded-full animate-spin" />
+            <span className="text-xs font-mono text-[#FAF8F5] uppercase tracking-widest">
+              Rendering 3D Interior Walkthrough...
+            </span>
+          </div>
         )}
 
-        <button
-          onClick={() => setIsFullscreen(!isFullscreen)}
-          className="p-1.5 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-        >
-          {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-        </button>
-      </div>
+        {/* Top Left Header & Proposed Badge */}
+        <div className="absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2 pointer-events-none">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0D2329]/90 border border-white/15 text-[11px] font-mono text-[#E0AB77] uppercase tracking-widest backdrop-blur-md shadow-lg pointer-events-auto">
+            <Home className="w-3.5 h-3.5 text-[#C58F58]" />
+            <span>PROPOSED RESIDENCE INTERIOR CGI</span>
+          </div>
 
-      {/* Safety Hotspot Markers floating on left */}
-      <div className="absolute left-4 bottom-16 sm:bottom-20 z-20 flex flex-col gap-2 max-w-xs pointer-events-auto">
-        <span className="text-[10px] font-mono uppercase text-[#C58F58] tracking-widest px-1 font-bold">
-          Senior Safety Features ({activeRoom.toUpperCase()}):
-        </span>
+          <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-400/30 text-emerald-300 text-[11px] font-bold backdrop-blur-md shadow-lg pointer-events-auto">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Senior Universal Design Standards</span>
+          </div>
+        </div>
 
-        {SAFETY_HOTSPOTS.filter((h) => h.room === activeRoom).map((hs) => (
-          <div
-            key={hs.id}
-            onClick={() => setActiveHotspot(activeHotspot?.id === hs.id ? null : hs)}
-            className={`p-3 rounded-2xl border transition-all cursor-pointer backdrop-blur-md shadow-lg ${
-              activeHotspot?.id === hs.id
-                ? 'bg-[#2C5E50] border-emerald-400 text-white shadow-xl'
-                : 'bg-[#071519]/85 border-white/15 text-white/85 hover:bg-[#14353E]'
+        {/* Top Right Room Navigation Toolbar */}
+        <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 bg-[#0D2329]/90 backdrop-blur-md p-1.5 rounded-2xl border border-white/15 shadow-xl pointer-events-auto">
+          <button
+            onClick={() => handleSelectRoom('living')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              activeRoom === 'living' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
             }`}
           >
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold font-serif-heading">{hs.title}</span>
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 ml-2" />
-            </div>
-            {activeHotspot?.id === hs.id && (
-              <div className="pt-2 text-[11px] text-white/80 space-y-1.5 border-t border-white/15 mt-2">
-                <p>{hs.detail}</p>
-                <div className="text-[9px] font-mono text-[#E0AB77] font-semibold">
-                  Standard: {hs.standard}
+            <Sofa className="w-3.5 h-3.5" />
+            <span>Living</span>
+          </button>
+
+          <button
+            onClick={() => handleSelectRoom('bedroom')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              activeRoom === 'bedroom' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
+            }`}
+          >
+            <Bed className="w-3.5 h-3.5" />
+            <span>Bedroom</span>
+          </button>
+
+          <button
+            onClick={() => handleSelectRoom('kitchen')}
+            className={`hidden sm:flex px-3 py-1.5 rounded-xl text-xs font-semibold items-center gap-1.5 transition-all cursor-pointer ${
+              activeRoom === 'kitchen' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
+            }`}
+          >
+            <Utensils className="w-3.5 h-3.5" />
+            <span>Kitchen</span>
+          </button>
+
+          <button
+            onClick={() => handleSelectRoom('bathroom')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              activeRoom === 'bathroom' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
+            }`}
+          >
+            <Bath className="w-3.5 h-3.5" />
+            <span>Bathroom</span>
+          </button>
+
+          <div className="h-4 w-px bg-white/20 mx-1" />
+
+          {onToggle2DBlueprint && (
+            <button
+              onClick={onToggle2DBlueprint}
+              className="px-2.5 py-1.5 rounded-xl text-xs text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            >
+              2D CAD Plan
+            </button>
+          )}
+
+          <button
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            className="p-1.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            title={isFullscreen ? 'Exit Fullscreen (Esc)' : 'Studio Fullscreen Mode'}
+          >
+            {isFullscreen ? <Minimize2 className="w-4 h-4 text-[#C58F58]" /> : <Maximize2 className="w-4 h-4" />}
+          </button>
+        </div>
+
+        {/* Safety Hotspot Markers floating on left in non-fullscreen */}
+        {!isFullscreen && (
+          <div className="absolute left-4 bottom-16 sm:bottom-20 z-20 flex flex-col gap-2 max-w-xs pointer-events-auto">
+            <span className="text-[10px] font-mono uppercase text-[#C58F58] tracking-widest px-1 font-bold">
+              Senior Safety Features ({activeRoom.toUpperCase()}):
+            </span>
+
+            {SAFETY_HOTSPOTS.filter((h) => h.room === activeRoom).map((hs) => (
+              <div
+                key={hs.id}
+                onClick={() => setActiveHotspot(activeHotspot?.id === hs.id ? null : hs)}
+                className={`p-3 rounded-2xl border transition-all cursor-pointer backdrop-blur-md shadow-lg ${
+                  activeHotspot?.id === hs.id
+                    ? 'bg-[#2C5E50] border-emerald-400 text-white shadow-xl'
+                    : 'bg-[#071519]/85 border-white/15 text-white/85 hover:bg-[#14353E]'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold font-serif-heading">{hs.title}</span>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 ml-2" />
                 </div>
+                {activeHotspot?.id === hs.id && (
+                  <div className="pt-2 text-[11px] text-white/80 space-y-1.5 border-t border-white/15 mt-2">
+                    <p>{hs.detail}</p>
+                    <div className="text-[9px] font-mono text-[#E0AB77] font-semibold">
+                      Standard: {hs.standard}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
+            ))}
           </div>
-        ))}
+        )}
+
+        {/* Bottom HUD */}
+        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[11px] text-white/60 pointer-events-none z-10 px-2">
+          <div className="flex items-center gap-2 bg-[#071519]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
+            <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" />
+            <span className="hidden sm:inline">Drag to Orbit • Scroll to Zoom • Select Room Buttons Above</span>
+            <span className="sm:hidden">Drag to Orbit • Tap Room Buttons</span>
+          </div>
+          <div className="hidden md:flex items-center gap-1.5 bg-[#071519]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 text-white/60">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Zero-Threshold Level Access Floor Plan</span>
+          </div>
+        </div>
       </div>
 
-      {/* Bottom HUD */}
-      <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[11px] text-white/60 pointer-events-none z-10 px-2">
-        <div className="flex items-center gap-2 bg-[#071519]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
-          <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" />
-          <span className="hidden sm:inline">Drag to Orbit • Scroll to Zoom • Select Room Buttons Above</span>
-          <span className="sm:hidden">Drag to Orbit • Tap Room Buttons</span>
-        </div>
-        <div className="hidden md:flex items-center gap-1.5 bg-[#071519]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 text-white/60">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Zero-Threshold Level Access Floor Plan</span>
-        </div>
-      </div>
+      {/* ─── FULLSCREEN STUDIO INSPECTOR SIDEBAR (Right 30% on Laptop/Desktop) ─── */}
+      {isFullscreen && (
+        <aside className="w-full lg:w-[420px] xl:w-[460px] shrink-0 h-full bg-[#0A1C22]/98 border-t lg:border-t-0 lg:border-l border-white/15 p-6 overflow-y-auto flex flex-col justify-between backdrop-blur-2xl z-30 shadow-2xl text-white space-y-6">
+          <div className="space-y-5">
+            {/* Sidebar Top Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-white/15">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-[#2C5E50]/40 border border-emerald-400/40 text-[#C58F58] flex items-center justify-center">
+                  <Home className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-serif-heading font-bold text-base text-[#FAF8F5]">
+                    Interior Studio Inspector
+                  </h3>
+                  <span className="text-[10px] font-mono text-[#C58F58] uppercase tracking-wider block">
+                    Elder Ergonomics • NBC 2016 Annex D
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setIsFullscreen(false)}
+                className="p-2 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                title="Exit Fullscreen (Esc)"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Active Room Specification Card */}
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-400/30 text-[10px] font-bold uppercase">
+                  Active Room: {activeRoom.toUpperCase()}
+                </span>
+                <span className="text-xs text-[#C58F58] font-mono font-bold">{unitType.toUpperCase()} Suite</span>
+              </div>
+              <h4 className="text-xl font-serif-heading font-bold text-[#FAF8F5]">
+                {currentRoomSpec.title}
+              </h4>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="p-2.5 rounded-xl bg-black/20 border border-white/5">
+                  <span className="text-[10px] text-white/50 block font-mono">Room Dimensions</span>
+                  <span className="font-bold text-white mt-0.5 block">{currentRoomSpec.imperial}</span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-black/20 border border-white/5">
+                  <span className="text-[10px] text-white/50 block font-mono">Metric Dimension</span>
+                  <span className="font-bold text-white mt-0.5 block">{currentRoomSpec.metric}</span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-black/20 border border-white/5">
+                  <span className="text-[10px] text-white/50 block font-mono">Doorway Clearance</span>
+                  <span className="font-bold text-emerald-300 mt-0.5 block">1200mm (Wheelchair)</span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-black/20 border border-white/5">
+                  <span className="text-[10px] text-white/50 block font-mono">Turning Diameter</span>
+                  <span className="font-bold text-emerald-300 mt-0.5 block">1500mm ADA Pass</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Synchronized 2D Interior CAD Layout Zoom */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-white/60 font-mono">2D Architectural Suite Layout</span>
+                <span className="text-[#C58F58] font-bold">Synchronized</span>
+              </div>
+
+              <div className="relative w-full h-44 rounded-2xl overflow-hidden border border-white/20 bg-black/40 shadow-inner group">
+                <img
+                  src="/project-assets/architecture/cad/previews/typical-floor-cad.jpg"
+                  alt="Typical Floor CAD Layout"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-125"
+                />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-10 h-10 rounded-full border-2 border-[#C58F58] animate-ping opacity-75" />
+                  <div className="w-3.5 h-3.5 rounded-full bg-[#C58F58] text-[8px] font-bold text-black flex items-center justify-center shadow-lg absolute">
+                    ★
+                  </div>
+                </div>
+                <div className="absolute bottom-2 left-2 right-2 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] text-white/80 flex items-center justify-between">
+                  <span>Room: {currentRoomSpec.title}</span>
+                  <span className="font-mono text-[#C58F58]">Universal CAD Layout</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Active Room Safety Hotspots Checklist */}
+            <div className="space-y-2">
+              <span className="text-xs font-mono uppercase tracking-wider text-[#C58F58] font-bold">
+                Room Safety Inclusions ({activeRoom.toUpperCase()}):
+              </span>
+              <div className="space-y-2">
+                {SAFETY_HOTSPOTS.filter((h) => h.room === activeRoom).map((hs) => (
+                  <div key={hs.id} className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1 text-xs">
+                    <div className="flex items-center justify-between font-bold text-white">
+                      <span>{hs.title}</span>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    </div>
+                    <p className="text-white/70 text-[11px] leading-relaxed">{hs.detail}</p>
+                    <span className="text-[9px] font-mono text-[#C58F58] block">Standard: {hs.standard}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar Bottom CTA Actions */}
+          <div className="pt-4 border-t border-white/15 space-y-2.5">
+            <button
+              onClick={() =>
+                openWhatsApp({
+                  actionType: 'reserve-unit',
+                  unitType: unitType === '1-bhk' ? '1 BHK Senior Suite' : '1 RK Care Suite',
+                  message: `Hello, I am inspecting the 3D Interior Walkthrough for ${currentRoomSpec.title} (${unitType.toUpperCase()} Suite) at Senior Living Citizen Foundation. Please share complete interior floor plans and specification sheet.`
+                })
+              }
+              className="w-full py-3.5 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all shadow-lg shadow-emerald-950/50 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <MessageSquare className="w-4 h-4" />
+              Inquire on WhatsApp (+91 99999 55847) →
+            </button>
+
+            <button
+              onClick={() =>
+                openLeadDrawer({
+                  title: `Schedule Experience Centre Visit for ${currentRoomSpec.title}`,
+                  unitType: unitType === '1-bhk' ? '1 BHK Senior Suite' : '1 RK Care Suite',
+                  actionType: 'book-site-visit'
+                })
+              }
+              className="w-full py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/20 text-white text-xs font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Phone className="w-3.5 h-3.5 text-[#C58F58]" />
+              Schedule Experience Walkthrough
+            </button>
+          </div>
+        </aside>
+      )}
     </div>
   );
 };

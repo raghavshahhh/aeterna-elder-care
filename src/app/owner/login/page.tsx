@@ -52,8 +52,8 @@ export default function OwnerLoginPage() {
   };
 
   const handleUseDemoCredentials = () => {
-    setIdentifier('owner@seniorliving.org');
-    setPassword('Foundation@2026');
+    setIdentifier('SL-OWNER-2026');
+    setPassword('SLCF-pr7ZTbPiF0!12');
   };
 
   return (

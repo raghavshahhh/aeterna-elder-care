@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import * as THREE from 'three';
 import { PlotItem } from '@/types';
 import { allPlots, plotsSummary, projectOverview } from '@/data/propertyData';
@@ -22,13 +23,129 @@ import {
   Eye,
   Activity,
   ArrowRight,
-  Home
+  Home,
+  X,
+  Phone,
+  MessageSquare,
+  FileText,
+  Search,
+  ZoomIn,
+  Navigation
 } from 'lucide-react';
 
 interface MasterPlan3DViewerProps {
   onSelectPlot?: (plot: PlotItem) => void;
   onToggle2DView?: () => void;
 }
+
+type LandmarkType = 'hospital' | 'mandir' | 'residence' | 'gate' | 'park';
+
+interface LandmarkInfo {
+  id: LandmarkType;
+  title: string;
+  badge: string;
+  category: string;
+  area: string;
+  dimensions: string;
+  floors: string;
+  description: string;
+  features: string[];
+  cadZone: string;
+  cadCoordinates: { x: number; y: number };
+}
+
+const LANDMARK_REGISTRY: Record<LandmarkType, LandmarkInfo> = {
+  hospital: {
+    id: 'hospital',
+    title: '30,000 Sq. Ft. Ayurvedic & General Hospital',
+    badge: 'On-Site Healthcare Continuum',
+    category: 'Healthcare & Wellness',
+    area: '30,000 sq. ft. Built-Up Area',
+    dimensions: '117\'-10" × 138\' L-Shaped Footprint',
+    floors: 'G+2 Structural Facility with Lift Core',
+    description: 'Specialized senior care hospital featuring Panchakarma Ayurvedic detox suites, 24/7 ICU emergency response, doctor consultation chambers, and on-site pharmacy.',
+    features: [
+      '24/7 Geriatric Emergency & Ambulance Dock',
+      'Authentic Ayurvedic Panchakarma Suites',
+      'Diagnostic Pathology & Physiotherapy Wing',
+      'Direct Wheelchair & Stretcher Portico'
+    ],
+    cadZone: 'North-East Commercial & Healthcare Sector',
+    cadCoordinates: { x: 78, y: 35 }
+  },
+  mandir: {
+    id: 'mandir',
+    title: 'Community Mandir & Sacred Reflection Kund',
+    badge: 'Spiritual Sanctuary',
+    category: 'Spirituality & Culture',
+    area: 'Stepped Plinth & Meditation Ghat',
+    dimensions: 'Sandstone Plinth (14m × 14m) with Shikhara Spire',
+    floors: 'Traditional Carved Mandapa + Kund',
+    description: 'Tranquil community temple crafted in authentic Rajasthani sandstone with a stepped water body (kund) for daily morning aarti, meditation, and satsang.',
+    features: [
+      'Traditional Shikhara with Gold Kalasha',
+      'Stepped Sandstone Meditation Kund',
+      'Elder-Friendly Step-Free Approach Ramp',
+      'Surrounding Fragrant Floral Gardens'
+    ],
+    cadZone: 'North-Central Spiritual Green Pocket',
+    cadCoordinates: { x: 68, y: 75 }
+  },
+  residence: {
+    id: 'residence',
+    title: 'G+2 Senior Care Apartment Suites (Plots 63 & 64)',
+    badge: '12 Assisted Living Residences',
+    category: 'Plotted Residences',
+    area: '88\'-6" × 45\'-0" CAD Structural Footprint',
+    dimensions: 'Stilt Parking + 3 Habitable Residential Floors',
+    floors: 'G+2 with 8-Passenger Stretcher Elevator',
+    description: 'Dedicated senior living apartment block with 1 BHK & 1 RK barrier-free care suites, wheelchair-accessible stilt parking, and a rooftop solar pergola.',
+    features: [
+      '8-Passenger Stretcher-Compliant Elevator',
+      '1:12 Accessible Stilt Entrance Ramp',
+      'Cantilevered Balconies with Safety Railings',
+      'Rooftop Bougainvillea Pergola & Solar Array'
+    ],
+    cadZone: 'Plots 63 & 64 Residential Corner Zone',
+    cadCoordinates: { x: 72, y: 22 }
+  },
+  gate: {
+    id: 'gate',
+    title: 'State Highway 22 Grand Entrance Portal',
+    badge: 'Gated Security Checkpoint',
+    category: 'Infrastructure & Access',
+    area: '4-Lane Highway Access Gateway',
+    dimensions: '14.5m Wide Double Portal with Guard Cabin',
+    floors: 'Security Post & Boom Barrier Check',
+    description: 'Grand gateway providing direct entry from State Highway 22 (SH-22) with 24/7 CCTV surveillance, biometric visitor control, and dedicated ambulance lane.',
+    features: [
+      'Direct State Highway 22 Frontage',
+      '24/7 Guarded Boom Barrier Checkpoint',
+      'Automated Visitor Number-Plate Recognition',
+      'Monumental Foundation Brand Signage'
+    ],
+    cadZone: 'South-East Highway Frontage Boundary',
+    cadCoordinates: { x: 50, y: 88 }
+  },
+  park: {
+    id: 'park',
+    title: 'Central Miyawaki Forest & Walking Promenade',
+    badge: 'Eco Green Buffer',
+    category: 'Landscaping & Nature',
+    area: 'Perimeter Green Belts + Central Gardens',
+    dimensions: '30 ft Main Avenue + Jogging Track',
+    floors: 'Landscaped Botanical Promenades',
+    description: 'Lush natural countryside environment with native herbal groves, flowering Amaltas and Royal Palm tree avenues, and anti-glare illuminated walking pathways.',
+    features: [
+      'Dense Miyawaki Forest Oxygen Belts',
+      'Continuous Non-Slip Senior Walking Tracks',
+      'Aromatic Herbal & Medicinal Garden Pockets',
+      'Solar-Powered LED Streetlight Grid'
+    ],
+    cadZone: 'Central Spine & Peripheral Buffer',
+    cadCoordinates: { x: 50, y: 50 }
+  }
+};
 
 // ─── High-Fidelity Masterplan Texture Generators ─────────────────────────────
 
@@ -38,11 +155,9 @@ function createMasterGroundTexture(): THREE.CanvasTexture {
   canvas.height = 512;
   const ctx = canvas.getContext('2d')!;
 
-  // Natural countryside meadow base
   ctx.fillStyle = '#2A4D34';
   ctx.fillRect(0, 0, 512, 512);
 
-  // Field texture & organic agricultural grain
   for (let i = 0; i < 26000; i++) {
     const x = Math.random() * 512;
     const y = Math.random() * 512;
@@ -63,11 +178,9 @@ function createHighwayAsphaltTexture(): THREE.CanvasTexture {
   canvas.height = 128;
   const ctx = canvas.getContext('2d')!;
 
-  // Asphalt base
   ctx.fillStyle = '#262A2C';
   ctx.fillRect(0, 0, 512, 128);
 
-  // Asphalt aggregate flecks
   for (let i = 0; i < 8000; i++) {
     const x = Math.random() * 512;
     const y = Math.random() * 128;
@@ -76,7 +189,6 @@ function createHighwayAsphaltTexture(): THREE.CanvasTexture {
     ctx.fillRect(x, y, 1.2, 1.2);
   }
 
-  // Yellow shoulder edge lines
   ctx.strokeStyle = '#D9A74A';
   ctx.lineWidth = 4;
   ctx.beginPath();
@@ -86,7 +198,6 @@ function createHighwayAsphaltTexture(): THREE.CanvasTexture {
   ctx.lineTo(512, 118);
   ctx.stroke();
 
-  // Dashed white center line
   ctx.strokeStyle = '#FFFFFF';
   ctx.lineWidth = 3;
   ctx.setLineDash([24, 16]);
@@ -118,7 +229,6 @@ function createBoulevardPaverTexture(): THREE.CanvasTexture {
     ctx.fillRect(x, y, 1.2, 1.2);
   }
 
-  // Linear street block joints
   ctx.strokeStyle = 'rgba(25, 30, 32, 0.6)';
   ctx.lineWidth = 1.5;
   for (let y = 0; y < 256; y += 32) {
@@ -185,14 +295,22 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
 
   const [selectedBlock, setSelectedBlock] = useState<string>('All');
   const [selectedPlotId, setSelectedPlotId] = useState<string>('plot-1');
+  const [selectedLandmark, setSelectedLandmark] = useState<LandmarkType | null>(null);
+  const [activeInspectorTab, setActiveInspectorTab] = useState<'details' | 'cad-map' | 'specs'>('details');
   const [viewPreset, setViewPreset] = useState<'isometric' | 'top' | 'hospital' | 'highway' | 'residence' | 'mandir'>('isometric');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const plotMeshesRef = useRef<{ [plotNumber: number]: THREE.Mesh }>({});
+  const landmarkMeshesRef = useRef<THREE.Group[]>([]);
   const raycasterRef = useRef<THREE.Raycaster>(new THREE.Raycaster());
   const mouseRef = useRef<THREE.Vector2>(new THREE.Vector2());
   const animationFrameId = useRef<number | null>(null);
@@ -202,6 +320,17 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
   useEffect(() => {
     onSelectPlotRef.current = onSelectPlot;
   }, [onSelectPlot]);
+
+  // Keyboard Escape listener for fullscreen
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFullscreen]);
 
   // Smooth Orbit Controls State
   const orbitRef = useRef({
@@ -262,7 +391,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
     renderer.setSize(width, height);
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
     rendererRef.current = renderer;
@@ -319,7 +448,6 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       roughness: 0.84
     });
 
-    const curbStoneMat = new THREE.MeshStandardMaterial({ color: 0x9fa8ad, roughness: 0.6 });
     const buildingWallMat = new THREE.MeshStandardMaterial({ color: 0xe8deca, roughness: 0.65 });
     const bronzeAccentMat = new THREE.MeshStandardMaterial({ color: 0x48382c, metalness: 0.85, roughness: 0.3 });
     const glassFacadeMat = new THREE.MeshStandardMaterial({
@@ -344,20 +472,10 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     highwayMesh.receiveShadow = true;
     scene.add(highwayMesh);
 
-    // Highway Signage Monolith
-    const signGroup = new THREE.Group();
-    const signPillar = new THREE.Mesh(new THREE.BoxGeometry(0.6, 3.2, 0.6), bronzeAccentMat);
-    signPillar.position.set(24, 1.6, 30);
-    signGroup.add(signPillar);
-
-    const signBoard = new THREE.Mesh(new THREE.BoxGeometry(5.2, 1.6, 0.25), new THREE.MeshStandardMaterial({ color: 0x0d2329, roughness: 0.4 }));
-    signBoard.position.set(24, 3.2, 30);
-    signBoard.castShadow = true;
-    signGroup.add(signBoard);
-    scene.add(signGroup);
-
     // ─── 3. Grand Entrance Gateway with Security Post ───────────────────────
     const gateGroup = new THREE.Group();
+    gateGroup.name = 'landmark-gate';
+
     const gateColLeft = new THREE.Mesh(new THREE.BoxGeometry(1.2, 4.8, 1.2), buildingWallMat);
     gateColLeft.position.set(-6.5, 2.4, 30);
     gateColLeft.castShadow = true;
@@ -373,12 +491,15 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     gateLintel.castShadow = true;
     gateGroup.add(gateLintel);
 
-    // Security Gatehouse
     const guardHouse = new THREE.Mesh(new THREE.BoxGeometry(3.6, 2.8, 3.6), buildingWallMat);
     guardHouse.position.set(9.2, 1.4, 28);
     guardHouse.castShadow = true;
     guardHouse.receiveShadow = true;
     gateGroup.add(guardHouse);
+
+    gateGroup.traverse((child) => {
+      child.userData = { landmark: 'gate' };
+    });
     scene.add(gateGroup);
 
     // ─── 4. 33ft Main Central Spine Boulevard ──────────────────────────────
@@ -418,30 +539,25 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     });
 
     // ─── 5. Proposed 30,000 Sq. Ft. Multi-Speciality Ayurvedic Hospital ─────
-    // CAD Dimensions: L-Shaped G+2, 117'-10" × 138' (approx 36m × 42m footprint)
     const hospitalGroup = new THREE.Group();
-    hospitalGroup.name = 'proposed-hospital';
+    hospitalGroup.name = 'landmark-hospital';
 
-    // Main Hospital West Wing
     const hospMainWing = new THREE.Mesh(new THREE.BoxGeometry(26, 8.5, 16), buildingWallMat);
     hospMainWing.position.set(38, 4.25, -12);
     hospMainWing.castShadow = true;
     hospMainWing.receiveShadow = true;
     hospitalGroup.add(hospMainWing);
 
-    // Hospital North OPD Wing (L-Shape extension)
     const hospOpdWing = new THREE.Mesh(new THREE.BoxGeometry(16, 8.5, 20), buildingWallMat);
     hospOpdWing.position.set(43, 4.25, 6);
     hospOpdWing.castShadow = true;
     hospOpdWing.receiveShadow = true;
     hospitalGroup.add(hospOpdWing);
 
-    // Glazed Curtain Wall Atrium
     const hospAtriumGlass = new THREE.Mesh(new THREE.BoxGeometry(18, 7.5, 0.15), glassFacadeMat);
     hospAtriumGlass.position.set(38, 4.25, -3.9);
     hospitalGroup.add(hospAtriumGlass);
 
-    // Covered Drop-off Canopy (Ambulance & Patient Portico)
     const hospCanopy = new THREE.Mesh(new THREE.BoxGeometry(12, 0.35, 8), bronzeAccentMat);
     hospCanopy.position.set(34, 3.8, 3.5);
     hospCanopy.castShadow = true;
@@ -454,17 +570,31 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       hospitalGroup.add(col);
     });
 
-    // Rooftop Red Crescent / Ayurvedic Emblem Signage
     const hospSign = new THREE.Mesh(new THREE.BoxGeometry(5.0, 1.2, 0.2), new THREE.MeshStandardMaterial({ color: 0x2c5e50, roughness: 0.3 }));
     hospSign.position.set(38, 9.2, -12);
     hospitalGroup.add(hospSign);
+
+    hospitalGroup.traverse((child) => {
+      child.userData = { landmark: 'hospital' };
+    });
     scene.add(hospitalGroup);
 
-    // ─── 6. Proposed Community Mandir ───────────────────────────────────────
-    const mandirGroup = new THREE.Group();
-    mandirGroup.name = 'community-mandir';
+    // Hospital Solar Panel Array
+    const solarPanelMat = new THREE.MeshStandardMaterial({ color: 0x0a1e36, metalness: 0.9, roughness: 0.15 });
+    for (let sx = 0; sx < 3; sx++) {
+      for (let sz = 0; sz < 2; sz++) {
+        const solarPanel = new THREE.Mesh(new THREE.BoxGeometry(5.2, 0.1, 4.0), solarPanelMat);
+        solarPanel.position.set(32 + sx * 6.0, 8.7, -15 + sz * 5.0);
+        solarPanel.rotation.x = 0.12;
+        solarPanel.castShadow = true;
+        scene.add(solarPanel);
+      }
+    }
 
-    // Stepped Sandstone Plinth
+    // ─── 6. Proposed Community Mandir & Kund ────────────────────────────────
+    const mandirGroup = new THREE.Group();
+    mandirGroup.name = 'landmark-mandir';
+
     const mandirPlinthMat = new THREE.MeshStandardMaterial({ color: 0xd8c8b0, roughness: 0.65 });
     const plinth1 = new THREE.Mesh(new THREE.BoxGeometry(14, 0.4, 14), mandirPlinthMat);
     plinth1.position.set(30, 0.2, 26);
@@ -474,13 +604,11 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     plinth2.position.set(30, 0.6, 26);
     mandirGroup.add(plinth2);
 
-    // Mandapa Sanctum Hall
     const mandirHall = new THREE.Mesh(new THREE.BoxGeometry(9, 3.8, 9), mandirPlinthMat);
     mandirHall.position.set(30, 2.7, 26);
     mandirHall.castShadow = true;
     mandirGroup.add(mandirHall);
 
-    // Mandapa Pillars
     [-3.2, -1.1, 1.1, 3.2].forEach((cx) => {
       const pCol = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 3.2, 8), mandirPlinthMat);
       pCol.position.set(30 + cx, 2.3, 30.8);
@@ -488,7 +616,6 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       mandirGroup.add(pCol);
     });
 
-    // Carved Shikhara Tower
     const shikhara = new THREE.Mesh(
       new THREE.ConeGeometry(4.4, 6.8, 8),
       new THREE.MeshStandardMaterial({ color: 0xc58f58, roughness: 0.35, metalness: 0.55 })
@@ -497,21 +624,42 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     shikhara.castShadow = true;
     mandirGroup.add(shikhara);
 
-    // Gold Kalasha & Dhwaja Flag
     const kalasha = new THREE.Mesh(
       new THREE.SphereGeometry(0.45, 12, 12),
       new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.15, metalness: 0.9 })
     );
     kalasha.position.set(30, 11.6, 26);
     mandirGroup.add(kalasha);
+
+    // Sacred Meditation Pond / Water Kund
+    const kundPlinth = new THREE.Mesh(new THREE.BoxGeometry(10, 0.3, 8), mandirPlinthMat);
+    kundPlinth.position.set(16, 0.15, 26);
+    mandirGroup.add(kundPlinth);
+
+    const kundWater = new THREE.Mesh(
+      new THREE.PlaneGeometry(8.5, 6.5),
+      new THREE.MeshStandardMaterial({
+        color: 0x1b4d63,
+        roughness: 0.05,
+        metalness: 0.85,
+        transparent: true,
+        opacity: 0.85
+      })
+    );
+    kundWater.rotation.x = -Math.PI / 2;
+    kundWater.position.set(16, 0.31, 26);
+    mandirGroup.add(kundWater);
+
+    mandirGroup.traverse((child) => {
+      child.userData = { landmark: 'mandir' };
+    });
     scene.add(mandirGroup);
 
     // ─── 7. Proposed 9-Unit G+2 Residential Building (Plots 63 & 64) ────────
     const residenceGroup = new THREE.Group();
-    residenceGroup.name = 'proposed-residence-building';
-    residenceGroup.position.set(31.5, 0, -22); // Sited on Plots 63 & 64
+    residenceGroup.name = 'landmark-residence';
+    residenceGroup.position.set(31.5, 0, -22);
 
-    // Stilt Level with open column bays
     const stiltSlab = new THREE.Mesh(new THREE.BoxGeometry(14, 0.25, 10), buildingWallMat);
     stiltSlab.position.set(0, 1.8, 0);
     residenceGroup.add(stiltSlab);
@@ -525,25 +673,21 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       });
     });
 
-    // Ground Floor (Units 01-03)
     const gf = new THREE.Mesh(new THREE.BoxGeometry(13.6, 1.6, 9.4), buildingWallMat);
     gf.position.set(0, 2.7, 0);
     gf.castShadow = true;
     residenceGroup.add(gf);
 
-    // First Floor (Units 04-06)
     const ff = new THREE.Mesh(new THREE.BoxGeometry(13.6, 1.6, 9.4), buildingWallMat);
     ff.position.set(0, 4.3, 0);
     ff.castShadow = true;
     residenceGroup.add(ff);
 
-    // Second Floor (Units 07-09)
     const sf = new THREE.Mesh(new THREE.BoxGeometry(13.6, 1.6, 9.4), buildingWallMat);
     sf.position.set(0, 5.9, 0);
     sf.castShadow = true;
     residenceGroup.add(sf);
 
-    // Roof Parapet & Lift Headroom
     const rf = new THREE.Mesh(new THREE.BoxGeometry(14, 0.3, 9.8), buildingWallMat);
     rf.position.set(0, 6.85, 0);
     rf.castShadow = true;
@@ -554,7 +698,12 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     liftCore.castShadow = true;
     residenceGroup.add(liftCore);
 
+    residenceGroup.traverse((child) => {
+      child.userData = { landmark: 'residence' };
+    });
     scene.add(residenceGroup);
+
+    landmarkMeshesRef.current = [hospitalGroup, mandirGroup, residenceGroup, gateGroup];
 
     // ─── 8. 64 Freehold Residential Plots (Blocks A to F) ───────────────────
     const plotMeshes: { [plotNumber: number]: THREE.Mesh } = {};
@@ -580,14 +729,12 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
         ? 14 + Math.floor(indexInBlock / 3) * 8.5
         : -16 - Math.floor((indexInBlock - 6) / 3) * 8.5;
 
-      // Flat Ground Plot Slab (0.08m height)
       const plotGeo = new THREE.BoxGeometry(width, 0.08, depth);
       const plotMesh = new THREE.Mesh(plotGeo, plotBaseMat.clone());
       plotMesh.position.set(posX, 0.04, posZ);
       plotMesh.receiveShadow = true;
       plotMesh.userData = { plot };
 
-      // 4 White Demarcation Corner Boundary Stones
       const halfW = width / 2;
       const halfD = depth / 2;
       [
@@ -608,14 +755,17 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
 
     plotMeshesRef.current = plotMeshes;
 
-    // ─── 9. Surrounding Green Buffer Canopy Trees ───────────────────────────
+    // ─── 9. Landscaping: Trees & Royal Palms ────────────────────────────────
     const trunkMat = new THREE.MeshStandardMaterial({ color: 0x4a2e18, roughness: 0.9 });
     const foliageMat = new THREE.MeshStandardMaterial({ color: 0x1f4a2c, roughness: 0.8 });
+    const amaltasFoliageMat = new THREE.MeshStandardMaterial({ color: 0xd4a017, roughness: 0.75 });
+    const palmFrondMat = new THREE.MeshStandardMaterial({ color: 0x2d633b, roughness: 0.65, side: THREE.DoubleSide });
+
     const treeGeo = new THREE.SphereGeometry(1.6, 8, 8);
     const trunkGeo = new THREE.CylinderGeometry(0.18, 0.25, 2.8, 6);
 
-    for (let i = 0; i < 36; i++) {
-      const angle = (i / 36) * Math.PI * 2;
+    for (let i = 0; i < 42; i++) {
+      const angle = (i / 42) * Math.PI * 2;
       const r = 62 + (i % 3) * 6;
       const tx = Math.cos(angle) * r;
       const tz = Math.sin(angle) * r;
@@ -625,12 +775,31 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       trunk.castShadow = true;
       scene.add(trunk);
 
-      const crown = new THREE.Mesh(treeGeo, foliageMat);
+      const crown = new THREE.Mesh(treeGeo, i % 5 === 0 ? amaltasFoliageMat : foliageMat);
       crown.position.set(tx, 3.6, tz);
       crown.scale.set(1.0, 1.2 + (i % 3) * 0.2, 1.0);
       crown.castShadow = true;
       scene.add(crown);
     }
+
+    [-24, -12, 0, 12, 24].forEach((pz) => {
+      [-4.5, 4.5].forEach((px) => {
+        const palmTrunk = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 5.0, 6), trunkMat);
+        palmTrunk.position.set(px, 2.5, pz);
+        palmTrunk.castShadow = true;
+        scene.add(palmTrunk);
+
+        for (let fi = 0; fi < 6; fi++) {
+          const frondAngle = (fi / 6) * Math.PI * 2;
+          const frond = new THREE.Mesh(new THREE.ConeGeometry(0.6, 2.4, 4), palmFrondMat);
+          frond.position.set(px + Math.cos(frondAngle) * 0.8, 5.2, pz + Math.sin(frondAngle) * 0.8);
+          frond.rotation.z = Math.cos(frondAngle) * 0.45;
+          frond.rotation.x = Math.sin(frondAngle) * 0.45;
+          frond.castShadow = true;
+          scene.add(frond);
+        }
+      });
+    });
 
     // ─── Interaction Handlers ─────────────────────────────────────────────
 
@@ -684,6 +853,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
             selectedPlotMeshRef.current = hitMesh;
 
             setSelectedPlotId(hitPlot.id);
+            setSelectedLandmark(null);
             if (onSelectPlotRef.current) onSelectPlotRef.current(hitPlot);
 
             orbitRef.current.targetLookAt.set(
@@ -692,6 +862,38 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
               hitMesh.position.z
             );
             orbitRef.current.targetRadius = 42;
+            return;
+          }
+        }
+
+        // Landmark raycasting
+        const allLandmarkChildren: THREE.Object3D[] = [];
+        landmarkMeshesRef.current.forEach((g) => {
+          g.traverse((c) => {
+            if (c instanceof THREE.Mesh && c.userData?.landmark) {
+              allLandmarkChildren.push(c);
+            }
+          });
+        });
+
+        const landmarkIntersects = raycasterRef.current.intersectObjects(allLandmarkChildren);
+        if (landmarkIntersects.length > 0) {
+          const landmarkKey = landmarkIntersects[0].object.userData.landmark as LandmarkType;
+          if (landmarkKey) {
+            setSelectedLandmark(landmarkKey);
+            if (landmarkKey === 'hospital') {
+              orbitRef.current.targetLookAt.set(38, 4, -4);
+              orbitRef.current.targetRadius = 45;
+            } else if (landmarkKey === 'mandir') {
+              orbitRef.current.targetLookAt.set(30, 4, 26);
+              orbitRef.current.targetRadius = 45;
+            } else if (landmarkKey === 'residence') {
+              orbitRef.current.targetLookAt.set(31.5, 4, -22);
+              orbitRef.current.targetRadius = 40;
+            } else if (landmarkKey === 'gate') {
+              orbitRef.current.targetLookAt.set(0, 2, 32);
+              orbitRef.current.targetRadius = 55;
+            }
           }
         }
       }
@@ -705,23 +907,15 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       );
     };
 
-    // Touch support for mobile
-    let touchStartDist = 0;
     const handleTouchStart = (e: TouchEvent) => {
       if (e.touches.length === 1) {
         orbitRef.current.isDragging = true;
         orbitRef.current.prevMouseX = e.touches[0].clientX;
         orbitRef.current.prevMouseY = e.touches[0].clientY;
-      } else if (e.touches.length === 2) {
-        touchStartDist = Math.hypot(
-          e.touches[1].clientX - e.touches[0].clientX,
-          e.touches[1].clientY - e.touches[0].clientY
-        );
       }
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
       if (e.touches.length === 1 && orbitRef.current.isDragging) {
         const dx = e.touches[0].clientX - orbitRef.current.prevMouseX;
         const dy = e.touches[0].clientY - orbitRef.current.prevMouseY;
@@ -729,28 +923,11 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
         orbitRef.current.prevMouseY = e.touches[0].clientY;
         orbitRef.current.targetTheta -= dx * 0.006;
         orbitRef.current.targetPhi = Math.max(0.15, Math.min(Math.PI / 2 - 0.06, orbitRef.current.targetPhi - dy * 0.006));
-      } else if (e.touches.length === 2) {
-        const newDist = Math.hypot(
-          e.touches[1].clientX - e.touches[0].clientX,
-          e.touches[1].clientY - e.touches[0].clientY
-        );
-        const delta = touchStartDist - newDist;
-        orbitRef.current.targetRadius = Math.max(25, Math.min(120, orbitRef.current.targetRadius + delta * 0.08));
-        touchStartDist = newDist;
       }
     };
 
     const handleTouchEnd = () => {
       orbitRef.current.isDragging = false;
-    };
-
-    const handleResize = () => {
-      if (!container || !renderer || !camera) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
     };
 
     canvas.addEventListener('mousedown', handleMouseDown);
@@ -760,24 +937,27 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     canvas.addEventListener('touchstart', handleTouchStart, { passive: true });
     canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
     canvas.addEventListener('touchend', handleTouchEnd);
-    window.addEventListener('resize', handleResize);
 
+    // ─── Animation Loop ───────────────────────────────────────────────────
     const animate = () => {
       animationFrameId.current = requestAnimationFrame(animate);
-
-      if (!orbitRef.current.isDragging) {
-        orbitRef.current.targetTheta += 0.0004;
-      }
-
       updateCameraPosition();
       renderer.render(scene, camera);
     };
-
-    animationFrameId.current = requestAnimationFrame(animate);
+    animate();
     setIsLoading(false);
 
+    const handleResize = () => {
+      if (!container || !camera || !renderer) return;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+    window.addEventListener('resize', handleResize);
+
     return () => {
-      if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
       canvas.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
@@ -787,214 +967,530 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       canvas.removeEventListener('touchend', handleTouchEnd);
       window.removeEventListener('resize', handleResize);
 
+      if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
       disposeScene(scene);
       renderer.dispose();
     };
   }, [updateCameraPosition]);
 
-  // ─── Camera Preset Views ──────────────────────────────────────────────────
-
-  const handlePresetView = (preset: 'isometric' | 'top' | 'hospital' | 'highway' | 'residence' | 'mandir') => {
+  // Handle preset view transitions
+  const handlePresetView = (preset: typeof viewPreset) => {
     setViewPreset(preset);
+    setSelectedLandmark(null);
+
     if (preset === 'isometric') {
       orbitRef.current.targetTheta = Math.PI / 4.2;
       orbitRef.current.targetPhi = Math.PI / 3.4;
       orbitRef.current.targetRadius = 78;
       orbitRef.current.targetLookAt.set(0, 0, 0);
     } else if (preset === 'top') {
-      orbitRef.current.targetTheta = 0;
-      orbitRef.current.targetPhi = 0.12;
-      orbitRef.current.targetRadius = 95;
+      orbitRef.current.targetTheta = 0.001;
+      orbitRef.current.targetPhi = 0.05;
+      orbitRef.current.targetRadius = 90;
       orbitRef.current.targetLookAt.set(0, 0, 0);
     } else if (preset === 'hospital') {
-      orbitRef.current.targetTheta = -Math.PI / 3;
+      orbitRef.current.targetTheta = -Math.PI / 4;
       orbitRef.current.targetPhi = Math.PI / 3.2;
       orbitRef.current.targetRadius = 48;
       orbitRef.current.targetLookAt.set(38, 4, -4);
+      setSelectedLandmark('hospital');
     } else if (preset === 'mandir') {
       orbitRef.current.targetTheta = Math.PI / 3;
       orbitRef.current.targetPhi = Math.PI / 3.2;
       orbitRef.current.targetRadius = 45;
       orbitRef.current.targetLookAt.set(30, 4, 26);
+      setSelectedLandmark('mandir');
     } else if (preset === 'highway') {
       orbitRef.current.targetTheta = Math.PI / 2.05;
       orbitRef.current.targetPhi = Math.PI / 2.6;
       orbitRef.current.targetRadius = 55;
       orbitRef.current.targetLookAt.set(0, 2, 32);
+      setSelectedLandmark('gate');
     } else if (preset === 'residence') {
       orbitRef.current.targetTheta = -Math.PI / 3.5;
       orbitRef.current.targetPhi = Math.PI / 3.2;
       orbitRef.current.targetRadius = 40;
       orbitRef.current.targetLookAt.set(31.5, 4, -22);
+      setSelectedLandmark('residence');
+    }
+  };
+
+  // Block filter handler
+  const handleBlockSelect = (block: string) => {
+    setSelectedBlock(block);
+    if (block === 'All') return;
+
+    const firstInBlock = allPlots.find((p) => p.block === block);
+    if (firstInBlock && plotMeshesRef.current[firstInBlock.number]) {
+      const mesh = plotMeshesRef.current[firstInBlock.number];
+      setSelectedPlotId(firstInBlock.id);
+      setSelectedLandmark(null);
+      orbitRef.current.targetLookAt.set(mesh.position.x, 0, mesh.position.z);
+      orbitRef.current.targetRadius = 50;
     }
   };
 
   const selectedPlot = allPlots.find((p) => p.id === selectedPlotId) || allPlots[0];
+  const activeLandmarkInfo = selectedLandmark ? LANDMARK_REGISTRY[selectedLandmark] : null;
 
   return (
     <div
       ref={containerRef}
-      className={`relative w-full rounded-3xl overflow-hidden bg-[#071519] border border-[#163942] shadow-2xl transition-all duration-300 ${
-        isFullscreen ? 'fixed inset-0 z-50 rounded-none h-screen' : 'h-[620px] sm:h-[720px]'
+      className={`relative w-full overflow-hidden bg-[#071519] border border-[#163942] shadow-2xl transition-all duration-300 ${
+        isFullscreen ? 'fixed inset-0 z-[99999] rounded-none h-screen w-screen flex flex-col lg:flex-row' : 'rounded-3xl h-[620px] sm:h-[720px]'
       }`}
     >
-      <canvas ref={canvasRef} className="w-full h-full cursor-grab active:cursor-grabbing block" />
+      {/* Main 3D Canvas Viewport */}
+      <div className={`relative h-full ${isFullscreen ? 'flex-1 min-w-0 h-full' : 'w-full'}`}>
+        <canvas ref={canvasRef} className="w-full h-full cursor-grab active:cursor-grabbing block" />
 
-      {/* Loading Overlay */}
-      {isLoading && (
-        <div className="absolute inset-0 bg-[#071519] flex flex-col items-center justify-center gap-3 z-30">
-          <div className="w-10 h-10 border-2 border-[#C58F58] border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs font-mono text-[#FAF8F5] uppercase tracking-widest">
-            Rendering 64-Plot 3D Master Plan...
-          </span>
-        </div>
-      )}
-
-      {/* Top Left Header & Proposed Badge */}
-      <div className="absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2 pointer-events-none">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0D2329]/90 border border-white/15 text-[11px] font-mono text-[#E0AB77] uppercase tracking-widest backdrop-blur-md shadow-lg pointer-events-auto">
-          <Layers className="w-3.5 h-3.5 text-[#C58F58]" />
-          <span>PROPOSED 64-PLOT MASTER PLAN CGI</span>
-        </div>
-
-        <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-400/30 text-emerald-300 text-[11px] font-bold backdrop-blur-md shadow-lg pointer-events-auto">
-          <CheckCircle2 className="w-3.5 h-3.5" />
-          <span>64 Plots · 6 Blocks (A to F)</span>
-        </div>
-      </div>
-
-      {/* Top Right View Preset Toolbar */}
-      <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 bg-[#0D2329]/90 backdrop-blur-md p-1.5 rounded-2xl border border-white/15 shadow-xl pointer-events-auto">
-        <button
-          onClick={() => handlePresetView('isometric')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            viewPreset === 'isometric' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
-          }`}
-        >
-          Overview
-        </button>
-
-        <button
-          onClick={() => handlePresetView('hospital')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            viewPreset === 'hospital' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
-          }`}
-        >
-          Hospital
-        </button>
-
-        <button
-          onClick={() => handlePresetView('mandir')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            viewPreset === 'mandir' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
-          }`}
-        >
-          Mandir
-        </button>
-
-        <button
-          onClick={() => handlePresetView('highway')}
-          className={`hidden sm:block px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            viewPreset === 'highway' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
-          }`}
-        >
-          SH-22 Entry
-        </button>
-
-        <button
-          onClick={() => handlePresetView('top')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            viewPreset === 'top' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
-          }`}
-        >
-          Top View
-        </button>
-
-        <div className="h-4 w-px bg-white/20 mx-1" />
-
-        {onToggle2DView && (
-          <button
-            onClick={onToggle2DView}
-            className="px-2.5 py-1.5 rounded-xl text-xs text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-          >
-            2D Grid
-          </button>
+        {/* Loading Overlay */}
+        {isLoading && (
+          <div className="absolute inset-0 bg-[#071519] flex flex-col items-center justify-center gap-3 z-30">
+            <div className="w-10 h-10 border-2 border-[#C58F58] border-t-transparent rounded-full animate-spin" />
+            <span className="text-xs font-mono text-[#FAF8F5] uppercase tracking-widest">
+              Rendering 64-Plot 3D Master Plan...
+            </span>
+          </div>
         )}
 
-        <button
-          onClick={() => setIsFullscreen(!isFullscreen)}
-          className="p-1.5 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-        >
-          {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-        </button>
+        {/* Top Left Header & Proposed Badge */}
+        <div className="absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2 pointer-events-none">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0D2329]/90 border border-white/15 text-[11px] font-mono text-[#E0AB77] uppercase tracking-widest backdrop-blur-md shadow-lg pointer-events-auto">
+            <Layers className="w-3.5 h-3.5 text-[#C58F58]" />
+            <span>PROPOSED 64-PLOT MASTER PLAN</span>
+          </div>
+
+          <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-400/30 text-emerald-300 text-[11px] font-bold backdrop-blur-md shadow-lg pointer-events-auto">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            <span>64 Demarcated Freehold Plots</span>
+          </div>
+        </div>
+
+        {/* Top Right Controls & View Toolbar */}
+        <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 bg-[#0D2329]/90 backdrop-blur-md p-1.5 rounded-2xl border border-white/15 shadow-xl pointer-events-auto">
+          <button
+            onClick={() => handlePresetView('isometric')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              viewPreset === 'isometric' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
+            }`}
+          >
+            Overview
+          </button>
+
+          <button
+            onClick={() => handlePresetView('hospital')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              viewPreset === 'hospital' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
+            }`}
+          >
+            Hospital
+          </button>
+
+          <button
+            onClick={() => handlePresetView('mandir')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              viewPreset === 'mandir' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
+            }`}
+          >
+            Mandir
+          </button>
+
+          <button
+            onClick={() => handlePresetView('highway')}
+            className={`hidden sm:block px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              viewPreset === 'highway' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
+            }`}
+          >
+            SH-22
+          </button>
+
+          <button
+            onClick={() => handlePresetView('top')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              viewPreset === 'top' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
+            }`}
+          >
+            Top CAD
+          </button>
+
+          <div className="h-4 w-px bg-white/20 mx-1" />
+
+          {onToggle2DView && (
+            <button
+              onClick={onToggle2DView}
+              className="px-2.5 py-1.5 rounded-xl text-xs text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            >
+              2D Matrix
+            </button>
+          )}
+
+          <button
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            className="p-1.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            title={isFullscreen ? 'Exit Fullscreen (Esc)' : 'Studio Fullscreen Mode'}
+          >
+            {isFullscreen ? <Minimize2 className="w-4 h-4 text-[#C58F58]" /> : <Maximize2 className="w-4 h-4" />}
+          </button>
+        </div>
+
+        {/* Bottom Left HUD Info */}
+        <div className="absolute bottom-4 left-4 flex items-center gap-2 text-[11px] text-white/70 pointer-events-none z-10">
+          <div className="flex items-center gap-2 bg-[#071519]/85 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
+            <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" />
+            <span className="hidden sm:inline">Click Any Plot or Landmark to Inspect CAD Details</span>
+            <span className="sm:hidden">Tap to Inspect</span>
+          </div>
+          <div className="hidden md:flex items-center gap-1.5 bg-[#071519]/85 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
+            <MapPin className="w-3.5 h-3.5 text-[#C58F58]" />
+            <span>State Highway 22, Kheri Asra, Jhajjar</span>
+          </div>
+        </div>
+
+        {/* Non-Fullscreen Floating Selection Card */}
+        {!isFullscreen && (
+          <div className="absolute right-4 bottom-16 sm:bottom-20 max-w-xs w-full bg-[#071519]/95 backdrop-blur-xl border border-white/15 rounded-3xl p-5 text-white shadow-2xl z-20 space-y-3 pointer-events-auto">
+            {activeLandmarkInfo ? (
+              <>
+                <div className="flex items-center justify-between pb-2 border-b border-white/10">
+                  <span className="px-2.5 py-0.5 rounded-md bg-[#2C5E50]/40 border border-emerald-400/40 text-[10px] font-bold text-emerald-300 uppercase">
+                    {activeLandmarkInfo.badge}
+                  </span>
+                  <button
+                    onClick={() => setSelectedLandmark(null)}
+                    className="text-white/50 hover:text-white"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div>
+                  <h4 className="text-base font-serif-heading font-bold text-[#FAF8F5]">
+                    {activeLandmarkInfo.title}
+                  </h4>
+                  <p className="text-xs text-white/70 mt-1 line-clamp-2">
+                    {activeLandmarkInfo.description}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsFullscreen(true)}
+                  className="w-full py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <Maximize2 className="w-3.5 h-3.5 text-[#C58F58]" />
+                  Open Full Studio Details
+                </button>
+              </>
+            ) : selectedPlot ? (
+              <>
+                <div className="flex items-center justify-between pb-2 border-b border-white/10">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/30 text-[10px] font-bold text-emerald-300 uppercase">
+                      Phase 1 Enquiry
+                    </span>
+                    <span className="text-xs text-white/70 font-mono">{selectedPlot.block}</span>
+                  </div>
+                  <span className="text-xs font-bold text-[#C58F58]">{selectedPlot.priceEstimate}</span>
+                </div>
+                <div>
+                  <h4 className="text-lg font-serif-heading font-bold text-[#FAF8F5]">
+                    {selectedPlot.plotNumber}
+                  </h4>
+                  <p className="text-xs text-white/75 font-light mt-0.5">
+                    {selectedPlot.sizeSqYd} sq. yd. (~{(selectedPlot.sizeSqYd * 9).toLocaleString()} sq. ft.) • {selectedPlot.dimensions} • {selectedPlot.facing}
+                  </p>
+                </div>
+                <div className="pt-1 flex flex-col gap-2">
+                  <button
+                    onClick={() =>
+                      openWhatsApp({
+                        actionType: 'reserve-plot',
+                        plotNumber: selectedPlot.plotNumber,
+                        plotBlock: selectedPlot.block,
+                        message: `Hello, I clicked ${selectedPlot.plotNumber} (${selectedPlot.block}, ${selectedPlot.sizeSqYd} sq.yd.) on the 3D Master Plan for Senior Living Citizen Foundation. Please share price breakdown and payment terms.`
+                      })
+                    }
+                    className="w-full py-2.5 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    Inquire {selectedPlot.plotNumber} on WhatsApp →
+                  </button>
+                  <button
+                    onClick={() => setIsFullscreen(true)}
+                    className="w-full py-2 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-white text-xs font-medium transition-all text-center cursor-pointer flex items-center justify-center gap-1"
+                  >
+                    <Maximize2 className="w-3.5 h-3.5 text-[#C58F58]" />
+                    Studio Mode (Full Inspector)
+                  </button>
+                </div>
+              </>
+            ) : null}
+          </div>
+        )}
       </div>
 
-      {/* Selected Plot Floating Card */}
-      {selectedPlot && (
-        <div className="absolute right-4 bottom-16 sm:bottom-20 max-w-xs w-full bg-[#071519]/95 backdrop-blur-xl border border-white/15 rounded-3xl p-5 text-white shadow-2xl z-20 space-y-3 pointer-events-auto">
-          <div className="flex items-center justify-between pb-2 border-b border-white/10">
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/30 text-[10px] font-bold text-emerald-300 uppercase tracking-wider">
-                Phase 1 Enquiry
-              </span>
-              <span className="text-xs text-white/70 font-mono">{selectedPlot.block}</span>
+      {/* ─── FULLSCREEN STUDIO INSPECTOR SIDEBAR (Right 30% on Laptop/Desktop) ─── */}
+      {isFullscreen && (
+        <aside className="w-full lg:w-[420px] xl:w-[460px] shrink-0 h-full bg-[#0A1C22]/98 border-t lg:border-t-0 lg:border-l border-white/15 p-6 overflow-y-auto flex flex-col justify-between backdrop-blur-2xl z-30 shadow-2xl text-white space-y-6">
+          {/* Sidebar Top Header */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between pb-4 border-b border-white/15">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-[#2C5E50]/40 border border-emerald-400/40 text-[#C58F58] flex items-center justify-center">
+                  <Compass className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-serif-heading font-bold text-base text-[#FAF8F5]">
+                    Master Plan Studio Inspector
+                  </h3>
+                  <span className="text-[10px] font-mono text-[#C58F58] uppercase tracking-wider block">
+                    Real CAD Blueprint Synchronized
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setIsFullscreen(false)}
+                className="p-2 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                title="Exit Fullscreen (Esc)"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
-            <span className="text-xs font-bold text-[#C58F58]">{selectedPlot.priceEstimate}</span>
+
+            {/* Block Filter Pills */}
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-mono uppercase tracking-wider text-white/60">
+                Filter by Sector / Block:
+              </label>
+              <div className="flex flex-wrap gap-1.5">
+                {['All', 'Block A', 'Block B', 'Block C', 'Block D', 'Block E', 'Block F'].map((b) => (
+                  <button
+                    key={b}
+                    onClick={() => handleBlockSelect(b)}
+                    className={`px-3 py-1 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                      selectedBlock === b
+                        ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md'
+                        : 'bg-white/5 hover:bg-white/10 text-white/75 border border-white/10'
+                    }`}
+                  >
+                    {b}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Inspector Navigation Tabs */}
+            <div className="flex items-center gap-1 p-1 bg-black/30 rounded-2xl border border-white/10">
+              <button
+                onClick={() => setActiveInspectorTab('details')}
+                className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  activeInspectorTab === 'details' ? 'bg-[#2C5E50] text-white shadow-md' : 'text-white/60 hover:text-white'
+                }`}
+              >
+                Live Specs
+              </button>
+              <button
+                onClick={() => setActiveInspectorTab('cad-map')}
+                className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                  activeInspectorTab === 'cad-map' ? 'bg-[#2C5E50] text-white shadow-md' : 'text-white/60 hover:text-white'
+                }`}
+              >
+                <ZoomIn className="w-3.5 h-3.5 text-[#C58F58]" />
+                2D CAD Zoom
+              </button>
+              <button
+                onClick={() => setActiveInspectorTab('specs')}
+                className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  activeInspectorTab === 'specs' ? 'bg-[#2C5E50] text-white shadow-md' : 'text-white/60 hover:text-white'
+                }`}
+              >
+                Statutory
+              </button>
+            </div>
+
+            {/* TAB 1: LIVE SPECS (Plot or Landmark) */}
+            {activeInspectorTab === 'details' && (
+              <div className="space-y-4 animate-in fade-in duration-200">
+                {activeLandmarkInfo ? (
+                  <div className="space-y-4">
+                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-400/30 text-[10px] font-bold uppercase">
+                          {activeLandmarkInfo.badge}
+                        </span>
+                        <span className="text-xs text-[#C58F58] font-mono">{activeLandmarkInfo.category}</span>
+                      </div>
+                      <h4 className="text-xl font-serif-heading font-bold text-[#FAF8F5]">
+                        {activeLandmarkInfo.title}
+                      </h4>
+                      <p className="text-xs text-white/75 leading-relaxed">
+                        {activeLandmarkInfo.description}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                        <span className="text-[10px] text-white/50 block font-mono">Area / Footprint</span>
+                        <span className="font-bold text-white mt-0.5 block">{activeLandmarkInfo.area}</span>
+                      </div>
+                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                        <span className="text-[10px] text-white/50 block font-mono">Structure Tier</span>
+                        <span className="font-bold text-white mt-0.5 block">{activeLandmarkInfo.floors}</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <span className="text-xs font-mono uppercase tracking-wider text-[#C58F58] font-bold">
+                        Key Architectural Features:
+                      </span>
+                      <div className="space-y-1.5">
+                        {activeLandmarkInfo.features.map((f, i) => (
+                          <div key={i} className="flex items-center gap-2 text-xs text-white/85">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                            <span>{f}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-400/30 text-[10px] font-bold uppercase">
+                          Freehold Plotted Land
+                        </span>
+                        <span className="text-xs text-[#C58F58] font-mono font-bold">{selectedPlot.block}</span>
+                      </div>
+                      <h4 className="text-2xl font-serif-heading font-bold text-[#FAF8F5]">
+                        {selectedPlot.plotNumber}
+                      </h4>
+                      <div className="flex items-center gap-3 text-xs text-white/75">
+                        <span><strong>{selectedPlot.sizeSqYd}</strong> sq. yd.</span>
+                        <span>•</span>
+                        <span>~<strong>{(selectedPlot.sizeSqYd * 9).toLocaleString()}</strong> sq. ft.</span>
+                        <span>•</span>
+                        <span>{selectedPlot.facing}</span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                        <span className="text-[10px] text-white/50 block font-mono">Plot Dimensions</span>
+                        <span className="font-bold text-white mt-0.5 block">{selectedPlot.dimensions}</span>
+                      </div>
+                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                        <span className="text-[10px] text-white/50 block font-mono">Frontage Road</span>
+                        <span className="font-bold text-white mt-0.5 block">{selectedPlot.roadWidth || '30 ft. Avenue'}</span>
+                      </div>
+                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                        <span className="text-[10px] text-white/50 block font-mono">Corner Status</span>
+                        <span className="font-bold text-[#C58F58] mt-0.5 block">{selectedPlot.isCorner ? 'Yes (Prime 2-Side Open)' : 'Standard Plot'}</span>
+                      </div>
+                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                        <span className="text-[10px] text-white/50 block font-mono">Cost-Plus Price</span>
+                        <span className="font-bold text-emerald-400 mt-0.5 block">{selectedPlot.priceEstimate}</span>
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-200 space-y-1">
+                      <div className="flex items-center gap-1.5 font-bold text-emerald-300">
+                        <ShieldCheck className="w-4 h-4" />
+                        <span>Section 8 Non-Profit Cost-Plus Pricing</span>
+                      </div>
+                      <p className="text-[11px] text-emerald-200/80 leading-relaxed">
+                        Zero commercial builder margins. Includes underground utilities, road infrastructure, power substation connection, and security perimeter.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB 2: 2D CAD MAP ZOOM (Cross-Referencing) */}
+            {activeInspectorTab === 'cad-map' && (
+              <div className="space-y-3 animate-in fade-in duration-200">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-white/60 font-mono">Architectural Masterplan CAD</span>
+                  <span className="text-[#C58F58] font-bold">Zoomed Alignment</span>
+                </div>
+
+                <div className="relative w-full h-56 rounded-2xl overflow-hidden border border-white/20 bg-black/40 shadow-inner group">
+                  <img
+                    src="/project-assets/architecture/cad/previews/masterplan-real.jpg"
+                    alt="Masterplan CAD Blueprint"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-125"
+                  />
+                  {/* Glowing Target Crosshair */}
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="w-12 h-12 rounded-full border-2 border-[#C58F58] animate-ping opacity-75" />
+                    <div className="w-4 h-4 rounded-full bg-[#C58F58] text-[9px] font-bold text-black flex items-center justify-center shadow-lg absolute">
+                      ★
+                    </div>
+                  </div>
+                  <div className="absolute bottom-2 left-2 right-2 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] text-white/80 flex items-center justify-between">
+                    <span>Target: {activeLandmarkInfo ? activeLandmarkInfo.title : selectedPlot.plotNumber}</span>
+                    <span className="font-mono text-[#C58F58]">SH-22 Demarcation</span>
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-white/60 leading-relaxed">
+                  Ground coordinates are certified by Haryana Revenue Department Aks Shajra and verified against architectural CAD layout from The Vision Architects.
+                </p>
+              </div>
+            )}
+
+            {/* TAB 3: STATUTORY & LEGAL */}
+            {activeInspectorTab === 'specs' && (
+              <div className="space-y-3 text-xs animate-in fade-in duration-200">
+                <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1">
+                  <span className="text-[10px] font-mono text-[#C58F58] uppercase">Legal Title & Demarcation</span>
+                  <p className="text-white/85">Clear unencumbered freehold title chain in Kheri Asra, Tehsil Jhajjar revenue records.</p>
+                </div>
+                <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1">
+                  <span className="text-[10px] font-mono text-[#C58F58] uppercase">Foundation Governance</span>
+                  <p className="text-white/85">Administered by Senior Living Citizen Foundation under Section 8 (Companies Act 2013, Licence No. 172654).</p>
+                </div>
+                <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1">
+                  <span className="text-[10px] font-mono text-[#C58F58] uppercase">Site Verification</span>
+                  <p className="text-white/85">Boundary stones physically anchored along State Highway 22 frontage with 30ft access avenue.</p>
+                </div>
+              </div>
+            )}
           </div>
 
-          <div>
-            <h4 className="text-lg font-serif-heading font-bold text-[#FAF8F5]">
-              {selectedPlot.plotNumber}
-            </h4>
-            <p className="text-xs text-white/75 font-light mt-0.5">
-              {selectedPlot.sizeSqYd} sq. yd. (~{(selectedPlot.sizeSqYd * 9).toLocaleString()} sq. ft.) • {selectedPlot.dimensions} • {selectedPlot.facing}
-            </p>
-          </div>
-
-          <div className="pt-1 flex flex-col gap-2">
+          {/* Sidebar Bottom CTA Actions */}
+          <div className="pt-4 border-t border-white/15 space-y-2.5">
             <button
               onClick={() =>
                 openWhatsApp({
                   actionType: 'reserve-plot',
                   plotNumber: selectedPlot.plotNumber,
                   plotBlock: selectedPlot.block,
-                  message: `Hello, I clicked ${selectedPlot.plotNumber} (${selectedPlot.block}, ${selectedPlot.sizeSqYd} sq.yd.) on the 3D Master Plan for Senior Living Citizen Foundation. Please share price breakdown and payment terms.`
+                  message: `Hello, I am inspecting ${activeLandmarkInfo ? activeLandmarkInfo.title : `${selectedPlot.plotNumber} (${selectedPlot.block}, ${selectedPlot.sizeSqYd} sq.yd.)`} on the 3D Masterplan for Senior Living Citizen Foundation. Please share complete CAD dossier and priority booking details.`
                 })
               }
-              className="w-full py-2.5 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
+              className="w-full py-3.5 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all shadow-lg shadow-emerald-950/50 flex items-center justify-center gap-2 cursor-pointer"
             >
-              Inquire {selectedPlot.plotNumber} on WhatsApp →
+              <MessageSquare className="w-4 h-4" />
+              Inquire on WhatsApp (+91 99999 55847) →
             </button>
 
             <button
               onClick={() =>
                 openLeadDrawer({
-                  title: `Schedule Site Walk for ${selectedPlot.plotNumber}`,
+                  title: `Schedule Private Site Walk for ${activeLandmarkInfo ? activeLandmarkInfo.title : selectedPlot.plotNumber}`,
                   plotNumber: selectedPlot.plotNumber,
                   plotBlock: selectedPlot.block,
                   actionType: 'book-site-visit'
                 })
               }
-              className="w-full py-2 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-white text-xs font-medium transition-all text-center cursor-pointer"
+              className="w-full py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/20 text-white text-xs font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              Book Ground Site Walk
+              <Phone className="w-3.5 h-3.5 text-[#C58F58]" />
+              Schedule Private Ground Site Walk
             </button>
           </div>
-        </div>
+        </aside>
       )}
-
-      {/* Bottom HUD */}
-      <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[11px] text-white/60 pointer-events-none z-10 px-2">
-        <div className="flex items-center gap-2 bg-[#071519]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
-          <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" />
-          <span className="hidden sm:inline">Click Any Plot on 3D Ground to Inspect Dimensions &amp; Inquire</span>
-          <span className="sm:hidden">Tap Any Plot to Inspect</span>
-        </div>
-        <div className="hidden md:flex items-center gap-1.5 bg-[#071519]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 text-white/60">
-          <MapPin className="w-3.5 h-3.5 text-[#C58F58]" />
-          <span>Kheri Asra, SH-22 Jhajjar</span>
-        </div>
-      </div>
     </div>
   );
 };

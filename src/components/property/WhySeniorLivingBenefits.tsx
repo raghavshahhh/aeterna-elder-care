@@ -126,11 +126,11 @@ export const WhySeniorLivingBenefits: React.FC = () => {
               Book a Site Visit
             </button>
             <a
-              href="tel:+9199999558447"
+              href="tel:+919999955847"
               className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all border border-white/20 flex items-center justify-center gap-2"
             >
               <PhoneCall className="w-4 h-4 text-emerald-400" />
-              Call: +91 99999558447
+              Call: +91 99999 55847
             </a>
           </div>
         </div>

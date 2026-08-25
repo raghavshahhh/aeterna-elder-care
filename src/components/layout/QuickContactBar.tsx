@@ -12,7 +12,7 @@ export const QuickContactBar: React.FC = () => {
   if (pathname?.startsWith('/owner')) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex items-center gap-3 pointer-events-auto">
+    <div className="fixed bottom-6 right-6 z-30 flex items-center gap-3 pointer-events-auto">
       {/* Schedule Site Visit Pill */}
       <button
         onClick={() => openLeadDrawer({ title: 'Schedule Free Private Site Walk', actionType: 'book-site-visit' })}
@@ -26,7 +26,7 @@ export const QuickContactBar: React.FC = () => {
       <button
         onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizen Foundation plots and residences...' })}
         className="w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 focus:outline-none ring-4 ring-white/30 cursor-pointer"
-        title="Chat on WhatsApp (+91 99999558447)"
+        title="Chat on WhatsApp (+91 99999 55847)"
         aria-label="WhatsApp Sales Desk"
       >
         <MessageSquare className="w-7 h-7 fill-white text-white" />

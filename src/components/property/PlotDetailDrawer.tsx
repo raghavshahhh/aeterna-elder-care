@@ -170,6 +170,33 @@ Please share pricing, payment milestones, and plot layout.`;
               </div>
             </div>
 
+            {/* Synchronized 2D CAD Blueprint Zoom */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[#53676E] font-mono font-bold uppercase text-[10px]">
+                  2D Architectural Blueprint ({plot.block})
+                </span>
+                <span className="text-[#C58F58] font-bold text-[10px]">CAD Certified</span>
+              </div>
+              <div className="relative w-full h-36 rounded-2xl overflow-hidden border border-[#E8E2D8] bg-[#0D2329] shadow-inner group">
+                <img
+                  src="/project-assets/architecture/cad/previews/masterplan-real.jpg"
+                  alt={`CAD Blueprint for ${plot.plotNumber}`}
+                  className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-8 h-8 rounded-full border-2 border-[#C58F58] animate-ping opacity-75" />
+                  <div className="w-3 h-3 rounded-full bg-[#C58F58] text-[7px] font-bold text-black flex items-center justify-center shadow-lg absolute">
+                    ★
+                  </div>
+                </div>
+                <div className="absolute bottom-1.5 left-2 right-2 bg-black/80 backdrop-blur-md px-2.5 py-1 rounded-lg text-[9px] text-white flex items-center justify-between">
+                  <span>CAD Location: {plot.plotNumber}</span>
+                  <span className="font-mono text-[#C58F58]">The Vision Architects</span>
+                </div>
+              </div>
+            </div>
+
             {/* Senior Township Highlights */}
             <div className="space-y-2">
               <span className="text-[11px] font-mono uppercase text-[#53676E] tracking-wider font-semibold">
