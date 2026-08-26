@@ -101,11 +101,11 @@ export default function AdminLayout({
       {/* Brand Header */}
       <div className="p-5 border-b border-white/10">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-2xl bg-white/95 border border-white/20 p-1 flex items-center justify-center shrink-0 shadow-md">
+          <div className="w-10 h-10 rounded-2xl bg-[#14323A] border border-[#C58F58]/40 p-1.5 flex items-center justify-center shrink-0 shadow-md">
             <img
-              src="/project-assets/brand/logo-icon.png"
+              src="/project-assets/brand/logo-icon-clean.png"
               alt="Senior Living Citizen Foundation"
-              className="w-full h-full object-contain rounded-xl"
+              className="w-full h-full object-contain drop-shadow"
             />
           </div>
           <div>
@@ -193,7 +193,7 @@ export default function AdminLayout({
       {/* Mobile Topbar */}
       <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-[#0D2329] border-b border-white/10 sticky top-0 z-50">
         <div className="flex items-center gap-2.5">
-          <img src="/project-assets/brand/logo-icon.png" alt="Logo" className="w-8 h-8 object-contain rounded-lg" />
+          <img src="/project-assets/brand/logo-icon-clean.png" alt="Logo" className="w-8 h-8 object-contain drop-shadow" />
           <span className="font-serif-heading font-bold text-sm tracking-tight text-white">
             Senior Living Admin
           </span>

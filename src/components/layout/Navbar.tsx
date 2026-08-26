@@ -4,11 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useModal } from '@/context/ModalContext';
-import { Button } from '@/components/ui/Button';
-import { projectOverview } from '@/data/propertyData';
 import { cn } from '@/lib/utils';
 import {
-  Heart,
   Menu,
   X,
   PhoneCall,
@@ -18,11 +15,10 @@ import {
   Home,
   MapPin,
   Sparkles,
-  Award,
-  Activity,
-  Layers,
   ArrowRight,
-  CreditCard
+  CreditCard,
+  ShieldCheck,
+  FileText
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -32,6 +28,7 @@ export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [locationsOpen, setLocationsOpen] = useState(false);
+  const [trustOpen, setTrustOpen] = useState(false);
 
   const navRef = useRef<HTMLDivElement>(null);
 
@@ -48,6 +45,7 @@ export const Navbar: React.FC = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (navRef.current && !navRef.current.contains(event.target as Node)) {
         setLocationsOpen(false);
+        setTrustOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -58,6 +56,7 @@ export const Navbar: React.FC = () => {
   useEffect(() => {
     setMobileMenuOpen(false);
     setLocationsOpen(false);
+    setTrustOpen(false);
   }, [pathname]);
 
   if (
@@ -74,54 +73,58 @@ export const Navbar: React.FC = () => {
       <div
         ref={navRef}
         className={cn(
-          'max-w-7xl mx-auto rounded-full transition-all duration-300 px-4 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between gap-3 border shadow-sm relative',
+          'max-w-7xl mx-auto rounded-full transition-all duration-300 px-4 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between gap-4 border relative',
           isScrolled
             ? 'bg-white/95 backdrop-blur-xl border-[#E2D7C5] shadow-[0_10px_35px_-5px_rgba(13,35,41,0.12)]'
-            : 'bg-white/90 backdrop-blur-md border-[#E8E2D8] shadow-[0_4px_20px_rgba(13,35,41,0.05)]'
+            : 'bg-white/95 backdrop-blur-md border-[#E8E2D8] shadow-[0_4px_20px_rgba(13,35,41,0.06)]'
         )}
       >
-        {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group focus:outline-none shrink-0">
+        {/* Brand Logo with Pure Alpha Transparent Golden Tree */}
+        <Link href="/" className="flex items-center gap-3 group focus:outline-none shrink-0 py-0.5">
           <img
-            src="/project-assets/brand/logo-icon.png"
-            alt="Senior Living Citizen Foundation"
-            className="w-9 h-9 sm:w-11 sm:h-11 object-contain group-hover:scale-105 transition-transform"
+            src="/project-assets/brand/logo-icon-clean.png"
+            alt="Senior Living Citizen Foundation Emblem"
+            className="w-10 h-10 sm:w-11 sm:h-11 object-contain group-hover:scale-105 transition-transform drop-shadow-sm"
           />
-          <div className="leading-tight">
-            <span className="text-base sm:text-xl font-serif-heading font-extrabold tracking-tight text-[#0D2329]">
-              Senior Living<span className="text-[#C58F58]">.</span>
-            </span>
-            <span className="hidden md:block text-[8px] uppercase tracking-[0.18em] font-bold text-[#2C5E50]">
+          <div className="leading-tight flex flex-col justify-center">
+            <div className="text-base sm:text-lg font-serif-heading font-bold tracking-tight text-[#0D2329] flex items-center gap-1">
+              <span>Senior Living</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C58F58] inline-block mb-0.5"></span>
+            </div>
+            <span className="hidden md:block text-[8.5px] uppercase tracking-[0.2em] font-mono font-bold text-[#2C5E50]">
               Citizen Foundation · National
             </span>
           </div>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 text-xs font-semibold text-[#0D2329]">
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-2 text-xs font-semibold text-[#0D2329]">
           <Link
             href="/"
             className={cn(
-              'px-3 py-1.5 rounded-full transition-colors',
+              'px-3 py-2 rounded-full transition-colors',
               pathname === '/' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
             )}
           >
             Home
           </Link>
 
-          {/* Locations Dropdown Menu */}
+          {/* Sanctuaries Dropdown */}
           <div className="relative">
             <button
-              onClick={() => setLocationsOpen(!locationsOpen)}
+              onClick={() => {
+                setLocationsOpen(!locationsOpen);
+                setTrustOpen(false);
+              }}
               className={cn(
-                'px-3 py-1.5 rounded-full transition-colors flex items-center gap-1 cursor-pointer',
+                'px-3 py-2 rounded-full transition-colors flex items-center gap-1 cursor-pointer',
                 pathname?.startsWith('/locations') || pathname?.startsWith('/projects')
                   ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]'
                   : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
               )}
             >
               <span>Sanctuaries</span>
-              <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', locationsOpen && 'rotate-180')} />
+              <ChevronDown className={cn('w-3.5 h-3.5 transition-transform duration-200', locationsOpen && 'rotate-180')} />
             </button>
 
             {locationsOpen && (
@@ -187,19 +190,9 @@ export const Navbar: React.FC = () => {
           </div>
 
           <Link
-            href="/apartments"
-            className={cn(
-              'px-3 py-1.5 rounded-full transition-colors',
-              pathname === '/apartments' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
-            )}
-          >
-            Residences
-          </Link>
-
-          <Link
             href="/plots"
             className={cn(
-              'px-3 py-1.5 rounded-full transition-colors',
+              'px-3 py-2 rounded-full transition-colors',
               pathname === '/plots' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
             )}
           >
@@ -207,68 +200,124 @@ export const Navbar: React.FC = () => {
           </Link>
 
           <Link
+            href="/apartments"
+            className={cn(
+              'px-3 py-2 rounded-full transition-colors',
+              pathname === '/apartments' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
+            )}
+          >
+            Residences
+          </Link>
+
+          <Link
             href="/amenities"
             className={cn(
-              'px-3 py-1.5 rounded-full transition-colors',
+              'px-3 py-2 rounded-full transition-colors',
               pathname === '/amenities' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
             )}
           >
-            Care &amp; Wellness
+            Care &amp; Hospital
           </Link>
 
-          <Link
-            href="/finance"
-            className={cn(
-              'px-3 py-1.5 rounded-full transition-colors',
-              pathname === '/finance' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
-            )}
-          >
-            Finance &amp; Returns
-          </Link>
+          {/* Finance & Trust Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setTrustOpen(!trustOpen);
+                setLocationsOpen(false);
+              }}
+              className={cn(
+                'px-3 py-2 rounded-full transition-colors flex items-center gap-1 cursor-pointer',
+                pathname === '/finance' || pathname === '/documents' || pathname === '/payment-terms'
+                  ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]'
+                  : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
+              )}
+            >
+              <span>Trust &amp; Finance</span>
+              <ChevronDown className={cn('w-3.5 h-3.5 transition-transform duration-200', trustOpen && 'rotate-180')} />
+            </button>
 
-          <Link
-            href="/documents"
-            className={cn(
-              'px-3 py-1.5 rounded-full transition-colors',
-              pathname === '/documents' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
+            {trustOpen && (
+              <div className="absolute top-full left-0 mt-3 w-72 rounded-3xl bg-white border border-[#E8E2D8] shadow-2xl p-3 space-y-1 z-50 animate-fade-in">
+                <Link
+                  href="/documents"
+                  onClick={() => setTrustOpen(false)}
+                  className="p-3 rounded-2xl hover:bg-[#FAF8F5] transition-colors flex items-start gap-3 group block"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-[#EAF2EE] text-[#2C5E50] flex items-center justify-center shrink-0 mt-0.5">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-xs text-[#0D2329] group-hover:text-[#2C5E50] block">
+                      Trust &amp; Legal Records
+                    </span>
+                    <p className="text-[11px] text-[#53676E]">Section 8 NPO, 80G &amp; Deeds</p>
+                  </div>
+                </Link>
+
+                <Link
+                  href="/finance"
+                  onClick={() => setTrustOpen(false)}
+                  className="p-3 rounded-2xl hover:bg-[#FAF8F5] transition-colors flex items-start gap-3 group block"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-[#FAF2EB] text-[#C58F58] flex items-center justify-center shrink-0 mt-0.5">
+                    <CreditCard className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-xs text-[#0D2329] group-hover:text-[#C58F58] block">
+                      Milestone Payment Plans
+                    </span>
+                    <p className="text-[11px] text-[#53676E]">Transparent Cost-Plus Sizing</p>
+                  </div>
+                </Link>
+
+                <Link
+                  href="/payment-terms"
+                  onClick={() => setTrustOpen(false)}
+                  className="p-3 rounded-2xl hover:bg-[#FAF8F5] transition-colors flex items-start gap-3 group block"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 mt-0.5">
+                    <FileText className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-xs text-[#0D2329] group-hover:text-slate-900 block">
+                      Commercial Terms
+                    </span>
+                    <p className="text-[11px] text-[#53676E]">Statutory Compliance Terms</p>
+                  </div>
+                </Link>
+              </div>
             )}
-          >
-            Trust Center
-          </Link>
+          </div>
 
           <Link
             href="/referrals"
             className={cn(
-              'px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5',
+              'px-3 py-2 rounded-full transition-colors flex items-center gap-1.5',
               pathname === '/referrals' ? 'text-[#C58F58] font-bold bg-[#FAF2EB]' : 'text-[#C58F58] hover:bg-[#FAF2EB]'
             )}
           >
             <Sparkles className="w-3.5 h-3.5 text-[#C58F58]" />
-            <span>Referrals (₹50)</span>
+            <span>Referrals</span>
+            <span className="px-1.5 py-0.5 rounded-full bg-[#C58F58]/20 text-[#C58F58] text-[9px] font-mono font-bold">
+              ₹50
+            </span>
           </Link>
         </nav>
 
         {/* Right CTA Actions */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <a
-            href="tel:+919999955847"
-            className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FAF8F5] border border-[#E8E2D8] text-xs font-bold text-[#0D2329] hover:border-[#2C5E50] transition-colors"
-          >
-            <PhoneCall className="w-3 h-3 text-[#C58F58]" />
-            <span>+91 99999 55847</span>
-          </a>
-
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
           <Link
             href="/buyer"
-            className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/80 hover:bg-[#FAF8F5] border border-[#E8E2D8] text-xs font-mono font-bold text-[#0D2329] transition-colors"
+            className="hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#FAF8F5] hover:bg-[#EAF2EE] border border-[#E8E2D8] text-xs font-semibold text-[#0D2329] hover:text-[#2C5E50] transition-colors shadow-xs"
           >
             <CreditCard className="w-3.5 h-3.5 text-[#C58F58]" />
             <span>Buyer Portal</span>
           </Link>
 
           <button
-            onClick={() => openLeadDrawer({ actionType: 'site_visit' })}
-            className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+            onClick={() => openLeadDrawer({ title: 'Schedule Private Guided Site Walk in Kheri Asra', actionType: 'book-site-visit' })}
+            className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2 cursor-pointer"
           >
             <Calendar className="w-3.5 h-3.5 text-[#E0AB77]" />
             <span>Book Visit</span>
@@ -277,7 +326,7 @@ export const Navbar: React.FC = () => {
           {/* Mobile Menu Toggle Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-full hover:bg-[#FAF8F5] text-[#0D2329] focus:outline-none"
+            className="lg:hidden p-2 rounded-full hover:bg-[#FAF8F5] text-[#0D2329] focus:outline-none cursor-pointer"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -295,20 +344,20 @@ export const Navbar: React.FC = () => {
             <Link href="/locations" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5] text-[#2C5E50] font-bold">
               Explore Sanctuaries (Haryana &amp; Goa)
             </Link>
-            <Link href="/apartments" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
-              Residences (1 RK / 1 BHK)
-            </Link>
             <Link href="/plots" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
               Freehold Plots (64 Plots)
             </Link>
+            <Link href="/apartments" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
+              Care Residences (1 RK / 1 BHK)
+            </Link>
             <Link href="/amenities" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
-              Care &amp; Wellness
+              Ayurvedic Hospital &amp; Care
             </Link>
             <Link href="/finance" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
-              Finance &amp; Returns (₹25L Plan)
+              Milestone Payment Plans
             </Link>
             <Link href="/documents" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
-              Trust Center &amp; Legal
+              Trust Center &amp; Legal Records
             </Link>
             <Link href="/payment-terms" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5] text-xs font-mono text-[#0D2329]/80">
               Commercial &amp; Payment Terms

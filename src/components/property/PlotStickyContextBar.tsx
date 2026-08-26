@@ -10,9 +10,7 @@ import {
   MessageSquare,
   Lock,
   X,
-  Compass,
-  ArrowRight,
-  ShieldCheck
+  Compass
 } from 'lucide-react';
 
 interface PlotStickyContextBarProps {
@@ -54,11 +52,14 @@ export const PlotStickyContextBar: React.FC<PlotStickyContextBarProps> = ({
   };
 
   return (
-    <aside aria-label="Selected Plot Context Bar" className="fixed bottom-3 inset-x-3 sm:inset-x-auto sm:right-6 sm:left-6 max-w-5xl sm:mx-auto z-40 animate-fade-in">
-      <div className="bg-[#0D2329]/95 backdrop-blur-xl border border-white/20 text-white rounded-3xl p-3.5 sm:p-4 shadow-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        {/* Left: Plot Specifications Summary */}
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="w-10 h-10 rounded-2xl bg-[#2C5E50] text-white flex items-center justify-center font-serif font-bold text-sm shrink-0 border border-emerald-400/30">
+    <aside
+      aria-label="Selected Plot Context Dock"
+      className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-1.5rem)] sm:w-[calc(100%-3rem)] max-w-4xl z-40 animate-fade-in"
+    >
+      <div className="bg-[#0D2329]/95 backdrop-blur-2xl border border-white/20 text-white rounded-3xl p-3 sm:p-3.5 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.6)] flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+        {/* Left: Plot Identity Summary */}
+        <div className="flex items-center gap-3 w-full md:w-auto min-w-0">
+          <div className="w-10 h-10 rounded-2xl bg-[#2C5E50] text-white flex items-center justify-center font-serif font-bold text-sm shrink-0 border border-emerald-400/40 shadow-inner">
             {selectedPlot.number}
           </div>
 
@@ -67,7 +68,7 @@ export const PlotStickyContextBar: React.FC<PlotStickyContextBarProps> = ({
               <span className="font-bold text-sm text-[#FAF8F5] truncate">
                 {selectedPlot.plotNumber} • {selectedPlot.block}
               </span>
-              <span className="px-2 py-0.5 rounded bg-[#C58F58]/20 border border-[#C58F58]/40 text-[#E0AB77] text-[10px] font-mono font-bold shrink-0">
+              <span className="px-2 py-0.5 rounded-full bg-[#C58F58]/20 border border-[#C58F58]/40 text-[#E0AB77] text-[10px] font-mono font-bold shrink-0">
                 {selectedPlot.sizeSqYd} Sq. Yd.
               </span>
             </div>
@@ -79,14 +80,14 @@ export const PlotStickyContextBar: React.FC<PlotStickyContextBarProps> = ({
                 {selectedPlot.facing}
               </span>
               <span>•</span>
-              <span className="text-emerald-400 font-medium">{selectedPlot.priceEstimate}</span>
+              <span className="text-emerald-400 font-semibold">{selectedPlot.priceEstimate}</span>
             </p>
           </div>
 
           {/* Close button on mobile */}
           <button
             onClick={onClear}
-            className="sm:hidden p-1.5 rounded-full text-white/60 hover:text-white hover:bg-white/10"
+            className="md:hidden p-1.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 shrink-0"
             title="Clear Selection"
           >
             <X className="w-4 h-4" />
@@ -94,21 +95,21 @@ export const PlotStickyContextBar: React.FC<PlotStickyContextBarProps> = ({
         </div>
 
         {/* Right: Instant Decision CTAs */}
-        <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/10">
+        <div className="flex items-center gap-2 w-full md:w-auto shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-white/10 justify-end">
           {onFocus3D && (
             <button
               onClick={onFocus3D}
-              className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
               title="Focus in 3D Masterplan"
             >
               <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" />
-              <span className="hidden md:inline">Focus</span> 3D
+              <span className="hidden sm:inline">Focus</span> 3D
             </button>
           )}
 
           <button
             onClick={handleWhatsApp}
-            className="px-3 py-2 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-2 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
           >
             <MessageSquare className="w-3.5 h-3.5 fill-white" />
             <span>WhatsApp</span>
@@ -116,7 +117,7 @@ export const PlotStickyContextBar: React.FC<PlotStickyContextBarProps> = ({
 
           <button
             onClick={handleSiteVisit}
-            className="px-3.5 py-2 rounded-xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-2 rounded-xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
           >
             <CalendarCheck className="w-3.5 h-3.5 text-[#E0AB77]" />
             <span>Book Visit</span>
@@ -124,16 +125,16 @@ export const PlotStickyContextBar: React.FC<PlotStickyContextBarProps> = ({
 
           <Link
             href={`/book/${selectedPlot.id.toUpperCase()}`}
-            className="px-4 py-2 rounded-xl bg-[#C58F58] hover:bg-[#b07d48] text-[#071519] text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[#C58F58] hover:bg-[#b07d48] text-[#071519] text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
           >
             <Lock className="w-3.5 h-3.5" />
-            <span className="hidden lg:inline">Reserve</span> (24h Hold)
+            <span>Reserve (24h Hold)</span>
           </Link>
 
           {/* Close button on desktop */}
           <button
             onClick={onClear}
-            className="hidden sm:flex p-2 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-colors ml-1"
+            className="hidden md:flex p-1.5 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-colors ml-1 cursor-pointer"
             title="Clear Selected Plot Context"
           >
             <X className="w-4 h-4" />

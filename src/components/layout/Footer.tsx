@@ -107,19 +107,19 @@ export const Footer: React.FC = () => {
           {/* Brand & Project Vision */}
           <div className="lg:col-span-4 space-y-5">
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-white/95 border border-white/15 flex items-center justify-center p-1 shrink-0 shadow-md">
+              <div className="w-12 h-12 rounded-2xl bg-[#14323A] border border-[#C58F58]/40 flex items-center justify-center p-2 shrink-0 shadow-lg">
                 <img
-                  src="/project-assets/brand/logo-icon.png"
+                  src="/project-assets/brand/logo-icon-clean.png"
                   alt="Senior Living Citizen Foundation"
-                  className="w-full h-full object-contain rounded-xl"
+                  className="w-full h-full object-contain drop-shadow"
                 />
               </div>
               <div>
                 <span className="text-xl font-serif-heading font-bold text-white">
-                  Senior Living Citizen Foundation<span className="text-[#C58F58]">.</span>
+                  Senior Living<span className="text-[#C58F58]">.</span>
                 </span>
                 <span className="block text-[9px] uppercase tracking-[0.2em] text-[#C58F58] font-bold">
-                  A Plotted Sanctuary · Haryana
+                  Citizen Foundation · National
                 </span>
               </div>
             </Link>

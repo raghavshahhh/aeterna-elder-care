@@ -92,11 +92,11 @@ function BuyerPortalInner() {
         {/* Top Identification Bar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#091B20] border border-white/10 p-6 rounded-3xl shadow-xl">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-white/95 border border-white/20 p-1 flex items-center justify-center shrink-0 shadow-md">
+            <div className="w-12 h-12 rounded-2xl bg-[#14323A] border border-[#C58F58]/40 p-2 flex items-center justify-center shrink-0 shadow-md">
               <img
-                src="/project-assets/brand/logo-icon.png"
-                alt="Logo"
-                className="w-full h-full object-contain rounded-xl"
+                src="/project-assets/brand/logo-icon-clean.png"
+                alt="Senior Living Citizen Foundation Logo"
+                className="w-full h-full object-contain drop-shadow"
               />
             </div>
             <div>
