@@ -1380,12 +1380,30 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
               <span className="text-[11px] font-mono text-[#E0AB77] font-bold uppercase tracking-wider flex items-center gap-1.5">
                 <Sliders className="w-3.5 h-3.5" /> Masterplan CAD Overlay QA
               </span>
-              <button
-                onClick={() => handlePresetView('top')}
-                className="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-[#C58F58]/20 hover:bg-[#C58F58] hover:text-[#071519] text-[#E0AB77] transition-all font-bold cursor-pointer"
-              >
-                Snap Top View
-              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => {
+                    handlePresetView('top');
+                    orbitRef.current.targetRadius = 220;
+                    orbitRef.current.targetPhi = 0.001;
+                    orbitRef.current.targetTheta = 0;
+                    orbitRef.current.targetLookAt.set(0, 0, 25);
+                  }}
+                  className="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-[#C58F58]/20 hover:bg-[#C58F58] hover:text-[#071519] text-[#E0AB77] transition-all font-bold cursor-pointer"
+                  title="Fit to Cadastral Map (Orthographic North-Up)"
+                >
+                  Fit To CAD
+                </button>
+                <button
+                  onClick={() => {
+                    orbitRef.current.targetTheta = 0;
+                  }}
+                  className="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 transition-all font-bold cursor-pointer"
+                  title="Reset North-Up"
+                >
+                  North Up
+                </button>
+              </div>
             </div>
 
             <div className="space-y-2 text-xs">
@@ -1416,6 +1434,23 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                 onChange={(e) => setPlotsOpacity(parseFloat(e.target.value))}
                 className="w-full h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#C58F58]"
               />
+
+              <div className="flex items-center justify-between pt-1 text-[10px] font-mono text-white/60">
+                <span>Scale: 1 Three.js unit = 1.0 meter</span>
+                <button
+                  onClick={() => {
+                    setCadOpacity(0.65);
+                    setPlotsOpacity(0.85);
+                    orbitRef.current.targetTheta = 0;
+                    orbitRef.current.targetPhi = 0.001;
+                    orbitRef.current.targetRadius = 220;
+                    orbitRef.current.targetLookAt.set(0, 0, 25);
+                  }}
+                  className="text-[#C58F58] hover:underline cursor-pointer"
+                >
+                  Reset Alignment
+                </button>
+              </div>
             </div>
           </div>
         )}

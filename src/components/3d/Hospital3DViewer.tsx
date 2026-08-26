@@ -869,17 +869,34 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
 
       {/* CAD Overlay QA Controls Bar (when active) */}
       {isCadOverlay && (
-        <div className="absolute bottom-20 left-4 sm:left-6 z-20 pointer-events-auto bg-[#0A1D24]/90 backdrop-blur-md p-4 rounded-2xl border border-[#C58F58]/60 shadow-2xl space-y-3 max-w-sm">
+        <div className="absolute bottom-20 left-4 sm:left-6 z-20 pointer-events-auto bg-[#0A1D24]/95 backdrop-blur-md p-4 rounded-2xl border border-[#C58F58]/60 shadow-2xl space-y-3 max-w-sm">
           <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
             <span className="text-[11px] font-mono text-[#E0AB77] font-bold uppercase tracking-wider flex items-center gap-1.5">
-              <Sliders className="w-3.5 h-3.5" /> CAD 2D â 3D Alignment QA
+              <Sliders className="w-3.5 h-3.5" /> CAD 2D ↔ 3D Alignment QA
             </span>
-            <button
-              onClick={() => handlePresetView("top")}
-              className="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-[#C58F58]/20 hover:bg-[#C58F58] hover:text-[#071519] text-[#E0AB77] transition-all font-bold"
-            >
-              Snap Top CAD View
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => {
+                  orbitRef.current.targetTheta = 0;
+                  orbitRef.current.targetPhi = 0.001;
+                  orbitRef.current.targetRadius = 60;
+                  orbitRef.current.targetLookAt.set(0, 0, 0);
+                }}
+                className="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-[#C58F58]/20 hover:bg-[#C58F58] hover:text-[#071519] text-[#E0AB77] transition-all font-bold cursor-pointer"
+                title="Fit to CAD Footprint (Orthographic North-Up)"
+              >
+                Fit To CAD
+              </button>
+              <button
+                onClick={() => {
+                  orbitRef.current.targetTheta = 0;
+                }}
+                className="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 transition-all font-bold cursor-pointer"
+                title="Reset North-Up"
+              >
+                North Up
+              </button>
+            </div>
           </div>
 
           <div className="space-y-2 text-xs">
@@ -910,6 +927,23 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
               onChange={(e) => setModelOpacity(parseFloat(e.target.value))}
               className="w-full h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#C58F58]"
             />
+
+            <div className="flex items-center justify-between pt-1 text-[10px] font-mono text-white/60">
+              <span>Scale: 1 Three.js unit = 1.0 meter</span>
+              <button
+                onClick={() => {
+                  setCadOpacity(0.65);
+                  setModelOpacity(0.85);
+                  orbitRef.current.targetTheta = 0;
+                  orbitRef.current.targetPhi = 0.001;
+                  orbitRef.current.targetRadius = 60;
+                  orbitRef.current.targetLookAt.set(0, 0, 0);
+                }}
+                className="text-[#C58F58] hover:underline cursor-pointer"
+              >
+                Reset Alignment
+              </button>
+            </div>
           </div>
         </div>
       )}
