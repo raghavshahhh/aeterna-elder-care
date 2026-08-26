@@ -58,44 +58,67 @@ export async function POST(request: NextRequest) {
 
     name = typeof name === 'string' ? name.trim() : '';
     phone = typeof phone === 'string' ? phone.trim() : '';
-    upiId = typeof upiId === 'string' ? upiId.trim() : '';
     email = typeof email === 'string' ? email.trim() : '';
+    upiId = typeof upiId === 'string' ? upiId.trim() : '';
 
-    if (!name || !phone) {
-      return NextResponse.json({ success: false, error: 'Partner name and phone number are required.' }, { status: 400 });
+    // Required Field Validation
+    if (!name) {
+      return NextResponse.json({ success: false, error: 'Partner full name is required.' }, { status: 400 });
     }
+    if (!phone) {
+      return NextResponse.json({ success: false, error: 'Phone number is required.' }, { status: 400 });
+    }
+    if (name.length < 2) {
+      return NextResponse.json({ success: false, error: 'Partner name must be at least 2 characters.' }, { status: 400 });
+    }
+    const cleanDigits = phone.replace(/\D/g, '');
+    if (cleanDigits.length < 7) {
+      return NextResponse.json({ success: false, error: 'Please enter a valid phone number.' }, { status: 400 });
+    }
+    const normPhone = cleanDigits.length >= 10 ? cleanDigits.slice(-10) : cleanDigits;
 
-    // If email is not explicitly provided, derive from UPI if UPI looks like an email, or generate clean partner email
-    if (!email) {
-      if (upiId && upiId.includes('@') && (upiId.includes('.com') || upiId.includes('.in') || upiId.includes('.org') || upiId.includes('.net'))) {
-        email = upiId;
-      } else {
-        const cleanPhone = phone.replace(/\D/g, '') || 'partner';
-        const cleanName = name.toLowerCase().replace(/[^a-z0-9]/g, '') || 'partner';
-        email = `${cleanName}.${cleanPhone.slice(-4)}@partner.slcf.in`;
+    // Optional Email Validation (if supplied by user)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    let finalEmail = '';
+
+    if (email) {
+      if (!emailRegex.test(email)) {
+        return NextResponse.json({ success: false, error: 'Please enter a valid email address.' }, { status: 400 });
       }
+      finalEmail = email.toLowerCase();
+    } else {
+      // Deterministic fallback login email generation for partner portal account
+      const cleanName = name.toLowerCase().replace(/[^a-z0-9]/g, '') || 'partner';
+      finalEmail = `${cleanName}.${cleanDigits.slice(-4)}@partner.slcf.in`;
     }
 
-    // Check if referrer already exists with same phone or email
-    const existingRef = db.getReferrers().find(
-      (r) => r.phone === phone || (r.email && r.email.toLowerCase() === email.toLowerCase())
-    );
+    // Check if referrer already exists with the same phone or email
+    const allReferrers = db.getReferrers();
+    const existingRef = allReferrers.find((r) => {
+      const rDigits = r.phone.replace(/\D/g, '');
+      const rNorm = rDigits.length >= 10 ? rDigits.slice(-10) : rDigits;
+      const phoneMatch = Boolean(rNorm && rNorm === normPhone);
+      const emailMatch = Boolean(r.email && r.email.toLowerCase() === finalEmail.toLowerCase());
+      return phoneMatch || emailMatch;
+    });
 
     if (existingRef) {
       return NextResponse.json({
         success: true,
+        isNew: false,
         referrer: existingRef,
-        message: `Partner is already registered! Unique referral code: ${existingRef.code}`
+        message: `Partner is already registered with referral code ${existingRef.code}.`
       });
     }
 
-    const newRef = db.createReferrer(name, phone, email, upiId || undefined);
+    // Create New Referrer Record
+    const newRef = db.createReferrer(name, phone, finalEmail, upiId || undefined);
 
-    // Also create user account for partner portal login if user doesn't already exist
-    const existingUser = db.getUsers().find((u) => u.email.toLowerCase() === email.toLowerCase());
+    // Create User Account for Partner Portal login if one doesn't exist
+    const existingUser = db.getUsers().find((u) => u.email.toLowerCase() === finalEmail.toLowerCase());
     if (!existingUser) {
       db.createUser({
-        email,
+        email: finalEmail,
         name,
         phone,
         passwordHash: db.getUsers().find((u) => u.role === 'SUPER_ADMIN')?.passwordHash || '',
@@ -105,15 +128,17 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Log administrative action
     db.logAction('REFERRER_REGISTERED', 'REFERRER', newRef.id, `Referral partner registered: ${name} (Code: ${newRef.code})`);
 
     return NextResponse.json({
       success: true,
+      isNew: true,
       referrer: newRef,
-      message: `Partner registered successfully! Unique referral code: ${newRef.code}`
+      message: `Partner referral code ${newRef.code} generated successfully!`
     });
   } catch (error) {
     console.error('[API /referrals POST] Error:', error);
-    return NextResponse.json({ success: false, error: 'Failed to register referral partner.' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'An unexpected server error occurred while registering the partner.' }, { status: 500 });
   }
 }

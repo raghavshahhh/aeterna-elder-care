@@ -1333,14 +1333,26 @@ export const db = {
   },
   createReferrer: (name: string, phone: string, email: string, upiId?: string): Referrer => {
     const state = ensureDataFile();
-    const code = `SLF${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    // Generate guaranteed unique referral code prefixed with SLF (e.g. SLF7K9)
+    let code = '';
+    let attempts = 0;
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    do {
+      let randomPart = '';
+      for (let i = 0; i < 4; i++) {
+        randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      code = `SLF${randomPart}`;
+      attempts++;
+    } while (state.referrers.some((r) => r.code.toUpperCase() === code) && attempts < 100);
+
     const newRef: Referrer = {
-      id: `REF-${Date.now().toString().slice(-4)}`,
+      id: `REF-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 900 + 100)}`,
       code,
-      name,
-      phone,
-      email,
-      upiId,
+      name: name.trim(),
+      phone: phone.trim(),
+      email: email.trim(),
+      upiId: upiId ? upiId.trim() : undefined,
       isActive: true,
       totalVisits: 0,
       totalLeadsSubmitted: 0,

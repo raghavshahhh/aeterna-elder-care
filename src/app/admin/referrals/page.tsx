@@ -35,6 +35,13 @@ export default function AdminReferralsPage() {
   const [partnerUpi, setPartnerUpi] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
   const [successBanner, setSuccessBanner] = useState<{ name: string; code: string } | null>(null);
+  const [createdPartnerResult, setCreatedPartnerResult] = useState<{
+    name: string;
+    code: string;
+    phone: string;
+    email: string;
+    isNew: boolean;
+  } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -87,15 +94,15 @@ export default function AdminReferralsPage() {
       const data = await res.json();
       if (res.ok && data.success) {
         const generated = data.referrer;
+        setCreatedPartnerResult({
+          name: generated.name,
+          code: generated.code,
+          phone: generated.phone,
+          email: generated.email,
+          isNew: data.isNew !== false
+        });
         setSuccessBanner({ name: generated.name, code: generated.code });
-        setPartnerName('');
-        setPartnerPhone('');
-        setPartnerEmail('');
-        setPartnerUpi('');
-        setIsCreatingPartner(false);
-        setActiveTab('PARTNERS');
         await loadReferralData();
-        setTimeout(() => setSuccessBanner(null), 10000);
       } else {
         setFormError(data.error || 'Failed to issue partner referral code. Please check inputs.');
       }
@@ -383,7 +390,7 @@ export default function AdminReferralsPage() {
                   <span>{copiedCode === ref.code ? 'Copied!' : 'Copy Link'}</span>
                 </button>
                 <a
-                  href={`https://wa.me/?text=${encodeURIComponent(`Explore Senior Living Citizens Foundation sanctuary: ${typeof window !== 'undefined' ? window.location.origin : 'https://aeterna-elder-care.vercel.app'}/?ref=${ref.code}`)}`}
+                  href={`https://wa.me/?text=${encodeURIComponent(`Explore Senior Living Citizens Foundation sanctuary: ${typeof window !== 'undefined' ? window.location.origin : 'https://seniorlivingcitizens.org'}/?ref=${ref.code}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors border border-emerald-200"
@@ -455,97 +462,219 @@ export default function AdminReferralsPage() {
         </div>
       )}
 
-      {/* Modal: Create Partner */}
+      {/* Modal: Create Partner (With Multi-State Form & Success View) */}
       {isCreatingPartner && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-4">
-            <div>
-              <h3 className="text-lg font-serif-heading font-bold text-slate-900 mb-1">
-                Generate Partner Referral Code
-              </h3>
-              <p className="text-xs text-slate-500">
-                Create a custom partner attribution code with ₹50 lead tracking and 1% sales commission ledger.
-              </p>
-            </div>
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
+            {createdPartnerResult ? (
+              /* Success View inside Modal */
+              <div className="space-y-5 text-center sm:text-left">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md">
+                    <Check className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-serif-heading font-bold text-slate-900">
+                      {createdPartnerResult.isNew ? 'Referral Partner Code Issued!' : 'Existing Partner Verified!'}
+                    </h3>
+                    <p className="text-xs text-slate-500 font-sans">
+                      Attribution active with ₹50 lead tracking &amp; 1% sales commissions.
+                    </p>
+                  </div>
+                </div>
 
-            {formError && (
-              <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-mono">
-                {formError}
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                  <div className="flex justify-between items-center text-xs font-mono">
+                    <span className="text-slate-500">Partner:</span>
+                    <span className="font-bold text-slate-900">{createdPartnerResult.name}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs font-mono">
+                    <span className="text-slate-500">Phone:</span>
+                    <span className="text-slate-900">{createdPartnerResult.phone}</span>
+                  </div>
+                  {createdPartnerResult.email && (
+                    <div className="flex justify-between items-center text-xs font-mono">
+                      <span className="text-slate-500">Login Email:</span>
+                      <span className="text-slate-900 text-[11px] truncate max-w-[200px]">{createdPartnerResult.email}</span>
+                    </div>
+                  )}
+
+                  {/* Large Referral Code */}
+                  <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] font-mono uppercase text-slate-500 block">Referral Code</span>
+                      <span className="text-xl font-mono font-bold text-emerald-800 tracking-wider">
+                        {createdPartnerResult.code}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(createdPartnerResult.code);
+                        setCopiedCode(createdPartnerResult.code);
+                        setTimeout(() => setCopiedCode(null), 2000);
+                      }}
+                      className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-xs font-mono font-bold border border-slate-200 flex items-center gap-1 cursor-pointer transition-colors shadow-xs"
+                    >
+                      {copiedCode === createdPartnerResult.code ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedCode === createdPartnerResult.code ? 'Copied' : 'Copy Code'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Referral Link & Actions */}
+                <div className="space-y-2">
+                  <span className="text-[11px] font-mono text-slate-600 block">Partner Referral Link:</span>
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs font-mono text-emerald-950">
+                    <span className="truncate flex-1">
+                      {typeof window !== 'undefined' ? window.location.origin : 'https://seniorlivingcitizens.org'}/?ref={createdPartnerResult.code}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => copyPartnerLink(createdPartnerResult.code)}
+                      className="px-2.5 py-1 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-bold shrink-0 cursor-pointer transition-colors"
+                    >
+                      {copiedCode === createdPartnerResult.code ? 'Copied!' : 'Copy'}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-2 border-t border-slate-200">
+                  <a
+                    href={`https://wa.me/?text=${encodeURIComponent(`Hello ${createdPartnerResult.name}, here is your unique Senior Living Citizens Foundation partner advocacy link: ${typeof window !== 'undefined' ? window.location.origin : 'https://seniorlivingcitizens.org'}/?ref=${createdPartnerResult.code}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-colors border border-emerald-200"
+                  >
+                    <Share2 className="w-3.5 h-3.5" />
+                    <span>WhatsApp Partner</span>
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCreatedPartnerResult(null);
+                      setPartnerName('');
+                      setPartnerPhone('');
+                      setPartnerEmail('');
+                      setPartnerUpi('');
+                      setIsCreatingPartner(false);
+                      setActiveTab('PARTNERS');
+                    }}
+                    className="flex-1 py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#234b40] text-white text-xs font-mono font-bold transition-colors cursor-pointer"
+                  >
+                    Done &amp; View Directory
+                  </button>
+                </div>
               </div>
+            ) : (
+              /* Create Form inside Modal */
+              <>
+                <div>
+                  <h3 className="text-lg font-serif-heading font-bold text-slate-900 mb-1">
+                    Generate Partner Referral Code
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Create a custom partner attribution code with ₹50 lead tracking and 1% sales commission ledger.
+                  </p>
+                </div>
+
+                {formError && (
+                  <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-mono flex items-center gap-2">
+                    <XCircle className="w-4 h-4 shrink-0" />
+                    <span>{formError}</span>
+                  </div>
+                )}
+
+                <form onSubmit={handleCreatePartner} className="space-y-3.5">
+                  <div>
+                    <label className="block text-xs font-mono text-slate-700 uppercase mb-1 font-bold">
+                      Partner Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      disabled={isSubmitting}
+                      placeholder="e.g. Raghav Shah"
+                      value={partnerName}
+                      onChange={(e) => setPartnerName(e.target.value)}
+                      className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:border-[#2C5E50] focus:bg-white focus:outline-none disabled:opacity-60"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-slate-700 uppercase mb-1 font-bold">
+                      Phone Number *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      disabled={isSubmitting}
+                      placeholder="e.g. +91 87000 48490"
+                      value={partnerPhone}
+                      onChange={(e) => setPartnerPhone(e.target.value)}
+                      className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:border-[#2C5E50] focus:bg-white focus:outline-none disabled:opacity-60"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-slate-700 uppercase mb-1 font-bold">
+                      Email Address (Optional / Portal Login)
+                    </label>
+                    <input
+                      type="email"
+                      disabled={isSubmitting}
+                      placeholder="e.g. raghav@ragspro.com"
+                      value={partnerEmail}
+                      onChange={(e) => setPartnerEmail(e.target.value)}
+                      className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:border-[#2C5E50] focus:bg-white focus:outline-none disabled:opacity-60"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-slate-700 uppercase mb-1 font-bold">
+                      UPI ID for Auto-Payouts (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      disabled={isSubmitting}
+                      placeholder="e.g. 8700048490@paytm / raghav@okhdfcbank"
+                      value={partnerUpi}
+                      onChange={(e) => setPartnerUpi(e.target.value)}
+                      className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:border-[#2C5E50] focus:bg-white focus:outline-none disabled:opacity-60"
+                    />
+                  </div>
+
+                  <div className="flex gap-3 pt-3 border-t border-slate-200">
+                    <button
+                      type="button"
+                      disabled={isSubmitting}
+                      onClick={() => {
+                        setFormError(null);
+                        setIsCreatingPartner(false);
+                      }}
+                      className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs text-slate-700 font-mono font-bold cursor-pointer transition-colors disabled:opacity-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="flex-1 py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#234b40] text-white font-bold text-xs font-mono cursor-pointer transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-xs"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          <span>Issuing Code...</span>
+                        </>
+                      ) : (
+                        <span>Issue Code</span>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </>
             )}
-
-            <form onSubmit={handleCreatePartner} className="space-y-3.5">
-              <div>
-                <label className="block text-xs font-mono text-slate-700 uppercase mb-1 font-bold">
-                  Partner Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Raghav Shah"
-                  value={partnerName}
-                  onChange={(e) => setPartnerName(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:border-[#2C5E50] focus:bg-white focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono text-slate-700 uppercase mb-1 font-bold">
-                  Phone Number *
-                </label>
-                <input
-                  type="tel"
-                  required
-                  placeholder="e.g. +91 87000 48490"
-                  value={partnerPhone}
-                  onChange={(e) => setPartnerPhone(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:border-[#2C5E50] focus:bg-white focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono text-slate-700 uppercase mb-1 font-bold">
-                  Email Address (Optional / Portal Login)
-                </label>
-                <input
-                  type="email"
-                  placeholder="e.g. raghav@ragspro.com"
-                  value={partnerEmail}
-                  onChange={(e) => setPartnerEmail(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:border-[#2C5E50] focus:bg-white focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono text-slate-700 uppercase mb-1 font-bold">
-                  UPI ID for Auto-Payouts (Optional)
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. 8700048490@paytm / raghav@okhdfcbank"
-                  value={partnerUpi}
-                  onChange={(e) => setPartnerUpi(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:border-[#2C5E50] focus:bg-white focus:outline-none"
-                />
-              </div>
-
-              <div className="flex gap-3 pt-3 border-t border-slate-200">
-                <button
-                  type="button"
-                  onClick={() => setIsCreatingPartner(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs text-slate-700 font-mono font-bold cursor-pointer transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex-1 py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#234b40] text-white font-bold text-xs font-mono cursor-pointer transition-colors disabled:opacity-50"
-                >
-                  {isSubmitting ? 'Issuing Code...' : 'Issue Code'}
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}
