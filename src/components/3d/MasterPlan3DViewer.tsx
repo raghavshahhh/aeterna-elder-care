@@ -3,7 +3,15 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import { PlotItem } from '@/types';
-import { allPlots, plotsSummary, projectOverview, MASTER_PLOT_DEFINITIONS } from '@/data/propertyData';
+import { allPlots, plotsSummary, projectOverview } from '@/data/propertyData';
+import {
+  CANONICAL_PLOTS,
+  CANONICAL_LANDMARKS,
+  BLOCK_COLORS,
+  getPlotGeometryByNumber,
+  BlockId,
+  SourceClassification
+} from '@/lib/architecture/geometry';
 import { useModal } from '@/context/ModalContext';
 import {
   Layers,
@@ -32,7 +40,8 @@ import {
   Navigation,
   Check,
   Calendar,
-  Lock
+  Lock,
+  Info
 } from 'lucide-react';
 
 interface MasterPlan3DViewerProps {
@@ -54,6 +63,7 @@ interface LandmarkInfo {
   features: string[];
   cadZone: string;
   cadCoordinates: { x: number; y: number };
+  sourceConfidence: SourceClassification;
 }
 
 const LANDMARK_REGISTRY: Record<LandmarkType, LandmarkInfo> = {
@@ -63,7 +73,7 @@ const LANDMARK_REGISTRY: Record<LandmarkType, LandmarkInfo> = {
     badge: 'On-Site Healthcare Continuum',
     category: 'Healthcare & Wellness',
     area: '30,000 sq. ft. Built-Up Area',
-    dimensions: '117\'-10" × 138\' L-Shaped Footprint',
+    dimensions: '117\'-6" × 138\'-0" L-Shaped Footprint',
     floors: 'G+2 Structural Facility with Lift Core',
     description: 'Specialized senior care hospital featuring Panchakarma Ayurvedic detox suites, 24/7 ICU emergency response, 6 OPD doctor consultation chambers, diagnostic pathology, and rooftop hydrotherapy pool.',
     features: [
@@ -73,14 +83,15 @@ const LANDMARK_REGISTRY: Record<LandmarkType, LandmarkInfo> = {
       'Rooftop Hydrotherapy Pool (10\' × 12\') & 50-Seat Open Auditorium'
     ],
     cadZone: 'South-West Healthcare Zone (Facing 33ft Main Road)',
-    cadCoordinates: { x: -22, y: 16 }
+    cadCoordinates: { x: -25.77, y: 27.58 },
+    sourceConfidence: 'SOURCE_VERIFIED'
   },
   mandir: {
     id: 'mandir',
     title: 'Community Mandir & Sacred Reflection Kund',
     badge: 'Spiritual Sanctuary',
     category: 'Spirituality & Culture',
-    area: 'Dedicated Mandir Land Parcel',
+    area: 'Dedicated Mandir Land Parcel (85\' × 24\')',
     dimensions: 'Sandstone Plinth with Shikhara Spire + Reflection Kund',
     floors: 'Traditional Carved Mandapa + Stepped Kund',
     description: 'Tranquil community temple crafted in authentic Rajasthani sandstone with a stepped water body (kund) for daily morning aarti, meditation, and satsang.',
@@ -90,15 +101,16 @@ const LANDMARK_REGISTRY: Record<LandmarkType, LandmarkInfo> = {
       'Elder-Friendly Step-Free Approach Ramp',
       '6ft Continuous Green Tree Buffer Frontage'
     ],
-    cadZone: 'Block A (Between Plot 3 & Plot 4 along 33ft Road)',
-    cadCoordinates: { x: -28, y: -5 }
+    cadZone: 'Block A (South of Plot 3 along 33ft Road)',
+    cadCoordinates: { x: -30.71, y: -10.53 },
+    sourceConfidence: 'SOURCE_VERIFIED'
   },
   residence: {
     id: 'residence',
     title: 'G+2 Senior Care Apartment Suites (Plots 63 & 64)',
     badge: '12 Barrier-Free Residences',
     category: 'Plotted Residences',
-    area: '46\'-0" × 50\'-6" Combined Plot Footprint',
+    area: '50\'-6" × 46\'-0" Combined Plot Footprint',
     dimensions: 'Stilt Parking + 3 Habitable Residential Floors',
     floors: 'Stilt + G+2 with 8-Passenger Stretcher Elevator',
     description: 'Dedicated senior living apartment block on Plots 63 & 64 with 1 BHK & 1 RK barrier-free care suites, covered 14-bay stilt parking, 3 entry gates, and cantilevered balconies.',
@@ -108,8 +120,9 @@ const LANDMARK_REGISTRY: Record<LandmarkType, LandmarkInfo> = {
       'Cantilevered 3\'-6" Balconies with Safety Railings',
       '4 × 1 RK Studio Suites + 2 × 1 BHK Residences per Floor'
     ],
-    cadZone: 'Block F (Plots 63 & 64, East of Ayurvedic Hospital)',
-    cadCoordinates: { x: -6, y: 10 }
+    cadZone: 'Block A (Plots 63 & 64, East of Ayurvedic Hospital)',
+    cadCoordinates: { x: -11.13, y: 13.56 },
+    sourceConfidence: 'SOURCE_VERIFIED'
   },
   gate: {
     id: 'gate',
@@ -127,14 +140,15 @@ const LANDMARK_REGISTRY: Record<LandmarkType, LandmarkInfo> = {
       'Continuous 5ft & 6ft Perimeter Green Belts'
     ],
     cadZone: 'West & Central 33ft Highway Frontages',
-    cadCoordinates: { x: -36, y: 0 }
+    cadCoordinates: { x: -44, y: 0 },
+    sourceConfidence: 'SOURCE_VERIFIED'
   },
   utility: {
     id: 'utility',
     title: 'Township Utility Services Enclave (289 SQYD)',
     badge: 'Civic Infrastructure',
     category: 'Utilities & Power',
-    area: '289 Sq. Yds. Dedicated Enclave',
+    area: '289 Sq. Yds. Dedicated Enclave (48\' × 54\')',
     dimensions: 'North-East Perimeter Sector',
     floors: 'Ground Utility Substation',
     description: 'Dedicated infrastructure compound housing underground water filtration reservoir, electrical power transformer substation, and maintenance operations.',
@@ -145,17 +159,18 @@ const LANDMARK_REGISTRY: Record<LandmarkType, LandmarkInfo> = {
       '24/7 Maintenance & Facility Management Office'
     ],
     cadZone: 'North-East Corner (Behind Plot 15 & 11ft Rasta)',
-    cadCoordinates: { x: 36, y: -40 }
+    cadCoordinates: { x: 45.66, y: -62.65 },
+    sourceConfidence: 'SOURCE_VERIFIED'
   },
   park: {
     id: 'park',
-    title: '5ft & 6ft Continuous Green Tree Buffer Zones',
+    title: '5ft & 6ft Continuous Green Tree Buffer Belts',
     badge: 'Eco Green Buffer',
     category: 'Landscaping & Nature',
     area: 'Perimeter Green Belts along 33ft Arterial Road',
     dimensions: '5ft & 6ft Continuous Landscaped Strips',
     floors: 'Botanical Tree & Herbal Buffers',
-    description: 'Pristine natural environment with native Amaltas, Royal Palms, and medicinal herbal tree lines buffering the residences from road corridors.',
+    description: 'Pristine natural environment with native Amaltas, Neem, and medicinal herbal tree lines buffering the residences from road corridors.',
     features: [
       '6ft Green Buffer along North Parcel Boundary',
       '5ft Green Buffer along South Parcel Boundary',
@@ -163,106 +178,81 @@ const LANDMARK_REGISTRY: Record<LandmarkType, LandmarkInfo> = {
       'Solar-Powered LED Streetlight Network'
     ],
     cadZone: 'Central & Peripheral Buffer Strips',
-    cadCoordinates: { x: 0, y: 0 }
+    cadCoordinates: { x: 0, y: 0 },
+    sourceConfidence: 'SOURCE_VERIFIED'
   }
 };
 
-// ─── Source-Accurate 3D Coordinate Mapping (Derived from masterplan-real.jpg) ───
-const PLOT_COORDINATES_MAP: Record<number, { x: number; z: number; width: number; depth: number; color: number }> = {
-  // BLOCK A (Yellow: 0xEAB308) — Plots 1, 2, 3 (West 33' Highway Frontage)
-  1: { x: -28, z: -38, width: 9.5, depth: 10.0, color: 0xEAB308 },
-  2: { x: -28, z: -26, width: 9.5, depth: 10.0, color: 0xEAB308 },
-  3: { x: -28, z: -14, width: 9.5, depth: 10.0, color: 0xEAB308 },
-  // Mandir is at x: -28, z: -5
-  // Plot 4 (Block A - Next to Mandir facing 33ft road)
-  4: { x: -14, z: -5, width: 8.5, depth: 6.8, color: 0xEAB308 },
-  // Plots 5,6,7,8,9 (Block A - stacked facing 22'-6" Central Rasta)
-  5: { x: -14, z: -13, width: 7.2, depth: 5.5, color: 0xEAB308 },
-  6: { x: -14, z: -19, width: 7.2, depth: 5.5, color: 0xEAB308 },
-  7: { x: -14, z: -25, width: 7.2, depth: 5.5, color: 0xEAB308 },
-  8: { x: -14, z: -31, width: 7.2, depth: 5.5, color: 0xEAB308 },
-  9: { x: -14, z: -37, width: 7.2, depth: 5.5, color: 0xEAB308 },
-  // Plot 10 (Block A Corner)
-  10: { x: 7, z: -37, width: 9.0, depth: 6.5, color: 0xEAB308 },
+// ─── Procedural Canvas Texture Generators ──────────────────────────────────────
 
-  // BLOCK B (Pink: 0xEC4899) — Plots 11-15 (Upper North-East row facing 20' Rasta)
-  11: { x: 14.5, z: -37, width: 5.2, depth: 6.5, color: 0xEC4899 },
-  12: { x: 20.0, z: -37, width: 5.2, depth: 6.5, color: 0xEC4899 },
-  13: { x: 25.5, z: -37, width: 5.2, depth: 6.5, color: 0xEC4899 },
-  14: { x: 31.0, z: -37, width: 5.2, depth: 6.5, color: 0xEC4899 },
-  15: { x: 36.5, z: -37, width: 5.2, depth: 6.5, color: 0xEC4899 },
+function createPlotCanvasTexture(number: number, sizeSqYd: number, blockName: string, blockColorHex: number): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 256;
+  const ctx = canvas.getContext('2d')!;
 
-  // BLOCK C (Purple: 0x8B5CF6) — Plots 21 to 16 (Facing North 20' Rasta)
-  21: { x: 7, z: -20, width: 9.0, depth: 6.2, color: 0x8B5CF6 },
-  20: { x: 14.5, z: -20, width: 5.2, depth: 6.2, color: 0x8B5CF6 },
-  19: { x: 20.0, z: -20, width: 5.2, depth: 6.2, color: 0x8B5CF6 },
-  18: { x: 25.5, z: -20, width: 5.2, depth: 6.2, color: 0x8B5CF6 },
-  17: { x: 31.0, z: -20, width: 5.2, depth: 6.2, color: 0x8B5CF6 },
-  16: { x: 36.5, z: -20, width: 5.2, depth: 6.2, color: 0x8B5CF6 },
+  // Block Background
+  const hexStr = '#' + blockColorHex.toString(16).padStart(6, '0');
+  ctx.fillStyle = hexStr;
+  ctx.fillRect(0, 0, 256, 256);
 
-  // BLOCK C (Purple: 0x8B5CF6) — Plots 22 to 27 (Facing South 33' Road with 6' Green Belt)
-  22: { x: 7, z: -9, width: 9.0, depth: 6.2, color: 0x8B5CF6 },
-  23: { x: 14.5, z: -9, width: 5.2, depth: 6.2, color: 0x8B5CF6 },
-  24: { x: 20.0, z: -9, width: 5.2, depth: 6.2, color: 0x8B5CF6 },
-  25: { x: 25.5, z: -9, width: 5.2, depth: 6.2, color: 0x8B5CF6 },
-  26: { x: 31.0, z: -9, width: 5.2, depth: 6.2, color: 0x8B5CF6 },
-  27: { x: 36.5, z: -9, width: 5.2, depth: 6.2, color: 0x8B5CF6 },
+  // Subtle interior inset
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.16)';
+  ctx.fillRect(8, 8, 240, 240);
 
-  // BLOCK B (Pink: 0xEC4899) — Plots 30, 29, 28 (Facing North 33' Road with 5' Green Belt)
-  30: { x: 7, z: 8, width: 6.8, depth: 6.4, color: 0xEC4899 },
-  29: { x: 14, z: 8, width: 5.4, depth: 6.4, color: 0xEC4899 },
-  28: { x: 20, z: 8, width: 5.4, depth: 6.4, color: 0xEC4899 },
+  // High contrast boundary stroke
+  ctx.strokeStyle = 'rgba(13, 35, 41, 0.9)';
+  ctx.lineWidth = 6;
+  ctx.strokeRect(4, 4, 248, 248);
 
-  // BLOCK B (Pink: 0xEC4899) — Plots 31, 32, 33 (Facing South 20' Rasta)
-  31: { x: 7, z: 16, width: 6.8, depth: 6.4, color: 0xEC4899 },
-  32: { x: 14, z: 16, width: 5.4, depth: 6.4, color: 0xEC4899 },
-  33: { x: 20, z: 16, width: 5.4, depth: 6.4, color: 0xEC4899 },
+  // Corner markers
+  ctx.fillStyle = '#FFFFFF';
+  [[8, 8], [240, 8], [8, 240], [240, 240]].forEach(([px, py]) => {
+    ctx.fillRect(px - 4, py - 4, 8, 8);
+  });
 
-  // BLOCK A (Yellow: 0xEAB308) — Plots 36, 35, 34 (Facing North 20' Rasta)
-  36: { x: 7, z: 24, width: 6.2, depth: 6.0, color: 0xEAB308 },
-  35: { x: 14, z: 24, width: 5.6, depth: 6.0, color: 0xEAB308 },
-  34: { x: 20, z: 24, width: 5.6, depth: 6.0, color: 0xEAB308 },
+  // Large Bold Plot Number
+  ctx.fillStyle = '#0D2329';
+  ctx.font = 'bold 78px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(String(number), 128, 100);
 
-  // BLOCK D (Green: 0x10B981) — Plots 37 to 44 (South-East Column facing 22'-6" Rasta)
-  37: { x: 7, z: 33, width: 5.5, depth: 5.2, color: 0x10B981 },
-  38: { x: 7, z: 39, width: 5.5, depth: 5.2, color: 0x10B981 },
-  39: { x: 7, z: 45, width: 5.5, depth: 5.2, color: 0x10B981 },
-  40: { x: 7, z: 51, width: 5.5, depth: 5.2, color: 0x10B981 },
-  41: { x: 7, z: 57, width: 5.5, depth: 5.2, color: 0x10B981 },
-  42: { x: 7, z: 63, width: 5.5, depth: 5.2, color: 0x10B981 },
-  43: { x: 7, z: 69, width: 5.5, depth: 5.2, color: 0x10B981 },
-  44: { x: 7, z: 75, width: 5.1, depth: 5.2, color: 0x10B981 },
+  // Size in Square Yards
+  ctx.fillStyle = '#163942';
+  ctx.font = 'bold 30px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
+  ctx.fillText(`${sizeSqYd} YD`, 128, 172);
 
-  // BLOCK F (Aqua: 0x06B6D4) — Plots 64, 63, 62, 61 (East of Hospital facing 22'-6" Rasta)
-  64: { x: -6, z: 7, width: 5.2, depth: 5.8, color: 0x06B6D4 },
-  63: { x: -6, z: 13, width: 5.2, depth: 5.8, color: 0x06B6D4 },
-  62: { x: -6, z: 19, width: 5.2, depth: 5.8, color: 0x06B6D4 },
-  61: { x: -6, z: 25, width: 5.2, depth: 5.8, color: 0x06B6D4 },
+  // Block identifier pill
+  ctx.fillStyle = 'rgba(13, 35, 41, 0.22)';
+  ctx.fillRect(44, 206, 168, 28);
+  ctx.fillStyle = '#0D2329';
+  ctx.font = 'bold 17px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(blockName.toUpperCase(), 128, 222);
 
-  // BLOCK E (Blue: 0x3B82F6) — Plots 54, 53, 52, 51 (Facing North 20' Rasta below Hospital)
-  54: { x: -24, z: 32, width: 5.5, depth: 5.4, color: 0x3B82F6 },
-  53: { x: -18, z: 32, width: 5.5, depth: 5.4, color: 0x3B82F6 },
-  52: { x: -12, z: 32, width: 5.5, depth: 5.4, color: 0x3B82F6 },
-  51: { x: -6, z: 32, width: 5.5, depth: 5.4, color: 0x3B82F6 },
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.anisotropy = 4;
+  return tex;
+}
 
-  // BLOCK E (Blue: 0x3B82F6) — Plots 50 to 45 (Facing East 22'-6" Central Rasta)
-  50: { x: -6, z: 40, width: 5.2, depth: 5.6, color: 0x3B82F6 },
-  49: { x: -6, z: 46, width: 5.2, depth: 5.6, color: 0x3B82F6 },
-  48: { x: -6, z: 52, width: 5.2, depth: 5.6, color: 0x3B82F6 },
-  47: { x: -6, z: 58, width: 5.2, depth: 5.6, color: 0x3B82F6 },
-  46: { x: -6, z: 64, width: 5.2, depth: 5.6, color: 0x3B82F6 },
-  45: { x: -6, z: 70, width: 5.2, depth: 5.6, color: 0x3B82F6 },
+function createRoadLabelTexture(text: string): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 64;
+  const ctx = canvas.getContext('2d')!;
 
-  // BLOCK E (Blue: 0x3B82F6) — Plots 55 to 60 (Facing West 16'-6" Rasta)
-  55: { x: -18, z: 40, width: 5.2, depth: 5.6, color: 0x3B82F6 },
-  56: { x: -18, z: 46, width: 5.2, depth: 5.6, color: 0x3B82F6 },
-  57: { x: -18, z: 52, width: 5.2, depth: 5.6, color: 0x3B82F6 },
-  58: { x: -18, z: 58, width: 5.2, depth: 5.6, color: 0x3B82F6 },
-  59: { x: -18, z: 64, width: 5.2, depth: 5.6, color: 0x3B82F6 },
-  60: { x: -18, z: 70, width: 5.2, depth: 5.6, color: 0x3B82F6 }
-};
+  ctx.fillStyle = '#262A2C';
+  ctx.fillRect(0, 0, 512, 64);
 
-// ─── Procedural Grass & Road Textures ─────────────────────────────────────────
+  ctx.fillStyle = '#D9A74A';
+  ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, 256, 32);
+
+  const tex = new THREE.CanvasTexture(canvas);
+  return tex;
+}
 
 function createMasterGroundTexture(): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
@@ -270,20 +260,20 @@ function createMasterGroundTexture(): THREE.CanvasTexture {
   canvas.height = 512;
   const ctx = canvas.getContext('2d')!;
 
-  ctx.fillStyle = '#1e3828';
+  ctx.fillStyle = '#1a3324';
   ctx.fillRect(0, 0, 512, 512);
 
   for (let i = 0; i < 20000; i++) {
     const x = Math.random() * 512;
     const y = Math.random() * 512;
-    const g = 45 + Math.random() * 40;
-    ctx.fillStyle = `rgb(${g - 18}, ${g + 16}, ${g - 12})`;
+    const g = 40 + Math.random() * 35;
+    ctx.fillStyle = `rgb(${g - 16}, ${g + 14}, ${g - 10})`;
     ctx.fillRect(x, y, 1.5, 2.5);
   }
 
   const tex = new THREE.CanvasTexture(canvas);
   tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(12, 12);
+  tex.repeat.set(16, 16);
   return tex;
 }
 
@@ -293,26 +283,28 @@ function createHighwayAsphaltTexture(): THREE.CanvasTexture {
   canvas.height = 128;
   const ctx = canvas.getContext('2d')!;
 
-  ctx.fillStyle = '#262A2C';
+  ctx.fillStyle = '#222527';
   ctx.fillRect(0, 0, 512, 128);
 
   for (let i = 0; i < 6000; i++) {
     const x = Math.random() * 512;
     const y = Math.random() * 128;
-    const v = 38 + Math.random() * 25;
-    ctx.fillStyle = `rgb(${v}, ${v + 2}, ${v + 4})`;
+    const v = 34 + Math.random() * 22;
+    ctx.fillStyle = `rgb(${v}, ${v + 2}, ${v + 3})`;
     ctx.fillRect(x, y, 1.2, 1.2);
   }
 
+  // Yellow Curb Edges
   ctx.strokeStyle = '#D9A74A';
   ctx.lineWidth = 4;
   ctx.beginPath();
-  ctx.moveTo(0, 10);
-  ctx.lineTo(512, 10);
-  ctx.moveTo(0, 118);
-  ctx.lineTo(512, 118);
+  ctx.moveTo(0, 8);
+  ctx.lineTo(512, 8);
+  ctx.moveTo(0, 120);
+  ctx.lineTo(512, 120);
   ctx.stroke();
 
+  // White Dashed Centerline
   ctx.strokeStyle = '#FFFFFF';
   ctx.lineWidth = 3;
   ctx.setLineDash([20, 16]);
@@ -333,13 +325,13 @@ function createRastaTexture(): THREE.CanvasTexture {
   canvas.height = 256;
   const ctx = canvas.getContext('2d')!;
 
-  ctx.fillStyle = '#3a4247';
+  ctx.fillStyle = '#343a3e';
   ctx.fillRect(0, 0, 256, 256);
 
   for (let i = 0; i < 4000; i++) {
     const x = Math.random() * 256;
     const y = Math.random() * 256;
-    const v = 50 + Math.random() * 25;
+    const v = 45 + Math.random() * 25;
     ctx.fillStyle = `rgb(${v}, ${v + 2}, ${v + 3})`;
     ctx.fillRect(x, y, 1.2, 1.2);
   }
@@ -365,14 +357,14 @@ function createGreenBeltTexture(): THREE.CanvasTexture {
   canvas.height = 256;
   const ctx = canvas.getContext('2d')!;
 
-  ctx.fillStyle = '#164828';
+  ctx.fillStyle = '#144222';
   ctx.fillRect(0, 0, 256, 256);
 
   for (let i = 0; i < 5000; i++) {
     const x = Math.random() * 256;
     const y = Math.random() * 256;
-    const g = 60 + Math.random() * 50;
-    ctx.fillStyle = `rgb(${g - 25}, ${g + 20}, ${g - 15})`;
+    const g = 55 + Math.random() * 45;
+    ctx.fillStyle = `rgb(${g - 22}, ${g + 18}, ${g - 14})`;
     ctx.fillRect(x, y, 2, 2);
   }
 
@@ -387,7 +379,10 @@ function disposeScene(scene: THREE.Scene) {
     if (obj instanceof THREE.Mesh) {
       obj.geometry?.dispose();
       if (Array.isArray(obj.material)) {
-        obj.material.forEach((m) => m.dispose());
+        obj.material.forEach((m) => {
+          if (m.map) m.map.dispose();
+          m.dispose();
+        });
       } else if (obj.material) {
         if (obj.material.map) obj.material.map.dispose();
         obj.material.dispose();
@@ -397,7 +392,7 @@ function disposeScene(scene: THREE.Scene) {
   scene.clear();
 }
 
-// ─── Main Component ──────────────────────────────────────────────────────────
+// ─── Main MasterPlan3DViewer Component ─────────────────────────────────────────
 
 export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
   onSelectPlot,
@@ -448,95 +443,92 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
 
   // Smooth Orbit Controls State
   const orbitRef = useRef({
-    radius: 95,
-    theta: Math.PI / 4.2,
-    phi: Math.PI / 3.4,
-    target: new THREE.Vector3(0, 0, 15),
     isDragging: false,
     prevMouseX: 0,
     prevMouseY: 0,
-    targetRadius: 95,
+    theta: Math.PI / 4.2,
+    phi: Math.PI / 3.4,
+    radius: 120,
     targetTheta: Math.PI / 4.2,
     targetPhi: Math.PI / 3.4,
+    targetRadius: 120,
+    lookAt: new THREE.Vector3(0, 0, 15),
     targetLookAt: new THREE.Vector3(0, 0, 15)
   });
 
   const updateCameraPosition = useCallback(() => {
-    const orbit = orbitRef.current;
     if (!cameraRef.current) return;
+    const o = orbitRef.current;
 
-    orbit.radius += (orbit.targetRadius - orbit.radius) * 0.08;
-    orbit.theta += (orbit.targetTheta - orbit.theta) * 0.08;
-    orbit.phi += (orbit.targetPhi - orbit.phi) * 0.08;
-    orbit.target.lerp(orbit.targetLookAt, 0.08);
+    o.theta += (o.targetTheta - o.theta) * 0.08;
+    o.phi += (o.targetPhi - o.phi) * 0.08;
+    o.radius += (o.targetRadius - o.radius) * 0.08;
+    o.lookAt.lerp(o.targetLookAt, 0.08);
 
-    const x = orbit.target.x + orbit.radius * Math.sin(orbit.phi) * Math.sin(orbit.theta);
-    const y = orbit.target.y + orbit.radius * Math.cos(orbit.phi);
-    const z = orbit.target.z + orbit.radius * Math.sin(orbit.phi) * Math.cos(orbit.theta);
+    const sinPhiRadius = Math.sin(o.phi) * o.radius;
+    cameraRef.current.position.x = o.lookAt.x + sinPhiRadius * Math.sin(o.theta);
+    cameraRef.current.position.y = o.lookAt.y + Math.cos(o.phi) * o.radius;
+    cameraRef.current.position.z = o.lookAt.z + sinPhiRadius * Math.cos(o.theta);
 
-    cameraRef.current.position.set(x, y, z);
-    cameraRef.current.lookAt(orbit.target);
+    cameraRef.current.lookAt(o.lookAt);
   }, []);
 
-  // ─── Single WebGL Initialization (Mounts Once) ────────────────────────────
+  // Three.js Initialization & Scene Construction
   useEffect(() => {
-    const container = containerRef.current;
+    if (!canvasRef.current || !containerRef.current) return;
+
     const canvas = canvasRef.current;
-    if (!container || !canvas) return;
+    const container = containerRef.current;
+    const width = container.clientWidth;
+    const height = container.clientHeight;
 
-    const isMobile = window.innerWidth < 768;
-
-    const scene = new THREE.Scene();
-    sceneRef.current = scene;
-    scene.background = new THREE.Color(0x071519);
-    scene.fog = new THREE.FogExp2(0x071519, 0.0035);
-
-    const width = container.clientWidth || 800;
-    const height = container.clientHeight || 580;
-    const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 1000);
-    cameraRef.current = camera;
-
+    // Renderer
     const renderer = new THREE.WebGLRenderer({
       canvas,
-      antialias: !isMobile,
-      powerPreference: 'high-performance',
-      alpha: false
+      antialias: true,
+      powerPreference: 'high-performance'
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
     renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFShadowMap;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.18;
+    renderer.toneMappingExposure = 1.15;
     rendererRef.current = renderer;
 
-    // ─── Architectural Natural Lighting Rig ─────────────────────────────────
-    const hemiLight = new THREE.HemisphereLight(0xddeaf2, 0x243b2a, 0.9);
-    scene.add(hemiLight);
+    // Scene
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x071519);
+    scene.fog = new THREE.FogExp2(0x071519, 0.0035);
+    sceneRef.current = scene;
 
-    const ambientLight = new THREE.AmbientLight(0xf5eedc, 0.65);
+    // Camera
+    const camera = new THREE.PerspectiveCamera(42, width / height, 0.5, 600);
+    cameraRef.current = camera;
+    updateCameraPosition();
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xfffaed, 0.95);
     scene.add(ambientLight);
 
-    const sunLight = new THREE.DirectionalLight(0xfff5ea, 2.5);
-    sunLight.position.set(50, 90, 50);
+    const sunLight = new THREE.DirectionalLight(0xfff3d6, 1.8);
+    sunLight.position.set(65, 110, -50);
     sunLight.castShadow = true;
-    sunLight.shadow.mapSize.width = isMobile ? 1024 : 2048;
-    sunLight.shadow.mapSize.height = isMobile ? 1024 : 2048;
-    sunLight.shadow.camera.left = -75;
-    sunLight.shadow.camera.right = 75;
-    sunLight.shadow.camera.top = 75;
-    sunLight.shadow.camera.bottom = -75;
+    sunLight.shadow.mapSize.width = 2048;
+    sunLight.shadow.mapSize.height = 2048;
     sunLight.shadow.camera.near = 10;
-    sunLight.shadow.camera.far = 250;
+    sunLight.shadow.camera.far = 300;
+    sunLight.shadow.camera.left = -90;
+    sunLight.shadow.camera.right = 90;
+    sunLight.shadow.camera.top = 90;
+    sunLight.shadow.camera.bottom = -90;
     sunLight.shadow.bias = -0.0003;
-    sunLight.shadow.radius = 2.0;
     scene.add(sunLight);
 
-    const skyFill = new THREE.DirectionalLight(0x8cb8a8, 0.6);
-    skyFill.position.set(-50, 40, -50);
-    scene.add(skyFill);
+    const hemiLight = new THREE.HemisphereLight(0x88c4d8, 0x1e3828, 0.6);
+    scene.add(hemiLight);
 
-    // ─── Materials ───────────────────────────────────────────────────────────
+    // Materials
     const masterGroundTex = createMasterGroundTexture();
     const highwayTex = createHighwayAsphaltTexture();
     const rastaTex = createRastaTexture();
@@ -544,8 +536,8 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
 
     const masterGroundMat = new THREE.MeshStandardMaterial({
       map: masterGroundTex,
-      color: 0x1d3524,
-      roughness: 0.92
+      roughness: 0.92,
+      metalness: 0.05
     });
 
     const highwayRoadMat = new THREE.MeshStandardMaterial({
@@ -556,7 +548,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
 
     const rastaMat = new THREE.MeshStandardMaterial({
       map: rastaTex,
-      color: 0x485055,
+      color: 0x444b50,
       roughness: 0.84
     });
 
@@ -577,139 +569,139 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       opacity: 0.55
     });
 
-    // ─── 1. Township Master Ground Terrain (180m × 180m) ───────────────────
-    const masterTerrain = new THREE.Mesh(new THREE.PlaneGeometry(180, 180), masterGroundMat);
+    // ─── 1. Township Master Ground Terrain (240m × 240m) ───────────────────
+    const masterTerrain = new THREE.Mesh(new THREE.PlaneGeometry(240, 240), masterGroundMat);
     masterTerrain.rotation.x = -Math.PI / 2;
-    masterTerrain.position.set(0, 0, 15);
+    masterTerrain.position.set(0, 0, 25);
     masterTerrain.receiveShadow = true;
     scene.add(masterTerrain);
 
-    // ─── 2. Road Network (Derived from CAD masterplan-real.jpg) ────────────
+    // ─── 2. Road Network (Strict CAD Dimensions & Widths) ─────────────────
 
-    // A. West Highway Corridor: ROAD 33'-0" WIDE (Running North-South along West Boundary)
-    const westHighway = new THREE.Mesh(new THREE.PlaneGeometry(10.5, 140), highwayRoadMat);
-    westHighway.rotation.x = -Math.PI / 2;
-    westHighway.position.set(-36, 0.02, 15);
-    westHighway.receiveShadow = true;
-    scene.add(westHighway);
-
-    // B. Central Arterial Highway: ROAD 33'-0" WIDE (East-West Dividing Road)
-    const centralHighway = new THREE.Mesh(new THREE.PlaneGeometry(85, 10.5), highwayRoadMat);
+    // A. Central Arterial Highway: ROAD 33'-0" WIDE (10.06m) — East-West Dividing Road
+    const centralHighway = new THREE.Mesh(new THREE.PlaneGeometry(120, 10.06), highwayRoadMat);
     centralHighway.rotation.x = -Math.PI / 2;
     centralHighway.position.set(4, 0.025, 0);
     centralHighway.receiveShadow = true;
     scene.add(centralHighway);
 
-    // C. Central North-South Spine: RASTA 22'-6" WIDE (Connecting North and South)
-    const centralRastaSpine = new THREE.Mesh(new THREE.PlaneGeometry(7.0, 130), rastaMat);
+    // B. West Highway Corridor: ROAD 33'-0" WIDE (10.06m) — Running North-South
+    const westHighway = new THREE.Mesh(new THREE.PlaneGeometry(10.06, 180), highwayRoadMat);
+    westHighway.rotation.x = -Math.PI / 2;
+    westHighway.position.set(-43.67, 0.02, 25);
+    westHighway.receiveShadow = true;
+    scene.add(westHighway);
+
+    // C. Central North-South Spine: RASTA 22'-6" WIDE (6.86m) — Connecting North and South
+    const centralRastaSpine = new THREE.Mesh(new THREE.PlaneGeometry(6.86, 180), rastaMat);
     centralRastaSpine.rotation.x = -Math.PI / 2;
-    centralRastaSpine.position.set(0, 0.02, 15);
+    centralRastaSpine.position.set(0, 0.02, 25);
     centralRastaSpine.receiveShadow = true;
     scene.add(centralRastaSpine);
 
-    // D. North Sector RASTA 20'-0" WIDE (Separating Plots 10-15 and 21-16)
-    const northRasta20 = new THREE.Mesh(new THREE.PlaneGeometry(36, 6.2), rastaMat);
+    // D. North Sector RASTA 20'-0" WIDE (6.10m) — Separating Plots 10-15 and 21-16
+    const northRasta20 = new THREE.Mesh(new THREE.PlaneGeometry(50, 6.10), rastaMat);
     northRasta20.rotation.x = -Math.PI / 2;
-    northRasta20.position.set(22, 0.022, -28.5);
+    northRasta20.position.set(28, 0.022, -37.65);
     northRasta20.receiveShadow = true;
     scene.add(northRasta20);
 
-    // E. North Perimeter RASTA 11'-0" WIDE (Along North Boundary)
-    const northPerimeterRasta11 = new THREE.Mesh(new THREE.PlaneGeometry(42, 3.5), rastaMat);
+    // E. North Perimeter RASTA 11'-0" WIDE (3.35m) — Along North Boundary
+    const northPerimeterRasta11 = new THREE.Mesh(new THREE.PlaneGeometry(50, 3.35), rastaMat);
     northPerimeterRasta11.rotation.x = -Math.PI / 2;
-    northPerimeterRasta11.position.set(22, 0.022, -44.5);
+    northPerimeterRasta11.position.set(28, 0.022, -57.0);
     northPerimeterRasta11.receiveShadow = true;
     scene.add(northPerimeterRasta11);
 
-    // F. Mid-East Sector RASTA 20'-0" WIDE (Separating Plots 31-33 and 34-36)
-    const midEastRasta20 = new THREE.Mesh(new THREE.PlaneGeometry(24, 6.2), rastaMat);
+    // F. Mid-East Sector RASTA 20'-0" WIDE (6.10m) — Between Plots 31-33 and Plots 34-36
+    const midEastRasta20 = new THREE.Mesh(new THREE.PlaneGeometry(26, 6.10), rastaMat);
     midEastRasta20.rotation.x = -Math.PI / 2;
-    midEastRasta20.position.set(16, 0.022, 20);
+    midEastRasta20.position.set(16, 0.022, 38.56);
     midEastRasta20.receiveShadow = true;
     scene.add(midEastRasta20);
 
-    // G. Hospital Front RASTA 20'-0" WIDE (Below Hospital and Plots 61-64)
-    const hospFrontRasta20 = new THREE.Mesh(new THREE.PlaneGeometry(32, 6.2), rastaMat);
+    // G. Hospital Front RASTA 20'-0" WIDE (6.10m) — Below Hospital and Plots 61-64
+    const hospFrontRasta20 = new THREE.Mesh(new THREE.PlaneGeometry(36, 6.10), rastaMat);
     hospFrontRasta20.rotation.x = -Math.PI / 2;
-    hospFrontRasta20.position.set(-18, 0.022, 28.5);
+    hospFrontRasta20.position.set(-18.5, 0.022, 51.66);
     hospFrontRasta20.receiveShadow = true;
     scene.add(hospFrontRasta20);
 
-    // H. West South RASTA 16'-6" WIDE (Along Block E Plots 55-60)
-    const westSouthRasta16 = new THREE.Mesh(new THREE.PlaneGeometry(5.2, 45), rastaMat);
+    // H. West South RASTA 16'-6" WIDE (5.03m) — Along Block E Plots 55-60
+    const westSouthRasta16 = new THREE.Mesh(new THREE.PlaneGeometry(5.03, 62), rastaMat);
     westSouthRasta16.rotation.x = -Math.PI / 2;
-    westSouthRasta16.position.set(-24, 0.022, 54);
+    westSouthRasta16.position.set(-36.75, 0.022, 85);
     westSouthRasta16.receiveShadow = true;
     scene.add(westSouthRasta16);
 
-    // ─── 3. Green Buffer Belts (5ft & 6ft Strips from CAD) ─────────────────
-    // 6ft Green Belt along South of North Parcel (Facing 33ft road)
-    const northGreenBelt = new THREE.Mesh(new THREE.PlaneGeometry(75, 2.0), greenBeltMat);
+    // ─── 3. Green Buffer Belts (6ft North & 5ft South Strips from CAD) ────
+    // 6ft Green Belt along North side of Central 33ft Highway
+    const northGreenBelt = new THREE.Mesh(new THREE.PlaneGeometry(100, 1.83), greenBeltMat);
     northGreenBelt.rotation.x = -Math.PI / 2;
-    northGreenBelt.position.set(4, 0.03, -4.5);
+    northGreenBelt.position.set(6, 0.03, -5.95);
     scene.add(northGreenBelt);
 
-    // 5ft Green Belt along North of South Parcel (Facing 33ft road)
-    const southGreenBelt = new THREE.Mesh(new THREE.PlaneGeometry(75, 1.8), greenBeltMat);
+    // 5ft Green Belt along South side of Central 33ft Highway
+    const southGreenBelt = new THREE.Mesh(new THREE.PlaneGeometry(100, 1.52), greenBeltMat);
     southGreenBelt.rotation.x = -Math.PI / 2;
-    southGreenBelt.position.set(4, 0.03, 4.5);
+    southGreenBelt.position.set(6, 0.03, 5.79);
     scene.add(southGreenBelt);
 
     // ─── 4. Landmark 1: Proposed 30,000 Sq. Ft. Multi-Speciality Ayurvedic Hospital ───
     const hospitalGroup = new THREE.Group();
     hospitalGroup.name = 'landmark-hospital';
-    hospitalGroup.position.set(-22, 0, 16);
+    hospitalGroup.position.set(-25.77, 0, 27.58);
 
-    // Main L-Shape Building Footprint (117'-10" × 138')
-    const hospMainWing = new THREE.Mesh(new THREE.BoxGeometry(16, 9.2, 18), buildingWallMat);
-    hospMainWing.position.set(0, 4.6, 0);
+    // Main Hospital Wing Footprint
+    const hospMainWing = new THREE.Mesh(new THREE.BoxGeometry(24, 10.5, 26), buildingWallMat);
+    hospMainWing.position.set(-4, 5.25, 0);
     hospMainWing.castShadow = true;
     hospMainWing.receiveShadow = true;
     hospitalGroup.add(hospMainWing);
 
-    const hospYogaWing = new THREE.Mesh(new THREE.BoxGeometry(10, 8.5, 12), buildingWallMat);
-    hospYogaWing.position.set(6, 4.25, -4);
-    hospYogaWing.castShadow = true;
-    hospYogaWing.receiveShadow = true;
-    hospitalGroup.add(hospYogaWing);
+    const hospPanchakarmaWing = new THREE.Mesh(new THREE.BoxGeometry(11.8, 9.0, 16), buildingWallMat);
+    hospPanchakarmaWing.position.set(10, 4.5, -5);
+    hospPanchakarmaWing.castShadow = true;
+    hospPanchakarmaWing.receiveShadow = true;
+    hospitalGroup.add(hospPanchakarmaWing);
 
-    // Glass Atrium & Reception Entry
-    const hospGlassAtrium = new THREE.Mesh(new THREE.BoxGeometry(12, 7.5, 0.2), glassFacadeMat);
-    hospGlassAtrium.position.set(0, 4.25, -9.1);
+    // Glass Atrium & OPD Entrance
+    const hospGlassAtrium = new THREE.Mesh(new THREE.BoxGeometry(16, 8.5, 0.3), glassFacadeMat);
+    hospGlassAtrium.position.set(-4, 4.5, -13.2);
     hospitalGroup.add(hospGlassAtrium);
 
-    // Grand Entrance Canopy & Emergency Portico
-    const hospCanopy = new THREE.Mesh(new THREE.BoxGeometry(10, 0.4, 6), goldAccentMat);
-    hospCanopy.position.set(0, 4.0, -11.5);
+    // Emergency Drop-off Portico
+    const hospCanopy = new THREE.Mesh(new THREE.BoxGeometry(14, 0.5, 7), goldAccentMat);
+    hospCanopy.position.set(-4, 4.2, -16.5);
     hospCanopy.castShadow = true;
     hospitalGroup.add(hospCanopy);
 
-    [-4, 4].forEach((px) => {
-      const col = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 4.0, 8), bronzeAccentMat);
-      col.position.set(px, 2.0, -14.0);
+    [-9, 1].forEach((px) => {
+      const col = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.3, 4.2, 8), bronzeAccentMat);
+      col.position.set(px, 2.1, -19.5);
       col.castShadow = true;
       hospitalGroup.add(col);
     });
 
-    // Rooftop Hydrotherapy Pool (10' × 12') & Pergola Deck
+    // Rooftop Hydrotherapy Pool
     const hospPool = new THREE.Mesh(
-      new THREE.BoxGeometry(4.2, 0.6, 3.6),
+      new THREE.BoxGeometry(5.5, 0.8, 4.5),
       new THREE.MeshStandardMaterial({ color: 0x1b5e78, metalness: 0.9, roughness: 0.1 })
     );
-    hospPool.position.set(-3.5, 9.4, 4);
+    hospPool.position.set(-8, 10.9, 5);
     hospitalGroup.add(hospPool);
 
-    // 50-Seat Open Auditorium on Roof
-    const audPlinth = new THREE.Mesh(new THREE.BoxGeometry(6, 0.4, 6), buildingWallMat);
-    audPlinth.position.set(3.5, 9.4, 4);
+    // 50-Seat Rooftop Auditorium
+    const audPlinth = new THREE.Mesh(new THREE.BoxGeometry(8, 0.5, 8), buildingWallMat);
+    audPlinth.position.set(2, 10.8, 5);
     hospitalGroup.add(audPlinth);
 
-    // Hospital Signage Plaque
+    // Hospital Signage
     const hospSign = new THREE.Mesh(
-      new THREE.BoxGeometry(8.0, 1.2, 0.25),
+      new THREE.BoxGeometry(12.0, 1.5, 0.3),
       new THREE.MeshStandardMaterial({ color: 0x2c5e50, roughness: 0.3 })
     );
-    hospSign.position.set(0, 9.8, -9.0);
+    hospSign.position.set(-4, 11.2, -13.0);
     hospitalGroup.add(hospSign);
 
     hospitalGroup.traverse((child) => {
@@ -720,52 +712,50 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     // ─── 5. Landmark 2: Proposed G+2 Senior Residences (Plots 63 & 64) ───────
     const residenceGroup = new THREE.Group();
     residenceGroup.name = 'landmark-residence';
-    residenceGroup.position.set(-6, 0, 10);
+    residenceGroup.position.set(-11.13, 0, 13.56);
 
-    // Stilt Parking Floor (46' × 50'-6") with Open Bays
-    const stiltCeiling = new THREE.Mesh(new THREE.BoxGeometry(10.5, 0.3, 11.5), buildingWallMat);
-    stiltCeiling.position.set(0, 2.2, 0);
+    const stiltCeiling = new THREE.Mesh(new THREE.BoxGeometry(14.5, 0.3, 13.5), buildingWallMat);
+    stiltCeiling.position.set(0, 2.4, 0);
     residenceGroup.add(stiltCeiling);
 
-    [-4.5, 0, 4.5].forEach((cx) => {
-      [-4.5, 0, 4.5].forEach((cz) => {
-        const col = new THREE.Mesh(new THREE.BoxGeometry(0.35, 2.2, 0.35), buildingWallMat);
-        col.position.set(cx, 1.1, cz);
+    [-6, 0, 6].forEach((cx) => {
+      [-5.5, 0, 5.5].forEach((cz) => {
+        const col = new THREE.Mesh(new THREE.BoxGeometry(0.4, 2.4, 0.4), buildingWallMat);
+        col.position.set(cx, 1.2, cz);
         col.castShadow = true;
         residenceGroup.add(col);
       });
     });
 
-    // 3 Habitable Floors (Ground, 1st, 2nd)
-    const gfRes = new THREE.Mesh(new THREE.BoxGeometry(10.2, 1.8, 11.2), buildingWallMat);
-    gfRes.position.set(0, 3.2, 0);
+    const gfRes = new THREE.Mesh(new THREE.BoxGeometry(14.2, 2.0, 13.2), buildingWallMat);
+    gfRes.position.set(0, 3.5, 0);
     gfRes.castShadow = true;
     residenceGroup.add(gfRes);
 
-    const ffRes = new THREE.Mesh(new THREE.BoxGeometry(10.2, 1.8, 11.2), buildingWallMat);
-    ffRes.position.set(0, 5.1, 0);
+    const ffRes = new THREE.Mesh(new THREE.BoxGeometry(14.2, 2.0, 13.2), buildingWallMat);
+    ffRes.position.set(0, 5.6, 0);
     ffRes.castShadow = true;
     residenceGroup.add(ffRes);
 
-    const sfRes = new THREE.Mesh(new THREE.BoxGeometry(10.2, 1.8, 11.2), buildingWallMat);
-    sfRes.position.set(0, 7.0, 0);
+    const sfRes = new THREE.Mesh(new THREE.BoxGeometry(14.2, 2.0, 13.2), buildingWallMat);
+    sfRes.position.set(0, 7.7, 0);
     sfRes.castShadow = true;
     residenceGroup.add(sfRes);
 
-    // Cantilevered 3'-6" Balconies
+    // Balconies
     [-1, 1].forEach((side) => {
-      const balcony = new THREE.Mesh(new THREE.BoxGeometry(9.6, 0.15, 1.2), goldAccentMat);
-      balcony.position.set(0, 5.0, side * 6.1);
-      residenceGroup.add(balcony);
+      const balcony1 = new THREE.Mesh(new THREE.BoxGeometry(13.5, 0.15, 1.2), goldAccentMat);
+      balcony1.position.set(0, 5.4, side * 7.1);
+      residenceGroup.add(balcony1);
 
-      const balcony2 = new THREE.Mesh(new THREE.BoxGeometry(9.6, 0.15, 1.2), goldAccentMat);
-      balcony2.position.set(0, 6.9, side * 6.1);
+      const balcony2 = new THREE.Mesh(new THREE.BoxGeometry(13.5, 0.15, 1.2), goldAccentMat);
+      balcony2.position.set(0, 7.5, side * 7.1);
       residenceGroup.add(balcony2);
     });
 
-    // Lift & Stair Core Tower
-    const liftTower = new THREE.Mesh(new THREE.BoxGeometry(2.8, 2.0, 2.6), bronzeAccentMat);
-    liftTower.position.set(0, 8.8, 0);
+    // Lift Tower Core
+    const liftTower = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.4, 3.0), bronzeAccentMat);
+    liftTower.position.set(0, 9.8, 0);
     liftTower.castShadow = true;
     residenceGroup.add(liftTower);
 
@@ -777,36 +767,36 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     // ─── 6. Landmark 3: Community Mandir & Reflection Kund ───────────────────
     const mandirGroup = new THREE.Group();
     mandirGroup.name = 'landmark-mandir';
-    mandirGroup.position.set(-28, 0, -5);
+    mandirGroup.position.set(-30.71, 0, -10.53);
 
     const mandirPlinthMat = new THREE.MeshStandardMaterial({ color: 0xd8c8b0, roughness: 0.65 });
-    const plinth1 = new THREE.Mesh(new THREE.BoxGeometry(10, 0.4, 10), mandirPlinthMat);
-    plinth1.position.set(0, 0.2, 0);
+    const plinth1 = new THREE.Mesh(new THREE.BoxGeometry(18, 0.5, 6.5), mandirPlinthMat);
+    plinth1.position.set(0, 0.25, 0);
     mandirGroup.add(plinth1);
 
-    const mandirHall = new THREE.Mesh(new THREE.BoxGeometry(7, 3.2, 7), mandirPlinthMat);
-    mandirHall.position.set(0, 2.0, 0);
+    const mandirHall = new THREE.Mesh(new THREE.BoxGeometry(10, 3.8, 5.5), mandirPlinthMat);
+    mandirHall.position.set(-3, 2.2, 0);
     mandirHall.castShadow = true;
     mandirGroup.add(mandirHall);
 
     const shikhara = new THREE.Mesh(
-      new THREE.ConeGeometry(3.6, 5.5, 8),
+      new THREE.ConeGeometry(3.8, 6.5, 8),
       new THREE.MeshStandardMaterial({ color: 0xc58f58, roughness: 0.35, metalness: 0.55 })
     );
-    shikhara.position.set(0, 6.2, 0);
+    shikhara.position.set(-3, 7.2, 0);
     shikhara.castShadow = true;
     mandirGroup.add(shikhara);
 
     const kalasha = new THREE.Mesh(
-      new THREE.SphereGeometry(0.35, 12, 12),
+      new THREE.SphereGeometry(0.4, 12, 12),
       new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.15, metalness: 0.9 })
     );
-    kalasha.position.set(0, 9.2, 0);
+    kalasha.position.set(-3, 10.7, 0);
     mandirGroup.add(kalasha);
 
     // Stepped Reflection Kund / Pond
     const kundWater = new THREE.Mesh(
-      new THREE.PlaneGeometry(6.5, 5.5),
+      new THREE.PlaneGeometry(6.5, 5.0),
       new THREE.MeshStandardMaterial({
         color: 0x1b4d63,
         roughness: 0.05,
@@ -816,7 +806,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       })
     );
     kundWater.rotation.x = -Math.PI / 2;
-    kundWater.position.set(0, 0.25, 7.5);
+    kundWater.position.set(5.5, 0.28, 0);
     mandirGroup.add(kundWater);
 
     mandirGroup.traverse((child) => {
@@ -827,18 +817,18 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     // ─── 7. Landmark 4: Utility Enclave (289 SQYD) ──────────────────────────
     const utilityGroup = new THREE.Group();
     utilityGroup.name = 'landmark-utility';
-    utilityGroup.position.set(36, 0, -40);
+    utilityGroup.position.set(45.66, 0, -62.65);
 
-    const utilBuilding = new THREE.Mesh(new THREE.BoxGeometry(7, 3.2, 6), buildingWallMat);
-    utilBuilding.position.set(0, 1.6, 0);
+    const utilBuilding = new THREE.Mesh(new THREE.BoxGeometry(12, 3.6, 12), buildingWallMat);
+    utilBuilding.position.set(0, 1.8, 0);
     utilBuilding.castShadow = true;
     utilityGroup.add(utilBuilding);
 
     const utilSubstation = new THREE.Mesh(
-      new THREE.BoxGeometry(4, 2.0, 3),
+      new THREE.BoxGeometry(6, 2.2, 5),
       new THREE.MeshStandardMaterial({ color: 0x485055, metalness: 0.7, roughness: 0.3 })
     );
-    utilSubstation.position.set(0, 1.0, 5);
+    utilSubstation.position.set(0, 1.1, 8);
     utilityGroup.add(utilSubstation);
 
     utilityGroup.traverse((child) => {
@@ -846,25 +836,25 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     });
     scene.add(utilityGroup);
 
-    // ─── 8. Landmark 5: 33ft Main Entrance Gateway ───────────────────────────
+    // ─── 8. Landmark 5: 33ft Main Entrance Gateways ──────────────────────────
     const gateGroup = new THREE.Group();
     gateGroup.name = 'landmark-gate';
-    gateGroup.position.set(-36, 0, 0);
+    gateGroup.position.set(-43.67, 0, 0);
 
-    const gateCol1 = new THREE.Mesh(new THREE.BoxGeometry(1.2, 4.8, 1.2), buildingWallMat);
-    gateCol1.position.set(0, 2.4, -4.5);
+    const gateCol1 = new THREE.Mesh(new THREE.BoxGeometry(1.4, 5.2, 1.4), buildingWallMat);
+    gateCol1.position.set(0, 2.6, -5.5);
     gateGroup.add(gateCol1);
 
-    const gateCol2 = new THREE.Mesh(new THREE.BoxGeometry(1.2, 4.8, 1.2), buildingWallMat);
-    gateCol2.position.set(0, 2.4, 4.5);
+    const gateCol2 = new THREE.Mesh(new THREE.BoxGeometry(1.4, 5.2, 1.4), buildingWallMat);
+    gateCol2.position.set(0, 2.6, 5.5);
     gateGroup.add(gateCol2);
 
-    const gateLintel = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.8, 11), bronzeAccentMat);
-    gateLintel.position.set(0, 4.8, 0);
+    const gateLintel = new THREE.Mesh(new THREE.BoxGeometry(2.0, 1.0, 13), bronzeAccentMat);
+    gateLintel.position.set(0, 5.4, 0);
     gateGroup.add(gateLintel);
 
-    const guardPost = new THREE.Mesh(new THREE.BoxGeometry(3.0, 2.6, 3.0), buildingWallMat);
-    guardPost.position.set(3.5, 1.3, -4.5);
+    const guardPost = new THREE.Mesh(new THREE.BoxGeometry(3.5, 2.8, 3.5), buildingWallMat);
+    guardPost.position.set(4.0, 1.4, -5.5);
     gateGroup.add(guardPost);
 
     gateGroup.traverse((child) => {
@@ -874,30 +864,37 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
 
     landmarkMeshesRef.current = [hospitalGroup, residenceGroup, mandirGroup, utilityGroup, gateGroup];
 
-    // ─── 9. Exact 64 Freehold Residential Plots (Blocks A to F) ───────────────
+    // ─── 9. Exact 64 Freehold Residential Plots (CANONICAL CAD ALIGNED) ──────
     const plotMeshes: { [plotNumber: number]: THREE.Mesh } = {};
-    const cornerStoneGeo = new THREE.BoxGeometry(0.25, 0.5, 0.25);
-    const cornerStoneMat = new THREE.MeshStandardMaterial({ color: 0xf5eedc, roughness: 0.6 });
+    const cornerStoneGeo = new THREE.BoxGeometry(0.3, 0.6, 0.3);
+    const cornerStoneMat = new THREE.MeshStandardMaterial({ color: 0xf5eedc, roughness: 0.5 });
 
-    allPlots.forEach((plot) => {
-      const coord = PLOT_COORDINATES_MAP[plot.number];
-      if (!coord) return;
+    CANONICAL_PLOTS.forEach((canonicalPlot) => {
+      const { cadBoundingBox: bbox, number, sizeSqYd, block, blockColorHex } = canonicalPlot;
+      const plotItem = allPlots.find((p) => p.number === number);
+      if (!plotItem) return;
 
-      const plotGeo = new THREE.BoxGeometry(coord.width, 0.08, coord.depth);
-      const plotMat = new THREE.MeshStandardMaterial({
-        color: coord.color,
-        roughness: 0.75,
-        metalness: 0.1
-      });
+      const plotTexture = createPlotCanvasTexture(number, sizeSqYd, block, blockColorHex);
 
-      const plotMesh = new THREE.Mesh(plotGeo, plotMat);
-      plotMesh.position.set(coord.x, 0.04, coord.z);
+      const materials = [
+        new THREE.MeshStandardMaterial({ color: 0x163942, roughness: 0.8 }), // right
+        new THREE.MeshStandardMaterial({ color: 0x163942, roughness: 0.8 }), // left
+        new THREE.MeshStandardMaterial({ map: plotTexture, roughness: 0.6, metalness: 0.05 }), // top
+        new THREE.MeshStandardMaterial({ color: 0x163942, roughness: 0.8 }), // bottom
+        new THREE.MeshStandardMaterial({ color: 0x163942, roughness: 0.8 }), // front
+        new THREE.MeshStandardMaterial({ color: 0x163942, roughness: 0.8 })  // back
+      ];
+
+      const plotGeo = new THREE.BoxGeometry(bbox.width, 0.12, bbox.depth);
+      const plotMesh = new THREE.Mesh(plotGeo, materials);
+      plotMesh.position.set(bbox.x, 0.06, bbox.z);
       plotMesh.receiveShadow = true;
-      plotMesh.userData = { plot, baseColor: coord.color };
+      plotMesh.castShadow = true;
+      plotMesh.userData = { plot: plotItem, canonicalPlot, baseColor: blockColorHex };
 
-      // Add 4 white boundary demarcation corner stones
-      const halfW = coord.width / 2;
-      const halfD = coord.depth / 2;
+      // 4 Demarcation Corner Boundary Pegs
+      const halfW = bbox.width / 2;
+      const halfD = bbox.depth / 2;
       [
         [-halfW, -halfD],
         [halfW, -halfD],
@@ -905,18 +902,38 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
         [halfW, halfD]
       ].forEach(([cx, cz]) => {
         const stone = new THREE.Mesh(cornerStoneGeo, cornerStoneMat);
-        stone.position.set(cx, 0.25, cz);
+        stone.position.set(cx, 0.3, cz);
         stone.castShadow = true;
         plotMesh.add(stone);
       });
 
       scene.add(plotMesh);
-      plotMeshes[plot.number] = plotMesh;
+      plotMeshes[number] = plotMesh;
     });
 
     plotMeshesRef.current = plotMeshes;
 
-    // ─── 10. Landscaping: Trees & Royal Palms along Road Buffers ───────────────
+    // ─── 10. Outer Site Perimeter Boundary Wall ────────────────────────────
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0xd8c8b0, roughness: 0.8 });
+    const wallGeoH = new THREE.BoxGeometry(110, 1.2, 0.6);
+    const wallGeoV = new THREE.BoxGeometry(0.6, 1.2, 190);
+
+    // North Wall
+    const northWall = new THREE.Mesh(wallGeoH, wallMat);
+    northWall.position.set(10, 0.6, -60);
+    scene.add(northWall);
+
+    // South Wall
+    const southWall = new THREE.Mesh(wallGeoH, wallMat);
+    southWall.position.set(0, 0.6, 120);
+    scene.add(southWall);
+
+    // East Wall
+    const eastWall = new THREE.Mesh(wallGeoV, wallMat);
+    eastWall.position.set(55, 0.6, 25);
+    scene.add(eastWall);
+
+    // ─── 11. Landscaping: Trees & Royal Palms along Buffer Belts ───────────
     const trunkMat = new THREE.MeshStandardMaterial({ color: 0x4a2e18, roughness: 0.9 });
     const foliageMat = new THREE.MeshStandardMaterial({ color: 0x1f4a2c, roughness: 0.8 });
     const amaltasMat = new THREE.MeshStandardMaterial({ color: 0xd4a017, roughness: 0.75 });
@@ -924,28 +941,9 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     const treeGeo = new THREE.SphereGeometry(1.4, 8, 8);
     const trunkGeo = new THREE.CylinderGeometry(0.15, 0.22, 2.5, 6);
 
-    // Perimeter buffer trees
-    for (let i = 0; i < 36; i++) {
-      const angle = (i / 36) * Math.PI * 2;
-      const r = 68 + (i % 3) * 5;
-      const tx = Math.cos(angle) * r;
-      const tz = 15 + Math.sin(angle) * r;
-
-      const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-      trunk.position.set(tx, 1.25, tz);
-      trunk.castShadow = true;
-      scene.add(trunk);
-
-      const crown = new THREE.Mesh(treeGeo, i % 4 === 0 ? amaltasMat : foliageMat);
-      crown.position.set(tx, 3.2, tz);
-      crown.scale.set(1.0, 1.2 + (i % 3) * 0.2, 1.0);
-      crown.castShadow = true;
-      scene.add(crown);
-    }
-
-    // Trees along Central East-West Green Buffer
-    [-24, -16, -8, 8, 16, 24, 32].forEach((gx) => {
-      [-3.5, 3.5].forEach((gz) => {
+    // Trees along Central East-West Green Buffer (Positioned carefully so they do NOT cover plot numbers)
+    [-38, -20, -4, 18, 32, 46].forEach((gx) => {
+      [-5.0, 5.0].forEach((gz) => {
         const treeTrunk = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 2.2, 6), trunkMat);
         treeTrunk.position.set(gx, 1.1, gz);
         scene.add(treeTrunk);
@@ -955,6 +953,25 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
         scene.add(treeCrown);
       });
     });
+
+    // Perimeter boundary trees
+    for (let i = 0; i < 28; i++) {
+      const angle = (i / 28) * Math.PI * 2;
+      const r = 85 + (i % 3) * 6;
+      const tx = Math.cos(angle) * r;
+      const tz = 25 + Math.sin(angle) * r;
+
+      const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+      trunk.position.set(tx, 1.25, tz);
+      trunk.castShadow = true;
+      scene.add(trunk);
+
+      const crown = new THREE.Mesh(treeGeo, i % 3 === 0 ? amaltasMat : foliageMat);
+      crown.position.set(tx, 3.2, tz);
+      crown.scale.set(1.0, 1.2 + (i % 3) * 0.2, 1.0);
+      crown.castShadow = true;
+      scene.add(crown);
+    }
 
     // ─── Interaction Listeners ─────────────────────────────────────────────
     const handleMouseDown = (e: MouseEvent) => {
@@ -995,15 +1012,19 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
           const hitPlot: PlotItem = intersects[0].object.userData.plot;
           if (hitPlot) {
             if (selectedPlotMeshRef.current) {
-              const prevMat = selectedPlotMeshRef.current.material as THREE.MeshStandardMaterial;
-              prevMat.emissive.setHex(0x000000);
-              prevMat.emissiveIntensity = 0;
+              const prevMat = (selectedPlotMeshRef.current.material as THREE.Material[])[2] as THREE.MeshStandardMaterial;
+              if (prevMat) {
+                prevMat.emissive.setHex(0x000000);
+                prevMat.emissiveIntensity = 0;
+              }
             }
 
             const hitMesh = intersects[0].object as THREE.Mesh;
-            const mat = hitMesh.material as THREE.MeshStandardMaterial;
-            mat.emissive.setHex(0xffffff);
-            mat.emissiveIntensity = 0.4;
+            const topMat = (hitMesh.material as THREE.Material[])[2] as THREE.MeshStandardMaterial;
+            if (topMat) {
+              topMat.emissive.setHex(0xffffff);
+              topMat.emissiveIntensity = 0.45;
+            }
             selectedPlotMeshRef.current = hitMesh;
 
             setSelectedPlotId(hitPlot.id);
@@ -1011,7 +1032,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
             if (onSelectPlotRef.current) onSelectPlotRef.current(hitPlot);
 
             orbitRef.current.targetLookAt.set(hitMesh.position.x, 0, hitMesh.position.z);
-            orbitRef.current.targetRadius = 45;
+            orbitRef.current.targetRadius = 55;
             return;
           }
         }
@@ -1032,20 +1053,20 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
           if (landmarkKey) {
             setSelectedLandmark(landmarkKey);
             if (landmarkKey === 'hospital') {
-              orbitRef.current.targetLookAt.set(-22, 4, 16);
-              orbitRef.current.targetRadius = 45;
+              orbitRef.current.targetLookAt.set(-25.77, 4, 27.58);
+              orbitRef.current.targetRadius = 60;
             } else if (landmarkKey === 'mandir') {
-              orbitRef.current.targetLookAt.set(-28, 4, -5);
-              orbitRef.current.targetRadius = 40;
+              orbitRef.current.targetLookAt.set(-30.71, 4, -10.53);
+              orbitRef.current.targetRadius = 45;
             } else if (landmarkKey === 'residence') {
-              orbitRef.current.targetLookAt.set(-6, 4, 10);
-              orbitRef.current.targetRadius = 38;
+              orbitRef.current.targetLookAt.set(-11.13, 4, 13.56);
+              orbitRef.current.targetRadius = 45;
             } else if (landmarkKey === 'utility') {
-              orbitRef.current.targetLookAt.set(36, 2, -40);
-              orbitRef.current.targetRadius = 40;
-            } else if (landmarkKey === 'gate') {
-              orbitRef.current.targetLookAt.set(-36, 2, 0);
+              orbitRef.current.targetLookAt.set(45.66, 2, -62.65);
               orbitRef.current.targetRadius = 50;
+            } else if (landmarkKey === 'gate') {
+              orbitRef.current.targetLookAt.set(-43.67, 2, 0);
+              orbitRef.current.targetRadius = 60;
             }
           }
         }
@@ -1055,8 +1076,8 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       orbitRef.current.targetRadius = Math.max(
-        20,
-        Math.min(140, orbitRef.current.targetRadius + e.deltaY * 0.04)
+        25,
+        Math.min(180, orbitRef.current.targetRadius + e.deltaY * 0.05)
       );
     };
 
@@ -1134,37 +1155,37 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     if (preset === 'isometric') {
       orbitRef.current.targetTheta = Math.PI / 4.2;
       orbitRef.current.targetPhi = Math.PI / 3.4;
-      orbitRef.current.targetRadius = 95;
-      orbitRef.current.targetLookAt.set(0, 0, 15);
+      orbitRef.current.targetRadius = 120;
+      orbitRef.current.targetLookAt.set(0, 0, 25);
     } else if (preset === 'top') {
       // Direct Top-Down CAD Validation View
       orbitRef.current.targetTheta = 0.001;
       orbitRef.current.targetPhi = 0.04;
-      orbitRef.current.targetRadius = 110;
-      orbitRef.current.targetLookAt.set(0, 0, 15);
+      orbitRef.current.targetRadius = 145;
+      orbitRef.current.targetLookAt.set(0, 0, 25);
     } else if (preset === 'hospital') {
       orbitRef.current.targetTheta = -Math.PI / 3.8;
       orbitRef.current.targetPhi = Math.PI / 3.2;
-      orbitRef.current.targetRadius = 50;
-      orbitRef.current.targetLookAt.set(-22, 4, 16);
+      orbitRef.current.targetRadius = 60;
+      orbitRef.current.targetLookAt.set(-25.77, 4, 27.58);
       setSelectedLandmark('hospital');
     } else if (preset === 'residence') {
       orbitRef.current.targetTheta = Math.PI / 3.5;
       orbitRef.current.targetPhi = Math.PI / 3.2;
-      orbitRef.current.targetRadius = 40;
-      orbitRef.current.targetLookAt.set(-6, 4, 10);
+      orbitRef.current.targetRadius = 45;
+      orbitRef.current.targetLookAt.set(-11.13, 4, 13.56);
       setSelectedLandmark('residence');
     } else if (preset === 'mandir') {
       orbitRef.current.targetTheta = Math.PI / 4;
       orbitRef.current.targetPhi = Math.PI / 3.2;
-      orbitRef.current.targetRadius = 42;
-      orbitRef.current.targetLookAt.set(-28, 4, -5);
+      orbitRef.current.targetRadius = 45;
+      orbitRef.current.targetLookAt.set(-30.71, 4, -10.53);
       setSelectedLandmark('mandir');
     } else if (preset === 'highway') {
       orbitRef.current.targetTheta = Math.PI / 2.05;
       orbitRef.current.targetPhi = Math.PI / 2.6;
-      orbitRef.current.targetRadius = 60;
-      orbitRef.current.targetLookAt.set(-36, 2, 0);
+      orbitRef.current.targetRadius = 65;
+      orbitRef.current.targetLookAt.set(-43.67, 2, 0);
       setSelectedLandmark('gate');
     }
   };
@@ -1180,7 +1201,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       setSelectedPlotId(firstInBlock.id);
       setSelectedLandmark(null);
       orbitRef.current.targetLookAt.set(mesh.position.x, 0, mesh.position.z);
-      orbitRef.current.targetRadius = 50;
+      orbitRef.current.targetRadius = 60;
     }
   };
 
@@ -1191,7 +1212,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     <div
       ref={containerRef}
       className={`relative w-full overflow-hidden bg-[#071519] border border-[#163942] shadow-2xl transition-all duration-300 ${
-        isFullscreen ? 'fixed inset-0 z-[99999] rounded-none h-screen w-screen flex flex-col lg:flex-row' : 'rounded-3xl h-[640px] sm:h-[740px]'
+        isFullscreen ? 'fixed inset-0 z-[99999] rounded-none h-screen w-screen flex flex-col lg:flex-row' : 'rounded-3xl h-[640px] sm:h-[760px]'
       }`}
     >
       {/* Main 3D Canvas Viewport */}
@@ -1203,21 +1224,21 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
           <div className="absolute inset-0 bg-[#071519] flex flex-col items-center justify-center gap-3 z-30">
             <div className="w-10 h-10 border-2 border-[#C58F58] border-t-transparent rounded-full animate-spin" />
             <span className="text-xs font-mono text-[#FAF8F5] uppercase tracking-widest">
-              Rendering Source-Accurate 3D Master Plan...
+              Rendering CAD-Faithful 3D Master Plan...
             </span>
           </div>
         )}
 
-        {/* Top Left Header & Proposed Badge */}
+        {/* Top Left Header & CAD Badge */}
         <div className="absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2 pointer-events-none">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0D2329]/90 border border-white/15 text-[11px] font-mono text-[#E0AB77] uppercase tracking-widest backdrop-blur-md shadow-lg pointer-events-auto">
             <Layers className="w-3.5 h-3.5 text-[#C58F58]" />
-            <span>AUTHENTIC CAD 3D RECONSTRUCTION</span>
+            <span>CAD MASTERPLAN 3D RECONSTRUCTION</span>
           </div>
 
           <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-400/30 text-emerald-300 text-[11px] font-bold backdrop-blur-md shadow-lg pointer-events-auto">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>64 Demarcated Freehold Plots (Blocks A–F)</span>
+            <span>64 Plots (Blocks A–F) • Certified 1:1 Topology</span>
           </div>
         </div>
 
@@ -1237,7 +1258,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1 ${
               viewPreset === 'top' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
             }`}
-            title="Overhead Validation Mode (Exact Blueprint Congruency)"
+            title="Direct 2D/3D Top-Down CAD Validation View"
           >
             <Compass className="w-3.5 h-3.5" />
             Top CAD View
@@ -1249,7 +1270,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
               viewPreset === 'hospital' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
             }`}
           >
-            Hospital
+            Hospital (30k sqft)
           </button>
 
           <button
@@ -1267,7 +1288,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
               viewPreset === 'mandir' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
             }`}
           >
-            Mandir
+            Mandir Land
           </button>
 
           <div className="h-4 w-px bg-white/20 mx-1" />
@@ -1290,16 +1311,30 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
           </button>
         </div>
 
-        {/* Bottom Left HUD Info */}
-        <div className="absolute bottom-4 left-4 flex items-center gap-2 text-[11px] text-white/70 pointer-events-none z-10">
+        {/* Bottom Left HUD: Interaction Guide + Source Legend */}
+        <div className="absolute bottom-4 left-4 flex flex-col sm:flex-row items-start sm:items-center gap-2 text-[11px] text-white/70 pointer-events-none z-10">
           <div className="flex items-center gap-2 bg-[#071519]/85 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
             <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" />
-            <span className="hidden sm:inline">Drag to Orbit • Scroll to Zoom • Tap Any Plot / Building to Inspect</span>
+            <span className="hidden sm:inline">Drag to Orbit • Scroll to Zoom • Tap Plot / Landmark to Inspect</span>
             <span className="sm:hidden">Tap to Inspect</span>
           </div>
-          <div className="hidden md:flex items-center gap-1.5 bg-[#071519]/85 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
-            <MapPin className="w-3.5 h-3.5 text-[#C58F58]" />
-            <span>SH-22 & 33ft Corridor, Kheri Asra, Jhajjar</span>
+
+          {/* Visual Source Legend */}
+          <div className="hidden lg:flex items-center gap-2 bg-[#071519]/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 text-[10px] font-mono">
+            <span className="flex items-center gap-1 text-emerald-300">
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              SOURCE_VERIFIED
+            </span>
+            <span className="text-white/30">•</span>
+            <span className="flex items-center gap-1 text-amber-300">
+              <span className="w-2 h-2 rounded-full bg-amber-400" />
+              SOURCE_DERIVED
+            </span>
+            <span className="text-white/30">•</span>
+            <span className="flex items-center gap-1 text-sky-300">
+              <span className="w-2 h-2 rounded-full bg-sky-400" />
+              VISUALIZATION_ONLY
+            </span>
           </div>
         </div>
 
@@ -1314,7 +1349,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                   </span>
                   <button
                     onClick={() => setSelectedLandmark(null)}
-                    className="text-white/50 hover:text-white"
+                    className="text-white/50 hover:text-white cursor-pointer"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -1381,7 +1416,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
         )}
       </div>
 
-      {/* ─── FULLSCREEN STUDIO INSPECTOR SIDEBAR (Right 30% on Laptop/Desktop) ─── */}
+      {/* ─── FULLSCREEN STUDIO INSPECTOR SIDEBAR ─────────────────────────────── */}
       {isFullscreen && (
         <aside className="w-full lg:w-[420px] xl:w-[460px] shrink-0 h-full bg-[#0A1C22]/98 border-t lg:border-t-0 lg:border-l border-white/15 p-6 overflow-y-auto flex flex-col justify-between backdrop-blur-2xl z-30 shadow-2xl text-white space-y-6">
           {/* Sidebar Top Header */}
@@ -1393,10 +1428,10 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                 </div>
                 <div>
                   <h3 className="font-serif-heading font-bold text-base text-[#FAF8F5]">
-                    Master Plan Studio Inspector
+                    CAD Master Plan Inspector
                   </h3>
                   <span className="text-[10px] font-mono text-[#C58F58] uppercase tracking-wider block">
-                    Real CAD Blueprint Synchronized
+                    The Vision Architects • Approved Layout
                   </span>
                 </div>
               </div>
@@ -1471,8 +1506,8 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                         <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-400/30 text-[10px] font-bold uppercase">
                           {activeLandmarkInfo.badge}
                         </span>
-                        <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 text-[9px] font-mono font-bold">
-                          SOURCE_DERIVED
+                        <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-mono font-bold">
+                          {activeLandmarkInfo.sourceConfidence}
                         </span>
                       </div>
                       <h4 className="text-xl font-serif-heading font-bold text-[#FAF8F5]">
@@ -1695,4 +1730,3 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     </div>
   );
 };
-
