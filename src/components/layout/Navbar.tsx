@@ -18,12 +18,13 @@ import {
   ArrowRight,
   CreditCard,
   ShieldCheck,
-  FileText
+  FileText,
+  Layers
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
-  const { openLeadDrawer } = useModal();
+  const { openLeadDrawer, openFloorPlan } = useModal();
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -286,6 +287,24 @@ export const Navbar: React.FC = () => {
                     <p className="text-[11px] text-[#53676E]">Statutory Compliance Terms</p>
                   </div>
                 </Link>
+
+                <button
+                  onClick={() => {
+                    setTrustOpen(false);
+                    openFloorPlan({ floorPlanType: 'residences', title: 'Typical CAD Floor Plan (Plots 63 & 64)' });
+                  }}
+                  className="w-full text-left p-3 rounded-2xl hover:bg-[#FAF8F5] transition-colors flex items-start gap-3 group block cursor-pointer"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-amber-50 text-[#C58F58] flex items-center justify-center shrink-0 mt-0.5">
+                    <Layers className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-xs text-[#0D2329] group-hover:text-[#C58F58] block">
+                      CAD Master Blueprints
+                    </span>
+                    <p className="text-[11px] text-[#53676E]">Ar. Yash Garg Architectural Plans</p>
+                  </div>
+                </button>
               </div>
             )}
           </div>

@@ -29,6 +29,14 @@ export interface PropertyLeadContext {
   city?: string;
 }
 
+export interface FloorPlanContext {
+  floorPlanType?: 'residences' | 'stilt' | 'hospital-ground' | 'hospital-first' | 'hospital-second';
+  unitId?: string;
+  unitName?: string;
+  unitType?: string;
+  title?: string;
+}
+
 interface ModalContextType {
   isWhatsAppOpen: boolean;
   whatsAppContext: PropertyLeadContext;
@@ -39,6 +47,11 @@ interface ModalContextType {
   leadDrawerContext: PropertyLeadContext;
   openLeadDrawer: (context?: PropertyLeadContext) => void;
   closeLeadDrawer: () => void;
+
+  isFloorPlanOpen: boolean;
+  floorPlanContext: FloorPlanContext;
+  openFloorPlan: (context?: FloorPlanContext) => void;
+  closeFloorPlan: () => void;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
@@ -48,6 +61,9 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [whatsAppContext, setWhatsAppContext] = useState<PropertyLeadContext>({});
   const [isLeadDrawerOpen, setIsLeadDrawerOpen] = useState(false);
   const [leadDrawerContext, setLeadDrawerContext] = useState<PropertyLeadContext>({});
+
+  const [isFloorPlanOpen, setIsFloorPlanOpen] = useState(false);
+  const [floorPlanContext, setFloorPlanContext] = useState<FloorPlanContext>({});
 
   const openWhatsApp = (ctx?: PropertyLeadContext) => {
     setWhatsAppContext(ctx || {});
@@ -61,6 +77,12 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
   const closeLeadDrawer = () => setIsLeadDrawerOpen(false);
 
+  const openFloorPlan = (ctx?: FloorPlanContext) => {
+    setFloorPlanContext(ctx || {});
+    setIsFloorPlanOpen(true);
+  };
+  const closeFloorPlan = () => setIsFloorPlanOpen(false);
+
   return (
     <ModalContext.Provider
       value={{
@@ -72,6 +94,10 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         leadDrawerContext,
         openLeadDrawer,
         closeLeadDrawer,
+        isFloorPlanOpen,
+        floorPlanContext,
+        openFloorPlan,
+        closeFloorPlan,
       }}
     >
       {children}

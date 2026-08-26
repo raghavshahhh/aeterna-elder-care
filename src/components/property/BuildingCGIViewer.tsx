@@ -224,7 +224,7 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
               </span>
               <div>
                 <h4 className="text-sm font-bold text-white">Stilt Parking &amp; Dual Elevators Level</h4>
-                <p className="text-xs text-white/60">10+ Covered car parks, 3 vehicle gates, 2 wheelchair lifts</p>
+                <p className="text-xs text-white/60">14 Covered car bays, 3 vehicle gates, 2 wheelchair lifts</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -313,7 +313,7 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
               Stilt Car Parking &amp; Dual Elevator Lobby
             </h3>
             <p className="text-xs sm:text-sm text-white/70 leading-relaxed max-w-xl mx-auto">
-              10+ Dedicated covered car parking bays with 3 separate vehicle ingress/egress gates, 2 wheelchair-accessible elevators connecting directly to all residential floors.
+              14 Dedicated covered car parking bays with 3 separate vehicle ingress/egress gates, 2 wheelchair-accessible elevators connecting directly to all residential floors.
             </p>
           </div>
         )}

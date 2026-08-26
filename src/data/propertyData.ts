@@ -1175,7 +1175,7 @@ export const residenceUnits: ResidenceUnit[] = [
       'Dual lifts in building (5×6ft cabins accommodating wheelchairs & attendants)',
       'Gradual stairs with 10" tread and 6" rise (standard 7" replaced for knee ease)',
       'Zero-threshold barrier-free bathroom and anti-skid vitrified flooring',
-      'Stilt parking with 10+ covered car bays and 3 entry gates'
+      'Stilt parking with 14 covered car bays (6 top, 2 center, 6 bottom) and 3 entry gates'
     ],
     keyHighlights: [
       'Simple, walkable, warm layout designed for 1 or 2 senior residents',

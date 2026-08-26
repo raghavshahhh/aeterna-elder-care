@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
-import { residenceUnits, twoPlotOneBlockConfig } from '@/data/propertyData';
+import Link from 'next/link';
+import { residenceUnits, buildingUnits, twoPlotOneBlockConfig } from '@/data/propertyData';
 import { useModal } from '@/context/ModalContext';
-import { ResidenceUnit } from '@/types';
+import { BuildingUnit, ResidenceUnit } from '@/types';
+import { UnitDetailDrawer } from '@/components/property/UnitDetailDrawer';
 
 const Interior3DViewer = dynamic(
   () => import('@/components/3d/Interior3DViewer').then((mod) => mod.Interior3DViewer),
@@ -33,7 +35,13 @@ import {
   MessageSquare,
   Calendar,
   Rotate3d,
-  FileText
+  FileText,
+  Car,
+  BadgePercent,
+  Compass,
+  Lock,
+  ChevronRight,
+  Eye
 } from 'lucide-react';
 
 interface ResidenceUnitExplorerProps {
@@ -45,10 +53,29 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
 }) => {
   const [selectedUnitId, setSelectedUnitId] = useState<string>(initialUnitId);
   const [activeTab, setActiveTab] = useState<'3d-interior' | '2d-blueprint' | 'overview' | 'room-sizes' | 'senior-features'>('3d-interior');
+  const [selectedUnitForDrawer, setSelectedUnitForDrawer] = useState<BuildingUnit | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const { openWhatsApp, openLeadDrawer } = useModal();
+  const { openWhatsApp, openLeadDrawer, openFloorPlan } = useModal();
 
   const activeUnit = residenceUnits.find((u) => u.id === selectedUnitId) || residenceUnits[0];
+
+  // Ground Floor Active Units from buildingUnits
+  const groundUnits = buildingUnits.filter((u) => u.floorLevel === 'ground');
+
+  const handleOpenDrawer = (unit: BuildingUnit) => {
+    setSelectedUnitForDrawer(unit);
+    setIsDrawerOpen(true);
+  };
+
+  const handleOpenCADModal = () => {
+    openFloorPlan({
+      floorPlanType: 'residences',
+      unitName: activeUnit.unitNumber,
+      unitType: activeUnit.typeName,
+      title: 'Typical Floor Plan (Plots 63 & 64) — 1 BHK & 1 RK Senior Residences'
+    });
+  };
 
   return (
     <section id="unit-explorer" className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E8E2D8] relative">
@@ -58,38 +85,145 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
           <div className="max-w-2xl space-y-3">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF2EE] border border-[#CDE0D7] text-xs font-bold text-[#2C5E50] uppercase tracking-widest">
               <Building2 className="w-3.5 h-3.5 text-[#C58F58]" />
-              08 &amp; 09 • Residence &amp; 3D Interior Visualizer
+              08 &amp; 09 • Senior Residences &amp; Architectural Blueprints
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-normal text-[#0D2329] tracking-tight">
               1 RK &amp; 1 BHK — <span className="italic font-serif text-[#C58F58]">Compact, Considered, Complete.</span>
             </h2>
             <p className="text-sm sm:text-base text-[#53676E] leading-relaxed">
-              Experience the 360° interactive 3D rooms below. Single-floor living inside each residence with zero-threshold bathrooms, grab rails, and wheelchair-wide hallways.
+              Drawn by <strong>The Vision Architects (Ar. Yash Garg)</strong> for senior comfort on Plots 63 &amp; 64. Ground floor units available for Phase 1 allotment with dual lifts, gradual 6&quot; risers, and covered stilt parking.
             </p>
           </div>
 
-          {/* Unit Switcher */}
-          <div className="flex flex-wrap gap-2 p-1.5 rounded-2xl bg-white border border-[#E8E2D8] shadow-sm">
-            {residenceUnits.map((unit) => {
-              const isSelected = unit.id === activeUnit.id;
-              return (
-                <button
-                  key={unit.id}
-                  onClick={() => setSelectedUnitId(unit.id)}
-                  className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                    isSelected
-                      ? 'bg-[#2C5E50] text-white shadow-sm'
-                      : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
-                  }`}
-                >
-                  {unit.unitNumber} (~{unit.superAreaSqFt} sq.ft.)
-                </button>
-              );
-            })}
-          </div>
+          {/* Quick CTA to Full CAD Blueprint */}
+          <button
+            onClick={handleOpenCADModal}
+            className="px-5 py-3 rounded-2xl bg-[#0D2329] hover:bg-[#163942] text-[#E0AB77] border border-[#C58F58]/40 text-xs font-bold transition-all shadow-md flex items-center gap-2 shrink-0 cursor-pointer"
+          >
+            <Layers className="w-4 h-4 text-[#C58F58]" />
+            <span>Open CAD Master Floor Plan →</span>
+          </button>
         </div>
 
-        {/* 2-Column Clean Visual Card */}
+        {/* 3 Active Ground Floor Residence Cards Grid (Phase 1 Allotment) */}
+        <div className="mb-14 grid grid-cols-1 md:grid-cols-3 gap-6">
+          {groundUnits.map((u) => {
+            const is1BHK = u.type === '1-bhk';
+            return (
+              <div
+                key={u.id}
+                className="bg-white rounded-3xl border border-[#E8E2D8] p-6 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-5 relative group"
+              >
+                <div className="space-y-4">
+                  {/* Top Badge & Facing */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      Phase 1 Allotment
+                    </span>
+                    <span className="text-xs font-semibold text-[#53676E] flex items-center gap-1">
+                      <Compass className="w-3.5 h-3.5 text-[#C58F58]" />
+                      {u.facing.split('/')[0]}
+                    </span>
+                  </div>
+
+                  {/* Unit Title & Floor */}
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#C58F58] font-mono">
+                      {u.typeName}
+                    </span>
+                    <h3 className="text-2xl font-serif-heading font-bold text-[#0D2329] mt-0.5">
+                      {u.unitNumber}
+                    </h3>
+                    <div className="text-xs text-[#53676E] mt-0.5">
+                      Ground Floor • Plots 63 &amp; 64
+                    </div>
+                  </div>
+
+                  {/* Area Specification Pills */}
+                  <div className="grid grid-cols-2 gap-2 p-3 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8] text-xs">
+                    <div>
+                      <span className="text-[10px] text-[#53676E] uppercase font-mono block">Built-Up Area</span>
+                      <strong className="text-sm font-bold text-[#0D2329]">~{u.superAreaSqFt} sq. ft.</strong>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-[#53676E] uppercase font-mono block">Carpet Area</span>
+                      <strong className="text-sm font-bold text-[#2C5E50]">~{u.carpetAreaSqFt} sq. ft.</strong>
+                    </div>
+                  </div>
+
+                  {/* Senior-First Inclusions */}
+                  <div className="space-y-1.5 text-xs text-[#0D2329]">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Zero-threshold bathroom &amp; anti-skid vitrified floors</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Dual stretcher-sized elevators &amp; 6&quot; riser stairs</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Stilt Covered Parking: ₹3 Lakhs (Uncovered: Free)</span>
+                    </div>
+                  </div>
+
+                  {/* Pricing & Rental Return */}
+                  <div className="p-3.5 rounded-2xl bg-[#0D2329] text-white border border-[#C58F58]/30 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-[#E0AB77]">
+                        Down Payment Plan
+                      </span>
+                      <span className="text-xs font-mono font-bold text-emerald-400">
+                        {is1BHK ? '₹25 Lakhs' : 'Price on Request'}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-white/80 leading-snug">
+                      {is1BHK ? (
+                        <>
+                          <strong className="text-emerald-400">₹25,000/mo</strong> till possession • <strong className="text-emerald-400">₹12,500/mo</strong> post-possession
+                        </>
+                      ) : (
+                        '50:50 Flexi with ₹6,250/mo pre-possession rental return'
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card Action Buttons */}
+                <div className="space-y-2 pt-2 border-t border-[#E8E2D8]">
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => handleOpenDrawer(u)}
+                      className="py-2.5 px-3 rounded-xl bg-[#2C5E50] hover:bg-[#1D4B57] text-white text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Unit Details</span>
+                    </button>
+
+                    <button
+                      onClick={handleOpenCADModal}
+                      className="py-2.5 px-3 rounded-xl bg-[#FAF8F5] hover:bg-[#F0EBE1] text-[#0D2329] border border-[#E8E2D8] text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <Layers className="w-3.5 h-3.5 text-[#C58F58]" />
+                      <span>CAD Blueprint</span>
+                    </button>
+                  </div>
+
+                  <Link
+                    href={`/book/${encodeURIComponent(u.unitNumber)}`}
+                    className="w-full py-3 rounded-xl bg-gradient-to-r from-[#C58F58] to-[#A06C3B] hover:brightness-110 text-white text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5 text-center"
+                  >
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>Reserve {u.unitNumber} (24h Hold) →</span>
+                  </Link>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 2-Column Interactive 3D Walkthrough & CAD Visualizer */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Main Visual & Architectural Dimensions */}
           <div className="lg:col-span-8 bg-white rounded-3xl border border-[#E8E2D8] shadow-xl p-6 sm:p-8 space-y-6">
@@ -105,7 +239,6 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                 <h3 className="text-2xl sm:text-3xl font-serif-heading font-bold text-[#0D2329] mt-0.5">
                   {activeUnit.unitNumber}
                 </h3>
-                <p className="text-[10px] text-[#53676E]/80 italic mt-0.5">Unit configuration subject to final architectural allocation.</p>
               </div>
 
               {/* View Switcher Tabs */}
@@ -130,17 +263,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                   }`}
                 >
                   <Layers className="w-3.5 h-3.5 text-[#C58F58]" />
-                  2D CAD Blueprint
-                </button>
-                <button
-                  onClick={() => setActiveTab('overview')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                    activeTab === 'overview'
-                      ? 'bg-[#2C5E50] text-white shadow-sm'
-                      : 'text-[#53676E] hover:text-[#0D2329]'
-                  }`}
-                >
-                  Photo Render
+                  2D CAD Layout
                 </button>
                 <button
                   onClick={() => setActiveTab('room-sizes')}
@@ -184,58 +307,16 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                   onSelectRoom={() => setActiveTab('3d-interior')}
                   interactive={true}
                 />
-                <div className="flex items-center justify-between p-4 rounded-xl bg-[#FAF8F5] border border-[#E8E2D8] text-xs">
+                <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl bg-[#FAF8F5] border border-[#E8E2D8] text-xs">
                   <span className="text-[#53676E]">
-                    Click any room on the 2D CAD floor plan to inspect in 3D orbit.
+                    Ar. Yash Garg • The Vision Architects · Plots 63 &amp; 64
                   </span>
                   <button
-                    onClick={() => setActiveTab('3d-interior')}
+                    onClick={handleOpenCADModal}
                     className="font-bold text-[#2C5E50] hover:text-[#C58F58] transition-colors cursor-pointer flex items-center gap-1"
                   >
-                    Launch 3D Room Orbit →
+                    Launch Fullscreen CAD Viewer →
                   </button>
-                </div>
-              </div>
-            )}
-
-            {/* TAB 1: 3D Interior Preview */}
-            {activeTab === 'overview' && (
-              <div className="space-y-4">
-                <div className="relative rounded-2xl overflow-hidden bg-[#0D2329] min-h-[340px] sm:min-h-[400px] border border-[#E8E2D8] shadow-md flex items-end p-6">
-                  <Image
-                    src={activeUnit.interior3dCgi}
-                    alt={`${activeUnit.unitNumber} Interior View`}
-                    fill
-                    className="object-cover object-center opacity-90"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
-
-                  <div className="relative z-10 space-y-1.5 text-white max-w-xl">
-                    <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-black/60 backdrop-blur-md text-[#C58F58] font-mono text-[11px]">
-                      <span>~{activeUnit.superAreaSqFt} Sqft Built • ~{activeUnit.carpetAreaSqFt} Sqft Carpet</span>
-                      <span>•</span>
-                      <span>Indicative 3D Visualization</span>
-                    </div>
-                    <h4 className="text-xl sm:text-2xl font-serif-heading font-bold">
-                      {activeUnit.typeName}
-                    </h4>
-                    <p className="text-xs sm:text-sm text-white/85 leading-relaxed">
-                      Single-floor barrier-free residence designed with dual lifts, gradual 6&quot; rise stairs, and wide doorways for seniors.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                  {activeUnit.rooms.map((rm, i) => (
-                    <div key={i} className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E8E2D8] text-center">
-                      <div className="text-xs font-bold text-[#0D2329]">{rm.name}</div>
-                      <div className="text-[11px] font-mono text-[#2C5E50] font-semibold mt-0.5">{rm.dimensions}</div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="text-[10px] text-[#899B9F] italic text-right">
-                  *Artist impression &amp; indicative interior visualization. Unit configuration subject to final architectural allocation. Final turnkey fittings as per approved specification.
                 </div>
               </div>
             )}
@@ -296,7 +377,7 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
             <div className="p-6 sm:p-7 rounded-3xl bg-white border border-[#E8E2D8] shadow-sm space-y-5">
               <div>
                 <span className="text-[11px] font-bold uppercase tracking-wider text-[#C58F58] block">
-                  Configuration Details
+                  Active Configuration
                 </span>
                 <h4 className="text-2xl font-serif-heading font-bold text-[#0D2329] mt-0.5">
                   {activeUnit.unitNumber}
@@ -336,10 +417,10 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                       unitType: activeUnit.typeName
                     })
                   }
-                  className="w-full py-4 rounded-2xl bg-[#2C5E50] hover:bg-[#1D4B57] text-white text-sm font-semibold transition-all shadow-lg shadow-[#2C5E50]/20 flex items-center justify-center gap-2"
+                  className="w-full py-4 rounded-2xl bg-[#2C5E50] hover:bg-[#1D4B57] text-white text-sm font-semibold transition-all shadow-lg shadow-[#2C5E50]/20 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <MessageSquare className="w-4 h-4" />
-                  Enquire on WhatsApp (+91 99999 55847) →
+                  <span>Enquire on WhatsApp (+91 99999 55847) →</span>
                 </button>
 
                 <button
@@ -351,10 +432,10 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
                       actionType: 'book-site-visit'
                     })
                   }
-                  className="w-full py-3 rounded-2xl text-xs text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5] transition-all font-medium text-center flex items-center justify-center gap-1.5"
+                  className="w-full py-3 rounded-2xl text-xs text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5] transition-all font-medium text-center flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <Calendar className="w-3.5 h-3.5 text-[#C58F58]" />
-                  Book Site Visit to Kheri Asra
+                  <span>Book Site Visit to Kheri Asra</span>
                 </button>
               </div>
             </div>
@@ -389,6 +470,13 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Embedded Unit Detail Drawer */}
+      <UnitDetailDrawer
+        unit={selectedUnitForDrawer}
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+      />
     </section>
   );
 };
