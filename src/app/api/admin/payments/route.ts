@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     const allRefunds = db.getRefunds();
 
     // Financial KPIs
-    const capturedPayments = allPayments.filter((p) => p.status === 'CAPTURED');
+    const capturedPayments = allPayments.filter((p) => p.status === 'CAPTURED' || p.status === 'PAID');
     const totalCollected = capturedPayments.reduce((sum, p) => sum + p.amountPaid, 0);
 
     const now = new Date();

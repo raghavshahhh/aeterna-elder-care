@@ -812,7 +812,27 @@ export const db = {
     const state = ensureDataFile();
     const idx = state.bookings.findIndex((b) => b.id === id || b.bookingNumber.toLowerCase() === id.toLowerCase());
     if (idx === -1) return undefined;
+    const oldStatus = state.bookings[idx].status;
     state.bookings[idx] = { ...state.bookings[idx], ...updates, updatedAt: new Date().toISOString() };
+    const b = state.bookings[idx];
+
+    // Synchronize associated inventory unit status
+    if (updates.status && updates.status !== oldStatus) {
+      const uIdx = state.inventory.findIndex((u) => u.id === b.unitId || u.unitCode === b.unitCode);
+      if (uIdx !== -1) {
+        if (updates.status === 'CONFIRMED') {
+          state.inventory[uIdx].status = 'RESERVED';
+        } else if (updates.status === 'COMPLETED') {
+          state.inventory[uIdx].status = 'SOLD';
+        } else if (updates.status === 'CANCELLED' || updates.status === 'EXPIRED') {
+          state.inventory[uIdx].status = 'AVAILABLE';
+        } else if (updates.status === 'HOLD') {
+          state.inventory[uIdx].status = 'HOLD';
+        }
+        state.inventory[uIdx].updatedAt = new Date().toISOString();
+      }
+    }
+
     saveData(state);
     return state.bookings[idx];
   },

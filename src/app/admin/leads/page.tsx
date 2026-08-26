@@ -28,6 +28,19 @@ export default function AdminLeadsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [newNote, setNewNote] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isCreatingLead, setIsCreatingLead] = useState(false);
+  const [createForm, setCreateForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    interestedUnitType: '1_BHK_RESIDENCE',
+    budgetRange: '₹25 Lakh - ₹50 Lakh',
+    source: 'ADMIN_WALKIN',
+    referralCode: '',
+    notes: ''
+  });
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [isSubmittingLead, setIsSubmittingLead] = useState(false);
 
   useEffect(() => {
     loadLeads();
@@ -45,6 +58,41 @@ export default function AdminLeadsPage() {
       console.error('Error fetching leads:', err);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function handleCreateLead(e: React.FormEvent) {
+    e.preventDefault();
+    setIsSubmittingLead(true);
+    setCreateError(null);
+    try {
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(createForm)
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setIsCreatingLead(false);
+        setCreateForm({
+          name: '',
+          phone: '',
+          email: '',
+          interestedUnitType: '1_BHK_RESIDENCE',
+          budgetRange: '₹25 Lakh - ₹50 Lakh',
+          source: 'ADMIN_WALKIN',
+          referralCode: '',
+          notes: ''
+        });
+        await loadLeads();
+      } else {
+        setCreateError(data.error || 'Failed to create lead.');
+      }
+    } catch (err: any) {
+      console.error('Error creating lead:', err);
+      setCreateError(err.message || 'Network error occurred.');
+    } finally {
+      setIsSubmittingLead(false);
     }
   }
 
@@ -114,6 +162,14 @@ export default function AdminLeadsPage() {
             Track inquiries, verify referral attributions, schedule visits, and nurture family relationships.
           </p>
         </div>
+
+        <button
+          onClick={() => setIsCreatingLead(true)}
+          className="px-4 py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#234b40] text-white font-bold text-xs font-mono flex items-center gap-2 transition-all shadow-xs cursor-pointer w-fit"
+        >
+          <Plus className="w-4 h-4" />
+          <span>New Lead / Walk-in</span>
+        </button>
       </div>
 
       {/* Filter & Search Bar */}
@@ -349,6 +405,169 @@ export default function AdminLeadsPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Create New Lead / Walk-in */}
+      {isCreatingLead && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div>
+                <h3 className="text-lg font-serif-heading font-bold text-slate-900">
+                  Register Walk-in / Phone Prospect
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Direct CRM entry for family visits, phone inquiries, and partner referrals.
+                </p>
+              </div>
+              <button
+                onClick={() => setIsCreatingLead(false)}
+                className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {createError && (
+              <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-mono">
+                {createError}
+              </div>
+            )}
+
+            <form onSubmit={handleCreateLead} className="space-y-3.5 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                    Prospect Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Ramesh Chandra"
+                    value={createForm.name}
+                    onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-[#2C5E50]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="e.g. +91 98765 43210"
+                    value={createForm.phone}
+                    onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono focus:outline-none focus:border-[#2C5E50]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                    Email Address (Optional)
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="e.g. ramesh@example.com"
+                    value={createForm.email}
+                    onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono focus:outline-none focus:border-[#2C5E50]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                    Interest
+                  </label>
+                  <select
+                    value={createForm.interestedUnitType}
+                    onChange={(e) => setCreateForm({ ...createForm, interestedUnitType: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-[#2C5E50]"
+                  >
+                    <option value="PLOT">Freehold Plot (100 - 150 Sq. Yd.)</option>
+                    <option value="STUDIO_SUITE">Studio Suite (1 RK)</option>
+                    <option value="1_BHK_RESIDENCE">1 BHK Senior Residence</option>
+                    <option value="2_BHK_SUITE">2 BHK Sanctuary Suite</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                    Source
+                  </label>
+                  <select
+                    value={createForm.source}
+                    onChange={(e) => setCreateForm({ ...createForm, source: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-[#2C5E50]"
+                  >
+                    <option value="ADMIN_WALKIN">Site Visit / Walk-in</option>
+                    <option value="PHONE_INQUIRY">Direct Phone Call</option>
+                    <option value="EXECUTIVE_REFERRAL">Leadership Referral</option>
+                    <option value="PARTNER_PORTAL">Advocacy Partner</option>
+                    <option value="EVENT_EXPO">Senior Living Expo</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                    Partner Referral Code (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. SLF8K2"
+                    value={createForm.referralCode}
+                    onChange={(e) => setCreateForm({ ...createForm, referralCode: e.target.value.toUpperCase() })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono focus:outline-none focus:border-[#2C5E50]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                  Initial Notes
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="Prospect background, care requirements, family members..."
+                  value={createForm.notes}
+                  onChange={(e) => setCreateForm({ ...createForm, notes: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-[#2C5E50]"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-3 border-t border-slate-200">
+                <button
+                  type="button"
+                  disabled={isSubmittingLead}
+                  onClick={() => setIsCreatingLead(false)}
+                  className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono font-bold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingLead}
+                  className="flex-1 py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#234b40] text-white font-bold font-mono cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {isSubmittingLead ? (
+                    <>
+                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Registering...</span>
+                    </>
+                  ) : (
+                    <span>Register Lead</span>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

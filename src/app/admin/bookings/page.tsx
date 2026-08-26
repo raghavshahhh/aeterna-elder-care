@@ -22,18 +22,48 @@ import { Booking } from '@/lib/db/schema';
 
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [availableUnits, setAvailableUnits] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
+  // New Booking Modal State
+  const [isCreatingBooking, setIsCreatingBooking] = useState(false);
+  const [bookingForm, setBookingForm] = useState({
+    unitId: '',
+    customerName: '',
+    customerPhone: '',
+    customerEmail: '',
+    totalAgreedPrice: 2700000,
+    bookingAmount: 25000,
+    paymentPlanType: 'DOWN_PAYMENT_PLAN',
+    referrerCode: '',
+    holdHours: 24,
+    notes: ''
+  });
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const loadBookings = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/bookings');
-      if (res.ok) {
-        const json = await res.json();
+      const [bookRes, invRes] = await Promise.all([
+        fetch('/api/bookings'),
+        fetch('/api/inventory')
+      ]);
+
+      if (bookRes.ok) {
+        const json = await bookRes.json();
         setBookings(json.bookings || []);
+      }
+      if (invRes.ok) {
+        const iJson = await invRes.json();
+        const av = (iJson.inventory || []).filter((u: any) => u.status === 'AVAILABLE');
+        setAvailableUnits(av);
+        if (av.length > 0 && !bookingForm.unitId) {
+          setBookingForm((prev) => ({ ...prev, unitId: av[0].id, totalAgreedPrice: av[0].price || 2700000 }));
+        }
       }
     } catch (err) {
       console.error('Error fetching bookings:', err);
@@ -45,6 +75,62 @@ export default function AdminBookingsPage() {
   useEffect(() => {
     loadBookings();
   }, []);
+
+  const handleCreateBooking = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setCreateError(null);
+    try {
+      const res = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookingForm)
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setIsCreatingBooking(false);
+        setBookingForm({
+          unitId: '',
+          customerName: '',
+          customerPhone: '',
+          customerEmail: '',
+          totalAgreedPrice: 2700000,
+          bookingAmount: 25000,
+          paymentPlanType: 'DOWN_PAYMENT_PLAN',
+          referrerCode: '',
+          holdHours: 24,
+          notes: ''
+        });
+        await loadBookings();
+      } else {
+        setCreateError(data.error || 'Failed to create booking.');
+      }
+    } catch (err: any) {
+      console.error('Error creating booking:', err);
+      setCreateError(err.message || 'Network error occurred.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleUpdateBookingStatus = async (bookingId: string, newStatus: string) => {
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok) {
+        await loadBookings();
+        if (selectedBooking?.id === bookingId) {
+          const updated = await res.json();
+          setSelectedBooking(updated.booking);
+        }
+      }
+    } catch (err) {
+      console.error('Error updating booking status:', err);
+    }
+  };
 
   const handleExtendHold = async (bookingId: string) => {
     try {
@@ -94,13 +180,22 @@ export default function AdminBookingsPage() {
           </p>
         </div>
 
-        <Link
-          href="/admin/payments"
-          className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs font-mono flex items-center gap-2 transition-colors self-start sm:self-auto border border-slate-200"
-        >
-          <CreditCard className="w-4 h-4 text-[#2C5E50]" />
-          <span>View Collections Ledger</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsCreatingBooking(true)}
+            className="px-4 py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#234b40] text-white font-bold text-xs font-mono flex items-center gap-2 transition-all shadow-xs cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4 text-[#C58F58]" />
+            <span>+ Create Allotment / Hold</span>
+          </button>
+          <Link
+            href="/admin/payments"
+            className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs font-mono flex items-center gap-2 transition-colors border border-slate-200"
+          >
+            <CreditCard className="w-4 h-4 text-[#2C5E50]" />
+            <span>Collections Ledger</span>
+          </Link>
+        </div>
       </div>
 
       {/* Filter & Search Bar */}
@@ -290,6 +385,37 @@ export default function AdminBookingsPage() {
               </div>
             </div>
 
+            {/* Status Transition Actions */}
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 font-mono text-xs">
+              <span className="text-[10px] uppercase text-[#2C5E50] font-bold block">UPDATE ALLOTMENT STATUS</span>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => handleUpdateBookingStatus(selectedBooking.id, 'CONFIRMED')}
+                  className="py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold transition-colors cursor-pointer"
+                >
+                  ✓ Mark Confirmed
+                </button>
+                <button
+                  onClick={() => handleUpdateBookingStatus(selectedBooking.id, 'COMPLETED')}
+                  className="py-2 px-3 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 font-bold transition-colors cursor-pointer"
+                >
+                  ★ Complete Registry
+                </button>
+                <button
+                  onClick={() => handleExtendHold(selectedBooking.id)}
+                  className="py-2 px-3 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold transition-colors cursor-pointer"
+                >
+                  +24h Extend Hold
+                </button>
+                <button
+                  onClick={() => handleUpdateBookingStatus(selectedBooking.id, 'CANCELLED')}
+                  className="py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold transition-colors cursor-pointer"
+                >
+                  ✕ Cancel &amp; Release
+                </button>
+              </div>
+            </div>
+
             {/* Actions */}
             <div className="space-y-2 pt-4 border-t border-slate-200">
               <Link
@@ -310,6 +436,212 @@ export default function AdminBookingsPage() {
                 <span>Open Direct Payment Gateway</span>
               </Link>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Create Booking / Hold */}
+      {isCreatingBooking && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div>
+                <h3 className="text-lg font-serif-heading font-bold text-slate-900">
+                  Create Unit Allotment / Hold
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Direct unit reservation with 24h payment gateway token link.
+                </p>
+              </div>
+              <button
+                onClick={() => setIsCreatingBooking(false)}
+                className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {createError && (
+              <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-mono">
+                {createError}
+              </div>
+            )}
+
+            <form onSubmit={handleCreateBooking} className="space-y-3.5 text-xs">
+              <div>
+                <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                  Select Unit / Plot *
+                </label>
+                {availableUnits.length === 0 ? (
+                  <p className="text-xs text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200 font-mono">
+                    No units currently marked as AVAILABLE. Release a hold or add new inventory.
+                  </p>
+                ) : (
+                  <select
+                    required
+                    value={bookingForm.unitId}
+                    onChange={(e) => {
+                      const u = availableUnits.find((unit) => unit.id === e.target.value);
+                      setBookingForm({
+                        ...bookingForm,
+                        unitId: e.target.value,
+                        totalAgreedPrice: u?.price || bookingForm.totalAgreedPrice
+                      });
+                    }}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono focus:outline-none focus:border-[#2C5E50]"
+                  >
+                    {availableUnits.map((u) => (
+                      <option key={u.id} value={u.id}>
+                        {u.unitCode} — {u.type.replace(/_/g, ' ')} ({u.priceDisplay || `₹${u.price}`})
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                    Primary Buyer Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Vikramaditya Singhania"
+                    value={bookingForm.customerName}
+                    onChange={(e) => setBookingForm({ ...bookingForm, customerName: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-[#2C5E50]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                    Buyer Mobile Number *
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="e.g. +91 98111 44556"
+                    value={bookingForm.customerPhone}
+                    onChange={(e) => setBookingForm({ ...bookingForm, customerPhone: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono focus:outline-none focus:border-[#2C5E50]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                    Email Address (Optional)
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="e.g. buyer@example.com"
+                    value={bookingForm.customerEmail}
+                    onChange={(e) => setBookingForm({ ...bookingForm, customerEmail: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono focus:outline-none focus:border-[#2C5E50]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                    Agreed Sale Value (₹ INR)
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={bookingForm.totalAgreedPrice}
+                    onChange={(e) => setBookingForm({ ...bookingForm, totalAgreedPrice: Number(e.target.value) })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono focus:outline-none focus:border-[#2C5E50]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                    Booking Hold Token (₹ INR)
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={bookingForm.bookingAmount}
+                    onChange={(e) => setBookingForm({ ...bookingForm, bookingAmount: Number(e.target.value) })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono focus:outline-none focus:border-[#2C5E50]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                    Hold Duration (Hours)
+                  </label>
+                  <select
+                    value={bookingForm.holdHours}
+                    onChange={(e) => setBookingForm({ ...bookingForm, holdHours: Number(e.target.value) })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono focus:outline-none focus:border-[#2C5E50]"
+                  >
+                    <option value={24}>24 Hours (Standard)</option>
+                    <option value={48}>48 Hours (Weekend Hold)</option>
+                    <option value={72}>72 Hours (Executive Priority)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                    Payment Plan
+                  </label>
+                  <select
+                    value={bookingForm.paymentPlanType}
+                    onChange={(e) => setBookingForm({ ...bookingForm, paymentPlanType: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-[#2C5E50]"
+                  >
+                    <option value="DOWN_PAYMENT_PLAN">Down Payment Plan (Full)</option>
+                    <option value="CONSTRUCTION_LINKED_PLAN">Construction Linked Plan (CLP)</option>
+                    <option value="RENTAL_RETURN_PLAN">Sanctuary Rental Return Plan</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-mono uppercase text-slate-700 font-bold mb-1">
+                    Partner Referral Code (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. SLF8K2"
+                    value={bookingForm.referrerCode}
+                    onChange={(e) => setBookingForm({ ...bookingForm, referrerCode: e.target.value.toUpperCase() })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono focus:outline-none focus:border-[#2C5E50]"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-3 border-t border-slate-200">
+                <button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={() => setIsCreatingBooking(false)}
+                  className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono font-bold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting || availableUnits.length === 0}
+                  className="flex-1 py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#234b40] text-white font-bold font-mono cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Creating Allotment...</span>
+                    </>
+                  ) : (
+                    <span>Create &amp; Lock Unit</span>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
