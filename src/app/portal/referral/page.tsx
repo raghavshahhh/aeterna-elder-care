@@ -56,8 +56,16 @@ export default function PartnerDashboardPage() {
     loadPartnerData();
   }, []);
 
+  const [origin, setOrigin] = useState('https://aeterna-elder-care.vercel.app');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.origin) {
+      setOrigin(window.location.origin);
+    }
+  }, []);
+
   const referralUrl = partner
-    ? `https://seniorlivingcitizensfoundation.com/?ref=${partner.code}`
+    ? `${origin}/?ref=${partner.code}`
     : '';
 
   const copyToClipboard = () => {

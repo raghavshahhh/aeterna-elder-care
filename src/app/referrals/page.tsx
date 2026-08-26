@@ -43,8 +43,16 @@ export default function ReferralProgramPage() {
     }
   };
 
+  const [origin, setOrigin] = useState('https://aeterna-elder-care.vercel.app');
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.origin) {
+      setOrigin(window.location.origin);
+    }
+  }, []);
+
   const referralUrl = generatedCode
-    ? `https://seniorlivingcitizensfoundation.com/?ref=${generatedCode}`
+    ? `${origin}/?ref=${generatedCode}`
     : '';
 
   const copyToClipboard = () => {

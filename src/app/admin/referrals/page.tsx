@@ -271,7 +271,7 @@ export default function AdminReferralsPage() {
 
               <div className="pt-2 border-t border-white/10">
                 <a
-                  href={`https://wa.me/?text=${encodeURIComponent(`Explore Senior Living Citizen Foundation sanctuary: https://seniorlivingcitizensfoundation.com/?ref=${ref.code}`)}`}
+                  href={`https://wa.me/?text=${encodeURIComponent(`Explore Senior Living Citizen Foundation sanctuary: ${typeof window !== 'undefined' ? window.location.origin : 'https://aeterna-elder-care.vercel.app'}/?ref=${ref.code}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full py-2 rounded-xl bg-[#25D366]/20 hover:bg-[#25D366]/30 text-[#25D366] text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
