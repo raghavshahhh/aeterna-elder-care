@@ -25,7 +25,8 @@ import {
   X,
   CheckCircle2,
   MessageSquare,
-  Phone
+  Phone,
+  Sliders
 } from 'lucide-react';
 
 interface Building3DViewerProps {
@@ -281,6 +282,11 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [mounted, setMounted] = useState<boolean>(false);
 
+  // CAD Overlay QA Mode
+  const [isCadOverlay, setIsCadOverlay] = useState<boolean>(false);
+  const [cadOpacity, setCadOpacity] = useState<number>(0.75);
+  const [modelOpacity, setModelOpacity] = useState<number>(0.85);
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -290,6 +296,7 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const floorGroupsRef = useRef<{ [key in FloorLevel]?: THREE.Group }>({});
   const floorHighlightRimsRef = useRef<{ [key in FloorLevel]?: THREE.Mesh }>({});
+  const cadOverlayMeshRef = useRef<THREE.Mesh | null>(null);
   const animationFrameId = useRef<number | null>(null);
 
   // Active state refs for animation loop
@@ -588,6 +595,28 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
 
     const floorGroups: { [key in FloorLevel]?: THREE.Group } = {};
     const floorRims: { [key in FloorLevel]?: THREE.Mesh } = {};
+
+    // ─── CAD Vector Blueprint Overlay Plane ─────────────────────────────────
+    const cadOverlayTexLoader = new THREE.TextureLoader();
+    const cadOverlayGeo = new THREE.PlaneGeometry(CAD_WIDTH, CAD_DEPTH);
+    const cadOverlayMat = new THREE.MeshBasicMaterial({
+      transparent: true,
+      opacity: 0.0,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
+    const cadOverlayMesh = new THREE.Mesh(cadOverlayGeo, cadOverlayMat);
+    cadOverlayMesh.rotation.x = -Math.PI / 2;
+    cadOverlayMesh.position.set(0, 0.035, 0);
+    cadOverlayMesh.visible = false;
+    scene.add(cadOverlayMesh);
+    cadOverlayMeshRef.current = cadOverlayMesh;
+
+    cadOverlayTexLoader.load('/project-assets/architecture/cad/previews/stilt-floor-cad.jpg', (tex) => {
+      tex.anisotropy = 8;
+      cadOverlayMat.map = tex;
+      cadOverlayMat.needsUpdate = true;
+    });
 
     // ─── 1. STILT PARKING LEVEL (Height: 0.0 to 3.2m) ───────────────────────
     const stiltGroup = new THREE.Group();
@@ -1128,6 +1157,30 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
     };
   }, [updateCameraPosition]);
 
+  // CAD Overlay Visibility & Opacity Effect
+  useEffect(() => {
+    const cadMesh = cadOverlayMeshRef.current;
+    if (!cadMesh) return;
+    cadMesh.visible = isCadOverlay;
+    if (cadMesh.material && 'opacity' in cadMesh.material) {
+      const mat = cadMesh.material as THREE.MeshBasicMaterial;
+      mat.opacity = cadOpacity;
+      mat.needsUpdate = true;
+
+      const url =
+        activeFloor === 'stilt'
+          ? '/project-assets/architecture/cad/previews/stilt-floor-cad.jpg'
+          : '/project-assets/architecture/cad/previews/typical-floor-cad.jpg';
+
+      const loader = new THREE.TextureLoader();
+      loader.load(url, (tex) => {
+        tex.anisotropy = 8;
+        mat.map = tex;
+        mat.needsUpdate = true;
+      });
+    }
+  }, [isCadOverlay, cadOpacity, activeFloor]);
+
   // ─── Camera Preset Switchers ──────────────────────────────────────────────
 
   const handleApplyPreset = (preset: 'hero' | 'front' | 'entrance' | 'stilt' | 'exploded' | 'top') => {
@@ -1323,6 +1376,19 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
             </button>
           )}
 
+          {/* Residence CAD Overlay QA Toggle */}
+          <button
+            onClick={() => setIsCadOverlay(!isCadOverlay)}
+            className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all border cursor-pointer ${
+              isCadOverlay
+                ? 'bg-[#C58F58] text-[#071519] border-[#C58F58] shadow-md'
+                : 'bg-white/5 text-[#E0AB77] border-[#C58F58]/40 hover:bg-[#C58F58]/20'
+            }`}
+            title="Toggle Residence CAD blueprint semi-transparent overlay alignment mode"
+          >
+            CAD Overlay QA
+          </button>
+
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
             className="p-1.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
@@ -1331,6 +1397,53 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
             {isFullscreen ? <Minimize2 className="w-4 h-4 text-[#C58F58]" /> : <Maximize2 className="w-4 h-4" />}
           </button>
         </div>
+
+        {/* Residence CAD Overlay QA Sliders Floating Bar */}
+        {isCadOverlay && (
+          <div className="absolute top-20 right-4 z-20 pointer-events-auto bg-[#071519]/95 backdrop-blur-md p-4 rounded-2xl border border-[#C58F58]/60 shadow-2xl space-y-3 max-w-sm">
+            <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
+              <span className="text-[11px] font-mono text-[#E0AB77] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <Sliders className="w-3.5 h-3.5" /> Residence CAD Overlay QA
+              </span>
+              <button
+                onClick={() => handleApplyPreset('top')}
+                className="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-[#C58F58]/20 hover:bg-[#C58F58] hover:text-[#071519] text-[#E0AB77] transition-all font-bold cursor-pointer"
+              >
+                Snap Top View
+              </button>
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center justify-between text-white/70 font-mono text-[10px]">
+                <span>CAD Floor Plan Opacity:</span>
+                <span className="text-[#E0AB77] font-bold">{Math.round(cadOpacity * 100)}%</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={cadOpacity}
+                onChange={(e) => setCadOpacity(parseFloat(e.target.value))}
+                className="w-full h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#C58F58]"
+              />
+
+              <div className="flex items-center justify-between text-white/70 font-mono text-[10px] pt-1">
+                <span>3D Slabs &amp; Walls Opacity:</span>
+                <span className="text-[#E0AB77] font-bold">{Math.round(modelOpacity * 100)}%</span>
+              </div>
+              <input
+                type="range"
+                min="0.1"
+                max="1"
+                step="0.05"
+                value={modelOpacity}
+                onChange={(e) => setModelOpacity(parseFloat(e.target.value))}
+                className="w-full h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#C58F58]"
+              />
+            </div>
+          </div>
+        )}
 
         {/* Left 4-Tier Interactive Floor Selector */}
         <div className="absolute left-4 top-20 z-20 flex flex-col gap-2 w-44 sm:w-52 pointer-events-auto">
