@@ -291,4 +291,9 @@ export interface OwnerSession {
   expiresAt?: string;
 }
 
+// ----------------------------------------------------
+// Leadership & Ambassador Profile Types
+// ----------------------------------------------------
+export * from './leadership';
+
 

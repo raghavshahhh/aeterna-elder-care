@@ -19,7 +19,9 @@ import {
   CreditCard,
   ShieldCheck,
   FileText,
-  Layers
+  Layers,
+  Award,
+  UserCheck
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -220,6 +222,16 @@ export const Navbar: React.FC = () => {
             Care &amp; Hospital
           </Link>
 
+          <Link
+            href="/leadership"
+            className={cn(
+              'px-3 py-2 rounded-full transition-colors',
+              pathname === '/leadership' ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]' : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
+            )}
+          >
+            Leadership
+          </Link>
+
           {/* Finance & Trust Dropdown */}
           <div className="relative">
             <button
@@ -229,7 +241,7 @@ export const Navbar: React.FC = () => {
               }}
               className={cn(
                 'px-3 py-2 rounded-full transition-colors flex items-center gap-1 cursor-pointer',
-                pathname === '/finance' || pathname === '/documents' || pathname === '/payment-terms'
+                pathname === '/finance' || pathname === '/documents' || pathname === '/payment-terms' || pathname === '/leadership'
                   ? 'text-[#2C5E50] font-bold bg-[#EAF2EE]'
                   : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
               )}
@@ -240,6 +252,22 @@ export const Navbar: React.FC = () => {
 
             {trustOpen && (
               <div className="absolute top-full left-0 mt-3 w-72 rounded-3xl bg-white border border-[#E8E2D8] shadow-2xl p-3 space-y-1 z-50 animate-fade-in">
+                <Link
+                  href="/leadership"
+                  onClick={() => setTrustOpen(false)}
+                  className="p-3 rounded-2xl hover:bg-[#FAF8F5] transition-colors flex items-start gap-3 group block"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-[#FAF2EB] text-[#C58F58] flex items-center justify-center shrink-0 mt-0.5">
+                    <Award className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-xs text-[#0D2329] group-hover:text-[#2C5E50] block">
+                      Leadership &amp; Ambassadors
+                    </span>
+                    <p className="text-[11px] text-[#53676E]">Founder &amp; Advisory Council</p>
+                  </div>
+                </Link>
+
                 <Link
                   href="/documents"
                   onClick={() => setTrustOpen(false)}
@@ -348,6 +376,9 @@ export const Navbar: React.FC = () => {
             </Link>
             <Link href="/locations" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5] text-[#2C5E50] font-bold">
               Explore Projects (Haryana &amp; Goa)
+            </Link>
+            <Link href="/leadership" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5] text-[#C58F58] font-bold">
+              Leadership &amp; Ambassadors
             </Link>
             <Link href="/plots" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
               Freehold Plots (64 Plots)

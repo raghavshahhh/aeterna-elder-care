@@ -221,6 +221,11 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/leadership" className="hover:text-white transition-colors">
+                  Leadership &amp; Ambassadors
+                </Link>
+              </li>
+              <li>
                 <Link href="/documents" className="hover:text-white transition-colors">
                   Trust Center (Public Records)
                 </Link>
