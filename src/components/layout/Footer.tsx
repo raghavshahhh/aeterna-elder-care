@@ -47,7 +47,7 @@ export const Footer: React.FC = () => {
     }
 
     showToast({
-      title: 'Subscribed to Senior Living Citizen Updates!',
+      title: 'Subscribed to Senior Living Citizens Updates!',
       description: 'You will receive construction progress reports and plot allotment notices.',
       type: 'success'
     });
@@ -119,7 +119,7 @@ export const Footer: React.FC = () => {
                   Senior Living<span className="text-[#C58F58]">.</span>
                 </span>
                 <span className="block text-[9px] uppercase tracking-[0.2em] text-[#C58F58] font-bold">
-                  Citizen Foundation · National
+                  Citizens Foundation · National
                 </span>
               </div>
             </Link>

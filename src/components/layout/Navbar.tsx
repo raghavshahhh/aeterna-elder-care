@@ -91,8 +91,8 @@ export const Navbar: React.FC = () => {
               <span>Senior Living</span>
               <span className="w-1.5 h-1.5 rounded-full bg-[#C58F58] inline-block mb-0.5"></span>
             </div>
-            <span className="hidden md:block text-[8.5px] uppercase tracking-[0.2em] font-mono font-bold text-[#2C5E50]">
-              Citizen Foundation · National
+            <span className="text-[8.5px] sm:text-[9px] uppercase tracking-[0.18em] font-mono font-bold text-[#2C5E50]">
+              Citizens Foundation · National
             </span>
           </div>
         </Link>
