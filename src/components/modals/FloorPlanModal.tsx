@@ -48,7 +48,7 @@ const FLOOR_PLANS: Record<FloorPlanTab, FloorPlanItem> = {
     badge: 'Plots 63 & 64 • G+2 Residential',
     architect: 'The Vision Architects & Consultant · Ar. Yash Garg (B.Arch, M.Arch)',
     imageSrc: '/project-assets/architecture/cad/previews/typical-floor-cad.jpg',
-    pdfDownloadSrc: '/project-assets/architecture/floor-plans/ground-floor-plan.pdf',
+    pdfDownloadSrc: '/project-assets/architecture/cad/slcf-masterplan-site-layout.pdf',
     plotNumber: 'Plot No: 63 & 64 (Haryana)',
     areaDescription: 'Building Footprint: 46\'-0" × 50\'-6" (~2,323 sq.ft. / ~258 sq.yd.)',
     keyHighlights: [
@@ -75,7 +75,7 @@ const FLOOR_PLANS: Record<FloorPlanTab, FloorPlanItem> = {
     badge: 'Plots 63 & 64 • Stilt Level',
     architect: 'The Vision Architects & Consultant · Ar. Yash Garg',
     imageSrc: '/project-assets/architecture/cad/previews/stilt-floor-cad.jpg',
-    pdfDownloadSrc: '/project-assets/architecture/floor-plans/ground-floor-plan.pdf',
+    pdfDownloadSrc: '/project-assets/architecture/cad/slcf-masterplan-site-layout.pdf',
     plotNumber: 'Plot No: 63 & 64 (Haryana)',
     areaDescription: 'Ground Level Open Stilt: 46\'-0" × 50\'-6" with 3 Entry Gates',
     keyHighlights: [

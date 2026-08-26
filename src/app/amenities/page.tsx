@@ -16,6 +16,8 @@ import {
   Trees
 } from 'lucide-react';
 
+import { HospitalExplorer } from '@/components/property/HospitalExplorer';
+
 export default function AmenitiesPage() {
   const { openWhatsApp } = useModal();
 
@@ -36,6 +38,9 @@ export default function AmenitiesPage() {
           </p>
         </div>
       </section>
+
+      {/* Forensic CAD 3D Hospital & Facilities Explorer */}
+      <HospitalExplorer />
 
       {/* 3-Pillar Ecosystem Showcase */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -400,7 +400,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { openWhatsApp, openLeadDrawer } = useModal();
+  const { openWhatsApp, openLeadDrawer, openFloorPlanModal } = useModal();
 
   const [selectedBlock, setSelectedBlock] = useState<string>('All');
   const [selectedPlotId, setSelectedPlotId] = useState<string>('plot-1');
@@ -1362,13 +1362,33 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                     {activeLandmarkInfo.description}
                   </p>
                 </div>
-                <button
-                  onClick={() => setIsFullscreen(true)}
-                  className="w-full py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <Maximize2 className="w-3.5 h-3.5 text-[#C58F58]" />
-                  Open Full CAD Inspector
-                </button>
+                <div className="flex gap-2">
+                  {activeLandmarkInfo.id === 'hospital' && (
+                    <button
+                      onClick={() => openFloorPlanModal('hospital-ground')}
+                      className="flex-1 py-2 rounded-xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      Hospital CAD
+                    </button>
+                  )}
+                  {activeLandmarkInfo.id === 'residence' && (
+                    <button
+                      onClick={() => openFloorPlanModal('residences')}
+                      className="flex-1 py-2 rounded-xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      Residence CAD
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setIsFullscreen(true)}
+                    className="py-2 px-3 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Maximize2 className="w-3.5 h-3.5 text-[#C58F58]" />
+                    <span>Inspector</span>
+                  </button>
+                </div>
               </>
             ) : selectedPlot ? (
               <>

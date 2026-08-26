@@ -51,6 +51,7 @@ interface ModalContextType {
   isFloorPlanOpen: boolean;
   floorPlanContext: FloorPlanContext;
   openFloorPlan: (context?: FloorPlanContext) => void;
+  openFloorPlanModal: (floorPlanType?: FloorPlanContext['floorPlanType']) => void;
   closeFloorPlan: () => void;
 }
 
@@ -81,6 +82,10 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setFloorPlanContext(ctx || {});
     setIsFloorPlanOpen(true);
   };
+  const openFloorPlanModal = (floorPlanType?: FloorPlanContext['floorPlanType']) => {
+    setFloorPlanContext({ floorPlanType: floorPlanType || 'residences' });
+    setIsFloorPlanOpen(true);
+  };
   const closeFloorPlan = () => setIsFloorPlanOpen(false);
 
   return (
@@ -97,6 +102,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         isFloorPlanOpen,
         floorPlanContext,
         openFloorPlan,
+        openFloorPlanModal,
         closeFloorPlan,
       }}
     >
