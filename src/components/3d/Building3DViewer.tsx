@@ -579,7 +579,12 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
     });
 
     // ─── 4-Tier Building Geometry (Stilt + G + 1 + 2 + Roof) ─────────────────
-    // CAD Dimensions: Width = 22m (X), Depth = 14.5m (Z), Floor Height = 3.1m (Y)
+    // CAD Dimensions: Width = 46'-0" (14.02m), Depth = 50'-6" (15.39m), Projection = 3'-6" (1.07m), Floor Height = 3.2m
+    const CAD_WIDTH = 14.02;
+    const CAD_DEPTH = 15.39;
+    const CAD_PROJECTION = 1.07;
+    const SLAB_THICKNESS = 0.32;
+    const FLOOR_HEIGHT = 3.2;
 
     const floorGroups: { [key in FloorLevel]?: THREE.Group } = {};
     const floorRims: { [key in FloorLevel]?: THREE.Mesh } = {};
@@ -589,46 +594,106 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
     stiltGroup.name = 'floor-stilt';
 
     // Stilt Finished Ceiling Slab
-    const stiltCeiling = new THREE.Mesh(new THREE.BoxGeometry(22.6, 0.35, 15.2), limestoneMat);
-    stiltCeiling.position.set(0, 3.1, 0);
+    const stiltCeiling = new THREE.Mesh(
+      new THREE.BoxGeometry(CAD_WIDTH + 0.4, SLAB_THICKNESS, CAD_DEPTH + 0.4),
+      limestoneMat
+    );
+    stiltCeiling.position.set(0, FLOOR_HEIGHT - SLAB_THICKNESS / 2, 0);
     stiltCeiling.castShadow = true;
     stiltCeiling.receiveShadow = true;
     stiltGroup.add(stiltCeiling);
 
-    // 12 Reinforced Concrete Structural Columns (3 rows × 4 columns)
-    const colGeo = new THREE.BoxGeometry(0.48, 3.0, 0.48);
-    const colGuardMat = new THREE.MeshStandardMaterial({ color: 0xf5b82e, roughness: 0.4 }); // yellow bumper
-    for (let row = -1; row <= 1; row++) {
-      for (let col = -1.5; col <= 1.5; col++) {
+    // 16 Reinforced Concrete Structural Columns (4 rows × 4 columns matching CAD grid)
+    const colGeo = new THREE.BoxGeometry(0.45, FLOOR_HEIGHT - SLAB_THICKNESS, 0.45);
+    const colGuardMat = new THREE.MeshStandardMaterial({ color: 0xf5b82e, roughness: 0.4 }); // yellow hazard bumper
+    const colXPositions = [-5.9, -1.95, 1.95, 5.9];
+    const colZPositions = [-6.5, -2.15, 2.15, 6.5];
+
+    colXPositions.forEach((cx) => {
+      colZPositions.forEach((cz) => {
         const colMesh = new THREE.Mesh(colGeo, concreteMat);
-        const cx = col * 6.2;
-        const cz = row * 5.4;
-        colMesh.position.set(cx, 1.5, cz);
+        colMesh.position.set(cx, (FLOOR_HEIGHT - SLAB_THICKNESS) / 2, cz);
         colMesh.castShadow = true;
         colMesh.receiveShadow = true;
         stiltGroup.add(colMesh);
 
         // Steel yellow protective bumper collar at column base
-        const collar = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.45, 0.52), colGuardMat);
+        const collar = new THREE.Mesh(new THREE.BoxGeometry(0.49, 0.45, 0.49), colGuardMat);
         collar.position.set(cx, 0.22, cz);
         stiltGroup.add(collar);
-      }
-    }
+      });
+    });
 
-    // Central Glazed Lift & Staircase Core Lobby (Enclosed on Ground/Stilt)
+    // 14 Stilt Parking Bays (6 North Row, 2 Center Row, 6 South Row as in CAD)
+    const bayLineMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
+    const bayPlaqueMat = new THREE.MeshStandardMaterial({ color: 0xc58f58, metalness: 0.6, roughness: 0.3 });
+
+    // North Row: 6 Bays (Bays 01-06)
+    const northBayXs = [-5.0, -3.0, -1.0, 1.0, 3.0, 5.0];
+    northBayXs.forEach((bx, idx) => {
+      const bayStrip = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 4.4), bayLineMat);
+      bayStrip.rotation.x = -Math.PI / 2;
+      bayStrip.position.set(bx, 0.02, -4.5);
+      stiltGroup.add(bayStrip);
+
+      const plaque = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.02, 0.3), bayPlaqueMat);
+      plaque.position.set(bx, 0.03, -6.6);
+      stiltGroup.add(plaque);
+    });
+
+    // Center Row: 2 Bays between columns (Bays 07-08)
+    const centerBayXs = [-1.0, 1.0];
+    centerBayXs.forEach((bx) => {
+      const bayStrip = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 4.2), bayLineMat);
+      bayStrip.rotation.x = -Math.PI / 2;
+      bayStrip.position.set(bx, 0.02, 0.0);
+      stiltGroup.add(bayStrip);
+    });
+
+    // South Row: 6 Bays (Bays 09-14)
+    northBayXs.forEach((bx) => {
+      const bayStrip = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 4.4), bayLineMat);
+      bayStrip.rotation.x = -Math.PI / 2;
+      bayStrip.position.set(bx, 0.02, 4.5);
+      stiltGroup.add(bayStrip);
+    });
+
+    // 3 Entry Gates on South Facade (West Gate, Center Gate, East Gate)
+    [-4.5, 0.0, 4.5].forEach((gx) => {
+      const gatePillarL = new THREE.Mesh(new THREE.BoxGeometry(0.35, 2.6, 0.35), concreteMat);
+      gatePillarL.position.set(gx - 1.2, 1.3, 7.2);
+      stiltGroup.add(gatePillarL);
+
+      const gatePillarR = new THREE.Mesh(new THREE.BoxGeometry(0.35, 2.6, 0.35), concreteMat);
+      gatePillarR.position.set(gx + 1.2, 1.3, 7.2);
+      stiltGroup.add(gatePillarR);
+
+      const gateLintel = new THREE.Mesh(new THREE.BoxGeometry(2.75, 0.25, 0.35), bronzeMat);
+      gateLintel.position.set(gx, 2.6, 7.2);
+      stiltGroup.add(gateLintel);
+    });
+
+    // Central Circulation Core on Stilt: Left Stairwell + Right Elevator Shaft
     const coreMat = new THREE.MeshStandardMaterial({
       map: concreteTex,
       color: 0x3d484c,
       roughness: 0.65
     });
-    const stiltCore = new THREE.Mesh(new THREE.BoxGeometry(5.2, 3.0, 4.4), coreMat);
-    stiltCore.position.set(0, 1.5, -2.0);
-    stiltCore.castShadow = true;
-    stiltCore.receiveShadow = true;
-    stiltGroup.add(stiltCore);
 
-    // Glass Entry Lobby on Stilt
-    const stiltLobbyGlass = new THREE.Mesh(new THREE.BoxGeometry(4.8, 2.6, 0.08), windowGlassMat);
+    // Left Stairwell Enclosure (4'-0" / 1.22m stairwell)
+    const stiltStairCore = new THREE.Mesh(new THREE.BoxGeometry(2.8, 3.0, 3.8), coreMat);
+    stiltStairCore.position.set(-3.8, 1.5, 0);
+    stiltStairCore.castShadow = true;
+    stiltGroup.add(stiltStairCore);
+
+    // Right Elevator Shaft (5'-6" × 8'-0" / 1.68m × 2.44m)
+    const stiltLiftCore = new THREE.Mesh(new THREE.BoxGeometry(2.8, 3.0, 3.8), coreMat);
+    stiltLiftCore.position.set(3.8, 1.5, 0);
+    stiltLiftCore.castShadow = true;
+    stiltGroup.add(stiltLiftCore);
+
+    // Central Glazed Stilt Entry Lobby
+    const stiltLobbyGlass = new THREE.Mesh(new THREE.BoxGeometry(4.2, 2.6, 0.08), windowGlassMat);
     stiltLobbyGlass.position.set(0, 1.3, 0.22);
     stiltGroup.add(stiltLobbyGlass);
 
@@ -638,29 +703,29 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
       emissive: 0xffd8aa,
       emissiveIntensity: 0.9
     });
-    [-7, 0, 7].forEach((dx) => {
-      [-4, 3].forEach((dz) => {
-        const dl = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.04, 12), downlightMat);
-        dl.position.set(dx, 2.91, dz);
+    [-4.5, 0, 4.5].forEach((dx) => {
+      [-4, 4].forEach((dz) => {
+        const dl = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.04, 12), downlightMat);
+        dl.position.set(dx, 2.95, dz);
         stiltGroup.add(dl);
       });
     });
 
-    // Parked Senior Golf Cart / Electric Vehicle Silhouette in Stilt Bay
+    // Parked Senior Electric Golf Cart in Stilt Bay
     const carMat = new THREE.MeshStandardMaterial({ color: 0x2c5e50, roughness: 0.3, metalness: 0.6 });
-    const carBody = new THREE.Mesh(new THREE.BoxGeometry(1.8, 1.3, 3.6), carMat);
-    carBody.position.set(-6.2, 0.7, -3.2);
+    const carBody = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.2, 3.2), carMat);
+    carBody.position.set(-3.0, 0.6, -4.5);
     carBody.castShadow = true;
     stiltGroup.add(carBody);
 
-    const carGlass = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.7, 1.8), windowGlassMat);
-    carGlass.position.set(-6.2, 1.3, -3.4);
+    const carGlass = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.6, 1.6), windowGlassMat);
+    carGlass.position.set(-3.0, 1.15, -4.7);
     stiltGroup.add(carGlass);
 
     scene.add(stiltGroup);
     floorGroups['stilt'] = stiltGroup;
 
-    // Helper to build a complete detailed residential floor
+    // Helper to build a complete CAD-faithful detailed residential floor
     function buildResidentialFloor(
       floorId: FloorLevel,
       baseY: number,
@@ -671,21 +736,27 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
       group.name = `floor-${floorId}`;
 
       // 1. Floor Concrete Structural Slab with Wood Soffit Underside
-      const slab = new THREE.Mesh(new THREE.BoxGeometry(22.8, 0.32, 15.4), limestoneMat);
+      const slab = new THREE.Mesh(
+        new THREE.BoxGeometry(CAD_WIDTH + 0.4, SLAB_THICKNESS, CAD_DEPTH + 0.4),
+        limestoneMat
+      );
       slab.position.set(0, baseY, 0);
       slab.castShadow = true;
       slab.receiveShadow = true;
       group.add(slab);
 
       // Wood soffit cladding underside
-      const soffit = new THREE.Mesh(new THREE.PlaneGeometry(22.6, 15.2), teakWoodMat);
+      const soffit = new THREE.Mesh(
+        new THREE.PlaneGeometry(CAD_WIDTH + 0.2, CAD_DEPTH + 0.2),
+        teakWoodMat
+      );
       soffit.rotation.x = Math.PI / 2;
-      soffit.position.set(0, baseY - 0.17, 0);
+      soffit.position.set(0, baseY - SLAB_THICKNESS / 2 - 0.01, 0);
       group.add(soffit);
 
       // Highlight perimeter accent band for active state
       const rim = new THREE.Mesh(
-        new THREE.BoxGeometry(23.0, 0.08, 15.6),
+        new THREE.BoxGeometry(CAD_WIDTH + 0.6, 0.08, CAD_DEPTH + 0.6),
         highlightRimMat.clone()
       );
       rim.position.set(0, baseY, 0);
@@ -693,116 +764,116 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
       group.add(rim);
       floorRims[floorId] = rim;
 
-      // 2. Unit 01 (West Corner — 1 BHK / 1 RK)
-      const u1Wall = new THREE.Mesh(new THREE.BoxGeometry(7.2, 2.7, 13.8), limestoneMat);
-      u1Wall.position.set(-7.4, baseY + 1.5, 0);
+      // 2. Unit 01 (West / Left Wing — 1 BHK Type A, 400 sq.ft. Super / 276 sq.ft. Carpet)
+      const u1Wall = new THREE.Mesh(new THREE.BoxGeometry(4.4, 2.7, CAD_DEPTH), limestoneMat);
+      u1Wall.position.set(-4.6, baseY + 1.45, 0);
       u1Wall.castShadow = true;
       u1Wall.receiveShadow = true;
       group.add(u1Wall);
 
-      // Unit 01 Corner Recessed Window Box with Bronze Framing
-      const u1Window = new THREE.Mesh(new THREE.BoxGeometry(3.6, 1.8, 0.12), windowGlassMat);
-      u1Window.position.set(-8.2, baseY + 1.6, 6.95);
+      // Unit 01 Front Corner Window Box with Bronze Framing
+      const u1Window = new THREE.Mesh(new THREE.BoxGeometry(2.6, 1.8, 0.12), windowGlassMat);
+      u1Window.position.set(-4.6, baseY + 1.55, CAD_DEPTH / 2 + 0.05);
       group.add(u1Window);
 
-      const u1Frame = new THREE.Mesh(new THREE.BoxGeometry(3.8, 2.0, 0.28), bronzeMat);
-      u1Frame.position.set(-8.2, baseY + 1.6, 6.92);
+      const u1Frame = new THREE.Mesh(new THREE.BoxGeometry(2.8, 2.0, 0.25), bronzeMat);
+      u1Frame.position.set(-4.6, baseY + 1.55, CAD_DEPTH / 2 + 0.02);
       u1Frame.castShadow = true;
       group.add(u1Frame);
 
-      // Unit 01 Cantilevered Balcony
-      const u1BalcSlab = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.22, 1.6), limestoneMat);
-      u1BalcSlab.position.set(-8.2, baseY + 0.12, 7.7);
+      // Unit 01 Front Cantilevered Balcony (3'-6" / 1.07m Projection)
+      const u1BalcSlab = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.22, CAD_PROJECTION), limestoneMat);
+      u1BalcSlab.position.set(-4.6, baseY + 0.11, CAD_DEPTH / 2 + CAD_PROJECTION / 2);
       u1BalcSlab.castShadow = true;
       group.add(u1BalcSlab);
 
-      const u1GlassRail = new THREE.Mesh(new THREE.BoxGeometry(3.5, 1.0, 0.06), balustradeGlassMat);
-      u1GlassRail.position.set(-8.2, baseY + 0.65, 8.45);
+      const u1GlassRail = new THREE.Mesh(new THREE.BoxGeometry(4.1, 1.0, 0.06), balustradeGlassMat);
+      u1GlassRail.position.set(-4.6, baseY + 0.65, CAD_DEPTH / 2 + CAD_PROJECTION);
       group.add(u1GlassRail);
 
-      const u1TopRail = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.06, 0.08), bronzeMat);
-      u1TopRail.position.set(-8.2, baseY + 1.15, 8.45);
+      const u1TopRail = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.06, 0.08), bronzeMat);
+      u1TopRail.position.set(-4.6, baseY + 1.15, CAD_DEPTH / 2 + CAD_PROJECTION);
       group.add(u1TopRail);
 
-      // Vertical terracotta sun louver screen on west side
-      const u1Louvers = new THREE.Mesh(new THREE.BoxGeometry(0.18, 2.4, 3.2), terracottaMat);
-      u1Louvers.position.set(-11.1, baseY + 1.5, 3.2);
+      // Vertical terracotta sun louver screen on west elevation
+      const u1Louvers = new THREE.Mesh(new THREE.BoxGeometry(0.18, 2.4, 3.8), terracottaMat);
+      u1Louvers.position.set(-CAD_WIDTH / 2 - 0.2, baseY + 1.45, 2.5);
       u1Louvers.castShadow = true;
       group.add(u1Louvers);
 
-      // 3. Central Core & Unit 02 (Center Residence)
-      const u2Wall = new THREE.Mesh(new THREE.BoxGeometry(6.4, 2.7, 13.8), limestoneMat);
-      u2Wall.position.set(0, baseY + 1.5, 0);
+      // 3. Central Core & Unit 02 (Center Residence — 1 RK Type C Studio, 240 sq.ft. Super / 195 sq.ft. Carpet)
+      const u2Wall = new THREE.Mesh(new THREE.BoxGeometry(4.2, 2.7, CAD_DEPTH), limestoneMat);
+      u2Wall.position.set(0, baseY + 1.45, 0);
       u2Wall.castShadow = true;
       u2Wall.receiveShadow = true;
       group.add(u2Wall);
 
-      // Unit 02 Central Large Balcony & Glass Sliders
-      const u2Window = new THREE.Mesh(new THREE.BoxGeometry(4.2, 2.1, 0.12), windowGlassMat);
-      u2Window.position.set(0, baseY + 1.5, 6.95);
+      // Unit 02 Central Balcony & Sliding Glass Doors
+      const u2Window = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.1, 0.12), windowGlassMat);
+      u2Window.position.set(0, baseY + 1.45, CAD_DEPTH / 2 + 0.05);
       group.add(u2Window);
 
-      const u2BalcSlab = new THREE.Mesh(new THREE.BoxGeometry(4.6, 0.22, 1.8), limestoneMat);
-      u2BalcSlab.position.set(0, baseY + 0.12, 7.8);
+      const u2BalcSlab = new THREE.Mesh(new THREE.BoxGeometry(4.0, 0.22, CAD_PROJECTION), limestoneMat);
+      u2BalcSlab.position.set(0, baseY + 0.11, CAD_DEPTH / 2 + CAD_PROJECTION / 2);
       u2BalcSlab.castShadow = true;
       group.add(u2BalcSlab);
 
-      const u2GlassRail = new THREE.Mesh(new THREE.BoxGeometry(4.5, 1.0, 0.06), balustradeGlassMat);
-      u2GlassRail.position.set(0, baseY + 0.65, 8.65);
+      const u2GlassRail = new THREE.Mesh(new THREE.BoxGeometry(3.9, 1.0, 0.06), balustradeGlassMat);
+      u2GlassRail.position.set(0, baseY + 0.65, CAD_DEPTH / 2 + CAD_PROJECTION);
       group.add(u2GlassRail);
 
-      const u2TopRail = new THREE.Mesh(new THREE.BoxGeometry(4.6, 0.06, 0.08), bronzeMat);
-      u2TopRail.position.set(0, baseY + 1.15, 8.65);
+      const u2TopRail = new THREE.Mesh(new THREE.BoxGeometry(4.0, 0.06, 0.08), bronzeMat);
+      u2TopRail.position.set(0, baseY + 1.15, CAD_DEPTH / 2 + CAD_PROJECTION);
       group.add(u2TopRail);
 
-      // Central Lift & Staircase Core Tower (Recessed in center rear)
-      const coreTower = new THREE.Mesh(new THREE.BoxGeometry(4.4, 3.0, 3.8), coreMat);
-      coreTower.position.set(0, baseY + 1.5, -5.2);
+      // Central Common Lobby (9'-8" × 25'-1" / 2.95m × 7.65m) & Core
+      const coreTower = new THREE.Mesh(new THREE.BoxGeometry(3.4, 2.7, 3.8), coreMat);
+      coreTower.position.set(0, baseY + 1.45, -2.0);
       coreTower.castShadow = true;
       group.add(coreTower);
 
-      // 4. Unit 03 (East Corner — Morning Sun)
-      const u3Wall = new THREE.Mesh(new THREE.BoxGeometry(7.2, 2.7, 13.8), limestoneMat);
-      u3Wall.position.set(7.4, baseY + 1.5, 0);
+      // 4. Unit 03 (East / Right Wing — 1 BHK Type B Suite, 400 sq.ft. Super / 276 sq.ft. Carpet)
+      const u3Wall = new THREE.Mesh(new THREE.BoxGeometry(4.4, 2.7, CAD_DEPTH), limestoneMat);
+      u3Wall.position.set(4.6, baseY + 1.45, 0);
       u3Wall.castShadow = true;
       u3Wall.receiveShadow = true;
       group.add(u3Wall);
 
-      const u3Window = new THREE.Mesh(new THREE.BoxGeometry(3.6, 1.8, 0.12), windowGlassMat);
-      u3Window.position.set(8.2, baseY + 1.6, 6.95);
+      const u3Window = new THREE.Mesh(new THREE.BoxGeometry(2.6, 1.8, 0.12), windowGlassMat);
+      u3Window.position.set(4.6, baseY + 1.55, CAD_DEPTH / 2 + 0.05);
       group.add(u3Window);
 
-      const u3Frame = new THREE.Mesh(new THREE.BoxGeometry(3.8, 2.0, 0.28), bronzeMat);
-      u3Frame.position.set(8.2, baseY + 1.6, 6.92);
+      const u3Frame = new THREE.Mesh(new THREE.BoxGeometry(2.8, 2.0, 0.25), bronzeMat);
+      u3Frame.position.set(4.6, baseY + 1.55, CAD_DEPTH / 2 + 0.02);
       u3Frame.castShadow = true;
       group.add(u3Frame);
 
-      const u3BalcSlab = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.22, 1.6), limestoneMat);
-      u3BalcSlab.position.set(8.2, baseY + 0.12, 7.7);
+      const u3BalcSlab = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.22, CAD_PROJECTION), limestoneMat);
+      u3BalcSlab.position.set(4.6, baseY + 0.11, CAD_DEPTH / 2 + CAD_PROJECTION / 2);
       u3BalcSlab.castShadow = true;
       group.add(u3BalcSlab);
 
-      const u3GlassRail = new THREE.Mesh(new THREE.BoxGeometry(3.5, 1.0, 0.06), balustradeGlassMat);
-      u3GlassRail.position.set(8.2, baseY + 0.65, 8.45);
+      const u3GlassRail = new THREE.Mesh(new THREE.BoxGeometry(4.1, 1.0, 0.06), balustradeGlassMat);
+      u3GlassRail.position.set(4.6, baseY + 0.65, CAD_DEPTH / 2 + CAD_PROJECTION);
       group.add(u3GlassRail);
 
-      const u3TopRail = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.06, 0.08), bronzeMat);
-      u3TopRail.position.set(8.2, baseY + 1.15, 8.45);
+      const u3TopRail = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.06, 0.08), bronzeMat);
+      u3TopRail.position.set(4.6, baseY + 1.15, CAD_DEPTH / 2 + CAD_PROJECTION);
       group.add(u3TopRail);
 
-      const u3Louvers = new THREE.Mesh(new THREE.BoxGeometry(0.18, 2.4, 3.2), terracottaMat);
-      u3Louvers.position.set(11.1, baseY + 1.5, 3.2);
+      const u3Louvers = new THREE.Mesh(new THREE.BoxGeometry(0.18, 2.4, 3.8), terracottaMat);
+      u3Louvers.position.set(CAD_WIDTH / 2 + 0.2, baseY + 1.45, 2.5);
       u3Louvers.castShadow = true;
       group.add(u3Louvers);
 
-      // Rear Bedroom Windows on North Facade
-      [-7.4, 0, 7.4].forEach((rx) => {
-        const rearWin = new THREE.Mesh(new THREE.BoxGeometry(2.6, 1.5, 0.12), windowGlassMat);
-        rearWin.position.set(rx, baseY + 1.6, -6.95);
+      // Rear Bedroom Windows & Ventilation Shaft on North Facade (Z = -CAD_DEPTH / 2)
+      [-4.6, 0, 4.6].forEach((rx) => {
+        const rearWin = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.5, 0.12), windowGlassMat);
+        rearWin.position.set(rx, baseY + 1.55, -CAD_DEPTH / 2 - 0.05);
         group.add(rearWin);
 
-        const rearLouver = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.45, 0.25), terracottaMat);
-        rearLouver.position.set(rx, baseY + 2.5, -6.95);
+        const rearLouver = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.35, 0.22), terracottaMat);
+        rearLouver.position.set(rx, baseY + 2.4, -CAD_DEPTH / 2 - 0.08);
         group.add(rearLouver);
       });
 
@@ -819,7 +890,7 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
     floorGroups['ground'] = groundGroup;
 
     // ─── 3. FIRST FLOOR (Units 04, 05, 06 — Phase 2 Waitlist) ────────────────
-    const firstGroup = buildResidentialFloor('first', 6.3, 'First Floor', {
+    const firstGroup = buildResidentialFloor('first', 6.4, 'First Floor', {
       u1: 'Unit 04',
       u2: 'Unit 05',
       u3: 'Unit 06'
@@ -828,7 +899,7 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
     floorGroups['first'] = firstGroup;
 
     // ─── 4. SECOND FLOOR (Units 07, 08, 09 — Phase 3 Waitlist) ───────────────
-    const secondGroup = buildResidentialFloor('second', 9.4, 'Second Floor', {
+    const secondGroup = buildResidentialFloor('second', 9.6, 'Second Floor', {
       u1: 'Unit 07',
       u2: 'Unit 08',
       u3: 'Unit 09'
@@ -836,54 +907,57 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
     scene.add(secondGroup);
     floorGroups['second'] = secondGroup;
 
-    // ─── 5. ROOF & TERRACE PARAPET (Y = 12.5m) ──────────────────────────────
+    // ─── 5. ROOF & TERRACE PARAPET (Y = 12.8m) ──────────────────────────────
     const roofGroup = new THREE.Group();
     roofGroup.name = 'floor-roof';
 
     // Roof Slab
-    const roofSlab = new THREE.Mesh(new THREE.BoxGeometry(22.8, 0.35, 15.4), limestoneMat);
-    roofSlab.position.set(0, 12.5, 0);
+    const roofSlab = new THREE.Mesh(
+      new THREE.BoxGeometry(CAD_WIDTH + 0.4, SLAB_THICKNESS, CAD_DEPTH + 0.4),
+      limestoneMat
+    );
+    roofSlab.position.set(0, 12.8, 0);
     roofSlab.castShadow = true;
     roofSlab.receiveShadow = true;
     roofGroup.add(roofSlab);
 
     // 1.1m Safety Parapet Wall around terrace perimeter
-    const parapetFront = new THREE.Mesh(new THREE.BoxGeometry(22.8, 1.1, 0.28), limestoneMat);
-    parapetFront.position.set(0, 13.1, 7.55);
+    const parapetFront = new THREE.Mesh(new THREE.BoxGeometry(CAD_WIDTH + 0.4, 1.1, 0.28), limestoneMat);
+    parapetFront.position.set(0, 13.4, CAD_DEPTH / 2 + 0.05);
     parapetFront.castShadow = true;
     roofGroup.add(parapetFront);
 
-    const parapetRear = new THREE.Mesh(new THREE.BoxGeometry(22.8, 1.1, 0.28), limestoneMat);
-    parapetRear.position.set(0, 13.1, -7.55);
+    const parapetRear = new THREE.Mesh(new THREE.BoxGeometry(CAD_WIDTH + 0.4, 1.1, 0.28), limestoneMat);
+    parapetRear.position.set(0, 13.4, -CAD_DEPTH / 2 - 0.05);
     parapetRear.castShadow = true;
     roofGroup.add(parapetRear);
 
-    const parapetLeft = new THREE.Mesh(new THREE.BoxGeometry(0.28, 1.1, 15.4), limestoneMat);
-    parapetLeft.position.set(-11.25, 13.1, 0);
+    const parapetLeft = new THREE.Mesh(new THREE.BoxGeometry(0.28, 1.1, CAD_DEPTH + 0.4), limestoneMat);
+    parapetLeft.position.set(-CAD_WIDTH / 2 - 0.05, 13.4, 0);
     parapetLeft.castShadow = true;
     roofGroup.add(parapetLeft);
 
-    const parapetRight = new THREE.Mesh(new THREE.BoxGeometry(0.28, 1.1, 15.4), limestoneMat);
-    parapetRight.position.set(11.25, 13.1, 0);
+    const parapetRight = new THREE.Mesh(new THREE.BoxGeometry(0.28, 1.1, CAD_DEPTH + 0.4), limestoneMat);
+    parapetRight.position.set(CAD_WIDTH / 2 + 0.05, 13.4, 0);
     parapetRight.castShadow = true;
     roofGroup.add(parapetRight);
 
     // Elevator Machine Room Core Overrun Tower
-    const liftTower = new THREE.Mesh(new THREE.BoxGeometry(5.2, 2.6, 4.4), coreMat);
-    liftTower.position.set(0, 13.8, -4.8);
+    const liftTower = new THREE.Mesh(new THREE.BoxGeometry(3.6, 2.6, 3.8), coreMat);
+    liftTower.position.set(0, 14.1, -2.0);
     liftTower.castShadow = true;
     roofGroup.add(liftTower);
 
     // Solar Pergola Canopy on Terrace for Common Senior Yoga & Morning Walks
     const pergolaMat = new THREE.MeshStandardMaterial({ color: 0x362c24, metalness: 0.85, roughness: 0.3 });
-    const pergolaBeam = new THREE.Mesh(new THREE.BoxGeometry(10.0, 0.18, 4.8), pergolaMat);
-    pergolaBeam.position.set(-4.5, 15.0, 1.5);
+    const pergolaBeam = new THREE.Mesh(new THREE.BoxGeometry(8.0, 0.18, 4.2), pergolaMat);
+    pergolaBeam.position.set(-2.5, 15.2, 1.5);
     pergolaBeam.castShadow = true;
     roofGroup.add(pergolaBeam);
 
-    [-9.0, 0.0].forEach((px) => {
+    [-6.0, 1.0].forEach((px) => {
       const pCol = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 2.4, 8), bronzeMat);
-      pCol.position.set(px, 13.8, 1.5);
+      pCol.position.set(px, 14.0, 1.5);
       pCol.castShadow = true;
       roofGroup.add(pCol);
     });
@@ -1170,7 +1244,7 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
 
           <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-400/30 text-emerald-300 text-[11px] font-bold backdrop-blur-md shadow-lg pointer-events-auto">
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>CAD Proportions · 88'-6" × 45'-0"</span>
+            <span>CAD Proportions · 46'-0" × 50'-6" (Plots 63 & 64)</span>
           </div>
         </div>
 
