@@ -1,5 +1,5 @@
 // ============================================================================
-// SENIOR LIVING CITIZEN FOUNDATION — MASTER TYPE DEFINITIONS
+// SENIOR LIVING CITIZENS FOUNDATION — MASTER TYPE DEFINITIONS
 // ============================================================================
 
 export type UnitType = '1-rk' | '1-bhk' | '2-bhk';

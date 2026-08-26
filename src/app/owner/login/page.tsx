@@ -75,13 +75,13 @@ export default function OwnerLoginPage() {
           <div className="w-9 h-9 rounded-xl bg-white/95 border border-white/20 p-1 flex items-center justify-center shadow-md">
             <img
               src="/project-assets/brand/logo-icon.png"
-              alt="Senior Living Citizen Foundation"
+              alt="Senior Living Citizens Foundation"
               className="w-full h-full object-contain"
             />
           </div>
           <div>
             <span className="text-sm font-serif-heading font-bold text-[#FAF8F5] group-hover:text-[#C58F58] transition-colors block leading-tight">
-              Senior Living Citizen Foundation
+              Senior Living Citizens Foundation
             </span>
             <span className="text-[9px] uppercase font-mono tracking-widest text-[#C58F58] font-bold block">
               Haryana · Owner Portal
@@ -198,7 +198,7 @@ export default function OwnerLoginPage() {
       {/* Bottom Footer Note */}
       <div className="max-w-md mx-auto text-center text-[11px] text-white/50 space-y-1">
         <p>Protected by Server-Side HTTP-Only Session Security</p>
-        <p>© 2026 Senior Living Citizen Foundation · Haryana</p>
+        <p>© 2026 Senior Living Citizens Foundation · Haryana</p>
       </div>
     </div>
   );

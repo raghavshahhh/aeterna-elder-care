@@ -83,7 +83,7 @@ export const Navbar: React.FC = () => {
         <Link href="/" className="flex items-center gap-3 group focus:outline-none shrink-0 py-0.5">
           <img
             src="/project-assets/brand/logo-icon-clean.png"
-            alt="Senior Living Citizen Foundation Emblem"
+            alt="Senior Living Citizens Foundation Emblem"
             className="w-10 h-10 sm:w-11 sm:h-11 object-contain group-hover:scale-105 transition-transform drop-shadow-sm"
           />
           <div className="leading-tight flex flex-col justify-center">
@@ -109,7 +109,7 @@ export const Navbar: React.FC = () => {
             Home
           </Link>
 
-          {/* Sanctuaries Dropdown */}
+          {/* Projects Dropdown */}
           <div className="relative">
             <button
               onClick={() => {
@@ -123,14 +123,14 @@ export const Navbar: React.FC = () => {
                   : 'text-[#53676E] hover:text-[#0D2329] hover:bg-[#FAF8F5]'
               )}
             >
-              <span>Sanctuaries</span>
+              <span>Projects</span>
               <ChevronDown className={cn('w-3.5 h-3.5 transition-transform duration-200', locationsOpen && 'rotate-180')} />
             </button>
 
             {locationsOpen && (
               <div className="absolute top-full left-0 mt-3 w-80 rounded-3xl bg-white border border-[#E8E2D8] shadow-2xl p-3 space-y-1 z-50 animate-fade-in">
                 <div className="px-3 py-1.5 text-[9px] font-mono uppercase tracking-widest text-[#53676E] font-bold">
-                  Active &amp; Upcoming Communities
+                  Active &amp; Upcoming Projects
                 </div>
 
                 <Link
@@ -181,7 +181,7 @@ export const Navbar: React.FC = () => {
                     onClick={() => setLocationsOpen(false)}
                     className="w-full py-2 px-3 rounded-xl bg-[#FAF8F5] hover:bg-[#EAF2EE] text-xs font-bold text-[#2C5E50] flex items-center justify-between transition-colors font-mono"
                   >
-                    <span>View All Sanctuaries</span>
+                    <span>View All Projects</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
@@ -289,20 +289,6 @@ export const Navbar: React.FC = () => {
               </div>
             )}
           </div>
-
-          <Link
-            href="/referrals"
-            className={cn(
-              'px-3 py-2 rounded-full transition-colors flex items-center gap-1.5',
-              pathname === '/referrals' ? 'text-[#C58F58] font-bold bg-[#FAF2EB]' : 'text-[#C58F58] hover:bg-[#FAF2EB]'
-            )}
-          >
-            <Sparkles className="w-3.5 h-3.5 text-[#C58F58]" />
-            <span>Referrals</span>
-            <span className="px-1.5 py-0.5 rounded-full bg-[#C58F58]/20 text-[#C58F58] text-[9px] font-mono font-bold">
-              ₹50
-            </span>
-          </Link>
         </nav>
 
         {/* Right CTA Actions */}
@@ -342,31 +328,25 @@ export const Navbar: React.FC = () => {
               Home
             </Link>
             <Link href="/locations" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5] text-[#2C5E50] font-bold">
-              Explore Sanctuaries (Haryana &amp; Goa)
+              Explore Projects (Haryana &amp; Goa)
             </Link>
             <Link href="/plots" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
               Freehold Plots (64 Plots)
             </Link>
             <Link href="/apartments" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
-              Care Residences (1 RK / 1 BHK)
+              Senior Residences (1 BHK / 1 RK)
             </Link>
             <Link href="/amenities" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
-              Ayurvedic Hospital &amp; Care
-            </Link>
-            <Link href="/finance" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
-              Milestone Payment Plans
+              Ayurvedic Hospital &amp; Mandir
             </Link>
             <Link href="/documents" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
-              Trust Center &amp; Legal Records
+              Legal &amp; Trust Records
             </Link>
-            <Link href="/payment-terms" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5] text-xs font-mono text-[#0D2329]/80">
-              Commercial &amp; Payment Terms
+            <Link href="/finance" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
+              Payment Plans &amp; Pricing
             </Link>
             <Link href="/buyer" className="block py-2.5 px-4 rounded-xl bg-[#EAF2EE] text-[#2C5E50] font-bold">
               Buyer Portal &amp; Receipts
-            </Link>
-            <Link href="/referrals" className="block py-2.5 px-4 rounded-xl bg-[#FAF2EB] text-[#C58F58] font-bold">
-              Referral Program (₹50 per Lead)
             </Link>
           </div>
 

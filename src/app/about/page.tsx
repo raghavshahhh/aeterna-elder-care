@@ -28,7 +28,7 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs font-bold text-[#E0AB77] uppercase tracking-widest">
             <Compass className="w-3.5 h-3.5" />
-            About Senior Living Citizen Foundation
+            About Senior Living Citizens Foundation
           </div>
           <h1 className="text-4xl sm:text-6xl font-serif-heading font-normal tracking-tight text-[#FAF8F5] leading-tight">
             The <span className="italic font-serif text-[#C58F58]">Story</span> Behind the Project.
@@ -47,11 +47,11 @@ export default function AboutPage() {
               The Foundation
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-bold text-[#0D2329]">
-              Why <span className="italic font-serif text-[#C58F58]">Senior Living Citizen Foundation?</span>
+              Why <span className="italic font-serif text-[#C58F58]">Senior Living Citizens Foundation?</span>
             </h2>
             <div className="space-y-4 text-sm sm:text-base text-[#53676E] leading-relaxed">
               <p>
-                The Senior Living Citizen Foundation was conceived with one question: where do India&apos;s seniors go when their city becomes too fast, too loud, and too far from the doctor?
+                The Senior Living Citizens Foundation was conceived with one question: where do India&apos;s seniors go when their city becomes too fast, too loud, and too far from the doctor?
               </p>
               <p>
                 The answer was not another apartment tower. It was a plotted community — land in your name, a home built to your body, and neighbours living the same chapter of life as you.
@@ -152,7 +152,7 @@ export default function AboutPage() {
               Book a Site Visit
             </button>
             <button
-              onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I would like to schedule a site visit to Senior Living Citizen Foundation...' })}
+              onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I would like to schedule a site visit to Senior Living Citizens Foundation...' })}
               className="px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 transition-all flex items-center gap-2"
             >
               <MessageSquare className="w-4 h-4 text-emerald-400" />

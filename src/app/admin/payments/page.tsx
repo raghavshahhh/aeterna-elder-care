@@ -32,8 +32,6 @@ export default function AdminPaymentsPage() {
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [isGeneratingLink, setIsGeneratingLink] = useState(false);
   const [newLinkModal, setNewLinkModal] = useState(false);
-  const [selectedPaymentForRefund, setSelectedPaymentForRefund] = useState<PaymentRecord | null>(null);
-  const [refundReason, setRefundReason] = useState('');
 
   // Form for new link
   const [linkBookingId, setLinkBookingId] = useState('');
@@ -106,9 +104,9 @@ export default function AdminPaymentsPage() {
 
   if (isLoading && !data) {
     return (
-      <div className="p-12 text-center text-white font-mono">
-        <div className="w-8 h-8 border-2 border-[#C58F58] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <span className="text-xs text-white/60 uppercase tracking-widest">
+      <div className="p-12 text-center text-slate-800 font-mono">
+        <div className="w-8 h-8 border-2 border-[#2C5E50] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <span className="text-xs text-slate-500 uppercase tracking-widest">
           Loading Financial Command Center...
         </span>
       </div>
@@ -145,16 +143,16 @@ export default function AdminPaymentsPage() {
   return (
     <div className="space-y-8">
       {/* Header & Quick Action */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-xs">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C58F58]/20 border border-[#C58F58]/40 text-[#E0AB77] text-xs font-mono font-bold uppercase tracking-widest mb-2">
-            <CreditCard className="w-3.5 h-3.5" />
-            <span>FINANCIAL OPERATIONS</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[#2C5E50] text-xs font-mono font-bold uppercase tracking-widest mb-2">
+            <CreditCard className="w-3.5 h-3.5 text-[#C58F58]" />
+            <span>FINANCIAL OPERATIONS &amp; ESCROW</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-serif-heading font-bold text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-serif-heading font-bold text-slate-900 tracking-tight">
             Payments, Ledger &amp; Collections
           </h1>
-          <p className="text-xs text-white/60 mt-1">
+          <p className="text-xs text-slate-500 mt-1">
             Real-time Razorpay transaction monitoring, milestone tracking, reconciliation, and refund queues.
           </p>
         </div>
@@ -162,7 +160,7 @@ export default function AdminPaymentsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setNewLinkModal(true)}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#C58F58] to-[#A06C3B] hover:brightness-110 text-white font-bold text-xs font-mono flex items-center gap-2 shadow-lg shadow-[#C58F58]/20 cursor-pointer transition-all"
+            className="px-4 py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#234b40] text-white font-bold text-xs flex items-center gap-2 shadow-sm cursor-pointer transition-all"
           >
             <Plus className="w-4 h-4" />
             <span>Create Payment Request</span>
@@ -171,94 +169,94 @@ export default function AdminPaymentsPage() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
-        <div className="bg-[#091B20] border border-white/10 rounded-2xl p-4 sm:p-5">
-          <div className="flex items-center justify-between text-white/50 text-xs">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-xs">
+          <div className="flex items-center justify-between text-slate-500 text-xs font-mono font-bold">
             <span>TOTAL COLLECTED</span>
-            <BadgeIndianRupee className="w-4 h-4 text-emerald-400" />
+            <BadgeIndianRupee className="w-4 h-4 text-emerald-600" />
           </div>
-          <div className="text-xl sm:text-2xl font-bold text-emerald-400 mt-2">
+          <div className="text-xl sm:text-2xl font-bold text-emerald-700 mt-2 font-mono">
             ₹{(metrics.totalCollected / 100000).toFixed(2)} L
           </div>
-          <span className="text-[10px] text-white/40 block mt-0.5">
+          <span className="text-[11px] text-slate-500 block mt-0.5 font-mono">
             Today: ₹{metrics.todayCollected.toLocaleString('en-IN')}
           </span>
         </div>
 
-        <div className="bg-[#091B20] border border-white/10 rounded-2xl p-4 sm:p-5">
-          <div className="flex items-center justify-between text-white/50 text-xs">
+        <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-xs">
+          <div className="flex items-center justify-between text-slate-500 text-xs font-mono font-bold">
             <span>TOTAL OUTSTANDING</span>
-            <Clock className="w-4 h-4 text-[#C58F58]" />
+            <Clock className="w-4 h-4 text-amber-600" />
           </div>
-          <div className="text-xl sm:text-2xl font-bold text-[#E0AB77] mt-2">
+          <div className="text-xl sm:text-2xl font-bold text-amber-800 mt-2 font-mono">
             ₹{(metrics.totalOutstanding / 100000).toFixed(2)} L
           </div>
-          <span className="text-[10px] text-white/40 block mt-0.5">
+          <span className="text-[11px] text-slate-500 block mt-0.5 font-mono">
             Across {metrics.activeBookingsCount} Active Bookings
           </span>
         </div>
 
-        <div className="bg-[#091B20] border border-white/10 rounded-2xl p-4 sm:p-5">
-          <div className="flex items-center justify-between text-white/50 text-xs">
+        <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-xs">
+          <div className="flex items-center justify-between text-slate-500 text-xs font-mono font-bold">
             <span>MONTH COLLECTIONS</span>
-            <Calendar className="w-4 h-4 text-sky-400" />
+            <Calendar className="w-4 h-4 text-blue-600" />
           </div>
-          <div className="text-xl sm:text-2xl font-bold text-white mt-2">
+          <div className="text-xl sm:text-2xl font-bold text-slate-900 mt-2 font-mono">
             ₹{(metrics.monthCollected / 100000).toFixed(2)} L
           </div>
-          <span className="text-[10px] text-emerald-400 block mt-0.5">● 100% Reconciled</span>
+          <span className="text-[11px] text-emerald-700 block mt-0.5 font-mono font-semibold">● 100% Reconciled</span>
         </div>
 
-        <div className="bg-[#091B20] border border-white/10 rounded-2xl p-4 sm:p-5">
-          <div className="flex items-center justify-between text-white/50 text-xs">
+        <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-xs">
+          <div className="flex items-center justify-between text-slate-500 text-xs font-mono font-bold">
             <span>OVERDUE MILESTONES</span>
-            <AlertTriangle className="w-4 h-4 text-amber-400" />
+            <AlertTriangle className="w-4 h-4 text-red-600" />
           </div>
-          <div className="text-xl sm:text-2xl font-bold text-amber-300 mt-2">
+          <div className="text-xl sm:text-2xl font-bold text-red-700 mt-2 font-mono">
             {metrics.overdueCount}
           </div>
-          <span className="text-[10px] text-white/40 block mt-0.5">Requires reminder dispatch</span>
+          <span className="text-[11px] text-slate-500 block mt-0.5 font-mono">Requires reminder dispatch</span>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-white/10 pb-3 overflow-x-auto text-xs font-mono">
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-3 overflow-x-auto text-xs font-mono">
         <button
           onClick={() => setActiveTab('LEDGER')}
-          className={`px-4 py-2 rounded-xl transition-all ${
-            activeTab === 'LEDGER' ? 'bg-[#2C5E50] text-white font-bold' : 'text-white/60 hover:text-white'
+          className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+            activeTab === 'LEDGER' ? 'bg-[#2C5E50] text-white font-bold shadow-xs' : 'text-slate-600 hover:text-slate-900 bg-white border border-slate-200'
           }`}
         >
           All Payments Ledger ({payments.length})
         </button>
         <button
           onClick={() => setActiveTab('INSTALLMENTS')}
-          className={`px-4 py-2 rounded-xl transition-all ${
-            activeTab === 'INSTALLMENTS' ? 'bg-[#2C5E50] text-white font-bold' : 'text-white/60 hover:text-white'
+          className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+            activeTab === 'INSTALLMENTS' ? 'bg-[#2C5E50] text-white font-bold shadow-xs' : 'text-slate-600 hover:text-slate-900 bg-white border border-slate-200'
           }`}
         >
           Milestones &amp; Overdue ({installments.length})
         </button>
         <button
           onClick={() => setActiveTab('LINKS')}
-          className={`px-4 py-2 rounded-xl transition-all ${
-            activeTab === 'LINKS' ? 'bg-[#2C5E50] text-white font-bold' : 'text-white/60 hover:text-white'
+          className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+            activeTab === 'LINKS' ? 'bg-[#2C5E50] text-white font-bold shadow-xs' : 'text-slate-600 hover:text-slate-900 bg-white border border-slate-200'
           }`}
         >
           Payment Links ({paymentLinks.length})
         </button>
         <button
           onClick={() => setActiveTab('RECONCILIATION')}
-          className={`px-4 py-2 rounded-xl transition-all ${
-            activeTab === 'RECONCILIATION' ? 'bg-[#2C5E50] text-white font-bold' : 'text-white/60 hover:text-white'
+          className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+            activeTab === 'RECONCILIATION' ? 'bg-[#2C5E50] text-white font-bold shadow-xs' : 'text-slate-600 hover:text-slate-900 bg-white border border-slate-200'
           }`}
         >
           Razorpay Reconciliation
         </button>
         <button
           onClick={() => setActiveTab('REFUNDS')}
-          className={`px-4 py-2 rounded-xl transition-all ${
-            activeTab === 'REFUNDS' ? 'bg-[#2C5E50] text-white font-bold' : 'text-white/60 hover:text-white'
+          className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+            activeTab === 'REFUNDS' ? 'bg-[#2C5E50] text-white font-bold shadow-xs' : 'text-slate-600 hover:text-slate-900 bg-white border border-slate-200'
           }`}
         >
           Refunds Queue ({refunds.length})
@@ -269,15 +267,15 @@ export default function AdminPaymentsPage() {
       {activeTab === 'LEDGER' && (
         <div className="space-y-4">
           {/* Filters & Search */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-between bg-[#091B20] p-4 rounded-2xl border border-white/10">
+          <div className="flex flex-col sm:flex-row gap-4 justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
             <div className="relative flex-1 max-w-md">
-              <Search className="w-4 h-4 text-white/40 absolute left-3 top-3" />
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
               <input
                 type="text"
                 placeholder="Search by buyer, phone, receipt or Razorpay ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#C58F58]"
+                className="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#2C5E50]"
               />
             </div>
 
@@ -286,8 +284,8 @@ export default function AdminPaymentsPage() {
                 <button
                   key={st}
                   onClick={() => setStatusFilter(st)}
-                  className={`px-3 py-1.5 rounded-lg transition-all ${
-                    statusFilter === st ? 'bg-[#C58F58] text-white font-bold' : 'bg-white/5 text-white/60 hover:bg-white/10'
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                    statusFilter === st ? 'bg-[#2C5E50] text-white font-bold' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
                   {st}
@@ -297,54 +295,54 @@ export default function AdminPaymentsPage() {
           </div>
 
           {/* Ledger Table */}
-          <div className="bg-[#091B20] border border-white/10 rounded-3xl overflow-hidden shadow-xl">
+          <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs font-mono">
-                <thead className="bg-[#061215] border-b border-white/10 text-white/50 uppercase text-[10px]">
+                <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase text-[10px]">
                   <tr>
-                    <th className="py-3.5 px-4">Receipt &amp; Payment ID</th>
-                    <th className="py-3.5 px-4">Buyer &amp; Unit</th>
-                    <th className="py-3.5 px-4">Method &amp; Date</th>
-                    <th className="py-3.5 px-4 text-right">Amount</th>
-                    <th className="py-3.5 px-4 text-center">Status</th>
-                    <th className="py-3.5 px-4 text-right">Actions</th>
+                    <th className="py-3.5 px-4 font-bold">Receipt &amp; Payment ID</th>
+                    <th className="py-3.5 px-4 font-bold">Buyer &amp; Unit</th>
+                    <th className="py-3.5 px-4 font-bold">Method &amp; Date</th>
+                    <th className="py-3.5 px-4 font-bold text-right">Amount</th>
+                    <th className="py-3.5 px-4 font-bold text-center">Status</th>
+                    <th className="py-3.5 px-4 font-bold text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-slate-100">
                   {filteredPayments.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="py-8 text-center text-white/40">
+                      <td colSpan={6} className="py-8 text-center text-slate-400">
                         No payment records matching the selected filters.
                       </td>
                     </tr>
                   ) : (
                     filteredPayments.map((p) => (
-                      <tr key={p.id} className="hover:bg-white/5 transition-colors">
+                      <tr key={p.id} className="hover:bg-slate-50 transition-colors">
                         <td className="py-3.5 px-4">
-                          <div className="font-bold text-[#E0AB77]">#{p.receiptNumber}</div>
-                          <span className="text-[10px] text-white/40">{p.razorpayPaymentId || p.id}</span>
+                          <div className="font-bold text-[#2C5E50]">#{p.receiptNumber}</div>
+                          <span className="text-[10px] text-slate-400">{p.razorpayPaymentId || p.id}</span>
                         </td>
                         <td className="py-3.5 px-4">
-                          <div className="font-bold text-white">{p.buyerName}</div>
-                          <span className="text-[10px] text-white/50">{p.unitCode} ({p.buyerPhone})</span>
+                          <div className="font-bold text-slate-900">{p.buyerName}</div>
+                          <span className="text-[10px] text-slate-500">{p.unitCode} ({p.buyerPhone})</span>
                         </td>
                         <td className="py-3.5 px-4">
-                          <div className="text-white/80">{p.method.replace(/_/g, ' ')}</div>
-                          <span className="text-[10px] text-white/40">
+                          <div className="text-slate-700 font-semibold">{p.method.replace(/_/g, ' ')}</div>
+                          <span className="text-[10px] text-slate-400">
                             {new Date(p.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 text-right font-bold text-sm text-emerald-400">
+                        <td className="py-3.5 px-4 text-right font-bold text-sm text-emerald-700">
                           ₹{p.amountPaid.toLocaleString('en-IN')}
                         </td>
                         <td className="py-3.5 px-4 text-center">
                           <span
-                            className={`px-2 py-0.5 rounded-md text-[9px] font-bold ${
+                            className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
                               p.status === 'CAPTURED'
-                                ? 'bg-emerald-500/20 text-emerald-400'
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                                 : p.status === 'FAILED'
-                                ? 'bg-red-500/20 text-red-400'
-                                : 'bg-amber-500/20 text-amber-300'
+                                ? 'bg-red-50 text-red-700 border border-red-200'
+                                : 'bg-amber-50 text-amber-700 border border-amber-200'
                             }`}
                           >
                             {p.status}
@@ -354,9 +352,9 @@ export default function AdminPaymentsPage() {
                           <Link
                             href={`/buyer/receipts/${p.receiptNumber}`}
                             target="_blank"
-                            className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#E0AB77] text-[11px] font-bold"
+                            className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-bold border border-slate-200"
                           >
-                            <FileText className="w-3 h-3" />
+                            <FileText className="w-3 h-3 text-[#2C5E50]" />
                             <span>Receipt</span>
                           </Link>
                         </td>
@@ -372,56 +370,56 @@ export default function AdminPaymentsPage() {
 
       {/* TAB 2: MILESTONES & OVERDUE */}
       {activeTab === 'INSTALLMENTS' && (
-        <div className="bg-[#091B20] border border-white/10 rounded-3xl overflow-hidden shadow-xl">
-          <div className="p-5 border-b border-white/10 flex items-center justify-between">
-            <h3 className="text-sm font-serif-heading font-bold text-white">
+        <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
+          <div className="p-5 border-b border-slate-200 flex items-center justify-between">
+            <h3 className="text-sm font-serif-heading font-bold text-slate-900">
               All Configured Milestones &amp; Collection Schedule
             </h3>
-            <span className="text-xs text-white/50 font-mono">
+            <span className="text-xs text-slate-500 font-mono">
               Total Milestones: {installments.length}
             </span>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs font-mono">
-              <thead className="bg-[#061215] border-b border-white/10 text-white/50 uppercase text-[10px]">
+              <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase text-[10px]">
                 <tr>
-                  <th className="py-3.5 px-4">Milestone Title</th>
-                  <th className="py-3.5 px-4">Booking &amp; Buyer</th>
-                  <th className="py-3.5 px-4">Due Date</th>
-                  <th className="py-3.5 px-4 text-right">Milestone Amount</th>
-                  <th className="py-3.5 px-4 text-center">Status</th>
-                  <th className="py-3.5 px-4 text-right">Reminder Action</th>
+                  <th className="py-3.5 px-4 font-bold">Milestone Title</th>
+                  <th className="py-3.5 px-4 font-bold">Booking &amp; Buyer</th>
+                  <th className="py-3.5 px-4 font-bold">Due Date</th>
+                  <th className="py-3.5 px-4 font-bold text-right">Milestone Amount</th>
+                  <th className="py-3.5 px-4 font-bold text-center">Status</th>
+                  <th className="py-3.5 px-4 font-bold text-right">Reminder Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-slate-100">
                 {installments.map((inst: any) => {
                   const isPaid = inst.status === 'PAID';
                   return (
-                    <tr key={inst.id} className="hover:bg-white/5 transition-colors">
+                    <tr key={inst.id} className="hover:bg-slate-50 transition-colors">
                       <td className="py-3.5 px-4">
-                        <div className="font-bold text-white">{inst.title}</div>
-                        <span className="text-[10px] text-white/40">#{inst.id}</span>
+                        <div className="font-bold text-slate-900">{inst.title}</div>
+                        <span className="text-[10px] text-slate-400">#{inst.id}</span>
                       </td>
                       <td className="py-3.5 px-4">
-                        <div className="text-white font-bold">{inst.customerName}</div>
-                        <span className="text-[10px] text-white/50">{inst.unitCode} ({inst.bookingNumber})</span>
+                        <div className="text-slate-900 font-bold">{inst.customerName}</div>
+                        <span className="text-[10px] text-slate-500">{inst.unitCode} ({inst.bookingNumber})</span>
                       </td>
                       <td className="py-3.5 px-4">
-                        <div className="text-white/80">{inst.dueDate}</div>
-                        <span className="text-[10px] text-white/40">{inst.gracePeriodDays} days grace</span>
+                        <div className="text-slate-700">{inst.dueDate}</div>
+                        <span className="text-[10px] text-slate-400">{inst.gracePeriodDays} days grace</span>
                       </td>
-                      <td className="py-3.5 px-4 text-right font-bold text-sm text-[#E0AB77]">
+                      <td className="py-3.5 px-4 text-right font-bold text-sm text-[#2C5E50]">
                         ₹{inst.amount.toLocaleString('en-IN')}
                       </td>
                       <td className="py-3.5 px-4 text-center">
                         <span
-                          className={`px-2 py-0.5 rounded-md text-[9px] font-bold ${
+                          className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
                             isPaid
-                              ? 'bg-emerald-500/20 text-emerald-400'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                               : inst.status === 'DUE'
-                              ? 'bg-amber-500/20 text-amber-300'
-                              : 'bg-white/10 text-white/60'
+                              ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                              : 'bg-slate-100 text-slate-600'
                           }`}
                         >
                           {inst.status}
@@ -437,7 +435,7 @@ export default function AdminPaymentsPage() {
                             )}%20due%20on%20${inst.dueDate}.`}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#25D366]/20 hover:bg-[#25D366]/30 text-[#25D366] text-[10px] font-bold"
+                            className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-[10px] font-bold border border-emerald-200"
                           >
                             <Send className="w-3 h-3" />
                             <span>Send Reminder</span>
@@ -455,45 +453,45 @@ export default function AdminPaymentsPage() {
 
       {/* TAB 3: PAYMENT LINKS */}
       {activeTab === 'LINKS' && (
-        <div className="bg-[#091B20] border border-white/10 rounded-3xl overflow-hidden shadow-xl">
-          <div className="p-5 border-b border-white/10 flex items-center justify-between">
-            <h3 className="text-sm font-serif-heading font-bold text-white">
+        <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
+          <div className="p-5 border-b border-slate-200 flex items-center justify-between">
+            <h3 className="text-sm font-serif-heading font-bold text-slate-900">
               Generated Razorpay Payment Links
             </h3>
             <button
               onClick={() => setNewLinkModal(true)}
-              className="px-3 py-1.5 rounded-lg bg-[#C58F58] hover:bg-[#D49E67] text-white text-xs font-mono font-bold flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-lg bg-[#2C5E50] hover:bg-[#234b40] text-white text-xs font-mono font-bold flex items-center gap-1.5 cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Create New Link</span>
             </button>
           </div>
 
-          <div className="divide-y divide-white/5 font-mono text-xs">
+          <div className="divide-y divide-slate-100 font-mono text-xs">
             {paymentLinks.length === 0 ? (
-              <div className="p-8 text-center text-white/40">
+              <div className="p-8 text-center text-slate-400">
                 No active payment links created yet. Click "Create New Link" above to dispatch a custom payment request.
               </div>
             ) : (
               paymentLinks.map((l) => (
-                <div key={l.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-white/5">
+                <div key={l.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50">
                   <div>
-                    <div className="font-bold text-white">{l.description}</div>
-                    <div className="text-[10px] text-white/50 mt-0.5">
+                    <div className="font-bold text-slate-900">{l.description}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">
                       Customer: {l.customerName} ({l.customerPhone}) • Expires: {new Date(l.expiresAt).toLocaleDateString('en-IN')}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <span className="font-bold text-sm text-[#E0AB77]">₹{l.amount.toLocaleString('en-IN')}</span>
+                    <span className="font-bold text-sm text-[#2C5E50]">₹{l.amount.toLocaleString('en-IN')}</span>
                     <a
                       href={l.shortUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold flex items-center gap-1"
+                      className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-bold flex items-center gap-1 border border-slate-200"
                     >
                       <span>{l.shortUrl}</span>
-                      <ExternalLink className="w-3 h-3" />
+                      <ExternalLink className="w-3 h-3 text-[#2C5E50]" />
                     </a>
                   </div>
                 </div>
@@ -505,42 +503,42 @@ export default function AdminPaymentsPage() {
 
       {/* TAB 4: RECONCILIATION */}
       {activeTab === 'RECONCILIATION' && (
-        <div className="bg-[#091B20] border border-white/10 rounded-3xl p-6 sm:p-8 space-y-6">
-          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
-              <h3 className="text-base font-serif-heading font-bold text-white">
+              <h3 className="text-base font-serif-heading font-bold text-slate-900">
                 Razorpay Automated Reconciliation Engine
               </h3>
-              <p className="text-xs text-white/60 mt-0.5">
+              <p className="text-xs text-slate-500 mt-0.5">
                 Automated cross-check between internal ledger receipts and Razorpay settlement balances.
               </p>
             </div>
-            <div className="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold flex items-center gap-2">
+            <div className="px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-mono font-bold flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" />
               <span>100% Ledger Synced</span>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono">
-            <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-              <span className="text-white/50 block text-[10px]">INTERNAL RECORDED REVENUE</span>
-              <span className="text-lg font-bold text-emerald-400 mt-1 block">
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+              <span className="text-slate-500 block text-[10px]">INTERNAL RECORDED REVENUE</span>
+              <span className="text-lg font-bold text-emerald-700 mt-1 block">
                 ₹{metrics.totalCollected.toLocaleString('en-IN')}
               </span>
             </div>
-            <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-              <span className="text-white/50 block text-[10px]">RAZORPAY CAPTURED SETTLEMENT</span>
-              <span className="text-lg font-bold text-emerald-400 mt-1 block">
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+              <span className="text-slate-500 block text-[10px]">RAZORPAY CAPTURED SETTLEMENT</span>
+              <span className="text-lg font-bold text-emerald-700 mt-1 block">
                 ₹{metrics.totalCollected.toLocaleString('en-IN')}
               </span>
             </div>
-            <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-              <span className="text-white/50 block text-[10px]">DISCREPANCY / VARIANCE</span>
-              <span className="text-lg font-bold text-white mt-1 block">₹0.00 (Zero Mismatch)</span>
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+              <span className="text-slate-500 block text-[10px]">DISCREPANCY / VARIANCE</span>
+              <span className="text-lg font-bold text-slate-900 mt-1 block">₹0.00 (Zero Mismatch)</span>
             </div>
           </div>
 
-          <p className="text-xs text-white/60">
+          <p className="text-xs text-slate-500">
             All captured orders have valid HMAC-SHA256 signatures and confirmed webhook delivery timestamps.
           </p>
         </div>
@@ -548,40 +546,40 @@ export default function AdminPaymentsPage() {
 
       {/* TAB 5: REFUNDS QUEUE */}
       {activeTab === 'REFUNDS' && (
-        <div className="bg-[#091B20] border border-white/10 rounded-3xl overflow-hidden shadow-xl">
-          <div className="p-5 border-b border-white/10 flex items-center justify-between">
-            <h3 className="text-sm font-serif-heading font-bold text-white">
+        <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
+          <div className="p-5 border-b border-slate-200 flex items-center justify-between">
+            <h3 className="text-sm font-serif-heading font-bold text-slate-900">
               Customer Refunds &amp; Cancellation Desk
             </h3>
-            <span className="text-xs text-white/50 font-mono">
+            <span className="text-xs text-slate-500 font-mono">
               Total Processed Refunds: ₹{metrics.totalRefundsAmount.toLocaleString('en-IN')}
             </span>
           </div>
 
-          <div className="divide-y divide-white/5 font-mono text-xs">
+          <div className="divide-y divide-slate-100 font-mono text-xs">
             {refunds.length === 0 ? (
-              <div className="p-8 text-center text-white/40">
+              <div className="p-8 text-center text-slate-400">
                 No active refund requests in the queue.
               </div>
             ) : (
               refunds.map((ref) => (
-                <div key={ref.id} className="p-4 flex items-center justify-between hover:bg-white/5">
+                <div key={ref.id} className="p-4 flex items-center justify-between hover:bg-slate-50">
                   <div>
-                    <div className="font-bold text-white">Refund #{ref.id} for Payment #{ref.paymentId}</div>
-                    <span className="text-[10px] text-white/50">Reason: {ref.reason}</span>
+                    <div className="font-bold text-slate-900">Refund #{ref.id} for Payment #{ref.paymentId}</div>
+                    <span className="text-[10px] text-slate-500">Reason: {ref.reason}</span>
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <span className="font-bold text-sm text-red-400">₹{ref.amount.toLocaleString('en-IN')}</span>
+                    <span className="font-bold text-sm text-red-600">₹{ref.amount.toLocaleString('en-IN')}</span>
                     {ref.status === 'REQUESTED' ? (
                       <button
                         onClick={() => handleApproveRefund(ref.id)}
-                        className="px-3 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 text-xs font-bold"
+                        className="px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold border border-red-200 cursor-pointer"
                       >
                         Approve via Razorpay
                       </button>
                     ) : (
-                      <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px]">
+                      <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] border border-emerald-200">
                         COMPLETED
                       </span>
                     )}
@@ -595,25 +593,25 @@ export default function AdminPaymentsPage() {
 
       {/* Modal: Create Payment Link */}
       {newLinkModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-[#0D2329] border border-white/10 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl">
-            <h3 className="text-lg font-serif-heading font-bold text-white mb-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl">
+            <h3 className="text-lg font-serif-heading font-bold text-slate-900 mb-2">
               Create Razorpay Payment Link
             </h3>
-            <p className="text-xs text-white/60 mb-6">
+            <p className="text-xs text-slate-500 mb-6">
               Generate a secure Razorpay payment URL attached to a booking dossier.
             </p>
 
             <form onSubmit={handleCreatePaymentLink} className="space-y-4">
               <div>
-                <label className="block text-xs font-mono text-white/70 uppercase mb-1">
+                <label className="block text-xs font-mono text-slate-600 uppercase mb-1 font-bold">
                   Select Booking *
                 </label>
                 <select
                   required
                   value={linkBookingId}
                   onChange={(e) => setLinkBookingId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs font-mono"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:border-[#2C5E50] focus:outline-none"
                 >
                   <option value="">-- Choose Booking --</option>
                   {data?.payments?.map((p: any) => (
@@ -625,7 +623,7 @@ export default function AdminPaymentsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-white/70 uppercase mb-1">
+                <label className="block text-xs font-mono text-slate-600 uppercase mb-1 font-bold">
                   Amount in INR (₹) *
                 </label>
                 <input
@@ -634,12 +632,12 @@ export default function AdminPaymentsPage() {
                   placeholder="e.g. 500000"
                   value={linkAmount}
                   onChange={(e) => setLinkAmount(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs font-mono"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:border-[#2C5E50] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-white/70 uppercase mb-1">
+                <label className="block text-xs font-mono text-slate-600 uppercase mb-1 font-bold">
                   Payment Description
                 </label>
                 <input
@@ -647,22 +645,22 @@ export default function AdminPaymentsPage() {
                   placeholder="e.g. Milestone 2 Allotment"
                   value={linkDesc}
                   onChange={(e) => setLinkDesc(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:border-[#2C5E50] focus:outline-none"
                 />
               </div>
 
-              <div className="flex gap-3 pt-4 border-t border-white/10">
+              <div className="flex gap-3 pt-4 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => setNewLinkModal(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs text-white font-mono"
+                  className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs text-slate-700 font-mono font-bold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isGeneratingLink}
-                  className="flex-1 py-2.5 rounded-xl bg-[#C58F58] hover:bg-[#D49E67] text-white font-bold text-xs font-mono"
+                  className="flex-1 py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#234b40] text-white font-bold text-xs font-mono cursor-pointer"
                 >
                   {isGeneratingLink ? 'Generating...' : 'Dispatch Link'}
                 </button>
@@ -674,3 +672,4 @@ export default function AdminPaymentsPage() {
     </div>
   );
 }
+

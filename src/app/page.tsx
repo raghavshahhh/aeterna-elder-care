@@ -17,6 +17,7 @@ import { FinancePaymentPlans } from '@/components/property/FinancePaymentPlans';
 import { TrustTransparency } from '@/components/property/TrustTransparency';
 import { PersonalizedJourneySelector } from '@/components/property/PersonalizedJourneySelector';
 import { BuyerJourneyOnboarding } from '@/components/property/BuyerJourneyOnboarding';
+import { CommunityAdvocacyBanner } from '@/components/property/CommunityAdvocacyBanner';
 import { propertyFaqs, projectOverview } from '@/data/propertyData';
 
 import { Accordion } from '@/components/ui/Accordion';
@@ -117,8 +118,12 @@ export default function HomePage() {
         <BuyerJourneyOnboarding />
       </div>
 
+      {/* 19 — COMMUNITY ADVOCACY & REFERRAL PARTNER BANNER */}
+      <div className="content-auto">
+        <CommunityAdvocacyBanner />
+      </div>
 
-      {/* 18 — FREQUENTLY ASKED QUESTIONS (FAMILY-TAILORED Q&AS) */}
+      {/* 20 — FREQUENTLY ASKED QUESTIONS (FAMILY-TAILORED Q&AS) */}
       <section className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E8E2D8]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-3 mb-14">

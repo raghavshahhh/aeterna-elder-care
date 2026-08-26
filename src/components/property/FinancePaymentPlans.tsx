@@ -42,7 +42,7 @@ export const FinancePaymentPlans: React.FC = () => {
             Transparent Pricing. <span className="italic font-serif text-[#C58F58]">Straightforward Plans.</span>
           </h2>
           <p className="text-sm sm:text-base text-[#53676E] leading-relaxed">
-            Down Payment Plan starting at <strong>₹25 Lakhs</strong> for senior residences with <strong>₹25,000/month rental return till possession</strong>, <strong>₹12,500/month rental return after possession</strong>, and a <strong>1-year guaranteed lease agreement</strong>. 100% freehold land registration.
+            Down Payment Plan starting at <strong>₹25 Lakhs</strong> for senior residences with <strong>₹25,000/month rental return till possession</strong>, <strong>₹12,500/month rental return after possession</strong>, and <strong>100% direct freehold land registration</strong>.
           </p>
         </div>
 
@@ -72,10 +72,10 @@ export const FinancePaymentPlans: React.FC = () => {
                   </div>
 
                   <div>
-                    <div className={`text-3xl sm:text-4xl font-serif-heading font-bold tracking-tight ${isFeatured ? 'text-[#FAF8F5]' : 'text-[#0D2329]'}`}>
+                    <div className={`text-2xl sm:text-3xl font-serif-heading font-bold tracking-tight ${isFeatured ? 'text-[#FAF8F5]' : 'text-[#0D2329]'}`}>
                       {plan.ratio}
                     </div>
-                    <h3 className={`text-lg font-serif-heading font-bold mt-1 ${isFeatured ? 'text-[#F2EADA]' : 'text-[#0D2329]'}`}>
+                    <h3 className={`text-base sm:text-lg font-serif-heading font-bold mt-1 ${isFeatured ? 'text-[#F2EADA]' : 'text-[#0D2329]'}`}>
                       {plan.title}
                     </h3>
                   </div>
@@ -91,7 +91,7 @@ export const FinancePaymentPlans: React.FC = () => {
                         <span className={isFeatured ? 'text-white/80' : 'text-[#53676E]'}>
                           {step.milestone}
                         </span>
-                        <span className="font-mono font-bold text-emerald-400 shrink-0">
+                        <span className="font-mono font-bold text-emerald-500 shrink-0">
                           {step.percentage}
                         </span>
                       </div>
@@ -106,7 +106,7 @@ export const FinancePaymentPlans: React.FC = () => {
                 </div>
 
                 <button
-                  onClick={() => openWhatsApp({ actionType: 'request-pricing', message: `I want details on ${plan.title} (${plan.code}) for Senior Living Citizen Foundation...` })}
+                  onClick={() => openWhatsApp({ actionType: 'request-pricing', message: `I want details on ${plan.title} (${plan.code}) for Senior Living Citizens Foundation...` })}
                   className={`mt-8 w-full py-3.5 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                     isFeatured
                       ? 'bg-[#C58F58] hover:bg-[#B37E47] text-[#071519] shadow-lg font-bold'
@@ -139,7 +139,7 @@ export const FinancePaymentPlans: React.FC = () => {
               Official ICICI Bank collection account (ending ...0166). We strongly recommend confirming your unit/plot selection with our sales desk on WhatsApp before paying, so we can send you a signed receipt and hold your allotment.
             </p>
             <button
-              onClick={() => openWhatsApp({ actionType: 'request-pricing', message: 'Hello, I am ready to pay the ₹1 Lakh EOI to reserve a unit/plot at Senior Living Citizen Foundation. Please confirm the unit and send a payment receipt process.' })}
+              onClick={() => openWhatsApp({ actionType: 'request-pricing', message: 'Hello, I am ready to pay the ₹1 Lakh EOI to reserve a unit/plot at Senior Living Citizens Foundation. Please confirm the unit and send a payment receipt process.' })}
               className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#C58F58] hover:bg-[#B37E47] text-[#071519] text-xs font-bold transition-all cursor-pointer"
             >
               <MessageSquare className="w-4 h-4" /> Confirm on WhatsApp Before Paying
@@ -147,7 +147,7 @@ export const FinancePaymentPlans: React.FC = () => {
           </div>
         </div>
 
-        {/* Guaranteed Rental & 1-Year Lease Proposition Showcase */}
+        {/* Assured Rental Return & Cash Flow Policy Showcase */}
         <div className="mb-16 bg-[#0D2329] rounded-3xl p-7 sm:p-10 border border-[#C58F58]/30 shadow-2xl text-white space-y-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-[#C58F58]/10 blur-3xl pointer-events-none" />
 
@@ -157,10 +157,10 @@ export const FinancePaymentPlans: React.FC = () => {
                 <BadgePercent className="w-3.5 h-3.5" /> Assured Commercial Terms
               </div>
               <h3 className="text-2xl sm:text-3xl font-serif-heading font-bold text-white mt-2">
-                {rentalProposition.headline}
+                Assured Monthly Rental Returns &amp; Capital Safety Policy
               </h3>
               <p className="text-xs sm:text-sm text-white/75 mt-1 max-w-2xl">
-                {rentalProposition.subheadline}
+                Structured monthly returns credited directly to allottees during construction and post-possession.
               </p>
             </div>
 
@@ -168,30 +168,64 @@ export const FinancePaymentPlans: React.FC = () => {
               onClick={() =>
                 openWhatsApp({
                   actionType: 'request-pricing',
-                  message: 'Hello, I want to inquire about the ₹25 Lakh Down Payment Plan with ₹25,000/month rental return till possession, ₹12,500/month rental return after possession, and 1-year guaranteed lease agreement.'
+                  message: 'Hello, I want to inquire about the rental return plans (₹25,000/mo pre-possession on Plan 1 and ₹6,250/mo on Plan 2) at Senior Living Citizens Foundation.'
                 })
               }
               className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all shadow-lg shrink-0 cursor-pointer"
             >
-              <MessageSquare className="w-4 h-4" /> Get Rental Agreement Terms →
+              <MessageSquare className="w-4 h-4" /> Get Rental Policy Terms →
             </button>
           </div>
 
           {/* 4 Pillars Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {rentalProposition.stages.map((stage, idx) => (
-              <div key={idx} className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2 hover:bg-white/10 transition-colors">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#E0AB77] block font-bold">
-                  {stage.stage}
-                </span>
-                <div className="text-xl sm:text-2xl font-serif-heading font-bold text-emerald-400">
-                  {stage.monthlyAmount}
-                </div>
-                <p className="text-xs text-white/75 leading-relaxed">
-                  {stage.note}
-                </p>
+            <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2 hover:bg-white/10 transition-colors">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#E0AB77] block font-bold">
+                Plan 1: Pre-Possession
+              </span>
+              <div className="text-xl sm:text-2xl font-serif-heading font-bold text-emerald-400">
+                ₹25,000 / mo
               </div>
-            ))}
+              <p className="text-xs text-white/75 leading-relaxed">
+                Credited directly to your bank account every month until physical possession on ₹25L Down Payment.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2 hover:bg-white/10 transition-colors">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#E0AB77] block font-bold">
+                Plan 2: Pre-Possession
+              </span>
+              <div className="text-xl sm:text-2xl font-serif-heading font-bold text-emerald-400">
+                ₹6,250 / mo
+              </div>
+              <p className="text-xs text-white/75 leading-relaxed">
+                Paid monthly on initial 50% payment (₹12.5L) from clearance until possession handover.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2 hover:bg-white/10 transition-colors">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#E0AB77] block font-bold">
+                Post-Possession Return
+              </span>
+              <div className="text-xl sm:text-2xl font-serif-heading font-bold text-emerald-400">
+                ₹12,500 / mo
+              </div>
+              <p className="text-xs text-white/75 leading-relaxed">
+                Guaranteed monthly rental income under Foundation senior occupancy management pool.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2 hover:bg-white/10 transition-colors">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#E0AB77] block font-bold">
+                Capital Exit Safety
+              </span>
+              <div className="text-xl sm:text-2xl font-serif-heading font-bold text-emerald-400">
+                ₹25L + FD Rate
+              </div>
+              <p className="text-xs text-white/75 leading-relaxed">
+                100% buyback of down payment plus prevailing FD rate interest on exit or emergency.
+              </p>
+            </div>
           </div>
 
           <div className="flex items-start gap-2 p-4 rounded-2xl bg-white/5 border border-white/10 text-xs text-white/70 leading-relaxed">

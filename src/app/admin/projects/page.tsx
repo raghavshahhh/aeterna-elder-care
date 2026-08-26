@@ -57,12 +57,16 @@ export default function AdminProjectsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-xs">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-serif-heading font-bold text-white">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[#2C5E50] text-xs font-mono font-bold uppercase tracking-widest mb-2">
+            <Building2 className="w-3.5 h-3.5 text-[#C58F58]" />
+            <span>DEVELOPMENT PROJECTS CMS</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-serif-heading font-bold text-slate-900">
             Projects &amp; Masterplans CMS
           </h1>
-          <p className="text-xs sm:text-sm text-white/60">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Configure project blueprints, 3D viewers, commercial pricing propositions, and healthcare amenities.
           </p>
         </div>
@@ -73,52 +77,52 @@ export default function AdminProjectsPage() {
         {projects.map((proj) => (
           <div
             key={proj.id}
-            className="p-6 rounded-3xl bg-[#091B20] border border-white/10 space-y-4 shadow-xl flex flex-col justify-between"
+            className="p-6 rounded-3xl bg-white border border-slate-200/90 space-y-4 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
           >
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-xl font-serif-heading font-bold text-white">{proj.name}</h3>
-                  <span className="text-xs font-mono text-[#C58F58]">/{proj.slug}</span>
+                  <h3 className="text-xl font-serif-heading font-bold text-slate-900">{proj.name}</h3>
+                  <span className="text-xs font-mono text-[#2C5E50]">/{proj.slug}</span>
                 </div>
                 <span
                   className={`px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase ${
                     proj.status === 'PRE_LAUNCH'
-                      ? 'bg-amber-500/20 text-amber-300'
+                      ? 'bg-amber-50 text-amber-800 border border-amber-200'
                       : proj.status === 'READY_TO_MOVE'
-                      ? 'bg-emerald-500/20 text-emerald-300'
-                      : 'bg-blue-500/20 text-blue-300'
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      : 'bg-blue-50 text-blue-700 border border-blue-200'
                   }`}
                 >
                   {proj.status.replace('_', ' ')}
                 </span>
               </div>
 
-              <p className="text-xs text-white/80 leading-relaxed font-sans">{proj.headline}</p>
+              <p className="text-xs text-slate-700 leading-relaxed font-sans font-medium">{proj.headline}</p>
 
-              <div className="grid grid-cols-2 gap-2 pt-2 text-xs font-mono text-white/70">
-                <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
-                  <span className="text-[10px] text-white/40 block">Inventory Scope</span>
-                  <span className="text-white font-bold">{proj.totalPlots ? `${proj.totalPlots} Plots` : `${proj.totalResidences} Residences`}</span>
+              <div className="grid grid-cols-2 gap-2 pt-2 text-xs font-mono text-slate-600">
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <span className="text-[10px] text-slate-400 block uppercase font-bold">Inventory Scope</span>
+                  <span className="text-slate-900 font-bold">{proj.totalPlots ? `${proj.totalPlots} Plots` : `${proj.totalResidences} Residences`}</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
-                  <span className="text-[10px] text-white/40 block">Commercial Model</span>
-                  <span className="text-[#E0AB77] font-bold text-[11px] truncate block">{proj.pricing.basePriceDisplay}</span>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <span className="text-[10px] text-slate-400 block uppercase font-bold">Commercial Model</span>
+                  <span className="text-amber-800 font-bold text-[11px] truncate block">{proj.pricing.basePriceDisplay}</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 text-xs font-mono text-white/60 pt-2">
+              <div className="flex items-center gap-3 text-xs font-mono text-slate-500 pt-2">
                 <span>3D: {proj.enable3D ? '✓ Active' : '✕ Disabled'}</span>
                 <span>•</span>
                 <span>CAD: {proj.enableCAD ? '✓ Active' : '✕ Disabled'}</span>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+            <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
               <Link
                 href={`/projects/${proj.slug}`}
                 target="_blank"
-                className="text-xs font-bold text-[#C58F58] hover:underline flex items-center gap-1 font-mono"
+                className="text-xs font-bold text-[#2C5E50] hover:underline flex items-center gap-1 font-mono"
               >
                 <span>View Public Page</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -126,7 +130,7 @@ export default function AdminProjectsPage() {
 
               <button
                 onClick={() => togglePublish(proj)}
-                className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-mono font-bold flex items-center gap-1.5 transition-colors"
+                className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-200"
               >
                 {proj.isPublished ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                 <span>{proj.isPublished ? 'Unpublish' : 'Publish'}</span>
@@ -138,3 +142,4 @@ export default function AdminProjectsPage() {
     </div>
   );
 }
+

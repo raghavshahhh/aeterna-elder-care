@@ -95,7 +95,7 @@ function BuyerPortalInner() {
             <div className="w-12 h-12 rounded-2xl bg-[#14323A] border border-[#C58F58]/40 p-2 flex items-center justify-center shrink-0 shadow-md">
               <img
                 src="/project-assets/brand/logo-icon-clean.png"
-                alt="Senior Living Citizen Foundation Logo"
+                alt="Senior Living Citizens Foundation Logo"
                 className="w-full h-full object-contain drop-shadow"
               />
             </div>

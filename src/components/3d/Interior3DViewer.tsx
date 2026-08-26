@@ -1362,7 +1362,7 @@ export const Interior3DViewer: React.FC<Interior3DViewerProps> = ({
                 openWhatsApp({
                   actionType: 'reserve-unit',
                   unitType: is1RK ? '1 RK Senior Studio Suite' : '1 BHK Senior Suite',
-                  message: `Hello, I am inspecting the 3D Interior & 2D CAD Floor Plan for ${currentRoomSpec.title} (${is1RK ? '1 RK Studio Suite' : '1 BHK Senior Suite'}) at Senior Living Citizen Foundation. Please share complete interior floor plans and specification sheet.`
+                  message: `Hello, I am inspecting the 3D Interior & 2D CAD Floor Plan for ${currentRoomSpec.title} (${is1RK ? '1 RK Studio Suite' : '1 BHK Senior Suite'}) at Senior Living Citizens Foundation. Please share complete interior floor plans and specification sheet.`
                 })
               }
               className="w-full py-3.5 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all shadow-lg shadow-emerald-950/50 flex items-center justify-center gap-2 cursor-pointer"

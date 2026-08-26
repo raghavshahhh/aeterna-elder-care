@@ -27,7 +27,7 @@ export default function PaymentTermsPage() {
             Commercial &amp; Payment Terms
           </h1>
           <p className="text-sm text-white/70 max-w-2xl mx-auto mt-3">
-            Clear, transparent, and legally binding payment policies for Senior Living Citizen Foundation residences and plotted sanctuaries.
+            Clear, transparent, and legally binding payment policies for Senior Living Citizens Foundation residences and plotted sanctuaries.
           </p>
         </div>
 
@@ -136,7 +136,7 @@ export default function PaymentTermsPage() {
               <span>Secure Digital Payment Gateways</span>
             </h2>
             <p className="text-xs text-white/70">
-              Senior Living Citizen Foundation processes online transactions through Razorpay Software Private Limited utilizing 256-bit SSL encryption and Level 1 PCI-DSS certified banking infrastructure. We do not store credit card numbers, CVVs, or net banking passwords.
+              Senior Living Citizens Foundation processes online transactions through Razorpay Software Private Limited utilizing 256-bit SSL encryption and Level 1 PCI-DSS certified banking infrastructure. We do not store credit card numbers, CVVs, or net banking passwords.
             </p>
           </div>
         </div>

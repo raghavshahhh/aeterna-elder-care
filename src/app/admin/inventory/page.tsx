@@ -92,27 +92,31 @@ export default function AdminInventoryPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-xs">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-serif-heading font-bold text-white">
-            Inventory &amp; Unit Availability
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[#2C5E50] text-xs font-mono font-bold uppercase tracking-widest mb-2">
+            <Building2 className="w-3.5 h-3.5 text-[#C58F58]" />
+            <span>64-PLOT MASTER PLAN &amp; RESIDENCES</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-serif-heading font-bold text-slate-900">
+            Inventory &amp; Unit Availability Matrix
           </h1>
-          <p className="text-xs sm:text-sm text-white/60">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Real-time status management. Changes reflect immediately on the 3D Masterplan and Unit Visualizer.
           </p>
         </div>
       </div>
 
       {/* Filters Bar */}
-      <div className="flex flex-col md:flex-row gap-4 p-4 rounded-2xl bg-[#091B20] border border-white/10">
+      <div className="flex flex-col md:flex-row gap-4 p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
         <div className="flex-1 relative">
-          <Search className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search by Plot / Unit ID (e.g. PLOT-A-01, UNIT-G-01)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder:text-white/40 focus:outline-none focus:border-[#C58F58]"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#2C5E50]"
           />
         </div>
 
@@ -121,8 +125,8 @@ export default function AdminInventoryPage() {
             <button
               key={t}
               onClick={() => setFilterType(t)}
-              className={`px-3 py-2 rounded-xl text-xs font-mono font-bold transition-all ${
-                filterType === t ? 'bg-[#2C5E50] text-white shadow-md' : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+              className={`px-3 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                filterType === t ? 'bg-[#2C5E50] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
               }`}
             >
               {t.replace('_', ' ')}
@@ -135,8 +139,8 @@ export default function AdminInventoryPage() {
             <button
               key={s}
               onClick={() => setFilterStatus(s)}
-              className={`px-3 py-2 rounded-xl text-xs font-mono font-bold transition-all ${
-                filterStatus === s ? 'bg-[#C58F58] text-white shadow-md' : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+              className={`px-3 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                filterStatus === s ? 'bg-amber-500 text-slate-950 shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
               }`}
             >
               {s}
@@ -152,49 +156,49 @@ export default function AdminInventoryPage() {
           return (
             <div
               key={unit.id}
-              className="p-5 rounded-2xl bg-[#091B20] border border-white/10 space-y-4 shadow-lg hover:border-white/20 transition-all flex flex-col justify-between"
+              className="p-5 rounded-3xl bg-white border border-slate-200/90 space-y-4 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-bold font-mono text-white">{unit.unitCode}</span>
+                  <span className="text-sm font-bold font-mono text-slate-900">{unit.unitCode}</span>
                   <span
                     className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ${
                       unit.status === 'AVAILABLE'
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                         : unit.status === 'HOLD'
-                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                        ? 'bg-amber-50 text-amber-700 border border-amber-200'
                         : unit.status === 'RESERVED'
-                        ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                        : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                        ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                        : 'bg-red-50 text-red-700 border border-red-200'
                     }`}
                   >
                     {unit.status}
                   </span>
                 </div>
 
-                <div className="text-xs text-white/70 space-y-1">
+                <div className="text-xs text-slate-600 space-y-1">
                   <div className="flex items-center justify-between">
                     <span>Type:</span>
-                    <span className="font-bold text-white">{unit.type.replace('_', ' ')}</span>
+                    <span className="font-bold text-slate-900">{unit.type.replace('_', ' ')}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Dimension:</span>
-                    <span className="font-mono">{unit.areaSqYd ? `${unit.areaSqYd} Sq. Yd.` : `${unit.areaSqFt} Sq. Ft.`}</span>
+                    <span className="font-mono text-slate-800">{unit.areaSqYd ? `${unit.areaSqYd} Sq. Yd.` : `${unit.areaSqFt} Sq. Ft.`}</span>
                   </div>
                   {unit.floorLevel && (
                     <div className="flex items-center justify-between">
                       <span>Floor:</span>
-                      <span className="capitalize font-mono">{unit.floorLevel}</span>
+                      <span className="capitalize font-mono text-slate-800">{unit.floorLevel}</span>
                     </div>
                   )}
                   <div className="flex items-center justify-between">
                     <span>Facing:</span>
-                    <span>{unit.facing}</span>
+                    <span className="text-slate-800">{unit.facing}</span>
                   </div>
                 </div>
 
                 {/* Price Display / Editor */}
-                <div className="pt-2 border-t border-white/10">
+                <div className="pt-2 border-t border-slate-100">
                   {isEditing ? (
                     <div className="space-y-2">
                       <input
@@ -202,19 +206,19 @@ export default function AdminInventoryPage() {
                         placeholder="e.g. ₹27.00 Lakh"
                         value={editPriceDisplay}
                         onChange={(e) => setEditPriceDisplay(e.target.value)}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-white/10 border border-white/20 text-white text-xs font-mono"
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:outline-none focus:border-[#2C5E50]"
                       />
                       <div className="flex gap-2">
                         <button
                           onClick={() => savePrice(unit.id)}
-                          className="flex-1 py-1 rounded-lg bg-[#2C5E50] text-white text-xs font-bold flex items-center justify-center gap-1"
+                          className="flex-1 py-1 rounded-lg bg-[#2C5E50] hover:bg-[#234b40] text-white text-xs font-bold flex items-center justify-center gap-1 cursor-pointer"
                         >
                           <Save className="w-3.5 h-3.5" />
                           <span>Save</span>
                         </button>
                         <button
                           onClick={() => setEditingUnitId(null)}
-                          className="px-2 py-1 rounded-lg bg-white/10 text-white text-xs"
+                          className="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs cursor-pointer"
                         >
                           <X className="w-3.5 h-3.5" />
                         </button>
@@ -222,14 +226,14 @@ export default function AdminInventoryPage() {
                     </div>
                   ) : (
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-bold text-[#E0AB77] font-mono">{unit.priceDisplay}</span>
+                      <span className="text-sm font-bold text-[#2C5E50] font-mono">{unit.priceDisplay}</span>
                       <button
                         onClick={() => {
                           setEditingUnitId(unit.id);
                           setEditPrice(unit.price);
                           setEditPriceDisplay(unit.priceDisplay);
                         }}
-                        className="p-1 rounded-lg hover:bg-white/10 text-white/50 hover:text-white transition-colors"
+                        className="p-1 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition-colors cursor-pointer"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
@@ -239,15 +243,15 @@ export default function AdminInventoryPage() {
               </div>
 
               {/* Status Quick Action Buttons */}
-              <div className="pt-3 border-t border-white/10 flex flex-wrap gap-1.5">
+              <div className="pt-3 border-t border-slate-100 flex flex-wrap gap-1.5">
                 {(['AVAILABLE', 'HOLD', 'RESERVED', 'SOLD'] as InventoryStatus[]).map((st) => (
                   <button
                     key={st}
                     onClick={() => updateStatus(unit.id, st)}
-                    className={`flex-1 py-1 rounded-lg text-[9px] font-mono font-bold transition-colors ${
+                    className={`flex-1 py-1 rounded-lg text-[9px] font-mono font-bold transition-colors cursor-pointer ${
                       unit.status === st
-                        ? 'bg-white/20 text-white ring-1 ring-white/40'
-                        : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white'
+                        ? 'bg-slate-900 text-white'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
                     }`}
                   >
                     {st}

@@ -21,12 +21,12 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://aeterna-elder-care.vercel.app'),
   title: {
-    default: 'Senior Living Citizen Foundation — Plotted Sanctuary & Ayurvedic Hospital · Haryana',
-    template: '%s | Senior Living Citizen Foundation'
+    default: 'Senior Living Citizens Foundation — Plotted Sanctuary & Ayurvedic Hospital · Haryana',
+    template: '%s | Senior Living Citizens Foundation'
   },
   description: '64 residential plots and 1 BHK/1 RK senior residences with an on-site 30,000 sq. ft. G+2 Ayurvedic Hospital and Mandir near Reliance MET City, SH-22 Jhajjar, Haryana.',
   keywords: [
-    'Senior Living Citizen Foundation',
+    'Senior Living Citizens Foundation',
     'Senior living Haryana',
     'Ayurvedic hospital Jhajjar',
     'Reliance MET City plots',
@@ -35,18 +35,18 @@ export const metadata: Metadata = {
     'Elderly plotted township NCR',
     'Panchakarma senior living'
   ],
-  authors: [{ name: 'Senior Living Citizen Foundation' }],
-  creator: 'Senior Living Citizen Foundation',
+  authors: [{ name: 'Senior Living Citizens Foundation' }],
+  creator: 'Senior Living Citizens Foundation',
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    siteName: 'Senior Living Citizen Foundation',
+    siteName: 'Senior Living Citizens Foundation',
     images: [
       {
         url: '/project-assets/brand/logo-full-trimmed.png',
         width: 1200,
         height: 630,
-        alt: 'Senior Living Citizen Foundation'
+        alt: 'Senior Living Citizens Foundation'
       }
     ]
   },

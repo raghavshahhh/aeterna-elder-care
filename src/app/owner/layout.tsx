@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Owner Document Vault — Senior Living Citizen Foundation',
+  title: 'Owner Document Vault — Senior Living Citizens Foundation',
   description: 'Authorized access to official project title deeds, architectural CAD sets, and statutory approvals.',
   robots: {
     index: false,

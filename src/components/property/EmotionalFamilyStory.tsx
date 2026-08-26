@@ -29,7 +29,7 @@ export const EmotionalFamilyStory: React.FC = () => {
             Why Every Parent Deserves a <span className="italic font-serif text-[#C58F58]">Sanctuary Like This.</span>
           </h2>
           <p className="text-sm sm:text-base text-[#53676E] leading-relaxed">
-            As children working in Gurugram, Delhi, or abroad, our biggest fear is our parents&apos; safety, medical emergencies, and loneliness. Here is how Senior Living Citizen Foundation solves each of those worries.
+            As children working in Gurugram, Delhi, or abroad, our biggest fear is our parents&apos; safety, medical emergencies, and loneliness. Here is how Senior Living Citizens Foundation solves each of those worries.
           </p>
         </div>
 

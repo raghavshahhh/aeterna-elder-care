@@ -122,7 +122,7 @@ export const RealVsProposed: React.FC = () => {
           <div className="w-full h-[260px] sm:h-[440px] lg:h-[540px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black relative">
             <iframe
               src="https://www.youtube.com/embed/jiEwQ6RA2HI?rel=0&modestbranding=1"
-              title="Senior Living Citizen Foundation — Official Site Drone & Ground Video"
+              title="Senior Living Citizens Foundation — Official Site Drone & Ground Video"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
               className="w-full h-full border-0"

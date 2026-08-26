@@ -110,7 +110,7 @@ export const Footer: React.FC = () => {
               <div className="w-12 h-12 rounded-2xl bg-[#14323A] border border-[#C58F58]/40 flex items-center justify-center p-2 shrink-0 shadow-lg">
                 <img
                   src="/project-assets/brand/logo-icon-clean.png"
-                  alt="Senior Living Citizen Foundation"
+                  alt="Senior Living Citizens Foundation"
                   className="w-full h-full object-contain drop-shadow"
                 />
               </div>
@@ -157,7 +157,7 @@ export const Footer: React.FC = () => {
 
             <div className="pt-2 flex flex-wrap gap-2">
               <button
-                onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizen Foundation...' })}
+                onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizens Foundation...' })}
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-semibold shadow-md transition-all"
               >
                 <MessageSquare className="w-4 h-4" />

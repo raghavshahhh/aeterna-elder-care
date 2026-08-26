@@ -29,7 +29,7 @@ export const TopNotificationBar: React.FC = () => {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
           <span className="font-medium text-white/90 truncate">
-            Senior Living Citizen Foundation · 64 Plots &amp; 30,000 Sqft Ayurvedic Hospital
+            Senior Living Citizens Foundation · 64 Plots &amp; 30,000 Sqft Ayurvedic Hospital
           </span>
           <a
             href={projectOverview.googleMapsUrl}

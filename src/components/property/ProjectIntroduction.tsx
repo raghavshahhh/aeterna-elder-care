@@ -35,7 +35,7 @@ export const ProjectIntroduction: React.FC = () => {
             </h2>
 
             <p className="text-sm sm:text-base text-[#53676E] leading-relaxed font-normal">
-              <strong>Senior Living Citizen Foundation</strong> is an upcoming pre-launch township in <strong>Kheri Asra, Jhajjar</strong>, positioned right along the State Highway 22 (SH-22) corridor. Conceived as a peaceful, plotted sanctuary where India&apos;s elders can live with dignity, independence, and immediate clinical peace of mind.
+              <strong>Senior Living Citizens Foundation</strong> is an upcoming pre-launch township in <strong>Kheri Asra, Jhajjar</strong>, positioned right along the State Highway 22 (SH-22) corridor. Conceived as a peaceful, plotted sanctuary where India&apos;s elders can live with dignity, independence, and immediate clinical peace of mind.
             </p>
 
             <p className="text-xs sm:text-sm text-[#53676E] leading-relaxed">

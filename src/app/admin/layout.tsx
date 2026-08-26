@@ -104,7 +104,7 @@ export default function AdminLayout({
           <div className="w-10 h-10 rounded-2xl bg-[#14323A] border border-[#C58F58]/40 p-1.5 flex items-center justify-center shrink-0 shadow-md">
             <img
               src="/project-assets/brand/logo-icon-clean.png"
-              alt="Senior Living Citizen Foundation"
+              alt="Senior Living Citizens Foundation"
               className="w-full h-full object-contain drop-shadow"
             />
           </div>
@@ -189,7 +189,7 @@ export default function AdminLayout({
   );
 
   return (
-    <div className="min-h-screen bg-[#071519] text-[#FAF8F5] flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col lg:flex-row">
       {/* Mobile Topbar */}
       <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-[#0D2329] border-b border-white/10 sticky top-0 z-50">
         <div className="flex items-center gap-2.5">
@@ -220,33 +220,33 @@ export default function AdminLayout({
       )}
 
       {/* Desktop Sticky Sidebar */}
-      <aside className="hidden lg:flex flex-col justify-between w-72 shrink-0 bg-[#091B20] border-r border-white/10 h-screen sticky top-0 z-40">
+      <aside className="hidden lg:flex flex-col justify-between w-72 shrink-0 bg-[#091B20] border-r border-[#14323A] h-screen sticky top-0 z-40">
         <SidebarContent />
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-[#071519]">
+      <div className="flex-1 flex flex-col min-w-0 bg-[#F8FAFC]">
         {/* Top Header Bar */}
-        <header className="hidden lg:flex items-center justify-between px-8 py-4 border-b border-white/10 bg-[#091B20]/80 backdrop-blur-md sticky top-0 z-30">
-          <div className="flex items-center gap-2 text-xs text-white/60 font-mono">
+        <header className="hidden lg:flex items-center justify-between px-8 py-4 border-b border-slate-200/80 bg-white/95 backdrop-blur-md sticky top-0 z-30 shadow-xs">
+          <div className="flex items-center gap-2 text-xs text-slate-500 font-mono">
             <span>Admin</span>
-            <ChevronRight className="w-3.5 h-3.5 text-white/30" />
-            <span className="text-[#C58F58] font-bold">
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <span className="text-[#2C5E50] font-bold">
               {NAV_ITEMS.find((n) => n.href === pathname)?.label || 'Console'}
             </span>
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono font-bold">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-mono font-bold">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>Multi-Location Database Online</span>
             </div>
 
             <Link
               href="/admin/referrals"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#C58F58]/20 border border-[#C58F58]/40 text-[#E0AB77] text-xs font-bold hover:bg-[#C58F58]/30 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold hover:bg-amber-100 transition-colors shadow-2xs"
             >
-              <Sparkles className="w-3.5 h-3.5 text-[#E0AB77]" />
+              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
               <span>₹50 Verified Lead Desk</span>
             </Link>
           </div>

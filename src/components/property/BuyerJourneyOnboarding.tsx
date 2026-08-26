@@ -111,7 +111,7 @@ export const BuyerJourneyOnboarding: React.FC = () => {
     } else if (stage.actionType === 'whatsapp') {
       openWhatsApp({
         actionType: 'general',
-        message: 'Hello, I would like to understand the freehold registry process and timeline for Senior Living Citizen Foundation...'
+        message: 'Hello, I would like to understand the freehold registry process and timeline for Senior Living Citizens Foundation...'
       });
     }
   };

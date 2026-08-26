@@ -192,7 +192,7 @@ export default function OwnerDocumentsPage() {
               <div className="w-10 h-10 rounded-2xl bg-white/95 border border-white/20 p-1 flex items-center justify-center shadow-md">
                 <img
                   src="/project-assets/brand/logo-icon.png"
-                  alt="Senior Living Citizen Foundation"
+                  alt="Senior Living Citizens Foundation"
                   className="w-full h-full object-contain"
                 />
               </div>

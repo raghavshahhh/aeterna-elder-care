@@ -54,7 +54,7 @@ export const DroneHero: React.FC = () => {
         ) : (
           <Image
             src={projectOverview.heroPosterImage || '/images/indian-grandparents-hero.jpg'}
-            alt="Indian Grandparents enjoying peaceful senior living sanctuary at Senior Living Citizen Foundation"
+            alt="Indian Grandparents enjoying peaceful senior living sanctuary at Senior Living Citizens Foundation"
             fill
             priority
             className="object-cover object-center sm:object-right scale-100 transition-transform duration-1000"
@@ -98,7 +98,7 @@ export const DroneHero: React.FC = () => {
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#C58F58]/20 border border-[#C58F58]/40 text-[#E0AB77] text-xs font-bold uppercase tracking-widest backdrop-blur-md">
               <Heart className="w-3.5 h-3.5 text-[#C58F58] fill-[#C58F58]" />
-              Senior Living Citizen Foundation
+              Senior Living Citizens Foundation
             </div>
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif-heading font-normal tracking-tight text-[#FAF8F5] leading-[1.12]">
               A Better Place for the <span className="italic font-serif text-[#C58F58]">People Who Raised You.</span>
@@ -164,7 +164,7 @@ export const DroneHero: React.FC = () => {
               variant="ghost"
               size="lg"
               className="text-emerald-300 hover:text-white hover:bg-white/10 py-4 px-4 text-xs font-semibold backdrop-blur-sm cursor-pointer"
-              onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I would like to speak to an advisor about Senior Living Citizen Foundation...' })}
+              onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I would like to speak to an advisor about Senior Living Citizens Foundation...' })}
               leftIcon={<MessageSquare className="w-4 h-4 text-[#25D366]" />}
             >
               Chat on WhatsApp

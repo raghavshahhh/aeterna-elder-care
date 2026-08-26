@@ -54,7 +54,7 @@ export const WhySeniorLivingBenefits: React.FC = () => {
             <div className="flex items-center justify-between pb-4 border-b border-[#CDE0D7]">
               <span className="font-mono text-xs uppercase font-bold text-[#2C5E50] tracking-wider flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
-                Senior Living Citizen Foundation
+                Senior Living Citizens Foundation
               </span>
               <span className="text-xs bg-[#2C5E50] text-white px-2.5 py-0.5 rounded-full font-bold">
                 Purpose-Built

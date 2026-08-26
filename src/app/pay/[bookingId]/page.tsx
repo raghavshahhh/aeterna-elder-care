@@ -147,7 +147,7 @@ export default function PaymentCheckoutPage() {
           key: orderData.keyId,
           amount: orderData.amountInPaise,
           currency: 'INR',
-          name: 'Senior Living Citizen Foundation',
+          name: 'Senior Living Citizens Foundation',
           description: `Payment for ${booking.unitCode} - ${booking.projectTitle}`,
           image: '/project-assets/brand/logo-icon.png',
           order_id: orderData.orderId,

@@ -17,11 +17,11 @@ import {
 } from '@/types';
 
 // ============================================================================
-// 1. MASTER PROJECT METADATA & SPECS (SENIOR LIVING CITIZEN FOUNDATION)
+// 1. MASTER PROJECT METADATA & SPECS (SENIOR LIVING CITIZENS FOUNDATION)
 // ============================================================================
 export const projectOverview = {
-  name: 'Senior Living Citizen Foundation',
-  legalName: 'Senior Living Citizen Foundation · Haryana',
+  name: 'Senior Living Citizens Foundation',
+  legalName: 'Senior Living Citizens Foundation · Haryana',
   tagline: 'A Better Place for the People Who Raised You.',
   subtitle: 'A purpose-built plotted senior community with proposed on-site Ayurvedic hospital near Reliance MET City, SH-22 Jhajjar, Haryana.',
   visionStatement: 'A small, plotted township where the corner shop knows your name, the doctor lives next door, and the mandir is a five-minute walk away.',
@@ -206,7 +206,7 @@ export const trustCredentials: TrustCredential[] = [
     iconName: 'Landmark',
     title: 'Section 8 Registered Company',
     authority: 'Ministry of Corporate Affairs (Govt. of India)',
-    description: 'Senior Living Citizen Foundation is incorporated as a non-profit Company Limited by Guarantee under Section 8 of the Companies Act, 2013.',
+    description: 'Senior Living Citizens Foundation is incorporated as a non-profit Company Limited by Guarantee under Section 8 of the Companies Act, 2013.',
     badge: 'Section 8 Company'
   },
   {
@@ -334,16 +334,16 @@ export const paymentPlans: PaymentPlan[] = [
   {
     id: 'down-payment',
     code: 'Plan 1',
-    title: 'Down Payment Plan (Assured Rental & Lease)',
+    title: 'Down Payment Plan (Assured Rental)',
     ratio: '₹25 Lakh Upfront',
     badge: '₹25,000/mo Rental Return',
-    description: '₹25 Lakh paid upfront with 100% direct freehold land registry share. Includes ₹25,000/month rental return till possession, ₹12,500/month rental return after possession, and a 1-year guaranteed lease agreement.',
-    highlight: '₹25k/mo Till Possession • ₹12.5k/mo Post-Possession • 1-Year Lease Guaranteed',
+    description: '₹25 Lakh paid upfront with 100% direct freehold land registry share. Includes ₹25,000/month rental return till possession, and ₹12,500/month rental return after possession.',
+    highlight: '₹25k/mo Till Possession • ₹12.5k/mo Post-Possession • 100% Freehold Registry',
     steps: [
       { milestone: 'Down Payment on Booking', percentage: '₹25 Lakh (100%)' },
       { milestone: 'Rental Return Till Possession', percentage: '₹25,000 / Month' },
       { milestone: 'Rental Return After Possession', percentage: '₹12,500 / Month' },
-      { milestone: 'Lease Agreement', percentage: '1-Year Guaranteed' }
+      { milestone: 'Land Ownership', percentage: 'Direct Freehold Registry' }
     ]
   },
   {
@@ -351,21 +351,30 @@ export const paymentPlans: PaymentPlan[] = [
     code: 'Plan 2',
     title: '50:50 Flexi Payment Plan',
     ratio: '50:50',
-    description: 'Split 50% prior to start of construction and 50% post completion of construction. Direct freehold land registry executed upon clearance.',
+    description: 'Split 50% (₹12.50 Lakh) prior to start of construction with ₹6,250/month rental return till possession, and 50% (₹12.50 Lakh) post completion of construction with ₹12,500/month rental return after possession.',
     badge: 'Most Popular',
+    highlight: '₹6,250/mo Till Possession • ₹12,500/mo Post-Possession • 50:50 Staged',
     steps: [
-      { milestone: 'Prior to Start of Construction', percentage: '50%' },
-      { milestone: 'Post Completion of Construction', percentage: '50%' }
+      { milestone: 'Prior to Start of Construction (50%)', percentage: '₹12.50 Lakh' },
+      { milestone: 'Rental Return Till Possession (1st Half)', percentage: '₹6,250 / Month' },
+      { milestone: 'Post Completion of Construction (50%)', percentage: '₹12.50 Lakh' },
+      { milestone: 'Rental Return After Possession', percentage: '₹12,500 / Month' }
     ]
   },
   {
     id: 'clp',
     code: 'Plan 3',
     title: 'Construction Linked Plan (CLP)',
-    ratio: 'Milestone-Based',
-    description: 'Stage payments tied directly to on-ground physical construction progress, as per certified architect and engineer milestones. Legal registry executed on completion.',
+    ratio: '5 × ₹5 Lakh Lenter Slabs',
+    description: 'Transparent 5-stage milestone payments tied directly to on-ground physical construction progress and slab (lenter) casting.',
+    badge: 'Progressive Staging',
+    highlight: '5 Stages @ ₹5 Lakh Each • Total ₹25 Lakhs • Milestone Audited',
     steps: [
-      { milestone: 'Per Pre-Agreed Construction Milestones', percentage: 'Staged' }
+      { milestone: '1. Booking & Plinth / Foundation', percentage: '₹5.00 Lakh (20%)' },
+      { milestone: '2. 1st Lenter (Ground Floor Slab)', percentage: '₹5.00 Lakh (20%)' },
+      { milestone: '3. 2nd Lenter (First Floor Slab)', percentage: '₹5.00 Lakh (20%)' },
+      { milestone: '4. 3rd Lenter (Roof Slab & Brickwork)', percentage: '₹5.00 Lakh (20%)' },
+      { milestone: '5. Finishing, Registry & Possession', percentage: '₹5.00 Lakh (20%)' }
     ]
   }
 ];
@@ -1430,7 +1439,7 @@ export const propertyFloors: PropertyFloor[] = [
 // ============================================================================
 export const propertyFaqs = [
   {
-    question: 'Where exactly is the Senior Living Citizen Foundation located?',
+    question: 'Where exactly is the Senior Living Citizens Foundation located?',
     answer: 'The project is located in Kheri Asra, near Reliance MET City (Model Economic Township), just off State Highway 22 (SH-22), Jhajjar, Haryana 124104. It offers seamless highway connectivity to Gurugram, Farrukhnagar, and Delhi.'
   },
   {

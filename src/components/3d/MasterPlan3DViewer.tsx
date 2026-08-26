@@ -1367,7 +1367,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                         actionType: 'reserve-plot',
                         plotNumber: selectedPlot.plotNumber,
                         plotBlock: selectedPlot.block,
-                        message: `Hello, I am viewing ${selectedPlot.plotNumber} (${selectedPlot.block}, ${selectedPlot.sizeSqYd} sq.yd., ${selectedPlot.dimensions}) on the 3D Master Plan for Senior Living Citizen Foundation. Please share price breakdown and payment terms.`
+                        message: `Hello, I am viewing ${selectedPlot.plotNumber} (${selectedPlot.block}, ${selectedPlot.sizeSqYd} sq.yd., ${selectedPlot.dimensions}) on the 3D Master Plan for Senior Living Citizens Foundation. Please share price breakdown and payment terms.`
                       })
                     }
                     className="w-full py-2 rounded-2xl bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
@@ -1648,7 +1648,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                 </div>
                 <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1">
                   <span className="text-[10px] font-mono text-[#C58F58] uppercase">Foundation Governance</span>
-                  <p className="text-white/85">Administered by Senior Living Citizen Foundation under Section 8 (Companies Act 2013, Licence No. 172654).</p>
+                  <p className="text-white/85">Administered by Senior Living Citizens Foundation under Section 8 (Companies Act 2013, Licence No. 172654).</p>
                 </div>
                 <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1">
                   <span className="text-[10px] font-mono text-[#C58F58] uppercase">Site Verification</span>
@@ -1666,7 +1666,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                   actionType: 'reserve-plot',
                   plotNumber: selectedPlot.plotNumber,
                   plotBlock: selectedPlot.block,
-                  message: `Hello, I am inspecting ${activeLandmarkInfo ? activeLandmarkInfo.title : `${selectedPlot.plotNumber} (${selectedPlot.block}, ${selectedPlot.sizeSqYd} sq.yd.)`} on the 3D Masterplan for Senior Living Citizen Foundation. Please share complete CAD dossier and priority booking details.`
+                  message: `Hello, I am inspecting ${activeLandmarkInfo ? activeLandmarkInfo.title : `${selectedPlot.plotNumber} (${selectedPlot.block}, ${selectedPlot.sizeSqYd} sq.yd.)`} on the 3D Masterplan for Senior Living Citizens Foundation. Please share complete CAD dossier and priority booking details.`
                 })
               }
               className="w-full py-3.5 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all shadow-lg shadow-emerald-950/50 flex items-center justify-center gap-2 cursor-pointer"

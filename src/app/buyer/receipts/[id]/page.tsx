@@ -112,12 +112,12 @@ export default function ReceiptViewPage() {
             <div className="flex items-center gap-3">
               <img
                 src="/project-assets/brand/logo-icon-clean.png"
-                alt="Senior Living Citizen Foundation Logo"
+                alt="Senior Living Citizens Foundation Logo"
                 className="w-14 h-14 object-contain p-1"
               />
               <div>
                 <h1 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 tracking-tight">
-                  SENIOR LIVING CITIZEN FOUNDATION
+                  SENIOR LIVING CITIZENS FOUNDATION
                 </h1>
                 <p className="text-[11px] text-slate-700 font-sans font-medium">
                   Statutory Non-Profit Senior Healthcare &amp; Residential Trust
@@ -227,7 +227,7 @@ export default function ReceiptViewPage() {
 
             <div className="text-left sm:text-right text-xs">
               <div className="font-serif italic text-slate-900 mb-1 font-bold">
-                For Senior Living Citizen Foundation
+                For Senior Living Citizens Foundation
               </div>
               <div className="w-36 h-10 border-b border-slate-400 inline-block mb-1" />
               <div className="text-[10px] font-mono text-slate-700 font-bold uppercase">

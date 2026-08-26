@@ -216,7 +216,7 @@ export default function ContactPage() {
 
               <div className="pt-2 flex flex-col gap-2.5">
                 <button
-                  onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizen Foundation...' })}
+                  onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizens Foundation...' })}
                   className="w-full py-3 rounded-xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-colors flex items-center justify-center gap-2"
                 >
                   <MessageSquare className="w-4 h-4 text-[#25D366]" />

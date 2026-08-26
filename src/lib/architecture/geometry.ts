@@ -1,6 +1,6 @@
 /**
  * CANONICAL ARCHITECTURE GEOMETRY SYSTEM & FORENSIC REGISTER
- * Senior Living Citizen Foundation — Kheri Asra, Jhajjar / Delhi NCR Corridor
+ * Senior Living Citizens Foundation — Kheri Asra, Jhajjar / Delhi NCR Corridor
  * 
  * Source Document: masterplan-real.jpg (The Vision Architects & Consultants, Ar. Yash Garg)
  * Coordinate System:

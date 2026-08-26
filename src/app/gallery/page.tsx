@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Real Site Gallery — Drone Footage & Site Evidence',
-  description: 'Real drone footage, site photographs, and architectural CAD drawings of Senior Living Citizen Foundation at Kheri Asra, Jhajjar.'
+  description: 'Real drone footage, site photographs, and architectural CAD drawings of Senior Living Citizens Foundation at Kheri Asra, Jhajjar.'
 };
 
 function getYoutubeEmbedId(url: string): string | null {
@@ -65,7 +65,7 @@ export default function GalleryPage() {
           <div className="w-full h-[260px] sm:h-[440px] lg:h-[540px] rounded-3xl overflow-hidden border border-[#E8E2D8] shadow-2xl bg-black relative">
             <iframe
               src={`https://www.youtube.com/embed/${youtubeId}?rel=0&modestbranding=1`}
-              title="Senior Living Citizen Foundation — Official Site Drone & Ground Video"
+              title="Senior Living Citizens Foundation — Official Site Drone & Ground Video"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
               className="w-full h-full border-0"

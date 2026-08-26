@@ -76,7 +76,7 @@ export default function ReferralProgramPage() {
             Help Families Find <span className="italic font-serif text-[#E0AB77]">Sanctuary.</span>
           </h1>
           <p className="text-sm sm:text-base text-white/70 max-w-2xl mx-auto leading-relaxed">
-            Join the Senior Living Citizen Foundation advocacy network. Earn guaranteed rewards for verified family connections and meaningful sales commissions.
+            Join the Senior Living Citizens Foundation advocacy network. Earn guaranteed rewards for verified family connections and meaningful sales commissions.
           </p>
         </div>
       </section>
@@ -223,7 +223,7 @@ export default function ReferralProgramPage() {
 
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <a
-                  href={`https://wa.me/?text=${encodeURIComponent(`Explore Senior Living Citizen Foundation's master sanctuary and senior residences: ${referralUrl}`)}`}
+                  href={`https://wa.me/?text=${encodeURIComponent(`Explore Senior Living Citizens Foundation's master sanctuary and senior residences: ${referralUrl}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 py-3 rounded-xl bg-[#25D366] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-lg"

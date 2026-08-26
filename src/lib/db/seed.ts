@@ -85,7 +85,7 @@ export const SEED_USERS: User[] = [
 export const SEED_FRANCHISES: Franchise[] = [
   {
     id: 'FRAN-HQ',
-    name: 'Senior Living Citizen Foundation Headquarters',
+    name: 'Senior Living Citizens Foundation Headquarters',
     code: 'HQ-DELHI-NCR',
     contactPerson: 'Director of Operations',
     email: 'admin@seniorliving.org',
@@ -190,7 +190,7 @@ export const SEED_PROJECTS: Project[] = [
       youtubeId: 'jiEwQ6RA2HI'
     },
     overview: {
-      story: 'The Senior Living Citizen Foundation was conceived with one question: where do India\'s seniors go when the city becomes too fast, too loud, and too far from the doctor? Built on freehold registered land near Reliance MET City, Kheri Asra brings together 64 residential plots, 9 boutique G+2 residences, and an integrated Ayurvedic healing hospital.',
+      story: 'The Senior Living Citizens Foundation was conceived with one question: where do India\'s seniors go when the city becomes too fast, too loud, and too far from the doctor? Built on freehold registered land near Reliance MET City, Kheri Asra brings together 64 residential plots, 9 boutique G+2 residences, and an integrated Ayurvedic healing hospital.',
       features: [
         { title: 'Freehold Clear Title', desc: '100% direct registry and mutation ownership (never leasehold)', icon: 'ShieldCheck', status: 'VERIFIED' },
         { title: '30k Sq. Ft. Hospital', desc: 'Proposed multi-speciality Ayurvedic & Panchakarma medical center on-site', icon: 'HeartPulse', status: 'PROPOSED' },

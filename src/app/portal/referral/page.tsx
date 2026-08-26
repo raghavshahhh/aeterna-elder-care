@@ -151,7 +151,7 @@ export default function PartnerDashboardPage() {
 
           <div className="flex flex-wrap gap-3">
             <a
-              href={`https://wa.me/?text=${encodeURIComponent(`Explore Senior Living Citizen Foundation's master sanctuary with G+2 senior residences & Ayurvedic care: ${referralUrl}`)}`}
+              href={`https://wa.me/?text=${encodeURIComponent(`Explore Senior Living Citizens Foundation's master sanctuary with G+2 senior residences & Ayurvedic care: ${referralUrl}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-5 py-3 rounded-2xl bg-[#25D366] hover:bg-[#20ba59] text-white text-xs font-bold flex items-center gap-2 shadow-lg transition-all"

@@ -1374,7 +1374,7 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
                     unitName: selectedUnit.unitNumber,
                     unitType: selectedUnit.typeName,
                     floorLevel: selectedUnit.floorName,
-                    message: `Hello, I am inspecting the 3D Building Model for ${selectedUnit.unitNumber} (${selectedUnit.typeName}) on Ground Floor at Senior Living Citizen Foundation. Please share CAD drawings and priority allotment terms.`
+                    message: `Hello, I am inspecting the 3D Building Model for ${selectedUnit.unitNumber} (${selectedUnit.typeName}) on Ground Floor at Senior Living Citizens Foundation. Please share CAD drawings and priority allotment terms.`
                   })
                 }
                 className="w-full py-3 rounded-2xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
@@ -1529,7 +1529,7 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
                   unitName: selectedUnit.unitNumber,
                   unitType: selectedUnit.typeName,
                   floorLevel: selectedUnit.floorName,
-                  message: `Hello, I am inspecting ${selectedUnit.unitNumber} (${selectedUnit.typeName}) on ${selectedUnit.floorName} in the 3D Building Viewer for Senior Living Citizen Foundation. Please share complete CAD floor dossier and priority allotment terms.`
+                  message: `Hello, I am inspecting ${selectedUnit.unitNumber} (${selectedUnit.typeName}) on ${selectedUnit.floorName} in the 3D Building Viewer for Senior Living Citizens Foundation. Please share complete CAD floor dossier and priority allotment terms.`
                 })
               }
               className="w-full py-3.5 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all shadow-lg shadow-emerald-950/50 flex items-center justify-center gap-2 cursor-pointer"

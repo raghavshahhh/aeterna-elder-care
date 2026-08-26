@@ -11,7 +11,7 @@ const credentials = [
     icon: Landmark,
     title: 'Section 8 Non-Profit',
     authority: 'Ministry of Corporate Affairs',
-    description: 'Senior Living Citizen Foundation is incorporated as a Company Limited by Guarantee under Section 8 of the Companies Act, 2013.'
+    description: 'Senior Living Citizens Foundation is incorporated as a Company Limited by Guarantee under Section 8 of the Companies Act, 2013.'
   },
   {
     icon: FileCheck2,

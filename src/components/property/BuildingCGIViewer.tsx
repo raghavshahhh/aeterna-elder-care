@@ -69,7 +69,7 @@ export const BuildingCGIViewer: React.FC<BuildingCGIViewerProps> = ({ onSelectFl
         unitName: unit.unitNumber,
         unitType: unit.typeName,
         floorLevel: unit.floorName,
-        message: `Hello, I want to join the Priority Waitlist for ${unit.unitNumber} (${unit.typeName} on ${unit.floorName}) in Senior Living Citizen Foundation...`
+        message: `Hello, I want to join the Priority Waitlist for ${unit.unitNumber} (${unit.typeName} on ${unit.floorName}) in Senior Living Citizens Foundation...`
       });
     }
   };

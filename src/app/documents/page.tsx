@@ -46,14 +46,14 @@ const PUBLIC_TRUST_DOCUMENTS: PublicDocItem[] = [
   // 01 PROJECT & FOUNDATION
   {
     id: 'doc-pub-01',
-    title: 'Senior Living Citizen Foundation — Master Project Prospectus',
+    title: 'Senior Living Citizens Foundation — Master Project Prospectus',
     category: 'foundation',
     categoryNumber: '01',
     categoryLabel: 'Project & Foundation',
     docType: 'Official License',
     date: 'August 2026',
     version: 'v2.4',
-    authority: 'Senior Living Citizen Foundation',
+    authority: 'Senior Living Citizens Foundation',
     description: 'Comprehensive overview of the 64-plot sanctuary, proposed G+2 senior residences, and on-site 30,000 sqft Ayurvedic Hospital in Kheri Asra, Jhajjar.',
     isProtected: false,
     publicPreviewAvailable: true,
