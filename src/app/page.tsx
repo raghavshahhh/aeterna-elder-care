@@ -63,47 +63,59 @@ export default function HomePage() {
       </div>
 
       {/* 04 — REAL LOCATION & SURROUNDINGS (KHERI ASRA / RELIANCE MET CITY / SH-22) */}
-      <div id="location-connectivity">
+      <div id="location-connectivity" className="content-auto">
         <LocationConnectivity />
       </div>
 
       {/* 05 — WHAT EXISTS TODAY VS. WHAT WE ARE BUILDING (TRANSPARENT PRE-LAUNCH STAGING) */}
-      <RealVsProposed />
+      <div className="content-auto">
+        <RealVsProposed />
+      </div>
 
       {/* GUIDED 3D JOURNEY — WALK INTO YOUR FUTURE HOME */}
-      <FutureHomeJourney />
+      <div className="content-auto">
+        <FutureHomeJourney />
+      </div>
 
       {/* 06 & 07 — PROPOSED BUILDING VISUAL & INTERACTIVE 4-TIER FLOOR EXPLORER */}
-      <BuildingCGIViewer onSelectFloor={handleFloorSelectFromCGI} />
+      <div className="content-auto">
+        <BuildingCGIViewer onSelectFloor={handleFloorSelectFromCGI} />
+      </div>
 
       {/* 08 & 09 — RESIDENCE UNIT EXPLORER & MEASURED FLOOR PLAN VISUALIZER */}
-      <div id="residences-explorer">
+      <div id="residences-explorer" className="content-auto">
         <ResidenceUnitExplorer />
       </div>
 
       {/* 10 — WHAT YOU GET (5 CONCISE BENEFIT PILLARS: HOME, CARE, WELLNESS, COMMUNITY, CONVENIENCE) */}
-      <WhatYouGetPillars />
+      <div className="content-auto">
+        <WhatYouGetPillars />
+      </div>
 
       {/* 11 — HEALTHCARE, AYURVEDA & MANDIR ECOSYSTEM (ON-SITE HOSPITAL & CAD ACCESS) */}
-      <EcosystemShowcase />
+      <div className="content-auto">
+        <EcosystemShowcase />
+      </div>
 
       {/* 12 & 13 — 64-PLOT MASTER PLAN & PLOT-BY-PLOT INVENTORY EXPLORER */}
-      <div id="availability-matrix">
+      <div id="availability-matrix" className="content-auto">
         <AvailabilityMatrix />
       </div>
 
       {/* 14, 15 & 16 — TRANSPARENT PRICING, 3 PAYMENT OPTIONS & RENTAL PROPOSITION */}
-      <div id="payment-plans">
+      <div id="payment-plans" className="content-auto">
         <FinancePaymentPlans />
       </div>
 
       {/* 17 — TRUST & TRANSPARENCY (SECTION 8 / FORM 10AC/80G / DARPAN NPO / FREEHOLD TITLE) */}
-      <div id="trust-transparency">
+      <div id="trust-transparency" className="content-auto">
         <TrustTransparency />
       </div>
 
       {/* 18 — 6-STAGE BUYER ONBOARDING ROADMAP & TIMELINE */}
-      <BuyerJourneyOnboarding />
+      <div className="content-auto">
+        <BuyerJourneyOnboarding />
+      </div>
 
 
       {/* 18 — FREQUENTLY ASKED QUESTIONS (FAMILY-TAILORED Q&AS) */}

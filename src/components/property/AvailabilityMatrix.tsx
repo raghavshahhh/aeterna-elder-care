@@ -1,10 +1,24 @@
 'use client';
 
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { allPlots, plotsSummary, projectOverview } from '@/data/propertyData';
 import { PlotItem } from '@/types';
 import { PlotDetailDrawer } from '@/components/property/PlotDetailDrawer';
-import { MasterPlan3DViewer } from '@/components/3d/MasterPlan3DViewer';
+
+const MasterPlan3DViewer = dynamic(
+  () => import('@/components/3d/MasterPlan3DViewer').then((mod) => mod.MasterPlan3DViewer),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[580px] bg-[#071519] rounded-3xl flex flex-col items-center justify-center gap-3 border border-white/10 text-white">
+        <div className="w-8 h-8 border-2 border-[#C58F58] border-t-transparent rounded-full animate-spin" />
+        <span className="text-xs font-mono text-white/60">Loading Interactive 64-Plot 3D Master Plan...</span>
+      </div>
+    )
+  }
+);
+
 import { PlotStickyContextBar } from '@/components/property/PlotStickyContextBar';
 import { Cad3DToggle } from '@/components/ui/Cad3DToggle';
 import { useModal } from '@/context/ModalContext';

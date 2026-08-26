@@ -2,10 +2,24 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { residenceUnits, twoPlotOneBlockConfig } from '@/data/propertyData';
 import { useModal } from '@/context/ModalContext';
 import { ResidenceUnit } from '@/types';
-import { Interior3DViewer } from '@/components/3d/Interior3DViewer';
+
+const Interior3DViewer = dynamic(
+  () => import('@/components/3d/Interior3DViewer').then((mod) => mod.Interior3DViewer),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[580px] bg-[#071519] rounded-2xl flex flex-col items-center justify-center gap-3 border border-white/10 text-white">
+        <div className="w-8 h-8 border-2 border-[#C58F58] border-t-transparent rounded-full animate-spin" />
+        <span className="text-xs font-mono text-white/60">Loading 360° Senior Living Walkthrough...</span>
+      </div>
+    )
+  }
+);
+
 import { Unit2DCadBlueprint } from '@/components/property/Unit2DCadBlueprint';
 import {
   Home,

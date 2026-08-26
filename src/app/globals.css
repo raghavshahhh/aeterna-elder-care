@@ -242,3 +242,21 @@ button, a {
 .animate-heart-beat {
   animation: heartBeat 3s infinite ease-in-out;
 }
+
+/* Performance & Rendering Acceleration */
+.content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 600px;
+}
+
+.gpu-accelerate {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* Smooth Image Rendering */
+img {
+  image-rendering: -webkit-optimize-contrast;
+}
+

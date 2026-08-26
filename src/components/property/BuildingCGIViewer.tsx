@@ -2,10 +2,24 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { buildingUnits, projectOverview } from '@/data/propertyData';
 import { BuildingUnit, FloorLevel } from '@/types';
 import { UnitDetailDrawer } from '@/components/property/UnitDetailDrawer';
-import { Building3DViewer } from '@/components/3d/Building3DViewer';
+
+const Building3DViewer = dynamic(
+  () => import('@/components/3d/Building3DViewer').then((mod) => mod.Building3DViewer),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[580px] bg-[#071519] rounded-2xl flex flex-col items-center justify-center gap-3 border border-white/10 text-white">
+        <div className="w-8 h-8 border-2 border-[#C58F58] border-t-transparent rounded-full animate-spin" />
+        <span className="text-xs font-mono text-white/60">Rendering G+2 Residence Elevation 3D Model...</span>
+      </div>
+    )
+  }
+);
+
 import { Cad3DToggle } from '@/components/ui/Cad3DToggle';
 import { useModal } from '@/context/ModalContext';
 import {
