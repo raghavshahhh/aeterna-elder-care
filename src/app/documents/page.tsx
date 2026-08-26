@@ -219,7 +219,7 @@ const PUBLIC_TRUST_DOCUMENTS: PublicDocItem[] = [
   },
   {
     id: 'doc-pub-12',
-    title: 'Pre & Post Possession Lease Framework & Disclaimers',
+    title: 'Pre & Post Possession Rental Returns Policy & Disclaimers',
     category: 'commercial',
     categoryNumber: '05',
     categoryLabel: 'Commercial Information',
@@ -227,10 +227,10 @@ const PUBLIC_TRUST_DOCUMENTS: PublicDocItem[] = [
     date: 'August 2026',
     version: 'v1.0',
     authority: 'Foundation Advisory Desk',
-    description: 'Detailed terms for ₹6,250 / ₹12,500 indicative lease benefits, post-registry handover criteria, and non-guaranteed statutory disclosures.',
+    description: 'Detailed terms for ₹6,250 / ₹12,500 monthly rental returns, post-registry handover criteria, and statutory disclosures.',
     isProtected: false,
     publicPreviewAvailable: true,
-    tags: ['Lease Terms', 'Rental Disclaimer', 'Possession']
+    tags: ['Rental Policy', 'Returns Disclaimer', 'Possession']
   },
 
   // 06 OTHER VERIFIED DOCUMENTS

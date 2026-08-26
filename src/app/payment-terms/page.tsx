@@ -43,9 +43,9 @@ export default function PaymentTermsPage() {
 
           <div className="bg-[#091B20] border border-white/10 p-6 rounded-3xl">
             <Calendar className="w-8 h-8 text-[#C58F58] mb-3" />
-            <h3 className="text-base font-serif-heading font-bold text-white mb-1">Guaranteed Lease Returns</h3>
+            <h3 className="text-base font-serif-heading font-bold text-white mb-1">Assured Monthly Rental Returns</h3>
             <p className="text-xs text-white/60 leading-relaxed">
-              Active rental returns of ₹25,000/month till possession and ₹12,500/month post-possession backed by a 1-year guarantee.
+              Active rental returns of ₹25,000/month till possession and ₹12,500/month post-possession under an official return policy.
             </p>
           </div>
 

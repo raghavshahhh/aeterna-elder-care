@@ -467,7 +467,7 @@ export default function PaymentCheckoutPage() {
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#C58F58] shrink-0 mt-0.5" />
                     <span>
-                      Guaranteed lease return contracts active from payment confirmation until possession.
+                      Assured monthly rental return contract active from payment confirmation until possession.
                     </span>
                   </li>
                   <li className="flex items-start gap-2">

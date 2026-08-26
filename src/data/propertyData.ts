@@ -442,12 +442,12 @@ export const additionalCharges = [
 ];
 
 // ============================================================================
-// 5C. RENTAL & LEASE GUARANTEE PROPOSITION
+// 5C. ASSURED RENTAL RETURNS & CAPITAL SAFETY PROPOSITION
 // ============================================================================
 export const rentalProposition = {
-  headline: 'Guaranteed Rental Return & 1-Year Lease Policy',
-  subheadline: 'Assured monthly cash flow with zero vacancy risk and guaranteed lease agreement from Senior Living Citizens Foundation.',
-  disclaimer: 'Rental returns and lease terms are governed by the Foundation\'s official booking agreement. ₹25,000/month is paid pre-possession until handover, followed by ₹12,500/month post-possession under a 1-year guaranteed lease agreement with capital buyback security.',
+  headline: 'Assured Monthly Rental Returns & Capital Safety Policy',
+  subheadline: 'Assured monthly cash flow with zero vacancy risk and capital protection policy from Senior Living Citizens Foundation.',
+  disclaimer: 'Rental returns and terms are governed by the Foundation\'s official booking agreement. ₹25,000/month is paid pre-possession until handover, followed by ₹12,500/month post-possession under an assured return policy with capital safety security.',
   stages: [
     {
       stage: 'Pre-Possession Return',
@@ -457,12 +457,12 @@ export const rentalProposition = {
     {
       stage: 'Post-Possession Return',
       monthlyAmount: '₹12,500 / month',
-      note: 'Guaranteed monthly rental income under the Foundation senior occupancy pool.'
+      note: 'Assured monthly rental income under the Foundation senior living occupancy pool.'
     },
     {
-      stage: 'Lease Agreement',
-      monthlyAmount: '1-Year Guaranteed Lease',
-      note: 'Legally executed 1-year renewable lease agreement with zero tenant vacancy or management hassle.'
+      stage: '50:50 Flexi Return',
+      monthlyAmount: '₹6,250 / month',
+      note: 'Credited monthly on 50% initial payment prior to start of construction, escalating to ₹12,500/month post-possession.'
     },
     {
       stage: 'Capital Exit Safety',
