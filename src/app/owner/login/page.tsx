@@ -28,7 +28,7 @@ export default function OwnerLoginPage() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('/api/owner/login', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifier, password })
@@ -42,8 +42,10 @@ export default function OwnerLoginPage() {
         return;
       }
 
-      // Success -> Redirect to protected vault
-      router.push('/owner/documents');
+      // Success -> Redirect to requested path or role default
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTarget = urlParams.get('redirect') || data.redirectUrl || '/admin';
+      router.push(redirectTarget);
       router.refresh();
     } catch {
       setError('Connection error. Please try again.');
@@ -51,7 +53,12 @@ export default function OwnerLoginPage() {
     }
   };
 
-  const handleUseDemoCredentials = () => {
+  const handleUseAdminCredentials = () => {
+    setIdentifier('admin@seniorliving.org');
+    setPassword('Foundation@2026');
+  };
+
+  const handleUseOwnerCredentials = () => {
     setIdentifier('SL-OWNER-2026');
     setPassword('SLCF-pr7ZTbPiF0!12');
   };
@@ -167,13 +174,23 @@ export default function OwnerLoginPage() {
         </form>
 
         {/* Demo Quick Fill Helper */}
-        <div className="pt-2 border-t border-white/10 text-center">
+        <div className="pt-3 border-t border-white/10 flex flex-col gap-2 text-center">
           <button
             type="button"
-            onClick={handleUseDemoCredentials}
-            className="text-[11px] text-[#C58F58] hover:underline font-mono"
+            onClick={handleUseAdminCredentials}
+            className="text-[11px] text-emerald-400 hover:underline font-mono py-1 px-2 rounded-lg bg-white/5 border border-white/10 text-left flex items-center justify-between"
           >
-            Click here to autofill authorized owner demo credentials
+            <span>Auto-fill: <strong>Admin CRM</strong> (admin@seniorliving.org)</span>
+            <span className="text-[9px] bg-emerald-500/20 px-1.5 py-0.5 rounded text-emerald-300">ADMIN</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleUseOwnerCredentials}
+            className="text-[11px] text-[#C58F58] hover:underline font-mono py-1 px-2 rounded-lg bg-white/5 border border-white/10 text-left flex items-center justify-between"
+          >
+            <span>Auto-fill: <strong>Owner Vault</strong> (SL-OWNER-2026)</span>
+            <span className="text-[9px] bg-[#C58F58]/20 px-1.5 py-0.5 rounded text-[#E0AB77]">OWNER</span>
           </button>
         </div>
       </div>

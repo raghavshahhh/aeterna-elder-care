@@ -231,13 +231,24 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/benefits" className="hover:text-white transition-colors">
-                  8 Core Foundation Benefits
+                <Link href="/buyer" className="hover:text-[#E0AB77] font-semibold text-[#C58F58] flex items-center gap-1.5 transition-colors">
+                  <span>Buyer Portal &amp; Receipts</span>
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-white transition-colors">
-                  Book a Site Walkthrough
+                <Link href="/admin" className="hover:text-emerald-400 font-semibold text-white/90 flex items-center gap-1.5 transition-colors">
+                  <span>Admin CRM &amp; Operations</span>
+                  <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[8px] font-mono font-bold">STAFF</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/owner/login" className="hover:text-white transition-colors">
+                  Secretariat &amp; Trustee Login
+                </Link>
+              </li>
+              <li>
+                <Link href="/portal/referral" className="hover:text-white transition-colors">
+                  Partner Referral Portal (₹50)
                 </Link>
               </li>
             </ul>
