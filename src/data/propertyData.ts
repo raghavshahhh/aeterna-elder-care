@@ -973,66 +973,128 @@ export const buildingUnits: BuildingUnit[] = [
 ];
 
 // ============================================================================
-// 8. 64 RESIDENTIAL PLOTS DATA (BLOCKS A TO F) WITH REALISTIC PRE-LAUNCH PRICING
+// 8. 64 RESIDENTIAL PLOTS DATA (BLOCKS A TO F) — 100% SOURCE-ACCURATE CAD DATA
 // ============================================================================
-const plotPricingMap: Record<number, string> = {
-  120: '₹28.8 Lakhs',
-  150: '₹36.0 Lakhs',
-  180: '₹43.2 Lakhs',
-  220: '₹52.8 Lakhs',
-  250: '₹60.0 Lakhs',
-  300: '₹72.0 Lakhs',
-  425: '₹1.02 Crores'
-};
+export interface MasterPlotDefinition {
+  num: number;
+  block: 'Block A' | 'Block B' | 'Block C' | 'Block D' | 'Block E' | 'Block F';
+  sizeSqYd: number;
+  dimensions: string;
+  facing: string;
+  roadWidth: string;
+  isCorner: boolean;
+  isParkFacing: boolean;
+  indicativePrice: string;
+}
 
-export const allPlots: PlotItem[] = Array.from({ length: 64 }, (_, i) => {
-  const num = i + 1;
-  const blockIndex = Math.floor(i / 11);
-  const block = (['Block A', 'Block B', 'Block C', 'Block D', 'Block E', 'Block F'][blockIndex] || 'Block A') as PlotItem['block'];
-  
-  const size = [120, 150, 180, 220, 250, 300, 425][i % 7];
-  const dimensionsMap: Record<number, string> = {
-    120: '24\' × 45\'',
-    150: '30\' × 45\'',
-    180: '30\' × 54\'',
-    220: '33\' × 60\'',
-    250: '35\' × 64\'',
-    300: '40\' × 67\'',
-    425: '45\' × 85\''
-  };
-  
-  const facings = ['North', 'East', 'North-East', 'Park Facing', 'Corner'];
-  const facing = facings[i % 5];
-  const isCorner = facing === 'Corner' || num % 11 === 1 || num % 11 === 0;
-  const isParkFacing = facing === 'Park Facing' || [5, 14, 22, 35, 44, 53].includes(num);
-  const roadWidth = (num % 3 === 0 || isCorner) ? '33 ft Main Arterial Road' : '11 ft Wide Internal Lane';
+export const MASTER_PLOT_DEFINITIONS: MasterPlotDefinition[] = [
+  // Block A (Yellow) — 13 Plots (Plots 1-10, 34-36)
+  { num: 1, block: 'Block A', sizeSqYd: 425, dimensions: '45\' × 85\' (425 Sq Yds)', facing: 'West', roadWidth: '33 ft Main Highway', isCorner: true, isParkFacing: true, indicativePrice: '₹1.02 Crores' },
+  { num: 2, block: 'Block A', sizeSqYd: 425, dimensions: '45\' × 85\' (425 Sq Yds)', facing: 'West', roadWidth: '33 ft Main Highway', isCorner: false, isParkFacing: true, indicativePrice: '₹1.02 Crores' },
+  { num: 3, block: 'Block A', sizeSqYd: 425, dimensions: '45\' × 85\' (425 Sq Yds)', facing: 'West', roadWidth: '33 ft Main Highway (Above Mandir)', isCorner: true, isParkFacing: true, indicativePrice: '₹1.02 Crores' },
+  { num: 4, block: 'Block A', sizeSqYd: 204, dimensions: '39\'-0" × 47\'-0" (204 Sq Yds)', facing: 'South', roadWidth: '33 ft East-West Road (Adj. Mandir)', isCorner: true, isParkFacing: true, indicativePrice: '₹48.9 Lakhs' },
+  { num: 5, block: 'Block A', sizeSqYd: 126, dimensions: '24\'-0" × 47\'-0" (126 Sq Yds)', facing: 'East', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹30.2 Lakhs' },
+  { num: 6, block: 'Block A', sizeSqYd: 126, dimensions: '24\'-0" × 47\'-0" (126 Sq Yds)', facing: 'East', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹30.2 Lakhs' },
+  { num: 7, block: 'Block A', sizeSqYd: 126, dimensions: '24\'-0" × 47\'-0" (126 Sq Yds)', facing: 'East', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹30.2 Lakhs' },
+  { num: 8, block: 'Block A', sizeSqYd: 126, dimensions: '24\'-0" × 47\'-0" (126 Sq Yds)', facing: 'East', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹30.2 Lakhs' },
+  { num: 9, block: 'Block A', sizeSqYd: 126, dimensions: '24\'-0" × 47\'-0" (126 Sq Yds)', facing: 'East', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹30.2 Lakhs' },
+  { num: 10, block: 'Block A', sizeSqYd: 227, dimensions: '42\'-6" × 48\'-0" (227 Sq Yds)', facing: 'East / South', roadWidth: '22\'-6" Rasta & 20\'-0" Rasta Corner', isCorner: true, isParkFacing: false, indicativePrice: '₹54.5 Lakhs' },
+  { num: 34, block: 'Block A', sizeSqYd: 130, dimensions: '26\'-0" × 45\'-0" (130 Sq Yds)', facing: 'North', roadWidth: '20\'-0" Internal Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 35, block: 'Block A', sizeSqYd: 130, dimensions: '26\'-0" × 45\'-0" (130 Sq Yds)', facing: 'North', roadWidth: '20\'-0" Internal Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 36, block: 'Block A', sizeSqYd: 140, dimensions: '28\'-0" × 45\'-0" (140 Sq Yds)', facing: 'North / West', roadWidth: '20\'-0" Rasta & 22\'-6" Rasta Corner', isCorner: true, isParkFacing: false, indicativePrice: '₹33.6 Lakhs' },
 
+  // Block B (Pink / Rose) — 11 Plots (Plots 11-15, 28-33)
+  { num: 11, block: 'Block B', sizeSqYd: 128, dimensions: '24\'-0" × 48\'-0" (128 Sq Yds)', facing: 'South', roadWidth: '20\'-0" Internal Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹30.7 Lakhs' },
+  { num: 12, block: 'Block B', sizeSqYd: 128, dimensions: '24\'-0" × 48\'-0" (128 Sq Yds)', facing: 'South', roadWidth: '20\'-0" Internal Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹30.7 Lakhs' },
+  { num: 13, block: 'Block B', sizeSqYd: 128, dimensions: '24\'-0" × 48\'-0" (128 Sq Yds)', facing: 'South', roadWidth: '20\'-0" Internal Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹30.7 Lakhs' },
+  { num: 14, block: 'Block B', sizeSqYd: 128, dimensions: '24\'-0" × 48\'-0" (128 Sq Yds)', facing: 'South', roadWidth: '20\'-0" Internal Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹30.7 Lakhs' },
+  { num: 15, block: 'Block B', sizeSqYd: 128, dimensions: '24\'-0" × 48\'-0" (128 Sq Yds)', facing: 'South', roadWidth: '20\'-0" Internal Rasta (Adj. Utility)', isCorner: true, isParkFacing: false, indicativePrice: '₹30.7 Lakhs' },
+  { num: 28, block: 'Block B', sizeSqYd: 130, dimensions: '24\'-6" × 47\'-6" (130 Sq Yds)', facing: 'North', roadWidth: '33 ft Road with 5 ft Green Belt', isCorner: false, isParkFacing: true, indicativePrice: '₹31.2 Lakhs' },
+  { num: 29, block: 'Block B', sizeSqYd: 130, dimensions: '24\'-6" × 47\'-6" (130 Sq Yds)', facing: 'North', roadWidth: '33 ft Road with 5 ft Green Belt', isCorner: false, isParkFacing: true, indicativePrice: '₹31.2 Lakhs' },
+  { num: 30, block: 'Block B', sizeSqYd: 163, dimensions: '31\'-0" × 47\'-6" (163 Sq Yds)', facing: 'North / West', roadWidth: '33 ft Road & 22\'-6" Rasta Corner', isCorner: true, isParkFacing: true, indicativePrice: '₹39.1 Lakhs' },
+  { num: 31, block: 'Block B', sizeSqYd: 163, dimensions: '31\'-0" × 47\'-6" (163 Sq Yds)', facing: 'South / West', roadWidth: '20\'-0" Rasta & 22\'-6" Rasta Corner', isCorner: true, isParkFacing: false, indicativePrice: '₹39.1 Lakhs' },
+  { num: 32, block: 'Block B', sizeSqYd: 130, dimensions: '24\'-6" × 47\'-6" (130 Sq Yds)', facing: 'South', roadWidth: '20\'-0" Internal Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 33, block: 'Block B', sizeSqYd: 130, dimensions: '24\'-6" × 47\'-6" (130 Sq Yds)', facing: 'South', roadWidth: '20\'-0" Internal Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+
+  // Block C (Lavender / Purple) — 12 Plots (Plots 16-27)
+  { num: 16, block: 'Block C', sizeSqYd: 122, dimensions: '24\'-0" × 45\'-6" (122 Sq Yds)', facing: 'North', roadWidth: '20\'-0" Internal Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹29.3 Lakhs' },
+  { num: 17, block: 'Block C', sizeSqYd: 122, dimensions: '24\'-0" × 45\'-6" (122 Sq Yds)', facing: 'North', roadWidth: '20\'-0" Internal Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹29.3 Lakhs' },
+  { num: 18, block: 'Block C', sizeSqYd: 122, dimensions: '24\'-0" × 45\'-6" (122 Sq Yds)', facing: 'North', roadWidth: '20\'-0" Internal Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹29.3 Lakhs' },
+  { num: 19, block: 'Block C', sizeSqYd: 122, dimensions: '24\'-0" × 45\'-6" (122 Sq Yds)', facing: 'North', roadWidth: '20\'-0" Internal Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹29.3 Lakhs' },
+  { num: 20, block: 'Block C', sizeSqYd: 122, dimensions: '24\'-0" × 45\'-6" (122 Sq Yds)', facing: 'North', roadWidth: '20\'-0" Internal Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹29.3 Lakhs' },
+  { num: 21, block: 'Block C', sizeSqYd: 215, dimensions: '42\'-6" × 45\'-6" (215 Sq Yds)', facing: 'North / West', roadWidth: '20\'-0" Rasta & 22\'-6" Rasta Corner', isCorner: true, isParkFacing: false, indicativePrice: '₹51.6 Lakhs' },
+  { num: 22, block: 'Block C', sizeSqYd: 215, dimensions: '42\'-6" × 45\'-6" (215 Sq Yds)', facing: 'South / West', roadWidth: '33 ft Road & 22\'-6" Rasta Corner', isCorner: true, isParkFacing: true, indicativePrice: '₹51.6 Lakhs' },
+  { num: 23, block: 'Block C', sizeSqYd: 122, dimensions: '24\'-0" × 45\'-6" (122 Sq Yds)', facing: 'South', roadWidth: '33 ft Road with 6 ft Green Belt', isCorner: false, isParkFacing: true, indicativePrice: '₹29.3 Lakhs' },
+  { num: 24, block: 'Block C', sizeSqYd: 122, dimensions: '24\'-0" × 45\'-6" (122 Sq Yds)', facing: 'South', roadWidth: '33 ft Road with 6 ft Green Belt', isCorner: false, isParkFacing: true, indicativePrice: '₹29.3 Lakhs' },
+  { num: 25, block: 'Block C', sizeSqYd: 122, dimensions: '24\'-0" × 45\'-6" (122 Sq Yds)', facing: 'South', roadWidth: '33 ft Road with 6 ft Green Belt', isCorner: false, isParkFacing: true, indicativePrice: '₹29.3 Lakhs' },
+  { num: 26, block: 'Block C', sizeSqYd: 122, dimensions: '24\'-0" × 45\'-6" (122 Sq Yds)', facing: 'South', roadWidth: '33 ft Road with 6 ft Green Belt', isCorner: false, isParkFacing: true, indicativePrice: '₹29.3 Lakhs' },
+  { num: 27, block: 'Block C', sizeSqYd: 122, dimensions: '24\'-0" × 45\'-6" (122 Sq Yds)', facing: 'South', roadWidth: '33 ft Road with 6 ft Green Belt', isCorner: true, isParkFacing: true, indicativePrice: '₹29.3 Lakhs' },
+
+  // Block D (Green) — 8 Plots (Plots 37-44)
+  { num: 37, block: 'Block D', sizeSqYd: 130.5, dimensions: '25\'-0" × 47\'-0" (130.5 Sq Yds)', facing: 'West', roadWidth: '22\'-6" Central Rasta', isCorner: true, isParkFacing: false, indicativePrice: '₹31.3 Lakhs' },
+  { num: 38, block: 'Block D', sizeSqYd: 130.5, dimensions: '25\'-0" × 47\'-0" (130.5 Sq Yds)', facing: 'West', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.3 Lakhs' },
+  { num: 39, block: 'Block D', sizeSqYd: 130.5, dimensions: '25\'-0" × 47\'-0" (130.5 Sq Yds)', facing: 'West', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.3 Lakhs' },
+  { num: 40, block: 'Block D', sizeSqYd: 130.5, dimensions: '25\'-0" × 47\'-0" (130.5 Sq Yds)', facing: 'West', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.3 Lakhs' },
+  { num: 41, block: 'Block D', sizeSqYd: 130.5, dimensions: '25\'-0" × 47\'-0" (130.5 Sq Yds)', facing: 'West', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.3 Lakhs' },
+  { num: 42, block: 'Block D', sizeSqYd: 130.5, dimensions: '25\'-0" × 47\'-0" (130.5 Sq Yds)', facing: 'West', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.3 Lakhs' },
+  { num: 43, block: 'Block D', sizeSqYd: 130.5, dimensions: '25\'-0" × 47\'-0" (130.5 Sq Yds)', facing: 'West', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.3 Lakhs' },
+  { num: 44, block: 'Block D', sizeSqYd: 120.1, dimensions: '23\'-0" × 47\'-0" (120.1 Sq Yds)', facing: 'West / South', roadWidth: '22\'-6" Central Rasta (South Boundary)', isCorner: true, isParkFacing: false, indicativePrice: '₹28.8 Lakhs' },
+
+  // Block E (Light Blue) — 16 Plots (Plots 45-60)
+  { num: 45, block: 'Block E', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'East', roadWidth: '22\'-6" Central Rasta (South Corner)', isCorner: true, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 46, block: 'Block E', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'East', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 47, block: 'Block E', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'East', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 48, block: 'Block E', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'East', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 49, block: 'Block E', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'East', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 50, block: 'Block E', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'East', roadWidth: '22\'-6" Central Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 51, block: 'Block E', sizeSqYd: 129, dimensions: '25\'-3" × 46\'-0" (129 Sq Yds)', facing: 'North', roadWidth: '20\'-0" Rasta (Facing Hospital)', isCorner: true, isParkFacing: false, indicativePrice: '₹30.9 Lakhs' },
+  { num: 52, block: 'Block E', sizeSqYd: 129, dimensions: '25\'-3" × 46\'-0" (129 Sq Yds)', facing: 'North', roadWidth: '20\'-0" Rasta (Facing Hospital)', isCorner: false, isParkFacing: false, indicativePrice: '₹30.9 Lakhs' },
+  { num: 53, block: 'Block E', sizeSqYd: 129, dimensions: '25\'-3" × 46\'-0" (129 Sq Yds)', facing: 'North', roadWidth: '20\'-0" Rasta (Facing Hospital)', isCorner: false, isParkFacing: false, indicativePrice: '₹30.9 Lakhs' },
+  { num: 54, block: 'Block E', sizeSqYd: 129, dimensions: '25\'-3" × 46\'-0" (129 Sq Yds)', facing: 'North', roadWidth: '20\'-0" Rasta (Facing Hospital)', isCorner: true, isParkFacing: false, indicativePrice: '₹30.9 Lakhs' },
+  { num: 55, block: 'Block E', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'West', roadWidth: '16\'-6" West Rasta', isCorner: true, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 56, block: 'Block E', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'West', roadWidth: '16\'-6" West Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 57, block: 'Block E', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'West', roadWidth: '16\'-6" West Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 58, block: 'Block E', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'West', roadWidth: '16\'-6" West Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 59, block: 'Block E', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'West', roadWidth: '16\'-6" West Rasta', isCorner: false, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 60, block: 'Block E', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'West', roadWidth: '16\'-6" West Rasta (South Corner)', isCorner: true, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+
+  // Block F (Aqua / Cyan) — 4 Plots (Plots 61-64)
+  { num: 61, block: 'Block F', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'East / South', roadWidth: '22\'-6" Rasta & 20\'-0" Rasta Corner (Adj. Hospital)', isCorner: true, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 62, block: 'Block F', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'East', roadWidth: '22\'-6" Central Rasta (Adj. Hospital)', isCorner: false, isParkFacing: false, indicativePrice: '₹31.2 Lakhs' },
+  { num: 63, block: 'Block F', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'East', roadWidth: '22\'-6" Central Rasta (Site for G+2 Senior Residences)', isCorner: false, isParkFacing: true, indicativePrice: '₹31.2 Lakhs' },
+  { num: 64, block: 'Block F', sizeSqYd: 130, dimensions: '23\'-0" × 50\'-6" (130 Sq Yds)', facing: 'East / North', roadWidth: '22\'-6" Central Rasta (North Corner, Site for G+2 Residences)', isCorner: true, isParkFacing: true, indicativePrice: '₹31.2 Lakhs' }
+];
+
+// Sort definitions by plot number ascending (1 to 64)
+const sortedPlotDefs = [...MASTER_PLOT_DEFINITIONS].sort((a, b) => a.num - b.num);
+
+export const allPlots: PlotItem[] = sortedPlotDefs.map((def) => {
   return {
-    id: `plot-${num}`,
-    plotNumber: `Plot ${num}`,
-    number: num,
-    block,
-    sizeSqYd: size,
-    dimensions: dimensionsMap[size] || '30\' × 50\'',
-    facing,
-    roadWidth,
+    id: `plot-${def.num}`,
+    plotNumber: `Plot ${def.num}`,
+    number: def.num,
+    block: def.block,
+    sizeSqYd: def.sizeSqYd,
+    dimensions: def.dimensions,
+    facing: def.facing,
+    roadWidth: def.roadWidth,
     status: 'phase1_enquiry',
     statusLabel: 'Phase 1 Enquiry Open',
-    priceEstimate: `Indicative ${plotPricingMap[size] || '₹36.0L'}*`,
+    priceEstimate: `Indicative ${def.indicativePrice}*`,
     enquiryNote: 'Individual boundary demarcation and registry terms confirmed during private on-site walk.',
-    isCorner,
-    isParkFacing
+    isCorner: def.isCorner,
+    isParkFacing: def.isParkFacing
   };
 });
 
 export const plotsSummary = {
   totalPlots: 64,
   blocks: ['Block A', 'Block B', 'Block C', 'Block D', 'Block E', 'Block F'],
-  statusNote: 'Phase 1 Pre-Launch Enquiry Open across all 6 Blocks (120 to 425 sq. yd.)',
-  disclaimer: 'Plot dimensions and block demarcations are derived from approved CAD master layout. Individual availability and registration terms confirmed on site.',
-  minSizeSqYd: 120,
+  statusNote: 'Phase 1 Pre-Launch Enquiry Open across all 6 Blocks (120.1 to 425 sq. yd.)',
+  disclaimer: 'Plot dimensions and block demarcations are derived directly from approved CAD master layout (The Vision Architects). Individual availability and registration terms confirmed on site.',
+  minSizeSqYd: 120.1,
   maxSizeSqYd: 425,
-  internalRoads: '11 ft internal lanes to 33 ft wide main arterial road',
+  internalRoads: '11 ft to 22 ft 6 in internal lanes connecting to 33 ft main arterial road',
   greenBelt: '5 ft & 6 ft continuous green buffer zones along boundaries',
   mandirDistance: '5 mins walking distance from every plot'
 };

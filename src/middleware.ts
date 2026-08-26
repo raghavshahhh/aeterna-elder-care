@@ -24,7 +24,34 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // Protect Admin sub-routes (require session cookie)
+  if (pathname.startsWith('/admin/') && pathname !== '/admin') {
+    const adminSession = request.cookies.get('slcf_session')?.value || request.cookies.get('sl_owner_session')?.value;
+    if (!adminSession) {
+      const adminUrl = new URL('/admin', request.url);
+      adminUrl.searchParams.set('redirect', pathname);
+      return NextResponse.redirect(adminUrl);
+    }
+  }
+
+
+  // Server-Side Referral Attribution Capture (?ref=CODE or ?referral=CODE)
+  const refParam = request.nextUrl.searchParams.get('ref') || request.nextUrl.searchParams.get('referral') || request.nextUrl.searchParams.get('r');
+  if (refParam && refParam.trim().length >= 3) {
+    const cleanRef = refParam.trim().toUpperCase();
+    response.cookies.set({
+      name: 'slcf_ref',
+      value: cleanRef,
+      maxAge: 30 * 24 * 60 * 60, // 30 days
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production'
+    });
+  }
+
   return response;
+
 }
 
 export const config = {

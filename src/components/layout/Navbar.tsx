@@ -21,7 +21,8 @@ import {
   Award,
   Activity,
   Layers,
-  ArrowRight
+  ArrowRight,
+  CreditCard
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -257,6 +258,14 @@ export const Navbar: React.FC = () => {
             <span>+91 99999 55847</span>
           </a>
 
+          <Link
+            href="/buyer"
+            className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/80 hover:bg-[#FAF8F5] border border-[#E8E2D8] text-xs font-mono font-bold text-[#0D2329] transition-colors"
+          >
+            <CreditCard className="w-3.5 h-3.5 text-[#C58F58]" />
+            <span>Buyer Portal</span>
+          </Link>
+
           <button
             onClick={() => openLeadDrawer({ actionType: 'site_visit' })}
             className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
@@ -300,6 +309,12 @@ export const Navbar: React.FC = () => {
             </Link>
             <Link href="/documents" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5]">
               Trust Center &amp; Legal
+            </Link>
+            <Link href="/payment-terms" className="block py-2.5 px-4 rounded-xl hover:bg-[#FAF8F5] text-xs font-mono text-[#0D2329]/80">
+              Commercial &amp; Payment Terms
+            </Link>
+            <Link href="/buyer" className="block py-2.5 px-4 rounded-xl bg-[#EAF2EE] text-[#2C5E50] font-bold">
+              Buyer Portal &amp; Receipts
             </Link>
             <Link href="/referrals" className="block py-2.5 px-4 rounded-xl bg-[#FAF2EB] text-[#C58F58] font-bold">
               Referral Program (₹50 per Lead)

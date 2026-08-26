@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { BuildingUnit } from '@/types';
 import { useModal } from '@/context/ModalContext';
 import { projectOverview } from '@/data/propertyData';
@@ -17,7 +18,8 @@ import {
   Sparkles,
   Home,
   Layers,
-  Clock
+  Clock,
+  Lock
 } from 'lucide-react';
 
 interface UnitDetailDrawerProps {
@@ -270,13 +272,24 @@ Please share the pre-launch pricing, payment milestones, and floor plan.`
           {/* Action CTAs */}
           <div className="pt-6 mt-6 border-t border-[#E8E2D8] space-y-2.5">
             {isAvail ? (
-              <button
-                onClick={handleWhatsAppEnquiry}
-                className="w-full py-4 rounded-2xl bg-[#2C5E50] hover:bg-[#1D4B57] text-white text-sm font-bold transition-all shadow-lg shadow-[#2C5E50]/20 flex items-center justify-center gap-2"
-              >
-                <MessageSquare className="w-4 h-4" />
-                Enquire About {unit.unitNumber} on WhatsApp →
-              </button>
+              <div className="space-y-2">
+                <Link
+                  href={`/book/${encodeURIComponent(unit.unitNumber)}`}
+                  onClick={onClose}
+                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#C58F58] to-[#A06C3B] hover:brightness-110 text-white text-sm font-bold transition-all shadow-lg shadow-[#C58F58]/20 flex items-center justify-center gap-2"
+                >
+                  <Lock className="w-4 h-4" />
+                  <span>Reserve &amp; Book {unit.unitNumber} (24h Hold) →</span>
+                </Link>
+
+                <button
+                  onClick={handleWhatsAppEnquiry}
+                  className="w-full py-3 rounded-2xl bg-[#FAF8F5] hover:bg-[#EAF2EE] text-[#2C5E50] border border-[#2C5E50]/30 text-xs font-bold transition-all flex items-center justify-center gap-2"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span>Enquire on WhatsApp</span>
+                </button>
+              </div>
             ) : (
               <button
                 onClick={handleWhatsAppEnquiry}

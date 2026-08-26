@@ -6,7 +6,7 @@ import { useToast } from '@/context/ToastContext';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { projectOverview } from '@/data/propertyData';
-import { X, Calendar, ShieldCheck, Clock, CheckCircle2, Building2, MapPin } from 'lucide-react';
+import { X, Calendar, ShieldCheck, Clock, CheckCircle2, Building2, MapPin, Car, Compass } from 'lucide-react';
 
 export const LeadCaptureDrawer: React.FC = () => {
   const { isLeadDrawerOpen, leadDrawerContext, closeLeadDrawer } = useModal();
@@ -15,8 +15,11 @@ export const LeadCaptureDrawer: React.FC = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [city, setCity] = useState(leadDrawerContext.city || 'Delhi NCR');
+  const [city, setCity] = useState('Delhi NCR');
   const [preferredDate, setPreferredDate] = useState('');
+  const [preferredTimeSlot, setPreferredTimeSlot] = useState('11:00 AM');
+  const [transportNeeded, setTransportNeeded] = useState(true);
+  const [pickupLocation, setPickupLocation] = useState('Dwarka Sector 21 Metro Station, New Delhi');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -39,6 +42,10 @@ export const LeadCaptureDrawer: React.FC = () => {
   }, [isLeadDrawerOpen, closeLeadDrawer]);
 
   if (!isLeadDrawerOpen) return null;
+
+  const unitDesc = leadDrawerContext.plotNumber
+    ? `${leadDrawerContext.plotNumber} (${leadDrawerContext.plotBlock || 'Masterplan'}, ${leadDrawerContext.plotSize || ''})`
+    : (leadDrawerContext.unitCode || 'General Senior Living Sanctuary');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,32 +75,33 @@ export const LeadCaptureDrawer: React.FC = () => {
           phone,
           email,
           referralCode: refCode,
-          source: leadDrawerContext.actionType === 'site_visit' ? 'SITE_VISIT_FORM' : 'WEBSITE_FORM',
-          notes: `Interest in ${leadDrawerContext.unitCode || 'General Sanctuary'}`
+          source: leadDrawerContext.actionType === 'book-site-visit' ? 'SITE_VISIT_DRAWER' : 'WEBSITE_FORM',
+          notes: `Context: ${unitDesc}. City: ${city}. Transport: ${transportNeeded ? pickupLocation : 'Self Drive'}`
         })
       });
 
-      // 2. If site visit with date, book visit
-      if (preferredDate) {
-        await fetch('/api/site-visits', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name,
-            phone,
-            email,
-            preferredDate,
-            referralCode: refCode,
-            message: `Unit interest: ${leadDrawerContext.unitCode || 'General'}`
-          })
-        });
-      }
+      // 2. Book site visit with date & transport details
+      await fetch('/api/site-visits', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          visitorName: name,
+          visitorPhone: phone,
+          visitorEmail: email,
+          preferredDate: preferredDate || new Date(Date.now() + 2 * 24 * 3600 * 1000).toISOString().split('T')[0],
+          preferredTimeSlot,
+          transportNeeded,
+          pickupLocation: transportNeeded ? pickupLocation : undefined,
+          referralCode: refCode,
+          notes: `Inspecting ${unitDesc}. Scheduled via Website Sales Advisor.`
+        })
+      });
 
       setLoading(false);
       setSubmitted(true);
       showToast({
-        title: 'Inquiry Successfully Registered!',
-        description: 'Our Senior Project Advisor will connect with you shortly.',
+        title: 'Site Visit Confirmed!',
+        description: 'Our Senior Project Advisor will call you within 15 minutes.',
         type: 'success'
       });
     } catch {
@@ -119,18 +127,18 @@ export const LeadCaptureDrawer: React.FC = () => {
         onClick={closeLeadDrawer}
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
         <div className="w-screen max-w-md bg-white shadow-2xl border-l border-[#E8E2D8] flex flex-col justify-between overflow-y-auto">
           {/* Top Form Area */}
           <div className="p-6 sm:p-8 space-y-6">
             {/* Header */}
             <div className="flex items-start justify-between pb-4 border-b border-[#E8E2D8]">
               <div>
-                <span className="text-xs uppercase font-mono tracking-widest text-[#C58F58] font-bold">
-                  Direct Foundation Desk
+                <span className="text-[10px] uppercase font-mono tracking-widest text-[#C58F58] font-bold">
+                  Guided Ground Tour Desk
                 </span>
                 <h3 className="text-xl sm:text-2xl font-serif-heading font-bold text-[#0D2329] mt-0.5">
-                  {leadDrawerContext.title || 'Schedule a Site Walk'}
+                  {leadDrawerContext.title || 'Book Guided Site Walk'}
                 </h3>
               </div>
               <button
@@ -142,17 +150,46 @@ export const LeadCaptureDrawer: React.FC = () => {
               </button>
             </div>
 
+            {/* Selected Plot Context Pill */}
+            {leadDrawerContext.plotNumber && (
+              <div className="p-3.5 rounded-2xl bg-[#EAF2EE] border border-[#CDE0D7] flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2">
+                  <Compass className="w-4 h-4 text-[#2C5E50]" />
+                  <span className="text-[#0D2329] font-bold">
+                    Target: {leadDrawerContext.plotNumber} ({leadDrawerContext.plotBlock})
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono font-bold text-[#2C5E50]">
+                  {leadDrawerContext.plotSize}
+                </span>
+              </div>
+            )}
+
             {submitted ? (
-              <div className="py-12 text-center space-y-4">
-                <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
+              <div className="py-10 text-center space-y-4">
+                <div className="w-16 h-16 rounded-3xl bg-emerald-100 border border-emerald-300 text-emerald-700 flex items-center justify-center mx-auto shadow-md">
                   <CheckCircle2 className="w-10 h-10" />
                 </div>
                 <h4 className="text-2xl font-serif-heading font-bold text-[#0D2329]">
-                  We Look Forward to Welcoming You
+                  Site Visit Request Received
                 </h4>
-                <p className="text-sm text-[#53676E] leading-relaxed max-w-sm mx-auto">
-                  Our Senior Project Liaison will call you at <strong>{phone}</strong> within 4 working hours to arrange private transportation or coordinate directions to Kheri Asra, Jhajjar.
+                <p className="text-xs text-[#53676E] leading-relaxed max-w-sm mx-auto">
+                  Our Senior Project Liaison will call <strong>{phone}</strong> within 15 minutes to confirm chauffeur pickup timing from <strong>{pickupLocation}</strong>.
                 </p>
+                <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8] text-xs text-left space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-[#53676E]">Property:</span>
+                    <strong className="text-[#0D2329]">{unitDesc}</strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#53676E]">Destination:</span>
+                    <strong className="text-[#0D2329]">Kheri Asra, SH-22 Jhajjar</strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#53676E]">Transport:</span>
+                    <strong className="text-emerald-700">{transportNeeded ? 'Private Chauffeur Included' : 'Self-Drive'}</strong>
+                  </div>
+                </div>
                 <div className="pt-4">
                   <Button variant="primary" onClick={handleReset} className="w-full">
                     Done
@@ -162,7 +199,7 @@ export const LeadCaptureDrawer: React.FC = () => {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <p className="text-xs text-[#53676E] leading-relaxed">
-                  Experience the actual land parcels, inspect original revenue mutation copies, and walk through the architectural CAD models with our master planning team.
+                  Walk the 64-plot masterplan, inspect the proposed 30k sq. ft. Ayurvedic hospital site, and verify municipal demarcation on ground with our senior advisor.
                 </p>
 
                 <div className="space-y-3.5">
@@ -191,35 +228,59 @@ export const LeadCaptureDrawer: React.FC = () => {
                     onChange={(e) => setEmail(e.target.value)}
                   />
 
-                  <Input
-                    label="Current City of Residence"
-                    placeholder="e.g. Gurugram / Delhi / Chandigarh"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                  />
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <label className="block text-xs font-semibold text-[#0D2329]">
+                        Preferred Date
+                      </label>
+                      <input
+                        type="date"
+                        value={preferredDate}
+                        onChange={(e) => setPreferredDate(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-[#D5CDBD] text-xs focus:outline-none focus:border-[#2C5E50] bg-white text-[#0D2329]"
+                      />
+                    </div>
 
-                  <div className="space-y-1">
-                    <label className="block text-xs font-semibold text-[#0D2329]">
-                      Preferred Date for Site Visit
-                    </label>
-                    <input
-                      type="date"
-                      value={preferredDate}
-                      onChange={(e) => setPreferredDate(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#D5CDBD] text-xs focus:outline-none focus:border-[#2C5E50] focus:ring-1 focus:ring-[#2C5E50] bg-white text-[#0D2329]"
-                    />
+                    <div className="space-y-1">
+                      <label className="block text-xs font-semibold text-[#0D2329]">
+                        Time Slot
+                      </label>
+                      <select
+                        value={preferredTimeSlot}
+                        onChange={(e) => setPreferredTimeSlot(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-[#D5CDBD] text-xs focus:outline-none focus:border-[#2C5E50] bg-white text-[#0D2329]"
+                      >
+                        <option>10:00 AM</option>
+                        <option>11:00 AM</option>
+                        <option>02:00 PM</option>
+                        <option>04:00 PM</option>
+                      </select>
+                    </div>
                   </div>
-                </div>
 
-                {/* Property Context Badge */}
-                <div className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D8] text-xs space-y-1">
-                  <div className="flex items-center gap-1.5 text-[#2C5E50] font-bold">
-                    <MapPin className="w-3.5 h-3.5 text-[#C58F58]" />
-                    <span>Project Location</span>
+                  {/* Chauffeur Transportation Selector */}
+                  <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8] space-y-2 text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-[#0D2329] flex items-center gap-1.5">
+                        <Car className="w-4 h-4 text-[#C58F58]" />
+                        Complimentary Chauffeur Pickup
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={transportNeeded}
+                        onChange={(e) => setTransportNeeded(e.target.checked)}
+                        className="rounded border-[#D5CDBD] text-[#2C5E50] focus:ring-[#2C5E50] w-4 h-4 cursor-pointer"
+                      />
+                    </div>
+                    {transportNeeded && (
+                      <Input
+                        label="Pickup Location"
+                        placeholder="e.g. Dwarka Sector 21 / Gurugram / Delhi"
+                        value={pickupLocation}
+                        onChange={(e) => setPickupLocation(e.target.value)}
+                      />
+                    )}
                   </div>
-                  <p className="text-[#53676E] text-[11px] leading-relaxed">
-                    State Highway 22 (SH-22), Kheri Asra, near Reliance MET City, Jhajjar, Haryana.
-                  </p>
                 </div>
 
                 <div className="pt-2">
@@ -230,7 +291,7 @@ export const LeadCaptureDrawer: React.FC = () => {
                     className="w-full"
                     disabled={loading}
                   >
-                    {loading ? 'Registering...' : 'Confirm Private Walkthrough →'}
+                    {loading ? 'Confirming...' : 'Confirm Guided Site Walk →'}
                   </Button>
                 </div>
               </form>
@@ -241,9 +302,9 @@ export const LeadCaptureDrawer: React.FC = () => {
           <div className="p-6 bg-[#FAF8F5] border-t border-[#E8E2D8] flex items-center justify-between text-[11px] text-[#53676E]">
             <div className="flex items-center gap-1.5 font-semibold text-[#0D2329]">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>Direct Foundation Registry</span>
+              <span>Direct Foundation Desk</span>
             </div>
-            <span>No broker intermediaries</span>
+            <span>No broker commission</span>
           </div>
         </div>
       </div>

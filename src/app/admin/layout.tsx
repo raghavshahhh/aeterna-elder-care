@@ -20,7 +20,8 @@ import {
   Sparkles,
   ExternalLink,
   Layers,
-  Home
+  Home,
+  CreditCard
 } from 'lucide-react';
 import { User } from '@/lib/db/schema';
 
@@ -34,6 +35,8 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { label: 'Executive Overview', href: '/admin', icon: Building2 },
+  { label: 'Payments & Collections', href: '/admin/payments', icon: CreditCard, badge: 'Razorpay' },
+  { label: 'Bookings & Holds', href: '/admin/bookings', icon: Layers },
   { label: 'Leads & CRM Pipeline', href: '/admin/leads', icon: Users, badge: 'Active' },
   { label: 'Site Visits Scheduler', href: '/admin/site-visits', icon: CalendarCheck },
   { label: 'Inventory & Units', href: '/admin/inventory', icon: Layers },

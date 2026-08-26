@@ -59,6 +59,41 @@ export type SiteVisitStatus =
   | 'CANCELLED'
   | 'NO_SHOW';
 
+export type BookingStatus =
+  | 'HOLD'
+  | 'CONFIRMED'
+  | 'PAYMENT_PENDING'
+  | 'COMPLETED'
+  | 'CANCELLED'
+  | 'EXPIRED';
+
+export type PaymentStatus =
+  | 'CREATED'
+  | 'PENDING'
+  | 'AUTHORIZED'
+  | 'CAPTURED'
+  | 'PARTIALLY_PAID'
+  | 'PAID'
+  | 'FAILED'
+  | 'CANCELLED'
+  | 'EXPIRED'
+  | 'REFUNDED'
+  | 'PARTIALLY_REFUNDED';
+
+export type InstallmentStatus =
+  | 'PENDING'
+  | 'DUE'
+  | 'PAID'
+  | 'OVERDUE'
+  | 'PARTIALLY_PAID';
+
+export type RefundStatus =
+  | 'REQUESTED'
+  | 'APPROVED'
+  | 'PROCESSING'
+  | 'COMPLETED'
+  | 'FAILED';
+
 export type RewardStatus =
   | 'PENDING'
   | 'VERIFIED'
@@ -122,8 +157,8 @@ export interface Franchise {
 
 export interface Location {
   id: string;
-  slug: string; // 'haryana', 'goa', 'dehradun'
-  name: string; // 'Haryana', 'Goa', 'Dehradun'
+  name: string;
+  slug: string;
   state: string;
   city: string;
   tagline: string;
@@ -132,70 +167,89 @@ export interface Location {
   featuredProjectCount: number;
   isPublished: boolean;
   displayOrder: number;
+  franchiseId?: string;
   createdAt: string;
   updatedAt: string;
 }
 
+export interface ProjectPricing {
+  basePrice?: number;
+  basePriceDisplay?: string;
+  downPaymentAmount?: number | string;
+  downPaymentDisplay?: string;
+  rentalReturnTillPossession?: number | string;
+  rentalReturnAfterPossession?: number | string;
+  prePossessionReturn?: string;
+  postPossessionReturn?: string;
+  leaseGuaranteeMonths?: number;
+  leaseGuaranteeYears?: number | string;
+  buybackGuaranteed?: boolean;
+  pricingNote?: string;
+  paymentPlansDescription?: string;
+}
+
+export interface ProjectOverview {
+  headline?: string;
+  subheadline?: string;
+  story?: string;
+  totalPlots?: number;
+  totalResidences?: number;
+  hospitalAreaSqFt?: number | string;
+  communityMandir?: boolean;
+  amenities?: Array<string | { name: string; category?: string; icon?: string; status?: string }>;
+  features?: { title: string; desc: string; icon?: string; status?: string }[];
+  healthcare?: { name: string; desc: string; type?: string; status?: string }[];
+}
+
 export interface Project {
   id: string;
-  slug: string; // 'kheri-asra', 'goa-residence'
   locationId: string;
   franchiseId?: string;
   name: string;
-  tagline: string;
+  slug: string;
+  tagline?: string;
+  projectType?: string;
   headline: string;
   subheadline: string;
   status: ProjectStatus;
-  projectType: 'PRE_LAUNCH_PLOTTED' | 'READY_TO_MOVE_RESIDENTIAL' | 'INTEGRATED_TOWNSHIP';
+  isPublished: boolean;
+  displayOrder?: number;
   address: string;
-  city: string;
-  state: string;
-  pincode: string;
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
-  totalArea: string; // e.g. '15.5 Acres'
-  totalPlots?: number;
-  totalResidences?: number;
-  hospitalAreaSqFt?: number;
-  hospitalStatus?: FeatureStatus;
-  heroMedia: {
-    type: 'IMAGE' | 'VIDEO' | 'DRONE';
-    url: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  coordinates?: { lat: number; lng: number };
+  totalArea?: string;
+  hospitalStatus?: string;
+  heroMedia?: {
+    type?: string;
+    url?: string;
     thumbnailUrl?: string;
     youtubeId?: string;
   };
-  overview: {
-    story: string;
-    features: { title: string; desc: string; icon: string; status: FeatureStatus }[];
-    amenities: { name: string; category: string; icon: string; status: FeatureStatus }[];
-    healthcare: { name: string; desc: string; status: FeatureStatus }[];
-  };
-  pricing: {
-    basePriceDisplay: string;
-    downPaymentAmount?: string;
-    prePossessionReturn?: string;
-    postPossessionReturn?: string;
-    leaseGuaranteeMonths?: number;
-    buybackGuaranteed?: boolean;
-    pricingNote?: string;
-  };
-  isPublished: boolean;
-  enable3D: boolean;
-  enableCAD: boolean;
-  displayOrder: number;
+  latitude?: number;
+  longitude?: number;
+  googleMapsUrl?: string;
+  pricing: ProjectPricing;
+  overview: ProjectOverview;
+  totalPlots?: number;
+  totalResidences?: number;
+  hospitalAreaSqFt?: number | string;
+  enable3D?: boolean;
+  enableCAD?: boolean;
+  enableAvailabilityMatrix?: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface InventoryUnit {
-  id: string; // e.g. 'UNIT-A-101', 'PLOT-A-01'
+  id: string; // e.g. 'UNIT-G-01', 'PLOT-A-24'
   projectId: string;
-  unitCode: string;
-  block?: string; // 'A', 'B', 'C', 'D', 'E', 'F'
-  unitNumber: number;
+  locationId?: string;
+  unitCode: string; // 'Residence 01' or 'Plot 24'
+  unitNumber?: string | number;
   type: InventoryType;
+  block?: string;
   areaSqYd?: number;
   areaSqFt?: number;
   carpetAreaSqFt?: number;
@@ -210,6 +264,7 @@ export interface InventoryUnit {
   cadSvgAsset?: string;
   threeDAssetId?: string;
   assignedLeadId?: string;
+  holdExpiresAt?: string;
   reservedAt?: string;
   soldAt?: string;
   notes?: string;
@@ -279,24 +334,205 @@ export interface SiteVisit {
   updatedAt: string;
 }
 
+// ----------------------------------------------------
+// PAYMENT, BOOKING & INSTALLMENT ENTITIES
+// ----------------------------------------------------
+
+export interface PaymentInstallment {
+  id: string; // e.g. 'INST-001'
+  planId: string;
+  bookingId: string;
+  installmentNumber: number; // 1, 2, 3...
+  title: string; // 'Booking Token', 'First Installment', 'Structure Completion', 'Possession & Registry'
+  amount: number; // in INR
+  paidAmount: number; // in INR
+  dueDate: string; // YYYY-MM-DD
+  gracePeriodDays: number; // e.g. 7
+  status: InstallmentStatus;
+  paymentId?: string;
+  receiptId?: string;
+  paidAt?: string;
+  notes?: string;
+}
+
+export interface PaymentPlan {
+  id: string; // e.g. 'PLAN-BK-2026-001'
+  bookingId: string;
+  projectId: string;
+  unitId: string;
+  totalAmount: number; // in INR
+  totalPaid: number; // in INR
+  totalRemaining: number; // in INR
+  bookingAmount: number;
+  numberOfInstallments: number;
+  gracePeriodDays: number;
+  status: 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'DEFAULTED';
+  installments: PaymentInstallment[];
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Booking {
   id: string; // e.g. 'BK-2026-001'
-  bookingNumber: string;
+  bookingNumber: string; // 'SLF-HAR-2026-001'
   leadId: string;
   unitId: string;
+  unitCode: string;
+  unitType: InventoryType;
   projectId: string;
+  projectTitle: string;
+  locationId: string;
   customerName: string;
   customerPhone: string;
   customerEmail: string;
+  customerAddress?: string;
   bookingAmount: number;
   totalAgreedPrice: number;
-  paymentPlanSelected: string;
-  paymentStatus: 'TOKEN_RECEIVED' | 'DOWN_PAYMENT_COMPLETE' | 'REGISTRY_DONE' | 'CANCELLED';
+  totalPaidAmount: number;
+  remainingBalance: number;
+  status: BookingStatus;
+  paymentPlanId?: string;
+  holdExpiresAt?: string; // ISO string if in HOLD
+  referrerCode?: string;
   referrerId?: string;
   commissionAmount?: number;
   commissionStatus?: CommissionStatus;
+  assignedAdvisorName?: string;
+  assignedAdvisorPhone?: string;
+  notes?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface PaymentRecord {
+  id: string; // e.g. 'PAY-10024'
+  receiptNumber: string; // e.g. 'RCP-2026-001'
+  bookingId: string;
+  planId?: string;
+  installmentId?: string;
+  installmentNumber?: number;
+  buyerId?: string;
+  buyerName: string;
+  buyerEmail: string;
+  buyerPhone: string;
+  projectId: string;
+  locationId: string;
+  unitId: string;
+  unitCode: string;
+  amount: number; // in INR
+  amountPaid: number; // in INR
+  currency: string; // 'INR'
+  method: 'RAZORPAY_CARD' | 'RAZORPAY_UPI' | 'RAZORPAY_NETBANKING' | 'NEFT_RTGS' | 'CHEQUE' | 'CASH';
+  status: PaymentStatus;
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  razorpayPaymentLinkId?: string;
+  razorpaySignature?: string;
+  webhookVerified: boolean;
+  webhookReceivedAt?: string;
+  failureReason?: string;
+  refundId?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PaymentLinkRecord {
+  id: string; // 'PLINK-001'
+  bookingId: string;
+  installmentId?: string;
+  razorpayLinkId: string;
+  shortUrl: string;
+  amount: number;
+  amountPaid: number;
+  amountDue: number;
+  description: string;
+  customerName: string;
+  customerPhone: string;
+  customerEmail: string;
+  status: 'CREATED' | 'PARTIALLY_PAID' | 'PAID' | 'EXPIRED' | 'CANCELLED';
+  expiresAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PaymentReceipt {
+  id: string; // 'RCP-2026-001'
+  receiptNumber: string;
+  paymentId: string;
+  bookingId: string;
+  installmentId?: string;
+  installmentTitle?: string;
+  buyerName: string;
+  buyerPhone: string;
+  buyerEmail: string;
+  buyerAddress?: string;
+  projectTitle: string;
+  locationName: string;
+  unitCode: string;
+  unitType: string;
+  amountPaid: number;
+  amountRemaining: number;
+  totalPropertyAmount: number;
+  paymentDate: string;
+  paymentMethod: string;
+  transactionReference: string;
+  razorpayPaymentId?: string;
+  status: 'ISSUED' | 'VOID' | 'REFUNDED';
+  qrVerificationUrl?: string;
+  createdAt: string;
+}
+
+export interface RefundRecord {
+  id: string; // 'REF-001'
+  paymentId: string;
+  bookingId: string;
+  amount: number;
+  reason: string;
+  requestedBy: string;
+  approvedBy?: string;
+  status: RefundStatus;
+  razorpayRefundId?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PaymentEvent {
+  id: string;
+  bookingId: string;
+  paymentId?: string;
+  installmentId?: string;
+  eventType:
+    | 'PAYMENT_LINK_CREATED'
+    | 'ORDER_CREATED'
+    | 'PAYMENT_INITIATED'
+    | 'PAYMENT_CAPTURED'
+    | 'PAYMENT_FAILED'
+    | 'INSTALLMENT_PAID'
+    | 'BOOKING_CONFIRMED'
+    | 'REFUND_REQUESTED'
+    | 'REFUND_APPROVED'
+    | 'HOLD_EXPIRED'
+    | 'COMMISSION_CALCULATED';
+  description: string;
+  metadata?: Record<string, unknown>;
+  actorId?: string;
+  actorName?: string;
+  createdAt: string;
+}
+
+export interface BuyerDocument {
+  id: string;
+  bookingId: string;
+  buyerPhone: string;
+  title: string;
+  category: 'RECEIPT' | 'ALLOTMENT_LETTER' | 'BOOKING_AGREEMENT' | 'TRUST_CERTIFICATE' | 'CAD_BLUEPRINT';
+  fileName: string;
+  fileSize: string;
+  downloadUrl: string;
+  uploadedAt: string;
 }
 
 export interface Referrer {
@@ -414,6 +650,9 @@ export interface SystemSettings {
   referralAttributionCookieDays: number; // 30 days
   autoVerifyLeads: boolean;
   duplicatePhoneWindowDays: number; // 90 days
+  holdExpiryHours: number; // e.g. 24 hours
+  razorpayKeyId?: string;
+  razorpayWebhookSecret?: string;
   notificationEmail: string;
   whatsappContactNumber: string;
   updatedAt: string;

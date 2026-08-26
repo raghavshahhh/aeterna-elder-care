@@ -194,7 +194,7 @@ export default function DynamicProjectPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {project.overview.features.map((f, idx) => (
+          {(project.overview.features || []).map((f, idx) => (
             <div key={idx} className="p-6 rounded-3xl bg-white border border-[#E8E2D8] shadow-md space-y-3">
               <div className="w-10 h-10 rounded-2xl bg-[#EAF2EE] text-[#2C5E50] flex items-center justify-center">
                 <CheckCircle2 className="w-5 h-5" />
@@ -222,7 +222,7 @@ export default function DynamicProjectPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {project.overview.healthcare.map((h, idx) => (
+            {(project.overview.healthcare || []).map((h, idx) => (
               <div key={idx} className="p-6 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8] space-y-2">
                 <div className="flex items-center gap-2 text-sm font-bold text-[#0D2329]">
                   <HeartPulse className="w-4 h-4 text-[#C58F58]" />

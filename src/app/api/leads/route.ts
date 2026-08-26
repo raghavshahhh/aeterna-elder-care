@@ -68,6 +68,10 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Server-side authoritative referral code resolution
+    const serverCookieRef = request.cookies.get('slcf_ref')?.value;
+    const effectiveReferralCode = (referralCode ? referralCode.trim().toUpperCase() : serverCookieRef ? serverCookieRef.trim().toUpperCase() : undefined);
+
     const lead = db.createLead({
       name: name.trim(),
       phone: phone.trim(),
@@ -77,7 +81,8 @@ export async function POST(request: NextRequest) {
       interestedUnitType,
       budgetRange,
       source,
-      referralCode: referralCode ? referralCode.trim().toUpperCase() : undefined,
+      referralCode: effectiveReferralCode,
+
       landingPage,
       utmSource,
       utmMedium,

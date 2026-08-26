@@ -5,6 +5,7 @@ import { allPlots, plotsSummary, projectOverview } from '@/data/propertyData';
 import { PlotItem } from '@/types';
 import { PlotDetailDrawer } from '@/components/property/PlotDetailDrawer';
 import { MasterPlan3DViewer } from '@/components/3d/MasterPlan3DViewer';
+import { PlotStickyContextBar } from '@/components/property/PlotStickyContextBar';
 import { Cad3DToggle } from '@/components/ui/Cad3DToggle';
 import { useModal } from '@/context/ModalContext';
 import { Button } from '@/components/ui/Button';
@@ -32,7 +33,7 @@ export const AvailabilityMatrix: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
 
-  // Drawer State
+  // Drawer & Selection State
   const [selectedPlot, setSelectedPlot] = useState<PlotItem | null>(null);
   const [isPlotDrawerOpen, setIsPlotDrawerOpen] = useState(false);
 
@@ -48,6 +49,10 @@ export const AvailabilityMatrix: React.FC = () => {
   const handlePlotClick = (plot: PlotItem) => {
     setSelectedPlot(plot);
     setIsPlotDrawerOpen(true);
+  };
+
+  const handleFocus3D = (plotNumber?: number) => {
+    setViewMode('3d');
   };
 
   return (
@@ -101,7 +106,7 @@ export const AvailabilityMatrix: React.FC = () => {
               </p>
             </div>
 
-            {/* Honest Status Badge */}
+            {/* Status Badge */}
             <div className="flex items-center gap-2 text-xs">
               <span className="px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-900 border border-emerald-200 font-bold flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -179,11 +184,16 @@ export const AvailabilityMatrix: React.FC = () => {
           {/* Interactive Grid of 64 Plots */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 max-h-[500px] overflow-y-auto pr-1">
             {filteredPlots.map((p) => {
+              const isSelected = selectedPlot?.id === p.id;
               return (
                 <div
                   key={p.id}
                   onClick={() => handlePlotClick(p)}
-                  className="p-3 rounded-2xl border border-[#E8E2D8] bg-[#FAF8F5] hover:bg-white hover:border-[#2C5E50] text-center transition-all cursor-pointer flex flex-col justify-between group hover:shadow-md hover:scale-[1.02]"
+                  className={`p-3 rounded-2xl border text-center transition-all cursor-pointer flex flex-col justify-between group hover:shadow-md hover:scale-[1.02] ${
+                    isSelected
+                      ? 'border-[#2C5E50] bg-emerald-50/70 ring-2 ring-[#2C5E50]'
+                      : 'border-[#E8E2D8] bg-[#FAF8F5] hover:bg-white hover:border-[#2C5E50]'
+                  }`}
                 >
                   <div className="space-y-1">
                     <div className="flex items-center justify-between text-[10px] text-[#53676E] font-mono">
@@ -205,7 +215,7 @@ export const AvailabilityMatrix: React.FC = () => {
                   </div>
 
                   <span className="text-[9px] font-bold uppercase tracking-wider block mt-2 px-1.5 py-0.5 rounded bg-[#EAF2EE] text-[#2C5E50]">
-                    Phase 1 Enquiry
+                    Inspect CAD →
                   </span>
                 </div>
               );
@@ -216,13 +226,13 @@ export const AvailabilityMatrix: React.FC = () => {
           <div className="pt-6 border-t border-[#E8E2D8] flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-xs text-[#53676E] flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>Freehold registered title in your name with clean inheritance.</span>
+              <span>Freehold registered title in your name with clear municipal demarcations.</span>
             </div>
 
             <div className="flex items-center gap-3">
               <button
                 onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, please share the full 64 Plots Master Plan PDF and current price list...' })}
-                className="px-4 py-2.5 rounded-xl bg-[#FAF8F5] hover:bg-[#EAF2EE] text-[#0D2329] text-xs font-bold transition-all border border-[#E8E2D8] flex items-center gap-1.5"
+                className="px-4 py-2.5 rounded-xl bg-[#FAF8F5] hover:bg-[#EAF2EE] text-[#0D2329] text-xs font-bold transition-all border border-[#E8E2D8] flex items-center gap-1.5 cursor-pointer"
               >
                 <MessageSquare className="w-3.5 h-3.5 text-[#25D366]" />
                 Get Price List (PDF) →
@@ -246,6 +256,15 @@ export const AvailabilityMatrix: React.FC = () => {
         plot={selectedPlot}
         isOpen={isPlotDrawerOpen}
         onClose={() => setIsPlotDrawerOpen(false)}
+        onFocus3D={(num) => handleFocus3D(num)}
+      />
+
+      {/* Sticky Context Bar for Selected Plot */}
+      <PlotStickyContextBar
+        selectedPlot={selectedPlot}
+        onClear={() => setSelectedPlot(null)}
+        onFocus3D={() => handleFocus3D(selectedPlot?.number)}
+        onOpenDetails={() => setIsPlotDrawerOpen(true)}
       />
     </section>
   );

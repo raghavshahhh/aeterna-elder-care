@@ -15,7 +15,10 @@ import { EcosystemShowcase } from '@/components/property/EcosystemShowcase';
 import { AvailabilityMatrix } from '@/components/property/AvailabilityMatrix';
 import { FinancePaymentPlans } from '@/components/property/FinancePaymentPlans';
 import { TrustTransparency } from '@/components/property/TrustTransparency';
+import { PersonalizedJourneySelector } from '@/components/property/PersonalizedJourneySelector';
+import { BuyerJourneyOnboarding } from '@/components/property/BuyerJourneyOnboarding';
 import { propertyFaqs, projectOverview } from '@/data/propertyData';
+
 import { Accordion } from '@/components/ui/Accordion';
 import { useModal } from '@/context/ModalContext';
 import { FloorLevel } from '@/types';
@@ -45,15 +48,24 @@ export default function HomePage() {
       {/* 01 — REAL DRONE HERO (WITH VIDEO SLOT, BADGES & ELEVATED TYPOGRAPHY) */}
       <DroneHero />
 
+      {/* PERSONALIZED DISCOVERY SELECTOR (FOR PARENTS / RETIREMENT / PLOT / RESIDENCE / TRUST) */}
+      <PersonalizedJourneySelector />
+
       {/* 02 — PROJECT INTRODUCTION (MASTER PLOTTED SANCTUARY & HOSPITAL OVERVIEW) */}
       <ProjectIntroduction />
 
       {/* 03 — WHY THIS KIND OF LIVING / WHY SENIOR LIVING (FAMILY PERSPECTIVE) */}
-      <EmotionalFamilyStory />
-      <WhySeniorLivingBenefits />
+      <div id="family-story">
+        <EmotionalFamilyStory />
+      </div>
+      <div id="why-senior-living">
+        <WhySeniorLivingBenefits />
+      </div>
 
       {/* 04 — REAL LOCATION & SURROUNDINGS (KHERI ASRA / RELIANCE MET CITY / SH-22) */}
-      <LocationConnectivity />
+      <div id="location-connectivity">
+        <LocationConnectivity />
+      </div>
 
       {/* 05 — WHAT EXISTS TODAY VS. WHAT WE ARE BUILDING (TRANSPARENT PRE-LAUNCH STAGING) */}
       <RealVsProposed />
@@ -65,7 +77,9 @@ export default function HomePage() {
       <BuildingCGIViewer onSelectFloor={handleFloorSelectFromCGI} />
 
       {/* 08 & 09 — RESIDENCE UNIT EXPLORER & MEASURED FLOOR PLAN VISUALIZER */}
-      <ResidenceUnitExplorer />
+      <div id="residences-explorer">
+        <ResidenceUnitExplorer />
+      </div>
 
       {/* 10 — WHAT YOU GET (5 CONCISE BENEFIT PILLARS: HOME, CARE, WELLNESS, COMMUNITY, CONVENIENCE) */}
       <WhatYouGetPillars />
@@ -74,13 +88,23 @@ export default function HomePage() {
       <EcosystemShowcase />
 
       {/* 12 & 13 — 64-PLOT MASTER PLAN & PLOT-BY-PLOT INVENTORY EXPLORER */}
-      <AvailabilityMatrix />
+      <div id="availability-matrix">
+        <AvailabilityMatrix />
+      </div>
 
       {/* 14, 15 & 16 — TRANSPARENT PRICING, 3 PAYMENT OPTIONS & RENTAL PROPOSITION */}
-      <FinancePaymentPlans />
+      <div id="payment-plans">
+        <FinancePaymentPlans />
+      </div>
 
       {/* 17 — TRUST & TRANSPARENCY (SECTION 8 / FORM 10AC/80G / DARPAN NPO / FREEHOLD TITLE) */}
-      <TrustTransparency />
+      <div id="trust-transparency">
+        <TrustTransparency />
+      </div>
+
+      {/* 18 — 6-STAGE BUYER ONBOARDING ROADMAP & TIMELINE */}
+      <BuyerJourneyOnboarding />
+
 
       {/* 18 — FREQUENTLY ASKED QUESTIONS (FAMILY-TAILORED Q&AS) */}
       <section className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E8E2D8]">

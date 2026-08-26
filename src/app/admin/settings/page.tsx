@@ -12,6 +12,7 @@ export default function AdminSettingsPage() {
     referralAttributionCookieDays: 30,
     autoVerifyLeads: false,
     duplicatePhoneWindowDays: 90,
+    holdExpiryHours: 24,
     notificationEmail: 'leads@seniorlivingcitizensfoundation.com',
     whatsappContactNumber: '+919999955847',
     updatedAt: new Date().toISOString()

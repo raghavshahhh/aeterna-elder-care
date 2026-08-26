@@ -8,12 +8,13 @@ import { Button } from '@/components/ui/Button';
 import {
   MapPin,
   Building2,
-  Calendar,
+  CalendarCheck,
   MessageSquare,
   ArrowDown,
   ShieldCheck,
   Heart,
-  Video
+  Video,
+  Sparkles
 } from 'lucide-react';
 
 export const DroneHero: React.FC = () => {
@@ -36,7 +37,7 @@ export const DroneHero: React.FC = () => {
   };
 
   return (
-    <section className="relative min-h-[92vh] sm:min-h-[96vh] flex flex-col justify-between overflow-hidden bg-[#071519] text-white pt-24 pb-12">
+    <section className="relative min-h-[90vh] sm:min-h-[94vh] flex flex-col justify-between overflow-hidden bg-[#071519] text-white pt-24 pb-12">
       {/* Cinematic Full-Bleed Video Slot with Image Fallback */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {projectOverview.droneVideoUrl ? (
@@ -105,7 +106,7 @@ export const DroneHero: React.FC = () => {
           </div>
 
           <p className="text-base sm:text-lg text-white/90 font-normal leading-relaxed max-w-2xl drop-shadow-sm">
-            An upcoming senior-living community designed around comfort, accessibility, wellness, and peace of mind. Offering <strong>64 residential freehold plots</strong> and <strong>senior residences</strong> with an on-site proposed <strong>30,000 sq. ft. Ayurvedic hospital</strong> and <strong>Community Mandir</strong> near Reliance MET City, SH-22 Jhajjar.
+            An upcoming senior-living community designed around comfort, accessibility, wellness, and peace of mind. Offering <strong>64 residential freehold plots</strong> and <strong>senior care residences</strong> with an on-site proposed <strong>30,000 sq. ft. Ayurvedic hospital</strong> and <strong>Community Mandir</strong> near Reliance MET City, SH-22 Jhajjar.
           </p>
 
           {/* 3 Metric Badges */}
@@ -124,39 +125,46 @@ export const DroneHero: React.FC = () => {
             </div>
           </div>
 
-          {/* Action CTAs */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
+          {/* Structured Action Decision Grid */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+            {/* PRIMARY: Explore Sanctuary */}
             <Button
               size="lg"
               className="bg-[#2C5E50] hover:bg-[#3D7363] text-white py-4 px-6 text-sm sm:text-base font-semibold shadow-xl shadow-[#2C5E50]/40 cursor-pointer"
-              onClick={() => scrollToSection('building-vision')}
+              onClick={() => scrollToSection('why-senior-living')}
               leftIcon={<Building2 className="w-5 h-5" />}
             >
-              Explore the Project ↓
+              Explore the Sanctuary ↓
             </Button>
+
+            {/* SECONDARY: Book Guided Site Visit */}
             <Button
               variant="outline"
               size="lg"
-              className="border-red-500/40 bg-red-950/40 backdrop-blur-md text-white hover:bg-red-900/50 py-4 px-5 text-sm font-medium cursor-pointer"
+              className="border-white/30 bg-black/40 backdrop-blur-md text-white hover:bg-white/15 py-4 px-5 text-sm font-medium cursor-pointer"
+              onClick={() => openLeadDrawer({ title: 'Book a Guided Site Visit in Kheri Asra, Jhajjar', actionType: 'book-site-visit' })}
+              leftIcon={<CalendarCheck className="w-4 h-4 text-[#C58F58]" />}
+            >
+              Book a Guided Site Visit
+            </Button>
+
+            {/* TERTIARY: Drone Video */}
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-red-500/40 bg-red-950/40 backdrop-blur-md text-white hover:bg-red-900/50 py-4 px-4 text-xs font-medium cursor-pointer hidden md:flex"
               onClick={() => scrollToSection('reality-vs-vision')}
               leftIcon={<Video className="w-4 h-4 text-red-400" />}
             >
               Watch Video
             </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-white/30 bg-black/40 backdrop-blur-md text-white hover:bg-white/15 py-4 px-5 text-sm font-medium cursor-pointer"
-              onClick={() => openLeadDrawer({ title: 'Book Free Private Site Walkthrough in Kheri Asra', actionType: 'book-site-visit' })}
-              leftIcon={<Calendar className="w-4 h-4 text-[#C58F58]" />}
-            >
-              Book Site Visit
-            </Button>
+
+            {/* TERTIARY: WhatsApp Advisor */}
             <Button
               variant="ghost"
               size="lg"
-              className="text-emerald-300 hover:text-white hover:bg-white/10 py-4 px-4 text-sm font-semibold backdrop-blur-sm cursor-pointer"
-              onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I want to inquire about Senior Living Citizen Foundation plots and senior apartments...' })}
+              className="text-emerald-300 hover:text-white hover:bg-white/10 py-4 px-4 text-xs font-semibold backdrop-blur-sm cursor-pointer"
+              onClick={() => openWhatsApp({ actionType: 'general', message: 'Hello, I would like to speak to an advisor about Senior Living Citizen Foundation...' })}
               leftIcon={<MessageSquare className="w-4 h-4 text-[#25D366]" />}
             >
               Chat on WhatsApp
@@ -182,4 +190,3 @@ export const DroneHero: React.FC = () => {
     </section>
   );
 };
-
