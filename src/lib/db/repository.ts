@@ -1076,7 +1076,7 @@ export const db = {
       transactionReference: params.razorpayPaymentId,
       razorpayPaymentId: params.razorpayPaymentId,
       status: 'ISSUED',
-      qrVerificationUrl: `https://aeterna-elder-care.vercel.app/buyer/receipts/${receiptNum}`,
+      qrVerificationUrl: `https://seniorlivingcitizens.org/buyer/receipts/${receiptNum}`,
       createdAt: new Date().toISOString()
     };
     state.receipts.unshift(receipt);

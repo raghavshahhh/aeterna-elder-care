@@ -31,7 +31,10 @@ export default function AdminReferralsPage() {
   const [isCreatingPartner, setIsCreatingPartner] = useState(false);
   const [partnerName, setPartnerName] = useState('');
   const [partnerPhone, setPartnerPhone] = useState('');
+  const [partnerEmail, setPartnerEmail] = useState('');
   const [partnerUpi, setPartnerUpi] = useState('');
+  const [formError, setFormError] = useState<string | null>(null);
+  const [successBanner, setSuccessBanner] = useState<{ name: string; code: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -69,6 +72,7 @@ export default function AdminReferralsPage() {
   async function handleCreatePartner(e: React.FormEvent) {
     e.preventDefault();
     setIsSubmitting(true);
+    setFormError(null);
     try {
       const res = await fetch('/api/referrals', {
         method: 'POST',
@@ -76,18 +80,28 @@ export default function AdminReferralsPage() {
         body: JSON.stringify({
           name: partnerName,
           phone: partnerPhone,
+          email: partnerEmail,
           upiId: partnerUpi
         })
       });
-      if (res.ok) {
+      const data = await res.json();
+      if (res.ok && data.success) {
+        const generated = data.referrer;
+        setSuccessBanner({ name: generated.name, code: generated.code });
         setPartnerName('');
         setPartnerPhone('');
+        setPartnerEmail('');
         setPartnerUpi('');
         setIsCreatingPartner(false);
-        loadReferralData();
+        setActiveTab('PARTNERS');
+        await loadReferralData();
+        setTimeout(() => setSuccessBanner(null), 10000);
+      } else {
+        setFormError(data.error || 'Failed to issue partner referral code. Please check inputs.');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error creating partner:', err);
+      setFormError(err.message || 'Network error occurred while creating referral code.');
     } finally {
       setIsSubmitting(false);
     }
@@ -128,7 +142,7 @@ export default function AdminReferralsPage() {
   }
 
   const copyPartnerLink = (code: string) => {
-    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://aeterna-elder-care.vercel.app';
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://seniorlivingcitizens.org';
     const link = `${origin}/?ref=${code}`;
     navigator.clipboard.writeText(link);
     setCopiedCode(code);
@@ -140,6 +154,40 @@ export default function AdminReferralsPage() {
 
   return (
     <div className="space-y-6">
+      {/* Success Notification Banner */}
+      {successBanner && (
+        <div className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-fade-in shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+              <Check className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="font-bold text-sm text-emerald-950 font-serif-heading">
+                Partner Referral Code Issued Successfully!
+              </h4>
+              <p className="text-xs text-emerald-800">
+                Partner <span className="font-bold">{successBanner.name}</span> has been assigned unique referral code <span className="font-mono font-bold bg-emerald-100 px-1.5 py-0.5 rounded text-emerald-950">{successBanner.code}</span> with ₹50 lead tracking.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => copyPartnerLink(successBanner.code)}
+              className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold font-mono flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors"
+            >
+              <Copy className="w-3.5 h-3.5" />
+              <span>Copy Partner Link</span>
+            </button>
+            <button
+              onClick={() => setSuccessBanner(null)}
+              className="p-2 rounded-xl hover:bg-emerald-200/50 text-emerald-800 transition-colors cursor-pointer"
+            >
+              <XCircle className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-xs">
         <div>
@@ -156,7 +204,10 @@ export default function AdminReferralsPage() {
         </div>
 
         <button
-          onClick={() => setIsCreatingPartner(true)}
+          onClick={() => {
+            setFormError(null);
+            setIsCreatingPartner(true);
+          }}
           className="px-4 py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#234b40] text-white font-bold text-xs flex items-center gap-2 shadow-xs cursor-pointer transition-colors"
         >
           <Plus className="w-4 h-4" />
@@ -407,70 +458,91 @@ export default function AdminReferralsPage() {
       {/* Modal: Create Partner */}
       {isCreatingPartner && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl">
-            <h3 className="text-lg font-serif-heading font-bold text-slate-900 mb-2">
-              Generate Partner Referral Code
-            </h3>
-            <p className="text-xs text-slate-500 mb-6">
-              Create a custom partner attribution code with ₹50 lead tracking and 1% sales commission ledger.
-            </p>
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-4">
+            <div>
+              <h3 className="text-lg font-serif-heading font-bold text-slate-900 mb-1">
+                Generate Partner Referral Code
+              </h3>
+              <p className="text-xs text-slate-500">
+                Create a custom partner attribution code with ₹50 lead tracking and 1% sales commission ledger.
+              </p>
+            </div>
 
-            <form onSubmit={handleCreatePartner} className="space-y-4">
+            {formError && (
+              <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-mono">
+                {formError}
+              </div>
+            )}
+
+            <form onSubmit={handleCreatePartner} className="space-y-3.5">
               <div>
-                <label className="block text-xs font-mono text-slate-600 uppercase mb-1 font-bold">
+                <label className="block text-xs font-mono text-slate-700 uppercase mb-1 font-bold">
                   Partner Name *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Dr. Rajesh Verma"
+                  placeholder="e.g. Raghav Shah"
                   value={partnerName}
                   onChange={(e) => setPartnerName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:border-[#2C5E50] focus:outline-none"
+                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:border-[#2C5E50] focus:bg-white focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-slate-600 uppercase mb-1 font-bold">
+                <label className="block text-xs font-mono text-slate-700 uppercase mb-1 font-bold">
                   Phone Number *
                 </label>
                 <input
                   type="tel"
                   required
-                  placeholder="e.g. +91 98765 43210"
+                  placeholder="e.g. +91 87000 48490"
                   value={partnerPhone}
                   onChange={(e) => setPartnerPhone(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:border-[#2C5E50] focus:outline-none"
+                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:border-[#2C5E50] focus:bg-white focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-slate-600 uppercase mb-1 font-bold">
+                <label className="block text-xs font-mono text-slate-700 uppercase mb-1 font-bold">
+                  Email Address (Optional / Portal Login)
+                </label>
+                <input
+                  type="email"
+                  placeholder="e.g. raghav@ragspro.com"
+                  value={partnerEmail}
+                  onChange={(e) => setPartnerEmail(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:border-[#2C5E50] focus:bg-white focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono text-slate-700 uppercase mb-1 font-bold">
                   UPI ID for Auto-Payouts (Optional)
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. rajesh@icici"
+                  placeholder="e.g. 8700048490@paytm / raghav@okhdfcbank"
                   value={partnerUpi}
                   onChange={(e) => setPartnerUpi(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:border-[#2C5E50] focus:outline-none"
+                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:border-[#2C5E50] focus:bg-white focus:outline-none"
                 />
               </div>
 
-              <div className="flex gap-3 pt-4 border-t border-slate-200">
+              <div className="flex gap-3 pt-3 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => setIsCreatingPartner(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs text-slate-700 font-mono font-bold cursor-pointer"
+                  className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs text-slate-700 font-mono font-bold cursor-pointer transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#234b40] text-white font-bold text-xs font-mono cursor-pointer"
+                  className="flex-1 py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#234b40] text-white font-bold text-xs font-mono cursor-pointer transition-colors disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Generating...' : 'Issue Code'}
+                  {isSubmitting ? 'Issuing Code...' : 'Issue Code'}
                 </button>
               </div>
             </form>

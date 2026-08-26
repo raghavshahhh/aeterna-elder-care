@@ -109,12 +109,13 @@ export default function AdminLayout({
             />
           </div>
           <div>
-            <span className="text-[9px] font-mono uppercase text-[#C58F58] font-bold tracking-widest block">
-              BUSINESS &amp; CRM SUITE
+            <div className="text-xs font-serif-heading font-bold text-white tracking-tight flex items-center gap-1">
+              <span>Senior Living</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C58F58]" />
+            </div>
+            <span className="text-[8.5px] uppercase tracking-[0.16em] font-mono font-bold text-[#C58F58] block">
+              Citizens Foundation · Admin
             </span>
-            <h2 className="text-sm font-serif-heading font-bold text-white tracking-tight">
-              Senior Living Admin
-            </h2>
           </div>
         </Link>
       </div>

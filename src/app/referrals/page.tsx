@@ -43,7 +43,7 @@ export default function ReferralProgramPage() {
     }
   };
 
-  const [origin, setOrigin] = useState('https://aeterna-elder-care.vercel.app');
+  const [origin, setOrigin] = useState('https://seniorlivingcitizens.org');
 
   React.useEffect(() => {
     if (typeof window !== 'undefined' && window.location.origin) {

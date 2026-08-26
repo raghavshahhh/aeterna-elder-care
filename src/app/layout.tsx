@@ -20,7 +20,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://aeterna-elder-care.vercel.app'),
+  metadataBase: new URL('https://seniorlivingcitizens.org'),
   title: {
     default: 'Senior Living Citizens Foundation — Plotted Sanctuary & Ayurvedic Hospital · Haryana',
     template: '%s | Senior Living Citizens Foundation'

@@ -56,7 +56,7 @@ export default function PartnerDashboardPage() {
     loadPartnerData();
   }, []);
 
-  const [origin, setOrigin] = useState('https://aeterna-elder-care.vercel.app');
+  const [origin, setOrigin] = useState('https://seniorlivingcitizens.org');
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.location.origin) {
@@ -93,10 +93,10 @@ export default function PartnerDashboardPage() {
         {/* Top Partner Header */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-[#091B20] border border-white/10 shadow-2xl">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-white/95 border border-white/20 p-1 flex items-center justify-center shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-[#14323A] border border-[#C58F58]/40 p-1 flex items-center justify-center shrink-0">
               <img
-                src="/project-assets/brand/logo-icon.png"
-                alt="Logo"
+                src="/project-assets/brand/logo-icon-clean.png"
+                alt="Senior Living Citizens Foundation Logo"
                 className="w-full h-full object-contain rounded-xl"
               />
             </div>
