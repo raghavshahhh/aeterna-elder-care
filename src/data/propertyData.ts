@@ -47,7 +47,7 @@ export const projectOverview = {
   droneYoutubeUrl: 'https://youtu.be/jiEwQ6RA2HI',
   heroPosterImage: '/project-assets/real-site/drone/poster.jpg',
   images: {
-    droneOverview: '/images/indian-grandparents-hero.jpg',
+    droneOverview: '/project-assets/real-site/drone/real-land-aerial-1.jpg',
     masterPlanCad: '/project-assets/architecture/cad/previews/masterplan-real.jpg',
     buildingCadElevation: '/project-assets/architecture/cad/previews/typical-floor-cad.jpg',
     stiltFloorCad: '/project-assets/architecture/cad/previews/stilt-floor-cad.jpg',

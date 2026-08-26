@@ -161,24 +161,43 @@ export const FutureHomeJourney: React.FC = () => {
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 <div className="lg:col-span-7 relative h-[360px] sm:h-[440px] rounded-2xl overflow-hidden border border-white/15 shadow-xl group">
-                  <Image
-                    src={projectOverview.images.droneOverview}
-                    alt="Real Drone View of Kheri Asra Site"
-                    fill
-                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-emerald-600/90 backdrop-blur-md text-white text-[10px] font-mono font-bold uppercase tracking-wider">
-                    Verified Physical Land Today
-                  </div>
-                  <div className="absolute bottom-4 left-4 right-4 text-white text-xs sm:text-sm space-y-1">
-                    <p className="font-serif-heading font-bold text-base text-[#FAF8F5]">
-                      11+ Acres Demarcated Freehold Land on State Highway 22
-                    </p>
-                    <p className="text-white/80 text-xs">
-                      Clear green surroundings, low air pollution, and direct arterial road connectivity to Reliance MET City and Gurugram.
-                    </p>
-                  </div>
+                  {!viewMode2D ? (
+                    <>
+                      <video
+                        src="/project-assets/real-site/drone/hero-loop.mp4"
+                        poster="/project-assets/real-site/drone/real-land-aerial-1.jpg"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                      <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-emerald-600/90 backdrop-blur-md text-white text-[10px] font-mono font-bold uppercase tracking-wider">
+                        Verified Physical Drone Survey
+                      </div>
+                      <div className="absolute bottom-4 left-4 right-4 text-white text-xs sm:text-sm space-y-1">
+                        <p className="font-serif-heading font-bold text-base text-[#FAF8F5]">
+                          11+ Acres Demarcated Freehold Land on State Highway 22
+                        </p>
+                        <p className="text-white/80 text-xs">
+                          Actual ground drone footage of Kheri Asra, Jhajjar — connecting directly to State Highway 22 &amp; Reliance MET City.
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="w-full h-full bg-[#0D2329] p-4 flex flex-col items-center justify-center">
+                      <Image
+                        src="/project-assets/architecture/cad/previews/kheri-asra-revenue-map.jpg"
+                        alt="Revenue Aks Shajra Map of Kheri Asra Site"
+                        fill
+                        className="object-contain p-2"
+                      />
+                      <div className="absolute bottom-3 left-4 right-4 bg-black/80 backdrop-blur-md p-2 rounded-xl text-center text-[11px] text-white">
+                        Official Revenue Aks Shajra Demarcation Map (Khasra &amp; Murabba Details)
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="lg:col-span-5 space-y-6">
