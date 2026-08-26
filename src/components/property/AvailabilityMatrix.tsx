@@ -41,11 +41,13 @@ import {
   Grid,
   FileText
 } from 'lucide-react';
+import { usePublicRealtime } from '@/hooks/usePublicRealtime';
 
 export const AvailabilityMatrix: React.FC = () => {
   const [selectedBlock, setSelectedBlock] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
+  const [liveInventory, setLiveInventory] = useState<any[]>([]);
 
   // Drawer & Selection State
   const [selectedPlot, setSelectedPlot] = useState<PlotItem | null>(null);
@@ -53,8 +55,59 @@ export const AvailabilityMatrix: React.FC = () => {
 
   const { openWhatsApp, openLeadDrawer } = useModal();
 
+  const loadLiveInventory = React.useCallback(async () => {
+    try {
+      const res = await fetch('/api/inventory');
+      if (res.ok) {
+        const data = await res.json();
+        setLiveInventory(data.inventory || []);
+      }
+    } catch (err) {
+      console.error('Failed to load live plot inventory:', err);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    loadLiveInventory();
+  }, [loadLiveInventory]);
+
+  // Real-time synchronization with admin hold & booking updates
+  usePublicRealtime({
+    eventTypes: ['INVENTORY_UPDATED', 'BOOKING_CREATED', 'BOOKING_EXPIRED', 'BOOKING_UPDATED'],
+    onRefresh: loadLiveInventory
+  });
+
+  // Merge static plot metadata with live DB inventory statuses
+  const dynamicPlots: PlotItem[] = React.useMemo(() => {
+    if (liveInventory.length === 0) return allPlots;
+    return allPlots.map((p) => {
+      const dbUnit = liveInventory.find(
+        (u) =>
+          u.unitCode?.toUpperCase() === `PLOT-${p.number}` ||
+          u.unitCode?.toUpperCase() === `PLOT-${String(p.number).padStart(2, '0')}` ||
+          u.id === `PLOT-${p.number}`
+      );
+      if (dbUnit) {
+        const mappedStatus =
+          dbUnit.status === 'AVAILABLE'
+            ? 'available'
+            : dbUnit.status === 'HOLD'
+            ? 'hold'
+            : dbUnit.status === 'RESERVED'
+            ? 'hold'
+            : 'sold';
+        return {
+          ...p,
+          status: (mappedStatus === 'hold' ? 'on_hold' : mappedStatus) as any,
+          priceEstimate: dbUnit.price ? `₹${(dbUnit.price / 100000).toFixed(0)} Lakh` : p.priceEstimate
+        };
+      }
+      return p;
+    });
+  }, [liveInventory]);
+
   // Filtered plots
-  const filteredPlots = allPlots.filter((p) => {
+  const filteredPlots = dynamicPlots.filter((p) => {
     if (selectedBlock !== 'all' && p.block !== selectedBlock) return false;
     if (selectedStatus !== 'all' && p.status !== selectedStatus) return false;
     return true;

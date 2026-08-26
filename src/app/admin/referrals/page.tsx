@@ -18,6 +18,7 @@ import {
   Check
 } from 'lucide-react';
 import { Referrer, ReferralReward, Commission } from '@/lib/db/schema';
+import { useAdminRealtime } from '@/hooks/useAdminRealtime';
 
 export default function AdminReferralsPage() {
   const [referrers, setReferrers] = useState<Referrer[]>([]);
@@ -44,11 +45,7 @@ export default function AdminReferralsPage() {
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    loadReferralData();
-  }, []);
-
-  async function loadReferralData() {
+  const loadReferralData = React.useCallback(async () => {
     setIsLoading(true);
     try {
       const [refRes, rewRes, comRes] = await Promise.all([
@@ -74,7 +71,17 @@ export default function AdminReferralsPage() {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    loadReferralData();
+  }, [loadReferralData]);
+
+  // Connect live Server-Sent Events real-time sync for partners & rewards
+  useAdminRealtime({
+    eventTypes: ['PARTNER_CREATED', 'REFERRAL_CREATED', 'REFERRAL_CONVERTED', 'LEAD_CREATED'],
+    onRefresh: loadReferralData
+  });
 
   async function handleCreatePartner(e: React.FormEvent) {
     e.preventDefault();

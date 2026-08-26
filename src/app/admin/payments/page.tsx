@@ -23,6 +23,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { PaymentRecord, PaymentReceipt, RefundRecord, PaymentLinkRecord } from '@/lib/db/schema';
+import { useAdminRealtime } from '@/hooks/useAdminRealtime';
 
 export default function AdminPaymentsPage() {
   const [activeTab, setActiveTab] = useState<'LEDGER' | 'INSTALLMENTS' | 'LINKS' | 'RECONCILIATION' | 'REFUNDS'>('LEDGER');
@@ -38,7 +39,7 @@ export default function AdminPaymentsPage() {
   const [linkAmount, setLinkAmount] = useState('');
   const [linkDesc, setLinkDesc] = useState('');
 
-  const loadData = async () => {
+  const loadData = React.useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetch('/api/admin/payments');
@@ -51,11 +52,17 @@ export default function AdminPaymentsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
+
+  // Connect live Server-Sent Events real-time sync for collections & refunds
+  useAdminRealtime({
+    eventTypes: ['PAYMENT_CREATED', 'PAYMENT_CAPTURED', 'PAYMENT_REFUNDED', 'BOOKING_UPDATED'],
+    onRefresh: loadData
+  });
 
   const handleCreatePaymentLink = async (e: React.FormEvent) => {
     e.preventDefault();

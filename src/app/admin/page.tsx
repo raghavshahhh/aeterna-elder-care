@@ -24,6 +24,7 @@ import {
   Filter
 } from 'lucide-react';
 import { Lead, SiteVisit, ReferralReward, Booking } from '@/lib/db/schema';
+import { useAdminRealtime } from '@/hooks/useAdminRealtime';
 
 export default function AdminDashboardPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -34,50 +35,56 @@ export default function AdminDashboardPage() {
   const [inventoryUnits, setInventoryUnits] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    async function loadDashboardData() {
-      try {
-        const [leadsRes, visitsRes, rewardsRes, bookingsRes, payRes, invRes] = await Promise.all([
-          fetch('/api/leads'),
-          fetch('/api/site-visits'),
-          fetch('/api/referrals/rewards'),
-          fetch('/api/bookings'),
-          fetch('/api/admin/payments'),
-          fetch('/api/inventory')
-        ]);
+  const loadDashboardData = React.useCallback(async () => {
+    try {
+      const [leadsRes, visitsRes, rewardsRes, bookingsRes, payRes, invRes] = await Promise.all([
+        fetch('/api/leads'),
+        fetch('/api/site-visits'),
+        fetch('/api/referrals/rewards'),
+        fetch('/api/bookings'),
+        fetch('/api/admin/payments'),
+        fetch('/api/inventory')
+      ]);
 
-        if (leadsRes.ok) {
-          const lData = await leadsRes.json();
-          setLeads(lData.leads || []);
-        }
-        if (visitsRes.ok) {
-          const vData = await visitsRes.json();
-          setSiteVisits(vData.siteVisits || []);
-        }
-        if (rewardsRes.ok) {
-          const rData = await rewardsRes.json();
-          setRewards(rData.rewards || []);
-        }
-        if (bookingsRes.ok) {
-          const bData = await bookingsRes.json();
-          setBookings(bData.bookings || []);
-        }
-        if (payRes.ok) {
-          const pData = await payRes.json();
-          setPaymentData(pData);
-        }
-        if (invRes.ok) {
-          const iData = await invRes.json();
-          setInventoryUnits(iData.inventory || []);
-        }
-      } catch (err) {
-        console.error('Failed to load dashboard data:', err);
-      } finally {
-        setIsLoading(false);
+      if (leadsRes.ok) {
+        const lData = await leadsRes.json();
+        setLeads(lData.leads || []);
       }
+      if (visitsRes.ok) {
+        const vData = await visitsRes.json();
+        setSiteVisits(vData.siteVisits || []);
+      }
+      if (rewardsRes.ok) {
+        const rData = await rewardsRes.json();
+        setRewards(rData.rewards || []);
+      }
+      if (bookingsRes.ok) {
+        const bData = await bookingsRes.json();
+        setBookings(bData.bookings || []);
+      }
+      if (payRes.ok) {
+        const pData = await payRes.json();
+        setPaymentData(pData);
+      }
+      if (invRes.ok) {
+        const iData = await invRes.json();
+        setInventoryUnits(iData.inventory || []);
+      }
+    } catch (err) {
+      console.error('Failed to load dashboard data:', err);
+    } finally {
+      setIsLoading(false);
     }
-    loadDashboardData();
   }, []);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, [loadDashboardData]);
+
+  // Connect live Server-Sent Events real-time sync
+  useAdminRealtime({
+    onRefresh: loadDashboardData
+  });
 
   const totalLeads = leads.length;
   const newLeads = leads.filter((l) => l.status === 'NEW').length;

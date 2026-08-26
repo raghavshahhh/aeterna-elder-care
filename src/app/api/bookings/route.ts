@@ -67,9 +67,11 @@ export async function POST(req: NextRequest) {
     });
   } catch (err: unknown) {
     console.error('[API Bookings POST Error]', err);
+    const msg = err instanceof Error ? err.message : 'Booking creation failed';
+    const isConflict = msg.toLowerCase().includes('not available') || msg.toLowerCase().includes('already');
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : 'Booking creation failed' },
-      { status: 400 }
+      { success: false, error: msg },
+      { status: isConflict ? 409 : 400 }
     );
   }
 }

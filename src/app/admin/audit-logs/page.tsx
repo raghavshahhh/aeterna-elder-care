@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldAlert, Clock, User, ShieldCheck, Search } from 'lucide-react';
 import { AuditLog } from '@/lib/db/schema';
+import { useAdminRealtime } from '@/hooks/useAdminRealtime';
 
 export default function AdminAuditLogsPage() {
   const [logs, setLogs] = useState<AuditLog[]>([]);
@@ -10,7 +11,7 @@ export default function AdminAuditLogsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [actionFilter, setActionFilter] = useState('ALL');
 
-  async function loadLogs() {
+  const loadLogs = React.useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetch('/api/audit-logs');
@@ -23,11 +24,16 @@ export default function AdminAuditLogsPage() {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
     loadLogs();
-  }, []);
+  }, [loadLogs]);
+
+  // Connect live Server-Sent Events real-time sync for security audit trail
+  useAdminRealtime({
+    onRefresh: loadLogs
+  });
 
   const filteredLogs = logs.filter((log) => {
     if (actionFilter !== 'ALL' && log.action !== actionFilter) return false;

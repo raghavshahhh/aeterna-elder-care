@@ -19,6 +19,7 @@ import {
   X
 } from 'lucide-react';
 import { Booking } from '@/lib/db/schema';
+import { useAdminRealtime } from '@/hooks/useAdminRealtime';
 
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -45,7 +46,7 @@ export default function AdminBookingsPage() {
   const [createError, setCreateError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const loadBookings = async () => {
+  const loadBookings = React.useCallback(async () => {
     setIsLoading(true);
     try {
       const [bookRes, invRes] = await Promise.all([
@@ -70,11 +71,17 @@ export default function AdminBookingsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [bookingForm.unitId]);
 
   useEffect(() => {
     loadBookings();
-  }, []);
+  }, [loadBookings]);
+
+  // Connect live Server-Sent Events real-time sync for allotments & holds
+  useAdminRealtime({
+    eventTypes: ['BOOKING_CREATED', 'BOOKING_UPDATED', 'BOOKING_EXPIRED', 'PAYMENT_CAPTURED', 'INVENTORY_UPDATED'],
+    onRefresh: loadBookings
+  });
 
   const handleCreateBooking = async (e: React.FormEvent) => {
     e.preventDefault();

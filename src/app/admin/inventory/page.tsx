@@ -16,6 +16,7 @@ import {
   Layers
 } from 'lucide-react';
 import { InventoryUnit, InventoryStatus } from '@/lib/db/schema';
+import { useAdminRealtime } from '@/hooks/useAdminRealtime';
 
 export default function AdminInventoryPage() {
   const [units, setUnits] = useState<InventoryUnit[]>([]);
@@ -27,11 +28,7 @@ export default function AdminInventoryPage() {
   const [editPrice, setEditPrice] = useState<number>(0);
   const [editPriceDisplay, setEditPriceDisplay] = useState<string>('');
 
-  useEffect(() => {
-    loadInventory();
-  }, []);
-
-  async function loadInventory() {
+  const loadInventory = React.useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetch('/api/inventory');
@@ -44,7 +41,17 @@ export default function AdminInventoryPage() {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    loadInventory();
+  }, [loadInventory]);
+
+  // Connect live Server-Sent Events real-time sync for plot & unit inventory
+  useAdminRealtime({
+    eventTypes: ['INVENTORY_UPDATED', 'BOOKING_CREATED', 'BOOKING_UPDATED', 'BOOKING_EXPIRED', 'PAYMENT_CAPTURED'],
+    onRefresh: loadInventory
+  });
 
   async function updateStatus(unitId: string, status: InventoryStatus) {
     try {

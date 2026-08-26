@@ -48,6 +48,7 @@ import {
   SEED_RECEIPTS,
   SEED_BUYER_DOCUMENTS
 } from './seed';
+import { broadcastBusinessEvent } from '@/lib/events/eventBus';
 
 interface DatabaseState {
   users: User[];
@@ -401,6 +402,14 @@ export const db = {
       state.inventory[idx].assignedLeadId = undefined;
     }
     saveData(state);
+    broadcastBusinessEvent('INVENTORY_UPDATED', 'public', 'INVENTORY', state.inventory[idx].id, {
+      unitCode: state.inventory[idx].unitCode,
+      status: state.inventory[idx].status
+    });
+    broadcastBusinessEvent('INVENTORY_UPDATED', 'admin', 'INVENTORY', state.inventory[idx].id, {
+      unitCode: state.inventory[idx].unitCode,
+      status: state.inventory[idx].status
+    });
     return state.inventory[idx];
   },
   updateInventoryPrice: (id: string, price: number, priceDisplay: string): InventoryUnit | undefined => {
@@ -476,6 +485,12 @@ export const db = {
     });
 
     saveData(state);
+    broadcastBusinessEvent('LEAD_CREATED', 'admin', 'LEAD', newLead.id, {
+      name: newLead.name,
+      phone: newLead.phone,
+      source: newLead.source,
+      referralCode: newLead.referralCode
+    });
     return newLead;
   },
   updateLeadStatus: (id: string, status: LeadStatus, actorName?: string, notes?: string): Lead | undefined => {
@@ -497,6 +512,11 @@ export const db = {
     });
 
     saveData(state);
+    broadcastBusinessEvent('LEAD_UPDATED', 'admin', 'LEAD', id, {
+      oldStatus,
+      newStatus: status,
+      notes
+    });
     return state.leads[idx];
   },
   getLeadEvents: (leadId: string): LeadEvent[] => {
@@ -519,17 +539,29 @@ export const db = {
     };
     state.siteVisits.unshift(visit);
     saveData(state);
+    broadcastBusinessEvent('SITE_VISIT_CREATED', 'admin', 'SITE_VISIT', visit.id, {
+      name: visit.name,
+      phone: visit.phone,
+      preferredDate: visit.preferredDate,
+      preferredTime: visit.preferredTime
+    });
     return visit;
   },
   updateSiteVisitStatus: (id: string, status: SiteVisitStatus, feedback?: string): SiteVisit | undefined => {
     const state = ensureDataFile();
     const idx = state.siteVisits.findIndex((v) => v.id === id);
     if (idx === -1) return undefined;
+    const oldStatus = state.siteVisits[idx].status;
     state.siteVisits[idx].status = status;
     if (feedback) state.siteVisits[idx].feedback = feedback;
     if (status === 'VISITED') state.siteVisits[idx].completedAt = new Date().toISOString();
     state.siteVisits[idx].updatedAt = new Date().toISOString();
     saveData(state);
+    broadcastBusinessEvent('SITE_VISIT_UPDATED', 'admin', 'SITE_VISIT', id, {
+      oldStatus,
+      newStatus: status,
+      feedback
+    });
     return state.siteVisits[idx];
   },
 
@@ -584,13 +616,13 @@ export const db = {
         u.id.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanId
     );
     if (unitIdx === -1) {
-      unitIdx = 0; // fallback to first available inventory unit
+      throw new Error(`Unit ${params.unitId} was not found in inventory.`);
     }
     const unit = state.inventory[unitIdx];
 
-    // Check if unit is sold
-    if (unit.status === 'SOLD') {
-      throw new Error(`Unit ${unit.unitCode} is already SOLD.`);
+    // Check if unit is available (atomic check)
+    if (unit.status !== 'AVAILABLE') {
+      throw new Error(`Unit ${unit.unitCode} is not available for reservation (current status: ${unit.status}).`);
     }
 
     // 2. Lock unit to HOLD with expiry
@@ -719,20 +751,20 @@ export const db = {
           planId,
           bookingId,
           installmentNumber: 2,
-          title: 'Agreement Allotment & Lease Execution',
+          title: 'Allotment & Stamp Milestone',
           amount: downPay,
           paidAmount: 0,
           dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          gracePeriodDays: 7,
+          gracePeriodDays: 5,
           status: 'PENDING',
-          notes: 'Guaranteed rental lease execution'
+          notes: 'Sanctuary allotment milestone'
         },
         {
           id: `INST-${bookingId}-3`,
           planId,
           bookingId,
           installmentNumber: 3,
-          title: 'Final Registry, Mutation & Possession',
+          title: 'Possession & Registration (Registry)',
           amount: finalAmount,
           paidAmount: 0,
           dueDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -806,6 +838,22 @@ export const db = {
     });
 
     saveData(state);
+
+    // Broadcast Real-Time Events
+    broadcastBusinessEvent('BOOKING_CREATED', 'admin', 'BOOKING', booking.id, {
+      bookingNumber: booking.bookingNumber,
+      unitCode: unit.unitCode,
+      customerName: booking.customerName
+    });
+    broadcastBusinessEvent('INVENTORY_UPDATED', 'public', 'INVENTORY', unit.id, {
+      unitCode: unit.unitCode,
+      status: 'HOLD'
+    });
+    broadcastBusinessEvent('INVENTORY_UPDATED', 'admin', 'INVENTORY', unit.id, {
+      unitCode: unit.unitCode,
+      status: 'HOLD'
+    });
+
     return { booking, paymentPlan, unit };
   },
   updateBooking: (id: string, updates: Partial<Booking>): Booking | undefined => {
@@ -813,10 +861,29 @@ export const db = {
     const idx = state.bookings.findIndex((b) => b.id === id || b.bookingNumber.toLowerCase() === id.toLowerCase());
     if (idx === -1) return undefined;
     const oldStatus = state.bookings[idx].status;
+
+    // Server-Side Finite State Machine (FSM) Enforcement
+    if (updates.status && updates.status !== oldStatus) {
+      const allowedTransitions: Record<string, string[]> = {
+        PENDING: ['HOLD', 'CONFIRMED', 'CANCELLED', 'EXPIRED'],
+        HOLD: ['CONFIRMED', 'CANCELLED', 'EXPIRED'],
+        CONFIRMED: ['COMPLETED', 'CANCELLED', 'REFUNDED'],
+        COMPLETED: ['REFUNDED'],
+        CANCELLED: [],
+        EXPIRED: [],
+        REFUNDED: []
+      };
+
+      if (allowedTransitions[oldStatus] && !allowedTransitions[oldStatus].includes(updates.status)) {
+        throw new Error(`Invalid booking state transition: Cannot change status from ${oldStatus} to ${updates.status}.`);
+      }
+    }
+
     state.bookings[idx] = { ...state.bookings[idx], ...updates, updatedAt: new Date().toISOString() };
     const b = state.bookings[idx];
 
     // Synchronize associated inventory unit status
+    let updatedUnitStatus: string | undefined;
     if (updates.status && updates.status !== oldStatus) {
       const uIdx = state.inventory.findIndex((u) => u.id === b.unitId || u.unitCode === b.unitCode);
       if (uIdx !== -1) {
@@ -826,14 +893,36 @@ export const db = {
           state.inventory[uIdx].status = 'SOLD';
         } else if (updates.status === 'CANCELLED' || updates.status === 'EXPIRED') {
           state.inventory[uIdx].status = 'AVAILABLE';
+          state.inventory[uIdx].holdExpiresAt = undefined;
+          state.inventory[uIdx].assignedLeadId = undefined;
         } else if (updates.status === 'HOLD') {
           state.inventory[uIdx].status = 'HOLD';
         }
         state.inventory[uIdx].updatedAt = new Date().toISOString();
+        updatedUnitStatus = state.inventory[uIdx].status;
       }
     }
 
     saveData(state);
+
+    // Broadcast Real-Time Events
+    broadcastBusinessEvent('BOOKING_UPDATED', 'admin', 'BOOKING', b.id, {
+      oldStatus,
+      newStatus: b.status,
+      unitCode: b.unitCode
+    });
+
+    if (updatedUnitStatus) {
+      broadcastBusinessEvent('INVENTORY_UPDATED', 'public', 'INVENTORY', b.unitId, {
+        unitCode: b.unitCode,
+        status: updatedUnitStatus
+      });
+      broadcastBusinessEvent('INVENTORY_UPDATED', 'admin', 'INVENTORY', b.unitId, {
+        unitCode: b.unitCode,
+        status: updatedUnitStatus
+      });
+    }
+
     return state.bookings[idx];
   },
   releaseExpiredHolds: (): { releasedCount: number; releasedUnits: string[] } => {
@@ -857,7 +946,20 @@ export const db = {
           state.inventory[uIdx].holdExpiresAt = undefined;
           state.inventory[uIdx].assignedLeadId = undefined;
           state.inventory[uIdx].updatedAt = now;
+
+          broadcastBusinessEvent('INVENTORY_UPDATED', 'public', 'INVENTORY', state.inventory[uIdx].id, {
+            unitCode: state.inventory[uIdx].unitCode,
+            status: 'AVAILABLE'
+          });
+          broadcastBusinessEvent('INVENTORY_UPDATED', 'admin', 'INVENTORY', state.inventory[uIdx].id, {
+            unitCode: state.inventory[uIdx].unitCode,
+            status: 'AVAILABLE'
+          });
         }
+
+        broadcastBusinessEvent('BOOKING_EXPIRED', 'admin', 'BOOKING', b.id, {
+          unitCode: b.unitCode
+        });
 
         state.paymentEvents.push({
           id: `PEVT-${Date.now()}`,
@@ -1154,6 +1256,30 @@ export const db = {
     });
 
     saveData(state);
+
+    // Broadcast Real-Time Events
+    broadcastBusinessEvent('PAYMENT_CAPTURED', 'admin', 'PAYMENT', payment.id, {
+      amount: payment.amountPaid,
+      bookingId: booking.id,
+      buyerName: booking.customerName,
+      unitCode: booking.unitCode,
+      receiptNumber: receiptNum
+    });
+    broadcastBusinessEvent('BOOKING_UPDATED', 'admin', 'BOOKING', booking.id, {
+      status: booking.status,
+      totalPaidAmount: booking.totalPaidAmount,
+      remainingBalance: booking.remainingBalance,
+      unitCode: booking.unitCode
+    });
+    broadcastBusinessEvent('INVENTORY_UPDATED', 'public', 'INVENTORY', booking.unitId, {
+      unitCode: booking.unitCode,
+      status: booking.remainingBalance === 0 ? 'SOLD' : 'RESERVED'
+    });
+    broadcastBusinessEvent('INVENTORY_UPDATED', 'admin', 'INVENTORY', booking.unitId, {
+      unitCode: booking.unitCode,
+      status: booking.remainingBalance === 0 ? 'SOLD' : 'RESERVED'
+    });
+
     return { payment, receipt, booking, plan };
   },
 
@@ -1387,6 +1513,11 @@ export const db = {
     };
     state.referrers.push(newRef);
     saveData(state);
+    broadcastBusinessEvent('PARTNER_CREATED', 'admin', 'PARTNER', newRef.id, {
+      name: newRef.name,
+      code: newRef.code,
+      phone: newRef.phone
+    });
     return newRef;
   },
   getReferralRewards: (referrerId?: string): ReferralReward[] => {
@@ -1420,6 +1551,11 @@ export const db = {
     }
 
     saveData(state);
+    broadcastBusinessEvent('REFERRAL_CONVERTED', 'admin', 'REFERRAL', rew.id, {
+      status: rew.status,
+      rewardAmount: rew.rewardAmount,
+      referrerCode: rew.referrerCode
+    });
     return rew;
   },
   getCommissions: (referrerId?: string): Commission[] => {
@@ -1526,6 +1662,9 @@ export const db = {
     const state = ensureDataFile();
     state.settings = { ...state.settings, ...updates, updatedAt: new Date().toISOString() };
     saveData(state);
+    broadcastBusinessEvent('SETTINGS_UPDATED', 'admin', 'SETTINGS', 'SYSTEM_SETTINGS', {
+      updatedKeys: Object.keys(updates)
+    });
     return state.settings;
   }
 };

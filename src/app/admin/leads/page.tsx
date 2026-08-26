@@ -18,6 +18,7 @@ import {
   Plus
 } from 'lucide-react';
 import { Lead, LeadStatus, LeadEvent } from '@/lib/db/schema';
+import { useAdminRealtime } from '@/hooks/useAdminRealtime';
 
 export default function AdminLeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -42,11 +43,7 @@ export default function AdminLeadsPage() {
   const [createError, setCreateError] = useState<string | null>(null);
   const [isSubmittingLead, setIsSubmittingLead] = useState(false);
 
-  useEffect(() => {
-    loadLeads();
-  }, []);
-
-  async function loadLeads() {
+  const loadLeads = React.useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetch('/api/leads');
@@ -55,11 +52,21 @@ export default function AdminLeadsPage() {
         setLeads(data.leads || []);
       }
     } catch (err) {
-      console.error('Error fetching leads:', err);
+      console.error('Error loading leads:', err);
     } finally {
       setIsLoading(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    loadLeads();
+  }, [loadLeads]);
+
+  // Connect live Server-Sent Events real-time sync for leads & CRM
+  useAdminRealtime({
+    eventTypes: ['LEAD_CREATED', 'LEAD_UPDATED', 'REFERRAL_CREATED', 'REFERRAL_CONVERTED'],
+    onRefresh: loadLeads
+  });
 
   async function handleCreateLead(e: React.FormEvent) {
     e.preventDefault();

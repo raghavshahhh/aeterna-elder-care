@@ -48,6 +48,8 @@ interface ResidenceUnitExplorerProps {
   initialUnitId?: string;
 }
 
+import { usePublicRealtime } from '@/hooks/usePublicRealtime';
+
 export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
   initialUnitId = '1bhk-apt'
 }) => {
@@ -55,13 +57,52 @@ export const ResidenceUnitExplorer: React.FC<ResidenceUnitExplorerProps> = ({
   const [activeTab, setActiveTab] = useState<'3d-interior' | '2d-blueprint' | 'overview' | 'room-sizes' | 'senior-features'>('3d-interior');
   const [selectedUnitForDrawer, setSelectedUnitForDrawer] = useState<BuildingUnit | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [liveInventory, setLiveInventory] = useState<any[]>([]);
 
   const { openWhatsApp, openLeadDrawer, openFloorPlan } = useModal();
 
+  const loadLiveInventory = React.useCallback(async () => {
+    try {
+      const res = await fetch('/api/inventory');
+      if (res.ok) {
+        const data = await res.json();
+        setLiveInventory(data.inventory || []);
+      }
+    } catch (err) {
+      console.error('Failed to load live residence inventory:', err);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    loadLiveInventory();
+  }, [loadLiveInventory]);
+
+  usePublicRealtime({
+    eventTypes: ['INVENTORY_UPDATED', 'BOOKING_CREATED', 'BOOKING_EXPIRED', 'BOOKING_UPDATED'],
+    onRefresh: loadLiveInventory
+  });
+
   const activeUnit = residenceUnits.find((u) => u.id === selectedUnitId) || residenceUnits[0];
 
-  // Ground Floor Active Units from buildingUnits
-  const groundUnits = buildingUnits.filter((u) => u.floorLevel === 'ground');
+  // Ground Floor Active Units from buildingUnits merged with live DB status
+  const groundUnits = React.useMemo(() => {
+    const baseGround = buildingUnits.filter((u) => u.floorLevel === 'ground');
+    if (liveInventory.length === 0) return baseGround;
+    return baseGround.map((u) => {
+      const dbMatch = liveInventory.find(
+        (inv) =>
+          inv.unitCode?.toUpperCase() === u.unitNumber?.toUpperCase() ||
+          inv.id?.toLowerCase() === u.id?.toLowerCase()
+      );
+      if (dbMatch) {
+        return {
+          ...u,
+          status: (dbMatch.status === 'AVAILABLE' ? 'AVAILABLE' : dbMatch.status === 'HOLD' ? 'HOLD' : 'SOLD') as any
+        };
+      }
+      return u;
+    });
+  }, [liveInventory]);
 
   const handleOpenDrawer = (unit: BuildingUnit) => {
     setSelectedUnitForDrawer(unit);

@@ -13,6 +13,7 @@ import {
   Filter
 } from 'lucide-react';
 import { SiteVisit, SiteVisitStatus } from '@/lib/db/schema';
+import { useAdminRealtime } from '@/hooks/useAdminRealtime';
 
 export default function AdminSiteVisitsPage() {
   const [visits, setVisits] = useState<SiteVisit[]>([]);
@@ -33,11 +34,7 @@ export default function AdminSiteVisitsPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    loadVisits();
-  }, []);
-
-  async function loadVisits() {
+  const loadVisits = React.useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetch('/api/site-visits');
@@ -50,7 +47,17 @@ export default function AdminSiteVisitsPage() {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    loadVisits();
+  }, [loadVisits]);
+
+  // Connect live Server-Sent Events real-time sync for site visits & logistics
+  useAdminRealtime({
+    eventTypes: ['SITE_VISIT_CREATED', 'SITE_VISIT_UPDATED', 'LEAD_CREATED'],
+    onRefresh: loadVisits
+  });
 
   async function handleScheduleVisit(e: React.FormEvent) {
     e.preventDefault();

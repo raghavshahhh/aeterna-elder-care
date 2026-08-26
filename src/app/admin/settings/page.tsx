@@ -3,9 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { Settings, Save, CheckCircle2, DollarSign, Award, Bell } from 'lucide-react';
 import { SystemSettings } from '@/lib/db/schema';
+import { useAdminRealtime } from '@/hooks/useAdminRealtime';
 
 export default function AdminSettingsPage() {
-  const [settings, setSettings] = useState<SystemSettings>({
+  const [settings, setSettings] = useState<Partial<SystemSettings>>({
     leadRewardAmount: 50,
     defaultCommissionPercentage: 1.0,
     defaultFixedCommissionAmount: 10000,
@@ -22,25 +23,32 @@ export default function AdminSettingsPage() {
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function loadSettings() {
-      setIsLoading(true);
-      try {
-        const res = await fetch('/api/settings');
-        if (res.ok) {
-          const data = await res.json();
-          if (data.settings) {
-            setSettings(data.settings);
-          }
+  const loadSettings = React.useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/settings');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.settings) {
+          setSettings(data.settings);
         }
-      } catch (err) {
-        console.error('Failed to load settings:', err);
-      } finally {
-        setIsLoading(false);
       }
+    } catch (err) {
+      console.error('Failed to load settings:', err);
+    } finally {
+      setIsLoading(false);
     }
-    loadSettings();
   }, []);
+
+  useEffect(() => {
+    loadSettings();
+  }, [loadSettings]);
+
+  // Connect live Server-Sent Events real-time sync for platform settings
+  useAdminRealtime({
+    eventTypes: ['SETTINGS_UPDATED'],
+    onRefresh: loadSettings
+  });
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
