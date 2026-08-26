@@ -28,7 +28,9 @@ import {
   Calendar,
   ChevronRight,
   Info,
-  Compass
+  Compass,
+  MapPin,
+  Crosshair
 } from "lucide-react";
 
 const Hospital3DViewer = dynamic(
@@ -48,7 +50,7 @@ export const HospitalExplorer: React.FC = () => {
   const { openFloorPlanModal, openWhatsApp, openLeadDrawer } = useModal();
   const [viewMode, setViewMode] = useState<"3d-model" | "2d-cad" | "departments">("3d-model");
   const [activeFloor, setActiveFloor] = useState<"ground" | "first" | "second">("ground");
-  const [selectedRoom, setSelectedRoom] = useState<ArchitecturalRoom | null>(null);
+  const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
 
   const getRoomsForFloor = () => {
     switch (activeFloor) {
@@ -67,25 +69,30 @@ export const HospitalExplorer: React.FC = () => {
         return {
           src: "/project-assets/architecture/cad/previews/ground-floor-preview.jpg",
           tab: "hospital-ground" as const,
-          title: "Hospital Ground Floor CAD Plan — OPD, Panchakarma & Emergency"
+          title: "Hospital Ground Floor CAD Plan â OPD, Panchakarma & Emergency"
         };
       case "first":
         return {
           src: "/project-assets/architecture/cad/previews/first-floor-preview.jpg",
           tab: "hospital-first" as const,
-          title: "Hospital First Floor CAD Plan — Modular OT, ICU, Cathlab & Wards"
+          title: "Hospital First Floor CAD Plan â Modular OT, ICU, Cathlab & Wards"
         };
       case "second":
         return {
           src: "/project-assets/architecture/cad/previews/second-floor-preview.jpg",
           tab: "hospital-second" as const,
-          title: "Hospital Second Floor CAD Plan — 50-Seat Auditorium, Pool & Open Roof"
+          title: "Hospital Second Floor CAD Plan â 50-Seat Auditorium, Pool & Open Roof"
         };
     }
   };
 
   const currentCad = getCadImageForFloor();
   const currentRooms = getRoomsForFloor();
+
+  const handleLocateIn3D = (roomId: string) => {
+    setSelectedRoomId(roomId);
+    setViewMode("3d-model");
+  };
 
   return (
     <section id="hospital-explorer" className="py-16 sm:py-24 bg-[#0A1D24] text-white border-b border-white/10 relative">
@@ -98,59 +105,73 @@ export const HospitalExplorer: React.FC = () => {
               Architectural CAD &amp; 3D Reconstruction
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif-heading font-normal text-white tracking-tight">
-              30,000 sq.ft. Ayurvedic &amp; Multi-Speciality <span className="italic font-serif text-[#C58F58]">Hospital</span>
+              Ayurvedic &amp; Multi-Speciality Hospital
             </h2>
-            <p className="text-xs sm:text-sm text-white/70 leading-relaxed">
-              Explore the G+2 hospital blueprint and 3D architectural model reconstructed from authoritative drawings by <strong>The Vision Architects &amp; Interiors (Ar. Yash Garg)</strong>. Dimensions: 117'-10" × 138'-0".
+            <p className="text-sm sm:text-base text-white/70 leading-relaxed">
+              30,000 sq.ft. G+2 Healthcare Centre designed by{" "}
+              <strong className="text-white font-medium">The Vision Architects &amp; Interiors (Ar. Yash Garg)</strong>.
+              Reconstructed directly from authoritative vector CAD drawings with sub-millimeter geometric fidelity.
             </p>
           </div>
 
-          {/* View Mode Switcher */}
-          <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md shrink-0">
-            <button
-              onClick={() => setViewMode("3d-model")}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
-                viewMode === "3d-model"
-                  ? "bg-[#C58F58] text-[#071519] shadow-lg"
-                  : "text-white/75 hover:text-white hover:bg-white/10"
-              }`}
-            >
-              <Rotate3d className="w-4 h-4" />
-              Interactive 3D
-            </button>
-            <button
-              onClick={() => setViewMode("2d-cad")}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
-                viewMode === "2d-cad"
-                  ? "bg-[#C58F58] text-[#071519] shadow-lg"
-                  : "text-white/75 hover:text-white hover:bg-white/10"
-              }`}
-            >
-              <FileText className="w-4 h-4" />
-              2D CAD Plans
-            </button>
-            <button
-              onClick={() => setViewMode("departments")}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
-                viewMode === "departments"
-                  ? "bg-[#C58F58] text-[#071519] shadow-lg"
-                  : "text-white/75 hover:text-white hover:bg-white/10"
-              }`}
-            >
-              <Layers className="w-4 h-4" />
-              Space Inventory
-            </button>
+          {/* Quick Metrics Badge */}
+          <div className="flex items-center gap-4 bg-[#071519]/80 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+            <div className="space-y-0.5 border-r border-white/10 pr-4">
+              <div className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Gross Footprint</div>
+              <div className="text-sm font-mono font-bold text-[#E0AB77]">117&apos;-10&quot; &times; 138&apos;-0&quot;</div>
+            </div>
+            <div className="space-y-0.5">
+              <div className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Built-Up Area</div>
+              <div className="text-sm font-mono font-bold text-emerald-400">30,000 sq.ft.</div>
+            </div>
           </div>
         </div>
 
-        {/* Floor Selection Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 p-2 rounded-2xl bg-white/5 border border-white/10">
-          <div className="flex flex-wrap items-center gap-2">
+        {/* 3-Way Mode Switcher: 3D Model | 2D CAD Plans | Space Registry */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-[#071519] p-2 rounded-2xl border border-white/10">
+          {/* Primary View Switcher */}
+          <div className="flex items-center gap-1.5 p-1 bg-white/5 rounded-xl border border-white/5">
+            <button
+              onClick={() => setViewMode("3d-model")}
+              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 ${
+                viewMode === "3d-model"
+                  ? "bg-[#C58F58] text-[#071519] font-bold shadow-md"
+                  : "text-white/70 hover:text-white hover:bg-white/10"
+              }`}
+            >
+              <Rotate3d className="w-4 h-4" /> Interactive 3D Model
+            </button>
+
+            <button
+              onClick={() => setViewMode("2d-cad")}
+              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 ${
+                viewMode === "2d-cad"
+                  ? "bg-[#C58F58] text-[#071519] font-bold shadow-md"
+                  : "text-white/70 hover:text-white hover:bg-white/10"
+              }`}
+            >
+              <FileText className="w-4 h-4" /> 2D CAD Blueprint
+            </button>
+
+            <button
+              onClick={() => setViewMode("departments")}
+              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 ${
+                viewMode === "departments"
+                  ? "bg-[#C58F58] text-[#071519] font-bold shadow-md"
+                  : "text-white/70 hover:text-white hover:bg-white/10"
+              }`}
+            >
+              <Building2 className="w-4 h-4" /> Space Inventory ({currentRooms.length})
+            </button>
+          </div>
+
+          {/* Floor Level Filter */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
             {(
               [
-                { id: "ground", label: "Ground Floor", sub: "OPD · Panchakarma · Emergency" },
-                { id: "first", label: "First Floor", sub: "Modular OT · ICU · Cathlab · Wards" },
-                { id: "second", label: "Second Floor & Roof", sub: "50-Seat Auditorium · Pool · Open Deck" }
+                { id: "ground", label: "Ground Floor", sub: "OPD Â· Panchakarma Â· Emergency" },
+                { id: "first", label: "First Floor", sub: "Modular OT Â· ICU Â· Cathlab Â· Wards" },
+                { id: "second", label: "Second Floor & Roof", sub: "50-Seat Auditorium Â· Pool Â· Open Deck" }
               ] as const
             ).map((fl) => (
               <button
@@ -183,7 +204,8 @@ export const HospitalExplorer: React.FC = () => {
           <div className="space-y-4">
             <Hospital3DViewer
               initialFloor={activeFloor}
-              onSelectRoom={(room) => setSelectedRoom(room)}
+              selectedRoomId={selectedRoomId}
+              onSelectRoom={(room) => setSelectedRoomId(room ? room.id : null)}
             />
           </div>
         )}
@@ -197,7 +219,7 @@ export const HospitalExplorer: React.FC = () => {
                 </span>
                 <h3 className="text-xl font-serif-heading font-bold text-white">{currentCad.title}</h3>
                 <p className="text-xs text-white/60">
-                  Architectural Drawing: The Vision Architects · Ar. Yash Garg · Footprint 117'-10" × 138'-0"
+                  Architectural Drawing: The Vision Architects Â· Ar. Yash Garg Â· Footprint 117&apos;-10&quot; &times; 138&apos;-0&quot;
                 </p>
               </div>
 
@@ -236,7 +258,7 @@ export const HospitalExplorer: React.FC = () => {
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <div>
                 <h3 className="text-xl font-serif-heading font-bold text-white">
-                  {activeFloor.toUpperCase()} FLOOR — Space &amp; Clinical Specification Registry
+                  {activeFloor.toUpperCase()} FLOOR â Space &amp; Clinical Specification Registry
                 </h3>
                 <p className="text-xs text-white/60">
                   Extracted directly from authoritative CAD files with dimension fidelity.
@@ -248,30 +270,47 @@ export const HospitalExplorer: React.FC = () => {
               {currentRooms.map((room) => (
                 <div
                   key={room.id}
-                  className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-[#C58F58]/50 transition-all space-y-3"
+                  className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-[#C58F58]/50 transition-all space-y-3 flex flex-col justify-between"
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#C58F58]/20 text-[#E0AB77] font-bold">
-                      {room.zone}
-                    </span>
-                    <span className="text-xs font-mono font-bold text-emerald-400">
-                      {room.cadDimension}
-                    </span>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#C58F58]/20 text-[#E0AB77] font-bold">
+                        {room.id} Â· {room.zone}
+                      </span>
+                      <span className="text-xs font-mono font-bold text-emerald-400">
+                        {room.cadDimension}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h4 className="text-sm font-bold text-white">{room.name}</h4>
+                      <p className="text-xs text-white/70 mt-1 leading-relaxed">{room.description}</p>
+                    </div>
+
+                    {room.keyFeatures && room.keyFeatures.length > 0 && (
+                      <div className="pt-1">
+                        <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-1">Equipment / Feature:</div>
+                        <p className="text-xs text-white/60 line-clamp-2">{room.keyFeatures.join(", ")}</p>
+                      </div>
+                    )}
                   </div>
 
-                  <div>
-                    <h4 className="text-sm font-bold text-white">{room.name}</h4>
-                    <p className="text-xs text-white/70 mt-1 leading-relaxed">{room.description}</p>
-                  </div>
-
-                  <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-white/50 font-mono">
+                  <div className="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-white/50 font-mono">
                     <span>Area: ~{room.areaSqFt} sq.ft.</span>
-                    <button
-                      onClick={() => openFloorPlanModal(room.cadPlanTab as any)}
-                      className="text-[#E0AB77] hover:text-white font-semibold flex items-center gap-1"
-                    >
-                      Locate in CAD →
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => handleLocateIn3D(room.id)}
+                        className="text-[#E0AB77] hover:text-white font-semibold flex items-center gap-1 transition-colors"
+                      >
+                        <Crosshair className="w-3.5 h-3.5 text-[#C58F58]" /> Focus 3D
+                      </button>
+                      <button
+                        onClick={() => openFloorPlanModal(room.cadPlanTab as any)}
+                        className="text-white/60 hover:text-white flex items-center gap-1 transition-colors"
+                      >
+                        CAD â
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}

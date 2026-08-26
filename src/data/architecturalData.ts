@@ -59,7 +59,7 @@ export const HOSPITAL_FOOTPRINT: BuildingFootprint = {
 
 export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
   {
-    id: 'hosp-g-yoga',
+    id: 'H-GF-YOGA',
     name: 'Multi-Purpose Hall & Yoga Center',
     shortName: 'Yoga Hall',
     floor: 'ground',
@@ -75,7 +75,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-store',
+    id: 'H-GF-STORE',
     name: 'Yoga Equipment & Mat Store',
     shortName: 'Store Room',
     floor: 'ground',
@@ -91,7 +91,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-changing-f',
+    id: 'H-GF-CHANGING-F',
     name: 'Female Changing Area',
     shortName: 'Female Changing',
     floor: 'ground',
@@ -107,7 +107,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-changing-m',
+    id: 'H-GF-CHANGING-M',
     name: 'Male Changing Area',
     shortName: 'Male Changing',
     floor: 'ground',
@@ -123,7 +123,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-opd-1',
+    id: 'H-GF-OPD-01',
     name: 'OPD Chamber 01 (Ayurveda Consultant)',
     shortName: 'OPD 01',
     floor: 'ground',
@@ -139,7 +139,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-opd-2',
+    id: 'H-GF-OPD-02',
     name: 'OPD Chamber 02 (General Medicine)',
     shortName: 'OPD 02',
     floor: 'ground',
@@ -155,7 +155,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-opd-3',
+    id: 'H-GF-OPD-03',
     name: 'OPD Chamber 03 (Cardiology & Geriatrics)',
     shortName: 'OPD 03',
     floor: 'ground',
@@ -171,7 +171,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-opd-4',
+    id: 'H-GF-OPD-04',
     name: 'OPD Chamber 04 (Orthopaedics & Joint Care)',
     shortName: 'OPD 04',
     floor: 'ground',
@@ -187,7 +187,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-opd-5',
+    id: 'H-GF-OPD-05',
     name: 'OPD Chamber 05 (Diet & Nutrition)',
     shortName: 'OPD 05',
     floor: 'ground',
@@ -203,7 +203,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-opd-6',
+    id: 'H-GF-OPD-06',
     name: 'OPD Chamber 06 (Physiotherapy Consultation)',
     shortName: 'OPD 06',
     floor: 'ground',
@@ -219,7 +219,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-reception',
+    id: 'H-GF-RECEPTION',
     name: 'Main Reception & Patient Waiting Lounge',
     shortName: 'Reception & Waiting',
     floor: 'ground',
@@ -235,7 +235,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-pharmacy-1',
+    id: 'H-GF-PHARMACY-1',
     name: 'Ayurvedic & Allopathic Pharmacy Retail Store',
     shortName: 'Pharmacy Store 1',
     floor: 'ground',
@@ -251,7 +251,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-pharmacy-2',
+    id: 'H-GF-PHARMACY-2',
     name: 'Ayurvedic Herb Dispensary & Bulk Storage',
     shortName: 'Pharmacy Store 2',
     floor: 'ground',
@@ -267,7 +267,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-cafeteria',
+    id: 'H-GF-CAFETERIA',
     name: 'Satvik Dining & Cafeteria',
     shortName: 'Cafeteria',
     floor: 'ground',
@@ -283,7 +283,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-physio',
+    id: 'H-GF-PHYSIO',
     name: 'Physiotherapy & Acupuncture Suite',
     shortName: 'Physio & Acupuncture',
     floor: 'ground',
@@ -299,7 +299,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-pancha-1',
+    id: 'H-GF-PANCH-01',
     name: 'Panchakarma Deluxe Suite 01 (Shirodhara & Abhyanga)',
     shortName: 'Panchakarma 01',
     floor: 'ground',
@@ -315,7 +315,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-pancha-2',
+    id: 'H-GF-PANCH-02',
     name: 'Panchakarma Deluxe Suite 02 (Kizhi & Pizhichil)',
     shortName: 'Panchakarma 02',
     floor: 'ground',
@@ -331,7 +331,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-pancha-3',
+    id: 'H-GF-PANCH-03',
     name: 'Panchakarma Therapy Suite 03',
     shortName: 'Panchakarma 03',
     floor: 'ground',
@@ -347,7 +347,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-pancha-4',
+    id: 'H-GF-PANCH-04',
     name: 'Panchakarma Therapy Suite 04',
     shortName: 'Panchakarma 04',
     floor: 'ground',
@@ -363,7 +363,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-emergency',
+    id: 'H-GF-EMERGENCY',
     name: 'Emergency Department & Triage',
     shortName: 'Emergency Triage',
     floor: 'ground',
@@ -379,7 +379,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-ground'
   },
   {
-    id: 'hosp-g-mini-ot',
+    id: 'H-GF-MINI-OT',
     name: 'Mini Operation Theatre (Minor Procedures)',
     shortName: 'Mini OT',
     floor: 'ground',
@@ -398,7 +398,7 @@ export const HOSPITAL_ROOMS_GROUND: ArchitecturalRoom[] = [
 
 export const HOSPITAL_ROOMS_FIRST: ArchitecturalRoom[] = [
   {
-    id: 'hosp-1f-cathlab',
+    id: 'H-FF-CATHLAB',
     name: 'Advanced Cardiac Cathlab Suite',
     shortName: 'Cathlab',
     floor: 'first',
@@ -414,7 +414,7 @@ export const HOSPITAL_ROOMS_FIRST: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-first'
   },
   {
-    id: 'hosp-1f-mri',
+    id: 'H-FF-MRI',
     name: 'MRI 1.5 Tesla Diagnostic Suite',
     shortName: 'MRI Suite',
     floor: 'first',
@@ -430,7 +430,7 @@ export const HOSPITAL_ROOMS_FIRST: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-first'
   },
   {
-    id: 'hosp-1f-ct',
+    id: 'H-FF-CT',
     name: '128-Slice CT Scan Diagnostic Suite',
     shortName: 'CT Scan',
     floor: 'first',
@@ -446,7 +446,7 @@ export const HOSPITAL_ROOMS_FIRST: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-first'
   },
   {
-    id: 'hosp-1f-dialysis',
+    id: 'H-FF-DIALYSIS',
     name: 'Dialysis Critical Unit (8 Stations)',
     shortName: 'Dialysis',
     floor: 'first',
@@ -462,7 +462,7 @@ export const HOSPITAL_ROOMS_FIRST: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-first'
   },
   {
-    id: 'hosp-1f-xray',
+    id: 'H-FF-XRAY',
     name: 'Digital X-Ray & Ultrasound Suite',
     shortName: 'X-Ray & USG',
     floor: 'first',
@@ -478,7 +478,7 @@ export const HOSPITAL_ROOMS_FIRST: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-first'
   },
   {
-    id: 'hosp-1f-icu',
+    id: 'H-FF-ICU',
     name: 'Intensive Care Unit (6 Critical Care Beds)',
     shortName: 'ICU Area',
     floor: 'first',
@@ -494,7 +494,7 @@ export const HOSPITAL_ROOMS_FIRST: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-first'
   },
   {
-    id: 'hosp-1f-ot',
+    id: 'H-FF-OT',
     name: 'Major Modular Operation Theatre Suite',
     shortName: 'OT Suite',
     floor: 'first',
@@ -510,7 +510,7 @@ export const HOSPITAL_ROOMS_FIRST: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-first'
   },
   {
-    id: 'hosp-1f-ward-he',
+    id: 'H-FF-WARD-HE',
     name: 'Male General Inpatient Ward',
     shortName: 'He General Ward',
     floor: 'first',
@@ -526,7 +526,7 @@ export const HOSPITAL_ROOMS_FIRST: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-first'
   },
   {
-    id: 'hosp-1f-ward-she',
+    id: 'H-FF-WARD-SHE',
     name: 'Female General Inpatient Ward',
     shortName: 'She General Ward',
     floor: 'first',
@@ -545,7 +545,7 @@ export const HOSPITAL_ROOMS_FIRST: ArchitecturalRoom[] = [
 
 export const HOSPITAL_ROOMS_SECOND: ArchitecturalRoom[] = [
   {
-    id: 'hosp-2f-auditorium',
+    id: 'H-SF-AUDITORIUM',
     name: '50-Seating Open Amphitheatre & Stage',
     shortName: '50-Seat Auditorium',
     floor: 'second',
@@ -561,7 +561,7 @@ export const HOSPITAL_ROOMS_SECOND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-second'
   },
   {
-    id: 'hosp-2f-pool',
+    id: 'H-SF-POOL',
     name: 'Senior Hydrotherapy & Therapeutic Swimming Pool',
     shortName: 'Hydrotherapy Pool',
     floor: 'second',
@@ -577,7 +577,7 @@ export const HOSPITAL_ROOMS_SECOND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-second'
   },
   {
-    id: 'hosp-2f-semishade',
+    id: 'H-SF-SEMISHADE',
     name: 'Semi-Shaded Louvered Recreational Pavilion',
     shortName: 'Semi-Shade Lounge',
     floor: 'second',
@@ -593,7 +593,7 @@ export const HOSPITAL_ROOMS_SECOND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-second'
   },
   {
-    id: 'hosp-2f-openroof',
+    id: 'H-SF-OPENROOF',
     name: 'Open Sky Landscaped Roof Terrace Deck',
     shortName: 'Open Roof Deck',
     floor: 'roof',
@@ -609,7 +609,7 @@ export const HOSPITAL_ROOMS_SECOND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-second'
   },
   {
-    id: 'hosp-2f-library',
+    id: 'H-SF-LIBRARY',
     name: 'Medical & Spiritual Heritage Library',
     shortName: 'Library Room',
     floor: 'second',
@@ -625,7 +625,7 @@ export const HOSPITAL_ROOMS_SECOND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-second'
   },
   {
-    id: 'hosp-2f-research',
+    id: 'H-SF-RESEARCH',
     name: 'Clinical Research & Pharmacology Lab',
     shortName: 'Research Room',
     floor: 'second',
@@ -641,7 +641,7 @@ export const HOSPITAL_ROOMS_SECOND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-second'
   },
   {
-    id: 'hosp-2f-conference',
+    id: 'H-SF-CONFERENCE',
     name: 'Conference & Medical Board Room',
     shortName: 'Conference Room',
     floor: 'second',
@@ -657,7 +657,7 @@ export const HOSPITAL_ROOMS_SECOND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-second'
   },
   {
-    id: 'hosp-2f-kitchen',
+    id: 'H-SF-KITCHEN',
     name: 'Central Dietary Commercial Kitchen',
     shortName: 'Dietary Kitchen',
     floor: 'second',
@@ -673,7 +673,7 @@ export const HOSPITAL_ROOMS_SECOND: ArchitecturalRoom[] = [
     cadPlanTab: 'hospital-second'
   },
   {
-    id: 'hosp-2f-laundry',
+    id: 'H-SF-LAUNDRY',
     name: 'Hospital Laundry & Linen Sterilization',
     shortName: 'Laundry Area',
     floor: 'second',
@@ -708,7 +708,7 @@ export const RESIDENCE_FOOTPRINT: BuildingFootprint = {
 
 export const RESIDENCE_UNITS_DATA = [
   {
-    unitId: 'unit-01',
+    unitId: 'R-U01-1BHK',
     unitNumber: 'Residence 01',
     code: '01',
     typeName: '1 BHK Senior Residence (West Wing)',
@@ -732,7 +732,7 @@ export const RESIDENCE_UNITS_DATA = [
     ]
   },
   {
-    unitId: 'unit-02',
+    unitId: 'R-U02-1RK',
     unitNumber: 'Residence 02',
     code: '02',
     typeName: '1 RK Senior Studio Suite (Center Wing)',
@@ -755,7 +755,7 @@ export const RESIDENCE_UNITS_DATA = [
     ]
   },
   {
-    unitId: 'unit-03',
+    unitId: 'R-U03-1BHK-DELUXE',
     unitNumber: 'Residence 03',
     code: '03',
     typeName: '1 BHK Deluxe Senior Residence (East Wing)',

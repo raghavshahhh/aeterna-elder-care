@@ -28,19 +28,23 @@ import {
   ChevronRight,
   ExternalLink,
   Info,
-  Sliders
+  Sliders,
+  Eye,
+  EyeOff
 } from "lucide-react";
 
 export type HospitalFloorView = "all" | "ground" | "first" | "second" | "roof";
 
 interface Hospital3DViewerProps {
   initialFloor?: HospitalFloorView;
-  onSelectRoom?: (room: ArchitecturalRoom) => void;
+  selectedRoomId?: string | null;
+  onSelectRoom?: (room: ArchitecturalRoom | null) => void;
   className?: string;
 }
 
 export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
   initialFloor = "all",
+  selectedRoomId,
   onSelectRoom,
   className = ""
 }) => {
@@ -56,11 +60,17 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showWireframe, setShowWireframe] = useState<boolean>(false);
 
+  // CAD Overlay QA Mode
+  const [isCadOverlay, setIsCadOverlay] = useState<boolean>(false);
+  const [cadOpacity, setCadOpacity] = useState<number>(0.75);
+  const [modelOpacity, setModelOpacity] = useState<number>(0.85);
+
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const floorGroupsRef = useRef<{ [key in HospitalFloorView]?: THREE.Group }>({});
   const interactiveMeshesRef = useRef<THREE.Mesh[]>([]);
+  const cadOverlayMeshRef = useRef<THREE.Mesh | null>(null);
   const animationFrameId = useRef<number | null>(null);
 
   const activeFloorRef = useRef<HospitalFloorView>(initialFloor);
@@ -172,7 +182,7 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
     ground.receiveShadow = true;
     scene.add(ground);
 
-    // Front Highway / Access Road (33'-0" Wide)
+    // Front Highway / Access Road (33'-0\" Wide)
     const roadMat = new THREE.MeshStandardMaterial({ color: 0x2b3338, roughness: 0.8 });
     const road = new THREE.Mesh(new THREE.PlaneGeometry(140, 14), roadMat);
     road.rotation.x = -Math.PI / 2;
@@ -198,7 +208,6 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
 
     // Materials Library
     const facadeWallMat = new THREE.MeshStandardMaterial({ color: 0xede4d3, roughness: 0.65 });
-    const interiorWallMat = new THREE.MeshStandardMaterial({ color: 0xf4eee4, roughness: 0.85 });
     const slabMat = new THREE.MeshStandardMaterial({ color: 0xd8d0c2, roughness: 0.7 });
     const glassMat = new THREE.MeshPhysicalMaterial({
       color: 0x88c4d8,
@@ -236,7 +245,7 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
     const groundGroup = new THREE.Group();
     groundGroup.name = "hospital-ground";
 
-    // Ground Floor Slab (117'-10" × 138'-0" / 35.9m × 42.1m)
+    // Ground Floor Slab (117'-10\" Ã 138'-0\" / 35.9m Ã 42.1m)
     const gSlab = new THREE.Mesh(
       new THREE.BoxGeometry(HOSPITAL_FOOTPRINT.widthM, 0.4, HOSPITAL_FOOTPRINT.depthM),
       slabMat
@@ -280,7 +289,7 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
       roomMesh.add(line);
     });
 
-    // Main Entrance Portico (10'-0" Wide Main Gates)
+    // Main Entrance Portico (10'-0\" Wide Main Gates)
     const portico = new THREE.Mesh(new THREE.BoxGeometry(14, 0.35, 6), bronzeMat);
     portico.position.set(0, 3.6, 22);
     groundGroup.add(portico);
@@ -352,9 +361,9 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
 
     // Second Floor Rooms
     HOSPITAL_ROOMS_SECOND.forEach((room) => {
-      const isPool = room.id === "hosp-2f-pool";
-      const isOpenRoof = room.id === "hosp-2f-openroof";
-      const isSemiShade = room.id === "hosp-2f-semishade";
+      const isPool = room.id.includes("POOL");
+      const isOpenRoof = room.id.includes("OPENROOF") || room.zone === "recreation" && room.name.includes("Roof");
+      const isSemiShade = room.id.includes("SEMISHADE") || room.name.includes("Shaded");
 
       let mat = new THREE.MeshStandardMaterial({
         color: zoneColors[room.zone] || 0x6a7a8a,
@@ -384,7 +393,6 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
       // Add architectural details for special rooftop zones
       if (isOpenRoof) {
         // 3.5ft safety glass & steel parapet railing around open roof deck
-        const parapetMat = new THREE.MeshStandardMaterial({ color: 0x90a4ae, metalness: 0.8, roughness: 0.2 });
         const pRailing = new THREE.Mesh(
           new THREE.BoxGeometry(room.size[0] + 0.2, 1.1, room.size[2] + 0.2),
           new THREE.MeshStandardMaterial({ color: 0x33444c, wireframe: true })
@@ -413,7 +421,7 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
         }
       }
 
-      if (room.id === "hosp-2f-auditorium") {
+      if (room.id.includes("AUDITORIUM")) {
         // Concentric stepped tiers
         [0.8, 0.5, 0.2].forEach((h, idx) => {
           const tier = new THREE.Mesh(new THREE.CylinderGeometry(4.5 - idx * 0.9, 4.5 - idx * 0.9, 0.3, 16, 1, false, 0, Math.PI), woodMat);
@@ -448,79 +456,47 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
     signBox.position.set(0, 12.0, 20.8);
     allGroup.add(signBox);
 
+    // 16 Reinforced Concrete Structural Column Grid
+    const colMat = new THREE.MeshStandardMaterial({ color: 0xbdb3a4, roughness: 0.7 });
+    for (let cx = -15; cx <= 15; cx += 10) {
+      for (let cz = -18; cz <= 18; cz += 12) {
+        const col = new THREE.Mesh(new THREE.BoxGeometry(0.5, 11.5, 0.5), colMat);
+        col.position.set(cx, 5.75, cz);
+        col.castShadow = true;
+        allGroup.add(col);
+      }
+    }
+
     scene.add(allGroup);
     floorGroups.all = allGroup;
 
     floorGroupsRef.current = floorGroups;
     interactiveMeshesRef.current = interactiveMeshes;
 
-    // Mouse / Touch Interaction for Orbit and Raycasting
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
+    // ─── 5. CAD OVERLAY PLANE MESH ──────────────────────────────────────────
+    const cadLoader = new THREE.TextureLoader();
+    const cadGeo = new THREE.PlaneGeometry(HOSPITAL_FOOTPRINT.widthM, HOSPITAL_FOOTPRINT.depthM);
+    const cadMat = new THREE.MeshBasicMaterial({
+      transparent: true,
+      opacity: 0.0,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
+    const cadMesh = new THREE.Mesh(cadGeo, cadMat);
+    cadMesh.rotation.x = -Math.PI / 2;
+    cadMesh.position.set(0, 0.25, 0);
+    cadMesh.visible = false;
+    scene.add(cadMesh);
+    cadOverlayMeshRef.current = cadMesh;
 
-    const handlePointerDown = (e: PointerEvent) => {
-      orbitRef.current.isDragging = true;
-      orbitRef.current.prevMouseX = e.clientX;
-      orbitRef.current.prevMouseY = e.clientY;
-    };
+    // Load initial texture
+    cadLoader.load("/project-assets/architecture/cad/previews/ground-floor-preview.jpg", (tex) => {
+      tex.anisotropy = 8;
+      cadMat.map = tex;
+      cadMat.needsUpdate = true;
+    });
 
-    const handlePointerMove = (e: PointerEvent) => {
-      if (orbitRef.current.isDragging) {
-        const deltaX = e.clientX - orbitRef.current.prevMouseX;
-        const deltaY = e.clientY - orbitRef.current.prevMouseY;
-        orbitRef.current.targetTheta -= deltaX * 0.007;
-        orbitRef.current.targetPhi = Math.max(0.1, Math.min(Math.PI / 2.05, orbitRef.current.targetPhi - deltaY * 0.007));
-        orbitRef.current.prevMouseX = e.clientX;
-        orbitRef.current.prevMouseY = e.clientY;
-      } else {
-        const rect = canvas.getBoundingClientRect();
-        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObjects(interactiveMeshesRef.current);
-        if (intersects.length > 0) {
-          const hitRoom = intersects[0].object.userData.room as ArchitecturalRoom;
-          setHoveredRoom(hitRoom);
-          canvas.style.cursor = "pointer";
-        } else {
-          setHoveredRoom(null);
-          canvas.style.cursor = "grab";
-        }
-      }
-    };
-
-    const handlePointerUp = (e: PointerEvent) => {
-      if (orbitRef.current.isDragging) {
-        const dist = Math.hypot(e.clientX - orbitRef.current.prevMouseX, e.clientY - orbitRef.current.prevMouseY);
-        orbitRef.current.isDragging = false;
-        if (dist < 4) {
-          // Click selection
-          const rect = canvas.getBoundingClientRect();
-          mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-          mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-          raycaster.setFromCamera(mouse, camera);
-          const intersects = raycaster.intersectObjects(interactiveMeshesRef.current);
-          if (intersects.length > 0) {
-            const hitRoom = intersects[0].object.userData.room as ArchitecturalRoom;
-            setSelectedRoom(hitRoom);
-            if (onSelectRoomRef.current) {
-              onSelectRoomRef.current(hitRoom);
-            }
-          }
-        }
-      }
-    };
-
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      orbitRef.current.targetRadius = Math.max(25, Math.min(110, orbitRef.current.targetRadius + e.deltaY * 0.05));
-    };
-
-    canvas.addEventListener("pointerdown", handlePointerDown);
-    window.addEventListener("pointermove", handlePointerMove);
-    window.addEventListener("pointerup", handlePointerUp);
-    canvas.addEventListener("wheel", handleWheel, { passive: false });
+    setIsLoading(false);
 
     // Render loop
     const animate = () => {
@@ -529,8 +505,8 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
       renderer.render(scene, camera);
     };
     animate();
-    setIsLoading(false);
 
+    // Resize handler
     const handleResize = () => {
       if (!container || !camera || !renderer) return;
       const w = container.clientWidth;
@@ -542,91 +518,254 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
     window.addEventListener("resize", handleResize);
 
     return () => {
-      if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
-      canvas.removeEventListener("pointerdown", handlePointerDown);
-      window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("pointerup", handlePointerUp);
-      canvas.removeEventListener("wheel", handleWheel);
       window.removeEventListener("resize", handleResize);
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
       renderer.dispose();
     };
   }, [updateCameraPosition]);
 
-  // Handle floor isolation visibility
+  // CAD Overlay update when activeFloor / isCadOverlay / opacity changes
   useEffect(() => {
-    const floorGroups = floorGroupsRef.current;
-    if (!floorGroups) return;
+    const cadMesh = cadOverlayMeshRef.current;
+    if (!cadMesh) return;
+
+    if (!isCadOverlay) {
+      cadMesh.visible = false;
+      return;
+    }
+
+    cadMesh.visible = true;
+    const mat = cadMesh.material as THREE.MeshBasicMaterial;
+    mat.opacity = cadOpacity;
+    mat.needsUpdate = true;
+
+    // Determine preview image based on floor
+    let cadUrl = "/project-assets/architecture/cad/previews/ground-floor-preview.jpg";
+    let yPos = 0.25;
+
+    if (activeFloor === "first") {
+      cadUrl = "/project-assets/architecture/cad/previews/first-floor-preview.jpg";
+      yPos = 3.85;
+    } else if (activeFloor === "second" || activeFloor === "roof") {
+      cadUrl = "/project-assets/architecture/cad/previews/second-floor-preview.jpg";
+      yPos = 7.45;
+    }
+
+    cadMesh.position.y = yPos;
+
+    const loader = new THREE.TextureLoader();
+    loader.load(cadUrl, (tex) => {
+      tex.anisotropy = 8;
+      mat.map = tex;
+      mat.needsUpdate = true;
+    });
+  }, [isCadOverlay, cadOpacity, activeFloor]);
+
+  // Adjust 3D model opacity based on modelOpacity slider
+  useEffect(() => {
+    interactiveMeshesRef.current.forEach((mesh) => {
+      if (Array.isArray(mesh.material)) {
+        mesh.material.forEach((m) => {
+          if ('opacity' in m) m.opacity = modelOpacity;
+        });
+      } else if (mesh.material && 'opacity' in mesh.material) {
+        mesh.material.opacity = modelOpacity;
+      }
+    });
+  }, [modelOpacity]);
+
+  // Floor Isolation Visibility Logic
+  useEffect(() => {
+    const groups = floorGroupsRef.current;
+    if (!groups) return;
 
     if (activeFloor === "all") {
-      if (floorGroups.ground) floorGroups.ground.visible = true;
-      if (floorGroups.first) floorGroups.first.visible = true;
-      if (floorGroups.second) floorGroups.second.visible = true;
-      if (floorGroups.all) floorGroups.all.visible = true;
+      if (groups.ground) groups.ground.visible = true;
+      if (groups.first) groups.first.visible = true;
+      if (groups.second) groups.second.visible = true;
+      if (groups.all) groups.all.visible = true;
     } else if (activeFloor === "ground") {
-      if (floorGroups.ground) floorGroups.ground.visible = true;
-      if (floorGroups.first) floorGroups.first.visible = false;
-      if (floorGroups.second) floorGroups.second.visible = false;
-      if (floorGroups.all) floorGroups.all.visible = false;
+      if (groups.ground) groups.ground.visible = true;
+      if (groups.first) groups.first.visible = false;
+      if (groups.second) groups.second.visible = false;
+      if (groups.all) groups.all.visible = false;
     } else if (activeFloor === "first") {
-      if (floorGroups.ground) floorGroups.ground.visible = false;
-      if (floorGroups.first) floorGroups.first.visible = true;
-      if (floorGroups.second) floorGroups.second.visible = false;
-      if (floorGroups.all) floorGroups.all.visible = false;
+      if (groups.ground) groups.ground.visible = false;
+      if (groups.first) groups.first.visible = true;
+      if (groups.second) groups.second.visible = false;
+      if (groups.all) groups.all.visible = false;
     } else if (activeFloor === "second" || activeFloor === "roof") {
-      if (floorGroups.ground) floorGroups.ground.visible = false;
-      if (floorGroups.first) floorGroups.first.visible = false;
-      if (floorGroups.second) floorGroups.second.visible = true;
-      if (floorGroups.all) floorGroups.all.visible = false;
+      if (groups.ground) groups.ground.visible = false;
+      if (groups.first) groups.first.visible = false;
+      if (groups.second) groups.second.visible = true;
+      if (groups.all) groups.all.visible = false;
     }
   }, [activeFloor]);
 
-  // Preset Views
+  // Handle selectedRoomId prop from parent
+  useEffect(() => {
+    if (!selectedRoomId) return;
+
+    const allRooms = [...HOSPITAL_ROOMS_GROUND, ...HOSPITAL_ROOMS_FIRST, ...HOSPITAL_ROOMS_SECOND];
+    const match = allRooms.find((r) => r.id === selectedRoomId);
+    if (match) {
+      setSelectedRoom(match);
+      if (match.floor === "ground" && activeFloor !== "ground") setActiveFloor("ground");
+      if (match.floor === "first" && activeFloor !== "first") setActiveFloor("first");
+      if (match.floor === "second" && activeFloor !== "second") setActiveFloor("second");
+
+      orbitRef.current.targetLookAt.set(match.position[0], match.position[1], match.position[2]);
+      orbitRef.current.targetRadius = 35;
+    }
+  }, [selectedRoomId, activeFloor]);
+
+  // Raycasting & Room Selection Interaction
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    orbitRef.current.isDragging = true;
+    orbitRef.current.prevMouseX = e.clientX;
+    orbitRef.current.prevMouseY = e.clientY;
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    const camera = cameraRef.current;
+    if (!canvas || !camera) return;
+
+    if (orbitRef.current.isDragging) {
+      const deltaX = e.clientX - orbitRef.current.prevMouseX;
+      const deltaY = e.clientY - orbitRef.current.prevMouseY;
+
+      orbitRef.current.targetTheta -= deltaX * 0.006;
+      orbitRef.current.targetPhi = Math.max(0.1, Math.min(Math.PI / 2 - 0.05, orbitRef.current.targetPhi - deltaY * 0.006));
+
+      orbitRef.current.prevMouseX = e.clientX;
+      orbitRef.current.prevMouseY = e.clientY;
+      return;
+    }
+
+    // Raycast hover
+    const rect = canvas.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
+
+    const visibleMeshes = interactiveMeshesRef.current.filter((m) => m.parent && m.parent.visible);
+    const intersects = raycaster.intersectObjects(visibleMeshes, false);
+
+    if (intersects.length > 0) {
+      const hit = intersects[0].object as THREE.Mesh;
+      if (hit.userData?.room) {
+        setHoveredRoom(hit.userData.room);
+        canvas.style.cursor = "pointer";
+        return;
+      }
+    }
+
+    setHoveredRoom(null);
+    canvas.style.cursor = "grab";
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const wasDragging = Math.abs(e.clientX - orbitRef.current.prevMouseX) > 4 || Math.abs(e.clientY - orbitRef.current.prevMouseY) > 4;
+    orbitRef.current.isDragging = false;
+
+    if (wasDragging) return;
+
+    const canvas = canvasRef.current;
+    const camera = cameraRef.current;
+    if (!canvas || !camera) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
+
+    const visibleMeshes = interactiveMeshesRef.current.filter((m) => m.parent && m.parent.visible);
+    const intersects = raycaster.intersectObjects(visibleMeshes, false);
+
+    if (intersects.length > 0) {
+      const hit = intersects[0].object as THREE.Mesh;
+      if (hit.userData?.room) {
+        const room = hit.userData.room as ArchitecturalRoom;
+        setSelectedRoom(room);
+        if (onSelectRoomRef.current) {
+          onSelectRoomRef.current(room);
+        }
+        orbitRef.current.targetLookAt.set(room.position[0], room.position[1], room.position[2]);
+        orbitRef.current.targetRadius = 38;
+      }
+    }
+  };
+
+  const handleWheel = (e: React.WheelEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    orbitRef.current.targetRadius = Math.max(15, Math.min(130, orbitRef.current.targetRadius + e.deltaY * 0.05));
+  };
+
+  // Camera Presets
   const handlePresetView = (preset: "hero" | "top" | "front" | "ayurveda" | "diagnostics" | "roof") => {
     setViewPreset(preset);
     const orbit = orbitRef.current;
 
-    if (preset === "hero") {
-      orbit.targetRadius = 65;
-      orbit.targetTheta = Math.PI / 3.8;
-      orbit.targetPhi = Math.PI / 3.2;
-      orbit.targetLookAt.set(0, 4.5, 0);
-    } else if (preset === "top") {
-      orbit.targetRadius = 55;
-      orbit.targetTheta = 0;
-      orbit.targetPhi = 0.05;
-      orbit.targetLookAt.set(0, 4.0, 0);
-    } else if (preset === "front") {
-      orbit.targetRadius = 60;
-      orbit.targetTheta = 0;
-      orbit.targetPhi = Math.PI / 2.2;
-      orbit.targetLookAt.set(0, 4.5, 0);
-    } else if (preset === "ayurveda") {
-      orbit.targetRadius = 42;
-      orbit.targetTheta = Math.PI / 2.5;
-      orbit.targetPhi = Math.PI / 3.0;
-      orbit.targetLookAt.set(10.0, 3.0, 2.0);
-    } else if (preset === "diagnostics") {
-      orbit.targetRadius = 42;
-      orbit.targetTheta = -Math.PI / 2.5;
-      orbit.targetPhi = Math.PI / 3.0;
-      orbit.targetLookAt.set(-10.0, 5.0, 0.0);
-    } else if (preset === "roof") {
-      orbit.targetRadius = 48;
-      orbit.targetTheta = Math.PI / 4.0;
-      orbit.targetPhi = Math.PI / 4.0;
-      orbit.targetLookAt.set(6.0, 9.0, 6.0);
+    switch (preset) {
+      case "hero":
+        orbit.targetRadius = 65;
+        orbit.targetTheta = Math.PI / 3.8;
+        orbit.targetPhi = Math.PI / 3.2;
+        orbit.targetLookAt.set(0, 4.5, 0);
+        break;
+      case "top":
+        orbit.targetRadius = 68;
+        orbit.targetTheta = 0;
+        orbit.targetPhi = 0.01;
+        orbit.targetLookAt.set(0, 0, 0);
+        break;
+      case "front":
+        orbit.targetRadius = 55;
+        orbit.targetTheta = 0;
+        orbit.targetPhi = Math.PI / 2.3;
+        orbit.targetLookAt.set(0, 3, 15);
+        break;
+      case "ayurveda":
+        setActiveFloor("ground");
+        orbit.targetRadius = 40;
+        orbit.targetTheta = -Math.PI / 4;
+        orbit.targetPhi = Math.PI / 3.0;
+        orbit.targetLookAt.set(10, 1.8, 5);
+        break;
+      case "diagnostics":
+        setActiveFloor("first");
+        orbit.targetRadius = 42;
+        orbit.targetTheta = Math.PI / 2.5;
+        orbit.targetPhi = Math.PI / 3.1;
+        orbit.targetLookAt.set(-10, 5.4, -5);
+        break;
+      case "roof":
+        setActiveFloor("second");
+        orbit.targetRadius = 42;
+        orbit.targetTheta = -Math.PI / 5;
+        orbit.targetPhi = Math.PI / 3.2;
+        orbit.targetLookAt.set(6, 9.0, 8);
+        break;
     }
   };
 
-  const handleOpenCAD = (tab: "hospital-ground" | "hospital-first" | "hospital-second") => {
-    openFloorPlanModal(tab);
+  const handleReset = () => {
+    setSelectedRoom(null);
+    handlePresetView("hero");
   };
 
   return (
     <div
       ref={containerRef}
-      className={`relative w-full rounded-3xl overflow-hidden bg-[#071519] border border-white/10 shadow-2xl flex flex-col ${
-        isFullscreen ? "fixed inset-0 z-50 rounded-none h-screen" : "h-[640px] sm:h-[720px]"
+      className={`relative w-full h-[640px] sm:h-[720px] rounded-3xl overflow-hidden bg-[#071519] border border-white/10 select-none shadow-2xl ${
+        isFullscreen ? "fixed inset-0 z-50 rounded-none h-screen w-screen" : ""
       } ${className}`}
     >
       {/* Top Architectural HUD Header */}
@@ -646,8 +785,8 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
           </p>
         </div>
 
-        {/* View Presets & Fullscreen */}
-        <div className="pointer-events-auto flex items-center gap-2">
+        {/* View Presets & Actions */}
+        <div className="pointer-events-auto flex items-center gap-2 flex-wrap">
           <div className="hidden sm:flex items-center gap-1 bg-[#0A1D24]/80 backdrop-blur-md p-1 rounded-2xl border border-white/10">
             {(
               [
@@ -673,6 +812,20 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
             ))}
           </div>
 
+          {/* CAD Overlay Mode Toggle Button */}
+          <button
+            onClick={() => setIsCadOverlay(!isCadOverlay)}
+            className={`px-3 py-2 rounded-2xl text-xs font-mono font-bold transition-all border backdrop-blur-md flex items-center gap-1.5 ${
+              isCadOverlay
+                ? "bg-[#C58F58] text-[#071519] border-[#C58F58] shadow-lg shadow-[#C58F58]/20"
+                : "bg-[#0A1D24]/80 text-[#E0AB77] border-[#C58F58]/40 hover:bg-[#C58F58]/20"
+            }`}
+            title="Toggle CAD Blueprint semi-transparent overlay alignment mode"
+          >
+            {isCadOverlay ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+            CAD Overlay QA
+          </button>
+
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
             className="p-2.5 rounded-2xl bg-[#0A1D24]/80 hover:bg-white/10 text-white/80 hover:text-white border border-white/10 transition-all backdrop-blur-md"
@@ -683,10 +836,7 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
         </div>
       </div>
 
-      {/* 3D Canvas */}
-      <canvas ref={canvasRef} className="w-full h-full block touch-none" />
-
-      {/* Floating Floor Selector Tabs */}
+      {/* Floating Floor Isolator Controls */}
       <div className="absolute top-24 left-4 sm:left-6 z-20 pointer-events-auto flex flex-col gap-1.5 bg-[#071519]/85 backdrop-blur-md p-2 rounded-2xl border border-white/15 shadow-xl">
         <div className="text-[10px] font-mono text-white/50 uppercase tracking-widest px-2 py-1 flex items-center gap-1.5">
           <Layers className="w-3 h-3 text-[#C58F58]" /> Floor Isolator
@@ -717,80 +867,162 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
         ))}
       </div>
 
+      {/* CAD Overlay QA Controls Bar (when active) */}
+      {isCadOverlay && (
+        <div className="absolute bottom-20 left-4 sm:left-6 z-20 pointer-events-auto bg-[#0A1D24]/90 backdrop-blur-md p-4 rounded-2xl border border-[#C58F58]/60 shadow-2xl space-y-3 max-w-sm">
+          <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
+            <span className="text-[11px] font-mono text-[#E0AB77] font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <Sliders className="w-3.5 h-3.5" /> CAD 2D â 3D Alignment QA
+            </span>
+            <button
+              onClick={() => handlePresetView("top")}
+              className="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-[#C58F58]/20 hover:bg-[#C58F58] hover:text-[#071519] text-[#E0AB77] transition-all font-bold"
+            >
+              Snap Top CAD View
+            </button>
+          </div>
+
+          <div className="space-y-2 text-xs">
+            <div className="flex items-center justify-between text-white/70 font-mono text-[10px]">
+              <span>CAD 2D Blueprint Opacity:</span>
+              <span className="text-[#E0AB77] font-bold">{Math.round(cadOpacity * 100)}%</span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={cadOpacity}
+              onChange={(e) => setCadOpacity(parseFloat(e.target.value))}
+              className="w-full h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#C58F58]"
+            />
+
+            <div className="flex items-center justify-between text-white/70 font-mono text-[10px] pt-1">
+              <span>3D Geometry Walls Opacity:</span>
+              <span className="text-[#E0AB77] font-bold">{Math.round(modelOpacity * 100)}%</span>
+            </div>
+            <input
+              type="range"
+              min="0.1"
+              max="1"
+              step="0.05"
+              value={modelOpacity}
+              onChange={(e) => setModelOpacity(parseFloat(e.target.value))}
+              className="w-full h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#C58F58]"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Hovered / Active Room Tooltip */}
       {hoveredRoom && !selectedRoom && (
         <div className="absolute top-24 right-4 sm:right-6 z-20 pointer-events-none bg-[#0D2329]/90 backdrop-blur-md px-4 py-3 rounded-2xl border border-[#C58F58]/50 shadow-xl max-w-xs space-y-1">
           <div className="text-[10px] font-mono text-[#E0AB77] uppercase tracking-wider font-bold">
-            {hoveredRoom.floor.toUpperCase()} FLOOR · {hoveredRoom.zone.toUpperCase()}
+            {hoveredRoom.id} Â· {hoveredRoom.floor.toUpperCase()} FLOOR Â· {hoveredRoom.zone.toUpperCase()}
           </div>
-          <div className="text-sm font-bold text-white leading-tight">{hoveredRoom.name}</div>
-          <div className="text-xs text-white/70 font-mono">CAD: {hoveredRoom.cadDimension} ({hoveredRoom.areaSqFt} sq.ft.)</div>
-          <div className="text-[10px] text-emerald-400 font-medium">Click to inspect architectural details →</div>
+          <div className="text-sm font-bold text-white">{hoveredRoom.name}</div>
+          <div className="text-xs font-mono text-white/80">CAD Dimension: {hoveredRoom.cadDimension}</div>
+          {hoveredRoom.areaSqFt && (
+            <div className="text-[10px] font-mono text-white/60">Area: ~{hoveredRoom.areaSqFt} sq.ft.</div>
+          )}
+          <div className="text-[10px] font-mono text-[#C58F58] pt-1">Click room to inspect clinical details â</div>
         </div>
       )}
 
-      {/* Selected Room Detailed Bottom Drawer */}
+      {/* Selected Room Details Drawer */}
       {selectedRoom && (
-        <div className="absolute bottom-4 inset-x-4 sm:inset-x-6 z-30 pointer-events-auto bg-[#071519]/95 backdrop-blur-xl p-5 sm:p-6 rounded-3xl border border-[#C58F58]/40 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-[#C58F58]/20 text-[#E0AB77] text-[10px] font-mono uppercase font-bold">
-                {selectedRoom.floor.toUpperCase()} FLOOR · {selectedRoom.zone.toUpperCase()}
+        <div className="absolute top-24 right-4 sm:right-6 z-30 pointer-events-auto bg-[#071519]/95 backdrop-blur-xl p-5 sm:p-6 rounded-3xl border border-[#C58F58]/60 shadow-2xl max-w-sm w-[90vw] space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
+          <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-3">
+            <div className="space-y-0.5">
+              <span className="px-2 py-0.5 rounded-full bg-[#C58F58]/20 border border-[#C58F58]/40 text-[#E0AB77] text-[10px] font-mono uppercase font-bold tracking-wider">
+                {selectedRoom.id} Â· {selectedRoom.floor.toUpperCase()} FLOOR
               </span>
-              <span className="text-xs text-white/50 font-mono">
-                CAD Dim: <strong className="text-white">{selectedRoom.cadDimension}</strong>
-              </span>
-              {selectedRoom.areaSqFt && (
-                <span className="text-xs text-white/50 font-mono">
-                  Area: <strong className="text-emerald-400">~{selectedRoom.areaSqFt} sq.ft.</strong>
-                </span>
-              )}
+              <h4 className="text-base sm:text-lg font-serif-heading font-bold text-white pt-1">
+                {selectedRoom.name}
+              </h4>
+              <div className="text-xs font-mono text-[#E0AB77]">CAD Dim: {selectedRoom.cadDimension}</div>
             </div>
-            <h4 className="text-xl sm:text-2xl font-serif-heading font-bold text-white">
-              {selectedRoom.name}
-            </h4>
-            <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
-              {selectedRoom.description}
-            </p>
-            <div className="flex flex-wrap gap-2 pt-1">
-              {selectedRoom.keyFeatures.map((feat, idx) => (
-                <span key={idx} className="text-[11px] px-2.5 py-1 rounded-lg bg-white/10 text-white/90 font-medium">
-                  ✓ {feat}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 shrink-0 w-full md:w-auto">
-            <button
-              onClick={() => handleOpenCAD(selectedRoom.cadPlanTab as any)}
-              className="flex-1 md:flex-none px-5 py-3 rounded-2xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] text-xs font-bold transition-all shadow-lg flex items-center justify-center gap-2"
-            >
-              <FileText className="w-4 h-4" />
-              View 2D CAD Blueprint →
-            </button>
             <button
               onClick={() => setSelectedRoom(null)}
-              className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-all"
+              className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-all"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
+
+          <p className="text-xs text-white/80 leading-relaxed">{selectedRoom.description}</p>
+
+          {/* Key Architectural & Clinical Specs */}
+          <div className="space-y-2 bg-white/5 p-3 rounded-2xl border border-white/5">
+            <div className="text-[10px] font-mono uppercase tracking-widest text-[#C58F58] font-bold">
+              Key Specifications &amp; Equipment
+            </div>
+            <ul className="space-y-1.5">
+              {selectedRoom.keyFeatures.map((feat, idx) => (
+                <li key={idx} className="text-xs text-white/80 flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#C58F58] shrink-0 mt-0.5" />
+                  <span>{feat}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Direct Trigger to 2D CAD Blueprint Modal */}
+          <div className="pt-2 flex flex-col gap-2">
+            <button
+              onClick={() => openFloorPlanModal(selectedRoom.cadPlanTab)}
+              className="w-full py-2.5 px-4 rounded-xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] text-xs font-bold transition-all shadow-lg flex items-center justify-center gap-2"
+            >
+              <FileText className="w-4 h-4" /> View 2D CAD Blueprint
+            </button>
+
+            <button
+              onClick={() =>
+                openWhatsApp({
+                  title: `Inquiry: ${selectedRoom.name} (${selectedRoom.cadDimension})`,
+                  actionType: "brochure",
+                  message: `Hello SLCF team, I am interested in the ${selectedRoom.name} located on the ${selectedRoom.floor} floor of the Ayurvedic Hospital.`
+                })
+              }
+              className="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-all border border-white/10 flex items-center justify-center gap-2"
+            >
+              Inquire About Clinical Wing
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Bottom Controls Bar */}
-      <div className="absolute bottom-4 left-4 sm:left-6 z-20 pointer-events-auto flex items-center gap-2 text-xs text-white/60">
-        <button
-          onClick={() => handlePresetView("hero")}
-          className="px-3 py-1.5 rounded-xl bg-[#0A1D24]/80 hover:bg-white/10 text-white/80 border border-white/10 flex items-center gap-1.5 backdrop-blur-md"
-        >
-          <RefreshCw className="w-3.5 h-3.5" /> Reset View
-        </button>
-        <span className="hidden sm:inline font-mono text-[11px] text-white/40">
-          • Left click + drag to orbit • Scroll to zoom • Click room for CAD specs
-        </span>
+      {/* Bottom Floating Legend & Navigation Tips */}
+      <div className="absolute bottom-4 inset-x-4 sm:inset-x-6 z-20 pointer-events-none flex flex-wrap items-center justify-between gap-3 text-xs text-white/60 font-mono">
+        <div className="pointer-events-auto bg-[#071519]/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 flex items-center gap-3">
+          <span className="flex items-center gap-1.5 text-white/80">
+            <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" /> Drag to Orbit
+          </span>
+          <span className="hidden sm:inline text-white/30">Â·</span>
+          <span className="hidden sm:inline">Scroll to Zoom</span>
+          <span className="hidden sm:inline text-white/30">Â·</span>
+          <span className="hidden sm:inline">Click Room to Inspect</span>
+        </div>
+
+        <div className="pointer-events-auto flex items-center gap-2">
+          <button
+            onClick={handleReset}
+            className="px-3 py-1.5 rounded-xl bg-[#0A1D24]/80 hover:bg-white/10 text-white/80 hover:text-white border border-white/10 transition-all flex items-center gap-1.5 backdrop-blur-md"
+          >
+            <RefreshCw className="w-3.5 h-3.5 text-[#C58F58]" /> Reset View
+          </button>
+        </div>
       </div>
+
+      {/* Main Canvas */}
+      <canvas
+        ref={canvasRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onWheel={handleWheel}
+        className="w-full h-full block cursor-grab active:cursor-grabbing"
+      />
     </div>
   );
 };

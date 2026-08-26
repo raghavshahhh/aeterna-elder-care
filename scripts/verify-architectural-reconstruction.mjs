@@ -62,41 +62,41 @@ assert(dataFileContent.includes("138.0") || dataFileContent.includes("138'-0"), 
 assert(dataFileContent.includes("30000"), "Hospital 30,000 sq.ft. G+2 defined");
 
 // Hospital Ground Floor Rooms
-assert(dataFileContent.includes("hosp-g-yoga"), "Multi-Purpose Hall & Yoga Center defined in Ground Floor");
+assert(dataFileContent.includes("H-GF-YOGA") || dataFileContent.includes("hosp-g-yoga"), "Multi-Purpose Hall & Yoga Center defined in Ground Floor");
 assert(dataFileContent.includes("34'-2\" × 49'-0\"") || dataFileContent.includes("34'-2"), "Yoga Hall CAD dimension verified");
-assert(dataFileContent.includes("hosp-g-reception"), "Reception & Waiting Lounge defined");
+assert(dataFileContent.includes("H-GF-RECEPTION") || dataFileContent.includes("hosp-g-reception"), "Reception & Waiting Lounge defined");
 assert(dataFileContent.includes("25'-7\" × 50'-1\"") || dataFileContent.includes("25'-7"), "Reception CAD dimension verified");
-assert(dataFileContent.includes("hosp-g-opd-1"), "OPD Chambers defined");
-assert(dataFileContent.includes("hosp-g-pancha-1"), "Panchakarma Suites defined");
-assert(dataFileContent.includes("hosp-g-emergency"), "Emergency & Triage defined");
-assert(dataFileContent.includes("hosp-g-mini-ot"), "Mini OT defined");
+assert(dataFileContent.includes("H-GF-OPD-01") || dataFileContent.includes("hosp-g-opd-1"), "OPD Chambers defined");
+assert(dataFileContent.includes("H-GF-PANCH-01") || dataFileContent.includes("hosp-g-pancha-1"), "Panchakarma Suites defined");
+assert(dataFileContent.includes("H-GF-EMERGENCY") || dataFileContent.includes("hosp-g-emergency"), "Emergency & Triage defined");
+assert(dataFileContent.includes("H-GF-MINI-OT") || dataFileContent.includes("hosp-g-mini-ot"), "Mini OT defined");
 
 // Hospital First Floor Rooms
-assert(dataFileContent.includes("hosp-1f-cathlab"), "Cathlab defined in First Floor");
+assert(dataFileContent.includes("H-FF-CATHLAB") || dataFileContent.includes("hosp-1f-cathlab"), "Cathlab defined in First Floor");
 assert(dataFileContent.includes("20'-0\" × 26'-4\"") || dataFileContent.includes("20'-0"), "Cathlab CAD dimension verified");
-assert(dataFileContent.includes("hosp-1f-mri"), "MRI Suite defined");
+assert(dataFileContent.includes("H-FF-MRI") || dataFileContent.includes("hosp-1f-mri"), "MRI Suite defined");
 assert(dataFileContent.includes("17'-10\" × 28'-0\"") || dataFileContent.includes("17'-10"), "MRI CAD dimension verified");
-assert(dataFileContent.includes("hosp-1f-ct"), "CT Scan defined");
-assert(dataFileContent.includes("hosp-1f-dialysis"), "Dialysis Unit defined");
-assert(dataFileContent.includes("hosp-1f-icu"), "ICU defined");
-assert(dataFileContent.includes("hosp-1f-ot"), "Modular Major OT defined");
+assert(dataFileContent.includes("H-FF-CT") || dataFileContent.includes("hosp-1f-ct"), "CT Scan defined");
+assert(dataFileContent.includes("H-FF-DIALYSIS") || dataFileContent.includes("hosp-1f-dialysis"), "Dialysis Unit defined");
+assert(dataFileContent.includes("H-FF-ICU") || dataFileContent.includes("hosp-1f-icu"), "ICU defined");
+assert(dataFileContent.includes("H-FF-OT") || dataFileContent.includes("hosp-1f-ot"), "Modular Major OT defined");
 assert(dataFileContent.includes("18'-0\" × 25'-7\"") || dataFileContent.includes("18'-0"), "OT CAD dimension verified");
-assert(dataFileContent.includes("hosp-1f-ward-he"), "Male General Inpatient Ward defined");
-assert(dataFileContent.includes("hosp-1f-ward-she"), "Female General Inpatient Ward defined");
+assert(dataFileContent.includes("H-FF-WARD-HE") || dataFileContent.includes("hosp-1f-ward-he"), "Male General Inpatient Ward defined");
+assert(dataFileContent.includes("H-FF-WARD-SHE") || dataFileContent.includes("hosp-1f-ward-she"), "Female General Inpatient Ward defined");
 
 // Hospital Second Floor Rooms & Open Roof
-assert(dataFileContent.includes("hosp-2f-auditorium"), "50-Seat Open Auditorium defined in Second Floor");
-assert(dataFileContent.includes("hosp-2f-pool"), "Hydrotherapy Pool defined");
+assert(dataFileContent.includes("H-SF-AUDITORIUM") || dataFileContent.includes("hosp-2f-auditorium"), "50-Seat Open Auditorium defined in Second Floor");
+assert(dataFileContent.includes("H-SF-POOL") || dataFileContent.includes("hosp-2f-pool"), "Hydrotherapy Pool defined");
 assert(dataFileContent.includes("10'-0\" × 12'-0\"") || dataFileContent.includes("10'-0"), "Hydrotherapy Pool CAD dimension verified");
-assert(dataFileContent.includes("hosp-2f-semishade"), "Semi-Shaded Louvered Pavilion defined");
+assert(dataFileContent.includes("H-SF-SEMISHADE") || dataFileContent.includes("hosp-2f-semishade"), "Semi-Shaded Louvered Pavilion defined");
 assert(dataFileContent.includes("20'-4\" × 38'-0\"") || dataFileContent.includes("20'-4"), "Semi-Shade CAD dimension verified");
-assert(dataFileContent.includes("hosp-2f-openroof"), "Open Sky Landscaped Roof Terrace Deck defined");
+assert(dataFileContent.includes("H-SF-OPENROOF") || dataFileContent.includes("hosp-2f-openroof"), "Open Sky Landscaped Roof Terrace Deck defined");
 assert(dataFileContent.includes("39'-2\" × 56'-11\"") || dataFileContent.includes("39'-2"), "Open Roof Deck CAD dimension verified");
-assert(dataFileContent.includes("hosp-2f-library"), "Library defined");
-assert(dataFileContent.includes("hosp-2f-research"), "Research Room defined");
-assert(dataFileContent.includes("hosp-2f-conference"), "Conference Room defined");
-assert(dataFileContent.includes("hosp-2f-kitchen"), "Commercial Dietary Kitchen defined");
-assert(dataFileContent.includes("hosp-2f-laundry"), "Laundry Area defined");
+assert(dataFileContent.includes("H-SF-LIBRARY") || dataFileContent.includes("hosp-2f-library"), "Library defined");
+assert(dataFileContent.includes("H-SF-RESEARCH") || dataFileContent.includes("hosp-2f-research"), "Research Room defined");
+assert(dataFileContent.includes("H-SF-CONFERENCE") || dataFileContent.includes("hosp-2f-conference"), "Conference Room defined");
+assert(dataFileContent.includes("H-SF-KITCHEN") || dataFileContent.includes("hosp-2f-kitchen"), "Commercial Dietary Kitchen defined");
+assert(dataFileContent.includes("H-SF-LAUNDRY") || dataFileContent.includes("hosp-2f-laundry"), "Laundry Area defined");
 
 // Residence Data
 assert(dataFileContent.includes("46.0") && dataFileContent.includes("50.5"), "Residence 46-0 × 50-6 footprint verified");

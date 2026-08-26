@@ -38,6 +38,7 @@ import {
   Search,
   ZoomIn,
   Navigation,
+  Sliders,
   Check,
   Calendar,
   Lock,
@@ -411,6 +412,11 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [mounted, setMounted] = useState<boolean>(false);
 
+  // CAD Overlay QA Mode
+  const [isCadOverlay, setIsCadOverlay] = useState<boolean>(false);
+  const [cadOpacity, setCadOpacity] = useState<number>(0.75);
+  const [plotsOpacity, setPlotsOpacity] = useState<number>(0.85);
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -420,6 +426,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const plotMeshesRef = useRef<{ [plotNumber: number]: THREE.Mesh }>({});
   const landmarkMeshesRef = useRef<THREE.Group[]>([]);
+  const cadOverlayMeshRef = useRef<THREE.Mesh | null>(null);
   const raycasterRef = useRef<THREE.Raycaster>(new THREE.Raycaster());
   const mouseRef = useRef<THREE.Vector2>(new THREE.Vector2());
   const animationFrameId = useRef<number | null>(null);
@@ -575,6 +582,28 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     masterTerrain.position.set(0, 0, 25);
     masterTerrain.receiveShadow = true;
     scene.add(masterTerrain);
+
+    // ─── 1B. CAD Vector Overlay Plane ──────────────────────────────────────
+    const masterCadTexLoader = new THREE.TextureLoader();
+    const masterCadGeo = new THREE.PlaneGeometry(175, 195);
+    const masterCadMat = new THREE.MeshBasicMaterial({
+      transparent: true,
+      opacity: 0.0,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
+    const masterCadMesh = new THREE.Mesh(masterCadGeo, masterCadMat);
+    masterCadMesh.rotation.x = -Math.PI / 2;
+    masterCadMesh.position.set(0, 0.06, 25);
+    masterCadMesh.visible = false;
+    scene.add(masterCadMesh);
+    cadOverlayMeshRef.current = masterCadMesh;
+
+    masterCadTexLoader.load('/project-assets/architecture/cad/previews/masterplan-real.jpg', (tex) => {
+      tex.anisotropy = 8;
+      masterCadMat.map = tex;
+      masterCadMat.needsUpdate = true;
+    });
 
     // ─── 2. Road Network (Strict CAD Dimensions & Widths) ─────────────────
 
@@ -1147,6 +1176,26 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     };
   }, [updateCameraPosition]);
 
+  // CAD Overlay Visibility & Opacity Effect
+  useEffect(() => {
+    const cadMesh = cadOverlayMeshRef.current;
+    if (!cadMesh) return;
+    cadMesh.visible = isCadOverlay;
+    if (cadMesh.material && 'opacity' in cadMesh.material) {
+      (cadMesh.material as THREE.MeshBasicMaterial).opacity = cadOpacity;
+      cadMesh.material.needsUpdate = true;
+    }
+  }, [isCadOverlay, cadOpacity]);
+
+  // Plots Opacity Effect
+  useEffect(() => {
+    Object.values(plotMeshesRef.current).forEach((mesh) => {
+      if (mesh.material && 'opacity' in mesh.material) {
+        (mesh.material as THREE.MeshStandardMaterial).opacity = plotsOpacity;
+      }
+    });
+  }, [plotsOpacity]);
+
   // Handle preset view transitions
   const handlePresetView = (preset: typeof viewPreset) => {
     setViewPreset(preset);
@@ -1302,6 +1351,19 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
             </button>
           )}
 
+          {/* Masterplan CAD Overlay QA Toggle */}
+          <button
+            onClick={() => setIsCadOverlay(!isCadOverlay)}
+            className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all border cursor-pointer ${
+              isCadOverlay
+                ? 'bg-[#C58F58] text-[#071519] border-[#C58F58] shadow-md'
+                : 'bg-white/5 text-[#E0AB77] border-[#C58F58]/40 hover:bg-[#C58F58]/20'
+            }`}
+            title="Toggle Masterplan Site Blueprint semi-transparent overlay alignment mode"
+          >
+            CAD Overlay QA
+          </button>
+
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
             className="p-1.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
@@ -1310,6 +1372,53 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
             {isFullscreen ? <Minimize2 className="w-4 h-4 text-[#C58F58]" /> : <Maximize2 className="w-4 h-4" />}
           </button>
         </div>
+
+        {/* Masterplan CAD Overlay QA Sliders Floating Bar */}
+        {isCadOverlay && (
+          <div className="absolute top-20 left-4 z-20 pointer-events-auto bg-[#071519]/95 backdrop-blur-md p-4 rounded-2xl border border-[#C58F58]/60 shadow-2xl space-y-3 max-w-sm">
+            <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
+              <span className="text-[11px] font-mono text-[#E0AB77] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <Sliders className="w-3.5 h-3.5" /> Masterplan CAD Overlay QA
+              </span>
+              <button
+                onClick={() => handlePresetView('top')}
+                className="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-[#C58F58]/20 hover:bg-[#C58F58] hover:text-[#071519] text-[#E0AB77] transition-all font-bold cursor-pointer"
+              >
+                Snap Top View
+              </button>
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center justify-between text-white/70 font-mono text-[10px]">
+                <span>CAD Vector Map Opacity:</span>
+                <span className="text-[#E0AB77] font-bold">{Math.round(cadOpacity * 100)}%</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={cadOpacity}
+                onChange={(e) => setCadOpacity(parseFloat(e.target.value))}
+                className="w-full h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#C58F58]"
+              />
+
+              <div className="flex items-center justify-between text-white/70 font-mono text-[10px] pt-1">
+                <span>3D Plots &amp; Roads Opacity:</span>
+                <span className="text-[#E0AB77] font-bold">{Math.round(plotsOpacity * 100)}%</span>
+              </div>
+              <input
+                type="range"
+                min="0.1"
+                max="1"
+                step="0.05"
+                value={plotsOpacity}
+                onChange={(e) => setPlotsOpacity(parseFloat(e.target.value))}
+                className="w-full h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#C58F58]"
+              />
+            </div>
+          </div>
+        )}
 
         {/* Bottom Left HUD: Interaction Guide + Source Legend */}
         <div className="absolute bottom-4 left-4 flex flex-col sm:flex-row items-start sm:items-center gap-2 text-[11px] text-white/70 pointer-events-none z-10">
