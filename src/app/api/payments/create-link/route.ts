@@ -2,9 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/repository';
 import { createRazorpayPaymentLink } from '@/lib/payments/razorpay';
 import { PaymentLinkRecord } from '@/lib/db/schema';
+import { verifySessionToken, canAccessAdmin } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
   try {
+    const token = req.cookies.get('slcf_session')?.value || req.cookies.get('sl_owner_session')?.value;
+    const user = verifySessionToken(token);
+    if (!user || !canAccessAdmin(user)) {
+      return NextResponse.json({ error: 'Unauthorized: Admin privileges required.' }, { status: 401 });
+    }
+
     const body = await req.json();
     const { bookingId, installmentId, customAmount, description } = body;
 
@@ -69,6 +76,14 @@ export async function POST(req: NextRequest) {
     };
 
     db.savePaymentLink(linkRecord);
+
+    db.logAction(
+      'PAYMENT_LINK_GENERATED',
+      'PAYMENT',
+      booking.id,
+      `Razorpay payment link generated for ₹${amount} (${booking.bookingNumber} - ${booking.customerName}) by ${user.name} (Link: ${linkRecord.shortUrl})`,
+      { id: user.id, name: user.name, role: user.role }
+    );
 
     return NextResponse.json({
       success: true,

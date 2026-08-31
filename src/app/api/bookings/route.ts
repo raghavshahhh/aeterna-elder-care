@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/repository';
 import { BookingStatus } from '@/lib/db/schema';
+import { verifySessionToken, canAccessAdmin } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
   try {
+    const token = req.cookies.get('slcf_session')?.value || req.cookies.get('sl_owner_session')?.value;
+    const user = verifySessionToken(token);
+    if (!user || !canAccessAdmin(user)) {
+      return NextResponse.json({ error: 'Unauthorized: Admin privileges required.' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(req.url);
     const status = searchParams.get('status') as BookingStatus | undefined;
     const projectId = searchParams.get('projectId') || undefined;
@@ -22,6 +29,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    const token = req.cookies.get('slcf_session')?.value || req.cookies.get('sl_owner_session')?.value;
+    const authUser = verifySessionToken(token);
+
     const body = await req.json();
     const {
       unitId,
@@ -57,6 +67,14 @@ export async function POST(req: NextRequest) {
       holdHours: holdHours || 24,
       notes
     });
+
+    db.logAction(
+      'BOOKING_CREATED',
+      'BOOKING',
+      result.booking.id,
+      `Priority hold placed on ${result.unit.unitCode} for ${customerName} (${customerPhone}). Booking Number: ${result.booking.bookingNumber}`,
+      { id: authUser?.id || 'ANON_USER', name: authUser?.name || customerName, role: authUser?.role || 'BUYER' }
+    );
 
     return NextResponse.json({
       success: true,

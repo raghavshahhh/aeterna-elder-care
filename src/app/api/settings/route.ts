@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db/repository";
+import { verifySessionToken, canAccessAdmin } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
   try {
+    const token = request.cookies.get("slcf_session")?.value || request.cookies.get("sl_owner_session")?.value;
+    const user = verifySessionToken(token);
+    if (!user || !canAccessAdmin(user)) {
+      return NextResponse.json({ error: "Unauthorized: Admin privileges required." }, { status: 401 });
+    }
+
     const settings = db.getSettings();
     return NextResponse.json({
       success: true,
@@ -19,6 +26,12 @@ export async function GET(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
+    const token = request.cookies.get("slcf_session")?.value || request.cookies.get("sl_owner_session")?.value;
+    const user = verifySessionToken(token);
+    if (!user || !canAccessAdmin(user)) {
+      return NextResponse.json({ error: "Unauthorized: Admin privileges required." }, { status: 401 });
+    }
+
     const body = await request.json();
     const {
       leadRewardAmount,

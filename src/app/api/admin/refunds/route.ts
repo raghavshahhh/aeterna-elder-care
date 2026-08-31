@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/repository';
 import { initiateRazorpayRefund } from '@/lib/payments/razorpay';
+import { verifySessionToken, canAccessAdmin } from '@/lib/auth';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const token = req.cookies.get('slcf_session')?.value || req.cookies.get('sl_owner_session')?.value;
+    const user = verifySessionToken(token);
+    if (!user || !canAccessAdmin(user)) {
+      return NextResponse.json({ error: 'Unauthorized: Admin privileges required.' }, { status: 401 });
+    }
+
     const refunds = db.getRefunds();
     return NextResponse.json({ refunds });
   } catch (err: unknown) {
@@ -14,6 +21,12 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    const token = req.cookies.get('slcf_session')?.value || req.cookies.get('sl_owner_session')?.value;
+    const user = verifySessionToken(token);
+    if (!user || !canAccessAdmin(user)) {
+      return NextResponse.json({ error: 'Unauthorized: Admin privileges required.' }, { status: 401 });
+    }
+
     const body = await req.json();
     const { paymentId, bookingId, amount, reason, requestedBy } = body;
 
@@ -26,8 +39,16 @@ export async function POST(req: NextRequest) {
       bookingId: bookingId || '',
       amount: Number(amount),
       reason,
-      requestedBy: requestedBy || 'Admin'
+      requestedBy: requestedBy || user.name || 'Admin'
     });
+
+    db.logAction(
+      'REFUND_REQUESTED',
+      'PAYMENT',
+      paymentId,
+      `Refund requested for ₹${amount} on payment ${paymentId}: ${reason} (Refund ID: ${refund.id})`,
+      { id: user.id, name: user.name, role: user.role }
+    );
 
     return NextResponse.json({ success: true, refund });
   } catch (err: unknown) {
@@ -38,6 +59,12 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
+    const token = req.cookies.get('slcf_session')?.value || req.cookies.get('sl_owner_session')?.value;
+    const user = verifySessionToken(token);
+    if (!user || !canAccessAdmin(user)) {
+      return NextResponse.json({ error: 'Unauthorized: Admin privileges required.' }, { status: 401 });
+    }
+
     const body = await req.json();
     const { refundId, approvedBy } = body;
 
@@ -58,7 +85,15 @@ export async function PATCH(req: NextRequest) {
       reason: target.reason
     });
 
-    const approved = db.approveRefund(refundId, approvedBy || 'Super Admin', rzpRefund.id);
+    const approved = db.approveRefund(refundId, approvedBy || user.name || 'Super Admin', rzpRefund.id);
+
+    db.logAction(
+      'REFUND_APPROVED',
+      'PAYMENT',
+      target.paymentId,
+      `Refund ${refundId} for ₹${target.amount} approved by ${user.name} (Razorpay ID: ${rzpRefund.id})`,
+      { id: user.id, name: user.name, role: user.role }
+    );
 
     return NextResponse.json({
       success: true,

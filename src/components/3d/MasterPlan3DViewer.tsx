@@ -453,9 +453,48 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
   const [cadOpacity, setCadOpacity] = useState<number>(0.75);
   const [plotsOpacity, setPlotsOpacity] = useState<number>(0.85);
 
+  // Live Inventory Sync
+  const [liveInventory, setLiveInventory] = useState<Record<string, { status: string; price: number }>>({});
+
   useEffect(() => {
     setMounted(true);
+
+    async function loadLiveInventory() {
+      try {
+        const res = await fetch('/api/inventory');
+        if (res.ok) {
+          const data = await res.json();
+          const map: Record<string, { status: string; price: number }> = {};
+          (data.units || []).forEach((u: any) => {
+            if (u.id) map[u.id.toLowerCase()] = { status: u.status, price: u.price };
+            if (u.unitCode) map[u.unitCode.toLowerCase()] = { status: u.status, price: u.price };
+          });
+          setLiveInventory(map);
+        }
+      } catch (err) {
+        console.warn('[3D Masterplan] Live inventory fetch skipped:', err);
+      }
+    }
+    loadLiveInventory();
   }, []);
+
+  const getPlotLiveStatus = (plot: any): { status: string; label: string; badgeClass: string; isAvailable: boolean } => {
+    const idKey = plot.id.toLowerCase();
+    const numKey = plot.plotNumber.toLowerCase();
+    const cleanId = `plot-a-${plot.id.replace('plot-', '').padStart(2, '0')}`;
+    const rawStatus = liveInventory[idKey]?.status || liveInventory[numKey]?.status || liveInventory[cleanId]?.status || 'AVAILABLE';
+
+    if (rawStatus === 'SOLD') {
+      return { status: 'SOLD', label: 'Sold / Registered', badgeClass: 'bg-rose-950/80 text-rose-300 border-rose-500/40', isAvailable: false };
+    }
+    if (rawStatus === 'RESERVED') {
+      return { status: 'RESERVED', label: 'Reserved', badgeClass: 'bg-purple-950/80 text-purple-300 border-purple-500/40', isAvailable: false };
+    }
+    if (rawStatus === 'HOLD') {
+      return { status: 'HOLD', label: '24h Priority Hold', badgeClass: 'bg-amber-950/80 text-amber-300 border-amber-500/40', isAvailable: false };
+    }
+    return { status: 'AVAILABLE', label: 'Available', badgeClass: 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40', isAvailable: true };
+  };
 
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -1814,12 +1853,14 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                   </button>
                 </div>
               </>
-            ) : selectedPlot ? (
+            ) : selectedPlot ? (() => {
+              const liveStatus = getPlotLiveStatus(selectedPlot);
+              return (
               <>
                 <div className="flex items-center justify-between pb-2 border-b border-white/10">
                   <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/30 text-[10px] font-bold text-emerald-300 uppercase">
-                      Phase 1 Pre-Launch
+                    <span className={`px-2.5 py-0.5 rounded-md border text-[10px] font-bold uppercase ${liveStatus.badgeClass}`}>
+                      {liveStatus.label}
                     </span>
                     <span className="text-xs text-white/70 font-mono font-bold">{selectedPlot.block}</span>
                   </div>
@@ -1834,19 +1875,25 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                   </p>
                 </div>
                 <div className="pt-1 flex flex-col gap-2">
-                  <a
-                    href={`/book/${selectedPlot.id.toUpperCase()}`}
-                    className="w-full py-2.5 rounded-2xl bg-[#C58F58] hover:bg-[#b07d48] text-[#071519] text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5 text-center"
-                  >
-                    Lock 24h Reservation Hold →
-                  </a>
+                  {liveStatus.isAvailable ? (
+                    <a
+                      href={`/book/${selectedPlot.id.toUpperCase()}`}
+                      className="w-full py-2.5 rounded-2xl bg-[#C58F58] hover:bg-[#b07d48] text-[#071519] text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5 text-center"
+                    >
+                      Lock 24h Reservation Hold →
+                    </a>
+                  ) : (
+                    <div className="w-full py-2.5 rounded-2xl bg-white/10 text-white/70 text-xs font-medium text-center border border-white/10">
+                      {liveStatus.label} • Inquire for Next Phase
+                    </div>
+                  )}
                   <button
                     onClick={() =>
                       openWhatsApp({
                         actionType: 'reserve-plot',
                         plotNumber: selectedPlot.plotNumber,
                         plotBlock: selectedPlot.block,
-                        message: `Hello, I am viewing ${selectedPlot.plotNumber} (${selectedPlot.block}, ${selectedPlot.sizeSqYd} sq.yd., ${selectedPlot.dimensions}) on the 3D Master Plan for Senior Living Citizens Foundation. Please share price breakdown and payment terms.`
+                        message: `Hello, I am viewing ${selectedPlot.plotNumber} (${selectedPlot.block}, ${selectedPlot.sizeSqYd} sq.yd., ${selectedPlot.dimensions}) on the 3D Master Plan for Senior Living Citizens Foundation. Status: ${liveStatus.label}. Please share dossier.`
                       })
                     }
                     className="w-full py-2 rounded-2xl bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
@@ -1855,7 +1902,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                   </button>
                 </div>
               </>
-            ) : null}
+            );})() : null}
           </div>
         )}
       </div>
@@ -2058,8 +2105,8 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                   <div className="space-y-4">
                     <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-400/30 text-[10px] font-bold uppercase">
-                          Freehold Plotted Land
+                        <span className={`px-2.5 py-0.5 rounded-full border text-[10px] font-bold uppercase ${getPlotLiveStatus(selectedPlot).badgeClass}`}>
+                          {getPlotLiveStatus(selectedPlot).label}
                         </span>
                         <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-mono font-bold">
                           SOURCE_VERIFIED
@@ -2130,13 +2177,19 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                         <span>Book Guided Ground Walk for {selectedPlot.plotNumber}</span>
                       </button>
 
-                      <a
-                        href={`/book/${selectedPlot.id.toUpperCase()}`}
-                        className="w-full py-3 rounded-2xl bg-[#C58F58] hover:bg-[#b07d48] text-[#071519] text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5 text-center block"
-                      >
-                        <Lock className="w-3.5 h-3.5" />
-                        <span>Reserve 24h Hold for {selectedPlot.plotNumber}</span>
-                      </a>
+                      {getPlotLiveStatus(selectedPlot).isAvailable ? (
+                        <a
+                          href={`/book/${selectedPlot.id.toUpperCase()}`}
+                          className="w-full py-3 rounded-2xl bg-[#C58F58] hover:bg-[#b07d48] text-[#071519] text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5 text-center block"
+                        >
+                          <Lock className="w-3.5 h-3.5" />
+                          <span>Reserve 24h Hold for {selectedPlot.plotNumber}</span>
+                        </a>
+                      ) : (
+                        <div className="w-full py-3 rounded-2xl bg-white/10 text-white/70 text-xs font-medium text-center border border-white/10 flex items-center justify-center gap-2">
+                          <span>{getPlotLiveStatus(selectedPlot).label} • Inquire for Next Phase</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/repository';
+import { verifySessionToken, canAccessAdmin } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
   try {
+    const token = req.cookies.get('slcf_session')?.value || req.cookies.get('sl_owner_session')?.value;
+    const user = verifySessionToken(token);
+    if (!user || !canAccessAdmin(user)) {
+      return NextResponse.json({ error: 'Unauthorized: Admin privileges required.' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(req.url);
     const status = searchParams.get('status') || undefined;
     const search = searchParams.get('search') || undefined;
