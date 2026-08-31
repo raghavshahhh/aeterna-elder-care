@@ -24,11 +24,11 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Protect Admin sub-routes (require session cookie)
-  if (pathname.startsWith('/admin/') && pathname !== '/admin') {
+  // Protect Admin routes (except login)
+  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
     const adminSession = request.cookies.get('slcf_session')?.value || request.cookies.get('sl_owner_session')?.value;
     if (!adminSession) {
-      const adminUrl = new URL('/admin', request.url);
+      const adminUrl = new URL('/admin/login', request.url);
       adminUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(adminUrl);
     }

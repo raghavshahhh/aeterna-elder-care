@@ -67,10 +67,10 @@ export default function AdminLayout({
           const data = await res.json();
           setUser(data.user);
         } else {
-          router.push('/owner/login');
+          router.push('/admin/login');
         }
       } catch {
-        router.push('/owner/login');
+        router.push('/admin/login');
       } finally {
         setIsLoading(false);
       }
@@ -80,7 +80,7 @@ export default function AdminLayout({
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
-    router.push('/owner/login');
+    router.push('/admin/login');
   };
 
   if (isLoading) {

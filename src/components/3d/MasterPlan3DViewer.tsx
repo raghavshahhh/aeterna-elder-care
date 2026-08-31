@@ -42,7 +42,12 @@ import {
   Check,
   Calendar,
   Lock,
-  Info
+  Info,
+  Car,
+  DoorOpen,
+  Waves,
+  Sun,
+  Flame
 } from 'lucide-react';
 
 interface MasterPlan3DViewerProps {
@@ -65,65 +70,83 @@ interface LandmarkInfo {
   cadZone: string;
   cadCoordinates: { x: number; y: number };
   sourceConfidence: SourceClassification;
+  subFeatures?: { title: string; desc: string }[];
 }
 
 const LANDMARK_REGISTRY: Record<LandmarkType, LandmarkInfo> = {
   hospital: {
     id: 'hospital',
-    title: '30,000 Sq. Ft. Multi-Speciality Ayurvedic Hospital',
+    title: '30,000 Sq. Ft. Multi-Speciality & Ayurvedic Hospital',
     badge: 'On-Site Healthcare Continuum',
     category: 'Healthcare & Wellness',
-    area: '30,000 sq. ft. Built-Up Area',
-    dimensions: '117\'-6" × 138\'-0" L-Shaped Footprint',
-    floors: 'G+2 Structural Facility with Lift Core',
-    description: 'Specialized senior care hospital featuring Panchakarma Ayurvedic detox suites, 24/7 ICU emergency response, 6 OPD doctor consultation chambers, diagnostic pathology, and rooftop hydrotherapy pool.',
+    area: '30,000 sq. ft. Built-Up Area (G+2)',
+    dimensions: '117\x27-10\" \times 138\x27-0\" (35.92m \times 42.06m) L-Shaped Footprint',
+    floors: 'G+2 Structural Hospital with Stretcher Lift Core',
+    description: 'Authoritative multi-speciality hospital featuring dedicated Panchakarma Ayurvedic detox suites, 24/7 Geriatric Emergency with ambulance portico, 6 OPD doctor consultation chambers, Cathlab, 1.5T MRI / 128-Slice CT diagnostics, major modular OT, ICU, inpatient wards, and rooftop hydrotherapy pool with 50-seat open auditorium and open-sky terrace deck.',
     features: [
-      '24/7 Geriatric Emergency & Ambulance Dock',
-      'Authentic Ayurvedic Panchakarma Suites (Abhyanga & Shirodhara)',
-      '6 Physician OPD Chambers + Dialysis & ICU Wing',
-      'Rooftop Hydrotherapy Pool (10\' × 12\') & 50-Seat Open Auditorium'
+      'Ground Floor: Yoga Hall (34\x27-2\" \times 49\x27-0\"), 6 OPDs, Reception & Waiting (25\x27-7\" \times 50\x27-1\"), Emergency Bay & 10 Panchakarma Suites',
+      'First Floor: Cardiac Cathlab, 1.5T MRI, 128-Slice CT, Modular OT, ICU & Inpatient Wards',
+      'Second Floor: 50-Seat Tiered Auditorium, Hydrotherapy Pool (10\x27 \times 12\x27) & Open-Sky Roof Terrace Deck (39\x27-2\" \times 56\x27-11\")',
+      '24/7 Ambulance Docking Portico on 33ft Highway Frontage'
     ],
-    cadZone: 'South-West Healthcare Zone (Facing 33ft Main Road)',
+    cadZone: 'South-West Healthcare Zone (Facing 33ft Main Highway)',
     cadCoordinates: { x: -25.77, y: 27.58 },
-    sourceConfidence: 'SOURCE_VERIFIED'
-  },
-  mandir: {
-    id: 'mandir',
-    title: 'Community Mandir & Sacred Reflection Kund',
-    badge: 'Spiritual Sanctuary',
-    category: 'Spirituality & Culture',
-    area: 'Dedicated Mandir Land Parcel (85\' × 24\')',
-    dimensions: 'Sandstone Plinth with Shikhara Spire + Reflection Kund',
-    floors: 'Traditional Carved Mandapa + Stepped Kund',
-    description: 'Tranquil community temple crafted in authentic Rajasthani sandstone with a stepped water body (kund) for daily morning aarti, meditation, and satsang.',
-    features: [
-      'Traditional Shikhara with Gold Kalasha',
-      'Stepped Sandstone Meditation Kund',
-      'Elder-Friendly Step-Free Approach Ramp',
-      '6ft Continuous Green Tree Buffer Frontage'
-    ],
-    cadZone: 'Block A (South of Plot 3 along 33ft Road)',
-    cadCoordinates: { x: -30.71, y: -10.53 },
-    sourceConfidence: 'SOURCE_VERIFIED'
+    sourceConfidence: 'SOURCE_VERIFIED',
+    subFeatures: [
+      { title: 'Ground Floor', desc: 'Yoga Hall, 6 OPDs, Emergency Resuscitation, 10 Panchakarma Detox Suites, Central Reception Atrium, Cafeteria & Pharmacies' },
+      { title: 'First Floor', desc: 'Major Surgical OT, ICU, 1.5T MRI, 128-Slice CT, Cathlab, Dialysis Unit, Male/Female Inpatient Recovery Wards' },
+      { title: 'Second Floor & Roof', desc: '50-Seat Tiered Open Auditorium, Hydrotherapy Translucent Pool, Louvered Pergola, 2,230 sq.ft. Open Sky Terrace Deck' }
+    ]
   },
   residence: {
     id: 'residence',
-    title: 'G+2 Senior Care Apartment Suites (Plots 63 & 64)',
-    badge: '12 Barrier-Free Residences',
+    title: 'G+2 Senior Care Residences on Plots 63 & 64',
+    badge: '14 Stilt Bays • G+2 Assisted Living',
     category: 'Plotted Residences',
-    area: '50\'-6" × 46\'-0" Combined Plot Footprint',
-    dimensions: 'Stilt Parking + 3 Habitable Residential Floors',
-    floors: 'Stilt + G+2 with 8-Passenger Stretcher Elevator',
-    description: 'Dedicated senior living apartment block on Plots 63 & 64 with 1 BHK & 1 RK barrier-free care suites, covered 14-bay stilt parking, 3 entry gates, and cantilevered balconies.',
+    area: '50\x27-6\" \times 46\x27-0\" (260 Sq. Yds. / 2,340 Sq. Ft.)',
+    dimensions: '46\x27-0\" \times 50\x27-6\" + 3\x27-6\" Front Cantilever Balconies',
+    floors: 'Stilt Parking + Ground + 1st + 2nd Residential Floors + Roof Lift Tower',
+    description: 'Dedicated senior living apartment building on Plots 63 & 64 featuring 14 covered stilt parking bays (6 North, 2 Center, 6 South pattern), 3 distinct South entry portals, 16 RC column structural grid, West senior staircase, East stretcher elevator, and barrier-free 1 BHK & 1 RK suites with cantilevered balconies.',
     features: [
-      '8-Passenger Stretcher-Compliant Elevator Core',
-      '14 Covered Stilt Parking Bays with 3 Entry Gates',
-      'Cantilevered 3\'-6" Balconies with Safety Railings',
-      '4 × 1 RK Studio Suites + 2 × 1 BHK Residences per Floor'
+      '14 Covered Stilt Parking Bays (6 North + 2 Center + 6 South pattern)',
+      '3 Separate Entrance Gates on South Facade along 22\x27-6\" Spine Rasta',
+      '16 Reinforced Concrete Structural Columns (4 \times 4 grid, 450mm \times 450mm)',
+      'West Senior Staircase Core & East 8-Passenger Stretcher Elevator Shaft',
+      'Residential Suites: Unit 01 (1 BHK Left), Unit 02 (1 RK Center), Unit 03 (1 BHK Deluxe Right)'
     ],
-    cadZone: 'Block A (Plots 63 & 64, East of Ayurvedic Hospital)',
+    cadZone: 'Block A (Plots 63 & 64, East of Ayurvedic Hospital along 22\x27-6\" Spine Rasta)',
     cadCoordinates: { x: -11.13, y: 13.56 },
-    sourceConfidence: 'SOURCE_VERIFIED'
+    sourceConfidence: 'SOURCE_VERIFIED',
+    subFeatures: [
+      { title: 'Stilt Level', desc: '14 Covered Parking Bays, 3 South Portals, 16 Columns with Safety Collars, Electric Mobility Carts, Lift & Stair Access' },
+      { title: 'Typical Floors (1st-3rd)', desc: 'Unit 01 (1 BHK Left), Unit 02 (1 RK Studio Center), Unit 03 (1 BHK Deluxe Right), 3\x27-6\" Cantilever Balconies' }
+    ]
+  },
+  mandir: {
+    id: 'mandir',
+    title: 'Community Mandir & Sacred Reflection Kund (425 SQYD)',
+    badge: 'Spiritual Sanctuary • 3,825 SQFT',
+    category: 'Spirituality & Culture',
+    area: '425 Sq. Yds. (3,825 Sq. Ft.) Dedicated Temple Land',
+    dimensions: '85\x27-0\" \times 45\x27-0\" (25.91m \times 13.72m) Sandstone Plinth',
+    floors: 'Traditional Carved Mandapa + 7-Tier Shikhara + Stepped Kund',
+    description: 'Sacred temple sanctuary constructed in hand-carved Rajasthani sandstone on a dedicated 425 sq.yd. (3,825 sq.ft.) parcel along the East boundary. Features an East-facing Garbhagriha, 7-tiered carved Shikhara with a gilded gold Kalasha, an 8-columned Mandapa prayer hall, step-free senior access ramp, Torana gateway arch, and a 24\x27 \times 18\x27 stepped Sacred Reflection Kund with concentric stone ghats.',
+    features: [
+      'Dedicated 425 Sq. Yds. (3,825 Sq. Ft.) Temple Land Parcel (85\x27 \times 45\x27)',
+      'East-Facing Garbhagriha Sanctum Sanctorum for Positive Vastu Energy',
+      '7-Tiered Carved Sandstone Shikhara Spire with 24K Gilded Gold Kalasha',
+      'Mandapa Prayer Hall supported by 8 Hand-Carved Stone Pillars',
+      'Stepped Sacred Reflection Kund (24\x27 \times 18\x27) with Concentric Stone Ghats',
+      'Elder-Friendly Step-Free Approach Ramp for Wheelchair & Assisted Walking',
+      'Surrounded by Fragrant Tulsi, Parijat & Marigold Sacred Garden'
+    ],
+    cadZone: 'Block A (South-East Temple Enclave along East Boundary & 33ft Highway)',
+    cadCoordinates: { x: -30.71, y: -10.53 },
+    sourceConfidence: 'SOURCE_VERIFIED',
+    subFeatures: [
+      { title: 'Sanctum & Shikhara', desc: 'Traditional Vastu-compliant Garbhagriha with 7-tier Shikhara spire rising 12m, crowned with a gold Kalasha and Dhwaja' },
+      { title: 'Sacred Reflection Kund', desc: 'Stepped freshwater Kund (24\x27 \times 18\x27) with stone ghat steps for morning aarti, peaceful meditation, and evening satsang' }
+    ]
   },
   gate: {
     id: 'gate',
@@ -131,17 +154,17 @@ const LANDMARK_REGISTRY: Record<LandmarkType, LandmarkInfo> = {
     badge: 'Gated Security Checkpoint',
     category: 'Infrastructure & Access',
     area: '33ft Dual Highway Access Corridors',
-    dimensions: '33\'-0" Wide Road Network (SH-22 & NH-71 Direct)',
-    floors: '24/7 Security Post & Boom Barrier Check',
-    description: 'Direct highway frontage connecting to State Highway 22 (SH-22 Jhajjar-Bahadurgarh) and NH-71 / Reliance MET City with 24/7 security checkpoint.',
+    dimensions: '33\x27-0\" Wide Road Network (SH-22 & Reliance MET Direct)',
+    floors: '24/7 Security Post & Automatic Boom Barrier Check',
+    description: 'Direct highway frontage connecting to State Highway 22 (Jhajjar-Bahadurgarh Road) and NH-71 / Reliance MET City with 24/7 manned security checkpoint and CCTV surveillance.',
     features: [
       '33ft Main Arterial East-West & West Boundaries',
-      '24/7 Guarded Boom Barrier & Number-Plate Scanner',
-      'Connecting to Reliance MET City, Jhajjar & Gurugram',
-      'Continuous 5ft & 6ft Perimeter Green Belts'
+      '24/7 Guarded Boom Barrier & Number-Plate Scanner Checkpoint',
+      'Direct Connectivity to Reliance MET City, Chhudani & Gurugram',
+      'Continuous 5ft & 6ft Perimeter Green Belts with Native Amaltas Trees'
     ],
     cadZone: 'West & Central 33ft Highway Frontages',
-    cadCoordinates: { x: -44, y: 0 },
+    cadCoordinates: { x: -43.67, y: 0 },
     sourceConfidence: 'SOURCE_VERIFIED'
   },
   utility: {
@@ -149,17 +172,17 @@ const LANDMARK_REGISTRY: Record<LandmarkType, LandmarkInfo> = {
     title: 'Township Utility Services Enclave (289 SQYD)',
     badge: 'Civic Infrastructure',
     category: 'Utilities & Power',
-    area: '289 Sq. Yds. Dedicated Enclave (48\' × 54\')',
-    dimensions: 'North-East Perimeter Sector',
-    floors: 'Ground Utility Substation',
-    description: 'Dedicated infrastructure compound housing underground water filtration reservoir, electrical power transformer substation, and maintenance operations.',
+    area: '289 Sq. Yds. Dedicated Enclave (48\x27 \times 54\x27)',
+    dimensions: 'North-East Perimeter Sector (Behind Plot 15)',
+    floors: 'Ground Utility Substation & Water Treatment',
+    description: 'Dedicated infrastructure compound housing underground water filtration reservoir, electrical power transformer substation, and 24/7 maintenance operations.',
     features: [
-      'Dedicated 289 SQYD Utility Demarcation',
-      'Underground Water & Power Distribution Grid',
-      'Rainwater Harvesting Filtration Units',
-      '24/7 Maintenance & Facility Management Office'
+      'Dedicated 289 SQYD Utility Demarcation on North-East Boundary',
+      'Underground Potable Water Filtration & Rainwater Harvesting Units',
+      'Dedicated Power Transformer Substation with 100% DG Backup',
+      '24/7 Facility Management & Security Control Station'
     ],
-    cadZone: 'North-East Corner (Behind Plot 15 & 11ft Rasta)',
+    cadZone: 'North-East Corner (Behind Plot 15 & 11ft Perimeter Rasta)',
     cadCoordinates: { x: 45.66, y: -62.65 },
     sourceConfidence: 'SOURCE_VERIFIED'
   },
@@ -171,12 +194,12 @@ const LANDMARK_REGISTRY: Record<LandmarkType, LandmarkInfo> = {
     area: 'Perimeter Green Belts along 33ft Arterial Road',
     dimensions: '5ft & 6ft Continuous Landscaped Strips',
     floors: 'Botanical Tree & Herbal Buffers',
-    description: 'Pristine natural environment with native Amaltas, Neem, and medicinal herbal tree lines buffering the residences from road corridors.',
+    description: 'Pristine natural environment with native Amaltas, Neem, and medicinal herbal tree lines buffering the residences from road corridors with anti-skid walking paths.',
     features: [
       '6ft Green Buffer along North Parcel Boundary',
       '5ft Green Buffer along South Parcel Boundary',
       'Continuous Non-Slip Senior Walking Promenades',
-      'Solar-Powered LED Streetlight Network'
+      'Solar-Powered LED Streetlight Network along all Rastas'
     ],
     cadZone: 'Central & Peripheral Buffer Strips',
     cadCoordinates: { x: 0, y: 0 },
@@ -184,74 +207,86 @@ const LANDMARK_REGISTRY: Record<LandmarkType, LandmarkInfo> = {
   }
 };
 
-// ─── Procedural Canvas Texture Generators ──────────────────────────────────────
+// ─── High-Resolution Procedural Canvas Texture Generators ───────────────────────
 
-function createPlotCanvasTexture(number: number, sizeSqYd: number, blockName: string, blockColorHex: number): THREE.CanvasTexture {
-  const canvas = document.createElement('canvas');
-  canvas.width = 256;
-  canvas.height = 256;
-  const ctx = canvas.getContext('2d')!;
-
-  // Block Background
-  const hexStr = '#' + blockColorHex.toString(16).padStart(6, '0');
-  ctx.fillStyle = hexStr;
-  ctx.fillRect(0, 0, 256, 256);
-
-  // Subtle interior inset
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.16)';
-  ctx.fillRect(8, 8, 240, 240);
-
-  // High contrast boundary stroke
-  ctx.strokeStyle = 'rgba(13, 35, 41, 0.9)';
-  ctx.lineWidth = 6;
-  ctx.strokeRect(4, 4, 248, 248);
-
-  // Corner markers
-  ctx.fillStyle = '#FFFFFF';
-  [[8, 8], [240, 8], [8, 240], [240, 240]].forEach(([px, py]) => {
-    ctx.fillRect(px - 4, py - 4, 8, 8);
-  });
-
-  // Large Bold Plot Number
-  ctx.fillStyle = '#0D2329';
-  ctx.font = 'bold 78px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(String(number), 128, 100);
-
-  // Size in Square Yards
-  ctx.fillStyle = '#163942';
-  ctx.font = 'bold 30px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
-  ctx.fillText(`${sizeSqYd} YD`, 128, 172);
-
-  // Block identifier pill
-  ctx.fillStyle = 'rgba(13, 35, 41, 0.22)';
-  ctx.fillRect(44, 206, 168, 28);
-  ctx.fillStyle = '#0D2329';
-  ctx.font = 'bold 17px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(blockName.toUpperCase(), 128, 222);
-
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.anisotropy = 4;
-  return tex;
-}
-
-function createRoadLabelTexture(text: string): THREE.CanvasTexture {
+function createPlotCanvasTexture(
+  number: number,
+  sizeSqYd: number,
+  blockName: string,
+  blockColorHex: number,
+  dimensions?: string
+): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
-  canvas.height = 64;
+  canvas.height = 512;
   const ctx = canvas.getContext('2d')!;
 
-  ctx.fillStyle = '#262A2C';
-  ctx.fillRect(0, 0, 512, 64);
+  // 1. High-Quality Block Background
+  const hexStr = '#' + blockColorHex.toString(16).padStart(6, '0');
+  ctx.fillStyle = hexStr;
+  ctx.fillRect(0, 0, 512, 512);
 
-  ctx.fillStyle = '#D9A74A';
-  ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
+  // 2. Crisp White Inset Panel
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.22)';
+  ctx.fillRect(16, 16, 480, 480);
+
+  // 3. Dark Contrast Outer & Inner Border
+  ctx.strokeStyle = '#071519';
+  ctx.lineWidth = 10;
+  ctx.strokeRect(8, 8, 496, 496);
+
+  ctx.strokeStyle = 'rgba(7, 21, 25, 0.4)';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(28, 28, 456, 456);
+
+  // 4. White Marble Corner Markers
+  ctx.fillStyle = '#FFFFFF';
+  [[20, 20], [472, 20], [20, 472], [472, 472]].forEach(([px, py]) => {
+    ctx.fillRect(px - 8, py - 8, 16, 16);
+  });
+
+  // 5. Header: Block Badge Pill
+  ctx.fillStyle = 'rgba(7, 21, 25, 0.85)';
+  ctx.beginPath();
+  ctx.roundRect(86, 44, 340, 54, 27);
+  ctx.fill();
+
+  ctx.fillStyle = '#FAF8F5';
+  ctx.font = 'bold 26px -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(text, 256, 32);
+  ctx.fillText(`${blockName.toUpperCase()} • FREEHOLD`, 256, 71);
+
+  // 6. Center: Giant High-Contrast Plot Number
+  ctx.fillStyle = '#071519';
+  ctx.font = '900 160px -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // White outline shadow around plot number for 100% legibility at any angle
+  ctx.strokeStyle = '#FFFFFF';
+  ctx.lineWidth = 14;
+  ctx.strokeText(String(number), 256, 215);
+  ctx.fillText(String(number), 256, 215);
+
+  // 7. Area in Square Yards Pill
+  ctx.fillStyle = '#071519';
+  ctx.beginPath();
+  ctx.roundRect(64, 320, 384, 68, 16);
+  ctx.fill();
+
+  ctx.fillStyle = '#E0AB77';
+  ctx.font = 'bold 42px -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, monospace';
+  ctx.fillText(`${sizeSqYd} SQ. YDS.`, 256, 354);
+
+  // 8. Bottom Dimensions Text
+  ctx.fillStyle = '#071519';
+  ctx.font = 'bold 28px -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, monospace';
+  const dimText = dimensions || `${Math.round(sizeSqYd * 9)} SQ. FT.`;
+  ctx.fillText(dimText, 256, 435);
 
   const tex = new THREE.CanvasTexture(canvas);
+  tex.anisotropy = 8;
   return tex;
 }
 
@@ -297,7 +332,7 @@ function createHighwayAsphaltTexture(): THREE.CanvasTexture {
 
   // Yellow Curb Edges
   ctx.strokeStyle = '#D9A74A';
-  ctx.lineWidth = 4;
+  ctx.lineWidth = 5;
   ctx.beginPath();
   ctx.moveTo(0, 8);
   ctx.lineTo(512, 8);
@@ -307,8 +342,8 @@ function createHighwayAsphaltTexture(): THREE.CanvasTexture {
 
   // White Dashed Centerline
   ctx.strokeStyle = '#FFFFFF';
-  ctx.lineWidth = 3;
-  ctx.setLineDash([20, 16]);
+  ctx.lineWidth = 4;
+  ctx.setLineDash([24, 18]);
   ctx.beginPath();
   ctx.moveTo(0, 64);
   ctx.lineTo(512, 64);
@@ -337,8 +372,9 @@ function createRastaTexture(): THREE.CanvasTexture {
     ctx.fillRect(x, y, 1.2, 1.2);
   }
 
-  ctx.strokeStyle = 'rgba(20, 24, 28, 0.4)';
-  ctx.lineWidth = 1.5;
+  // Paved Stone Cobble Pattern
+  ctx.strokeStyle = 'rgba(20, 24, 28, 0.45)';
+  ctx.lineWidth = 2;
   for (let y = 0; y < 256; y += 32) {
     ctx.beginPath();
     ctx.moveTo(0, y);
@@ -566,8 +602,18 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     });
 
     const buildingWallMat = new THREE.MeshStandardMaterial({ color: 0xeee7db, roughness: 0.65 });
+    const sandstoneMat = new THREE.MeshStandardMaterial({ color: 0xd8ba8f, roughness: 0.72 });
     const bronzeAccentMat = new THREE.MeshStandardMaterial({ color: 0x48382c, metalness: 0.85, roughness: 0.3 });
     const goldAccentMat = new THREE.MeshStandardMaterial({ color: 0xc58f58, metalness: 0.75, roughness: 0.25 });
+    const concreteMat = new THREE.MeshStandardMaterial({ color: 0x8a9296, roughness: 0.85 });
+    const limestoneMat = new THREE.MeshStandardMaterial({ color: 0xe6ded1, roughness: 0.6 });
+    const waterMat = new THREE.MeshStandardMaterial({
+      color: 0x15728a,
+      roughness: 0.08,
+      metalness: 0.85,
+      transparent: true,
+      opacity: 0.85
+    });
     const glassFacadeMat = new THREE.MeshStandardMaterial({
       color: 0x88c4d8,
       roughness: 0.08,
@@ -664,73 +710,136 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     scene.add(westSouthRasta16);
 
     // ─── 3. Green Buffer Belts (6ft North & 5ft South Strips from CAD) ────
-    // 6ft Green Belt along North side of Central 33ft Highway
     const northGreenBelt = new THREE.Mesh(new THREE.PlaneGeometry(100, 1.83), greenBeltMat);
     northGreenBelt.rotation.x = -Math.PI / 2;
     northGreenBelt.position.set(6, 0.03, -5.95);
     scene.add(northGreenBelt);
 
-    // 5ft Green Belt along South side of Central 33ft Highway
     const southGreenBelt = new THREE.Mesh(new THREE.PlaneGeometry(100, 1.52), greenBeltMat);
     southGreenBelt.rotation.x = -Math.PI / 2;
     southGreenBelt.position.set(6, 0.03, 5.79);
     scene.add(southGreenBelt);
 
-    // ─── 4. Landmark 1: Proposed 30,000 Sq. Ft. Multi-Speciality Ayurvedic Hospital ───
+    // ─── 4. Landmark 1: Proposed 30,000 Sq. Ft. Multi-Speciality Ayurvedic Hospital (G+2) ───
     const hospitalGroup = new THREE.Group();
     hospitalGroup.name = 'landmark-hospital';
     hospitalGroup.position.set(-25.77, 0, 27.58);
 
-    // Main Hospital Wing Footprint
-    const hospMainWing = new THREE.Mesh(new THREE.BoxGeometry(24, 10.5, 26), buildingWallMat);
-    hospMainWing.position.set(-4, 5.25, 0);
-    hospMainWing.castShadow = true;
-    hospMainWing.receiveShadow = true;
-    hospitalGroup.add(hospMainWing);
+    // A. Finished Hospital Base Plinth
+    const hospPlinth = new THREE.Mesh(new THREE.BoxGeometry(35.92, 0.4, 42.06), limestoneMat);
+    hospPlinth.position.set(0, 0.2, 0);
+    hospPlinth.receiveShadow = true;
+    hospitalGroup.add(hospPlinth);
 
-    const hospPanchakarmaWing = new THREE.Mesh(new THREE.BoxGeometry(11.8, 9.0, 16), buildingWallMat);
-    hospPanchakarmaWing.position.set(10, 4.5, -5);
-    hospPanchakarmaWing.castShadow = true;
-    hospPanchakarmaWing.receiveShadow = true;
-    hospitalGroup.add(hospPanchakarmaWing);
+    // B. Ground Floor Wings (0.4m to 3.8m)
+    // 1. Northwest Yoga & Meditation Hall Wing
+    const hospYogaWing = new THREE.Mesh(new THREE.BoxGeometry(10.5, 3.4, 15.0), buildingWallMat);
+    hospYogaWing.position.set(-10.8, 2.1, -12.5);
+    hospYogaWing.castShadow = true;
+    hospYogaWing.receiveShadow = true;
+    hospitalGroup.add(hospYogaWing);
 
-    // Glass Atrium & OPD Entrance
-    const hospGlassAtrium = new THREE.Mesh(new THREE.BoxGeometry(16, 8.5, 0.3), glassFacadeMat);
-    hospGlassAtrium.position.set(-4, 4.5, -13.2);
-    hospitalGroup.add(hospGlassAtrium);
+    // 2. Central Glazed Reception Atrium & Waiting Lounge
+    const hospAtriumGlass = new THREE.Mesh(new THREE.BoxGeometry(16.0, 3.4, 0.2), glassFacadeMat);
+    hospAtriumGlass.position.set(0, 2.1, -19.5);
+    hospitalGroup.add(hospAtriumGlass);
 
-    // Emergency Drop-off Portico
-    const hospCanopy = new THREE.Mesh(new THREE.BoxGeometry(14, 0.5, 7), goldAccentMat);
-    hospCanopy.position.set(-4, 4.2, -16.5);
+    // 3. West 6 OPD Doctor Consultation Suites
+    const hospOpdWing = new THREE.Mesh(new THREE.BoxGeometry(14.0, 3.4, 12.0), buildingWallMat);
+    hospOpdWing.position.set(-8.5, 2.1, 0);
+    hospOpdWing.castShadow = true;
+    hospOpdWing.receiveShadow = true;
+    hospitalGroup.add(hospOpdWing);
+
+    // 4. Southeast Geriatric Emergency Bay & Ambulance Portico
+    const hospEmergWing = new THREE.Mesh(new THREE.BoxGeometry(12.0, 3.4, 14.0), buildingWallMat);
+    hospEmergWing.position.set(10.5, 2.1, 12.0);
+    hospEmergWing.castShadow = true;
+    hospEmergWing.receiveShadow = true;
+    hospitalGroup.add(hospEmergWing);
+
+    // Ambulance Cantilever Canopy & Columns
+    const hospCanopy = new THREE.Mesh(new THREE.BoxGeometry(12.0, 0.4, 6.0), goldAccentMat);
+    hospCanopy.position.set(10.5, 3.4, 20.0);
     hospCanopy.castShadow = true;
     hospitalGroup.add(hospCanopy);
 
-    [-9, 1].forEach((px) => {
-      const col = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.3, 4.2, 8), bronzeAccentMat);
-      col.position.set(px, 2.1, -19.5);
+    [6.0, 15.0].forEach((px) => {
+      const col = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 3.4, 8), bronzeAccentMat);
+      col.position.set(px, 1.7, 22.0);
       col.castShadow = true;
       hospitalGroup.add(col);
     });
 
-    // Rooftop Hydrotherapy Pool
-    const hospPool = new THREE.Mesh(
-      new THREE.BoxGeometry(5.5, 0.8, 4.5),
-      new THREE.MeshStandardMaterial({ color: 0x1b5e78, metalness: 0.9, roughness: 0.1 })
-    );
-    hospPool.position.set(-8, 10.9, 5);
-    hospitalGroup.add(hospPool);
+    // 5. East Panchakarma 10 Ayurvedic Treatment Suites Wing
+    const hospPanchaWing = new THREE.Mesh(new THREE.BoxGeometry(12.0, 3.4, 18.0), sandstoneMat);
+    hospPanchaWing.position.set(10.5, 2.1, -4.0);
+    hospPanchaWing.castShadow = true;
+    hospPanchaWing.receiveShadow = true;
+    hospitalGroup.add(hospPanchaWing);
 
-    // 50-Seat Rooftop Auditorium
-    const audPlinth = new THREE.Mesh(new THREE.BoxGeometry(8, 0.5, 8), buildingWallMat);
-    audPlinth.position.set(2, 10.8, 5);
-    hospitalGroup.add(audPlinth);
+    // C. First Floor Surgical & Diagnostic Wings (3.8m to 7.2m)
+    const hospFirstSlab = new THREE.Mesh(new THREE.BoxGeometry(34.0, 0.3, 38.0), limestoneMat);
+    hospFirstSlab.position.set(0, 3.95, 0);
+    hospFirstSlab.castShadow = true;
+    hospitalGroup.add(hospFirstSlab);
 
-    // Hospital Signage
+    // Major OT & Cathlab Surgical Wing (West)
+    const hospOtCathlab = new THREE.Mesh(new THREE.BoxGeometry(14.0, 3.2, 16.0), buildingWallMat);
+    hospOtCathlab.position.set(-8.5, 5.7, -4.0);
+    hospOtCathlab.castShadow = true;
+    hospitalGroup.add(hospOtCathlab);
+
+    // Inpatient Recovery Wards & Dialysis (East)
+    const hospWards = new THREE.Mesh(new THREE.BoxGeometry(12.0, 3.2, 22.0), buildingWallMat);
+    hospWards.position.set(10.5, 5.7, 0);
+    hospWards.castShadow = true;
+    hospitalGroup.add(hospWards);
+
+    // Inpatient Balconies
+    const wardBalcony = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.9, 18.0), glassFacadeMat);
+    wardBalcony.position.set(16.8, 5.7, 0);
+    hospitalGroup.add(wardBalcony);
+
+    // D. Second Floor & Rooftop Amenities (7.2m to 10.8m)
+    const hospSecondSlab = new THREE.Mesh(new THREE.BoxGeometry(32.0, 0.3, 36.0), limestoneMat);
+    hospSecondSlab.position.set(0, 7.45, 0);
+    hospSecondSlab.castShadow = true;
+    hospitalGroup.add(hospSecondSlab);
+
+    // 50-Seat Tiered Auditorium (West)
+    const audWing = new THREE.Mesh(new THREE.BoxGeometry(12.0, 3.0, 12.0), buildingWallMat);
+    audWing.position.set(-8.5, 9.1, -4.0);
+    audWing.castShadow = true;
+    hospitalGroup.add(audWing);
+
+    // Translucent Hydrotherapy Pool (South Terrace)
+    const hospPoolPlinth = new THREE.Mesh(new THREE.BoxGeometry(5.5, 0.8, 4.5), limestoneMat);
+    hospPoolPlinth.position.set(-6.0, 7.8, 10.0);
+    hospitalGroup.add(hospPoolPlinth);
+
+    const hospPoolWater = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.6, 3.5), waterMat);
+    hospPoolWater.position.set(-6.0, 8.0, 10.0);
+    hospitalGroup.add(hospPoolWater);
+
+    // Open-Sky Roof Terrace Deck (39'-2" × 56'-11" / 2,230 sq.ft.)
+    const roofTerraceGlass = new THREE.Mesh(new THREE.BoxGeometry(12.0, 1.1, 17.0), glassFacadeMat);
+    roofTerraceGlass.position.set(8.5, 8.15, 6.0);
+    hospitalGroup.add(roofTerraceGlass);
+
+    // Shaded Louvered Pergola Pavilion
+    for (let i = 0; i < 6; i++) {
+      const pergolaBeam = new THREE.Mesh(new THREE.BoxGeometry(7.0, 0.15, 0.4), bronzeAccentMat);
+      pergolaBeam.position.set(8.5, 10.2, -1.0 + i * 2.2);
+      hospitalGroup.add(pergolaBeam);
+    }
+
+    // Hospital Front Illuminated Marquee Signage
     const hospSign = new THREE.Mesh(
-      new THREE.BoxGeometry(12.0, 1.5, 0.3),
-      new THREE.MeshStandardMaterial({ color: 0x2c5e50, roughness: 0.3 })
+      new THREE.BoxGeometry(18.0, 1.6, 0.3),
+      new THREE.MeshStandardMaterial({ color: 0x0a382c, roughness: 0.3 })
     );
-    hospSign.position.set(-4, 11.2, -13.0);
+    hospSign.position.set(0, 11.2, -18.5);
     hospitalGroup.add(hospSign);
 
     hospitalGroup.traverse((child) => {
@@ -738,105 +847,261 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     });
     scene.add(hospitalGroup);
 
-    // ─── 5. Landmark 2: Proposed G+2 Senior Residences (Plots 63 & 64) ───────
+    // ─── 5. Landmark 2: Proposed G+2 Senior Residences (ON PLOTS 63 & 64) ───
     const residenceGroup = new THREE.Group();
     residenceGroup.name = 'landmark-residence';
     residenceGroup.position.set(-11.13, 0, 13.56);
 
-    const stiltCeiling = new THREE.Mesh(new THREE.BoxGeometry(14.5, 0.3, 13.5), buildingWallMat);
-    stiltCeiling.position.set(0, 2.4, 0);
-    residenceGroup.add(stiltCeiling);
+    // A. Stilt Finished Concrete Floor
+    const stiltBase = new THREE.Mesh(new THREE.BoxGeometry(14.02, 0.2, 15.39), concreteMat);
+    stiltBase.position.set(0, 0.1, 0);
+    stiltBase.receiveShadow = true;
+    residenceGroup.add(stiltBase);
 
-    [-6, 0, 6].forEach((cx) => {
-      [-5.5, 0, 5.5].forEach((cz) => {
-        const col = new THREE.Mesh(new THREE.BoxGeometry(0.4, 2.4, 0.4), buildingWallMat);
-        col.position.set(cx, 1.2, cz);
+    // B. Stilt Ceiling Slab
+    const resStiltCeiling = new THREE.Mesh(new THREE.BoxGeometry(14.4, 0.25, 15.8), limestoneMat);
+    resStiltCeiling.position.set(0, 3.2, 0);
+    resStiltCeiling.castShadow = true;
+    residenceGroup.add(resStiltCeiling);
+
+    // C. 16 Reinforced Concrete Columns (4 × 4 Structural Grid with Yellow Hazard Collars)
+    const colGuardMat = new THREE.MeshStandardMaterial({ color: 0xf5b82e, roughness: 0.4 });
+    const colXPos = [-5.9, -1.95, 1.95, 5.9];
+    const colZPos = [-6.5, -2.15, 2.15, 6.5];
+
+    colXPos.forEach((cx) => {
+      colZPos.forEach((cz) => {
+        const col = new THREE.Mesh(new THREE.BoxGeometry(0.45, 3.1, 0.45), concreteMat);
+        col.position.set(cx, 1.65, cz);
         col.castShadow = true;
         residenceGroup.add(col);
+
+        const collar = new THREE.Mesh(new THREE.BoxGeometry(0.49, 0.4, 0.49), colGuardMat);
+        collar.position.set(cx, 0.3, cz);
+        residenceGroup.add(collar);
       });
     });
 
-    const gfRes = new THREE.Mesh(new THREE.BoxGeometry(14.2, 2.0, 13.2), buildingWallMat);
-    gfRes.position.set(0, 3.5, 0);
-    gfRes.castShadow = true;
-    residenceGroup.add(gfRes);
+    // D. 14 Covered Stilt Parking Bays (6 North, 2 Center, 6 South)
+    const bayMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
+    [-5.0, -3.0, -1.0, 1.0, 3.0, 5.0].forEach((bx) => {
+      // North 6 bays
+      const b1 = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 4.0), bayMat);
+      b1.rotation.x = -Math.PI / 2;
+      b1.position.set(bx, 0.22, -4.5);
+      residenceGroup.add(b1);
 
-    const ffRes = new THREE.Mesh(new THREE.BoxGeometry(14.2, 2.0, 13.2), buildingWallMat);
-    ffRes.position.set(0, 5.6, 0);
-    ffRes.castShadow = true;
-    residenceGroup.add(ffRes);
-
-    const sfRes = new THREE.Mesh(new THREE.BoxGeometry(14.2, 2.0, 13.2), buildingWallMat);
-    sfRes.position.set(0, 7.7, 0);
-    sfRes.castShadow = true;
-    residenceGroup.add(sfRes);
-
-    // Balconies
-    [-1, 1].forEach((side) => {
-      const balcony1 = new THREE.Mesh(new THREE.BoxGeometry(13.5, 0.15, 1.2), goldAccentMat);
-      balcony1.position.set(0, 5.4, side * 7.1);
-      residenceGroup.add(balcony1);
-
-      const balcony2 = new THREE.Mesh(new THREE.BoxGeometry(13.5, 0.15, 1.2), goldAccentMat);
-      balcony2.position.set(0, 7.5, side * 7.1);
-      residenceGroup.add(balcony2);
+      // South 6 bays
+      const b2 = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 4.0), bayMat);
+      b2.rotation.x = -Math.PI / 2;
+      b2.position.set(bx, 0.22, 4.5);
+      residenceGroup.add(b2);
     });
 
-    // Lift Tower Core
-    const liftTower = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.4, 3.0), bronzeAccentMat);
-    liftTower.position.set(0, 9.8, 0);
+    // Center 2 bays
+    [-1.0, 1.0].forEach((bx) => {
+      const bC = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 3.8), bayMat);
+      bC.rotation.x = -Math.PI / 2;
+      bC.position.set(bx, 0.22, 0.0);
+      residenceGroup.add(bC);
+    });
+
+    // E. 3 Distinct South Entry Portals along 22'-6" Spine
+    [-4.5, 0.0, 4.5].forEach((gx) => {
+      const pL = new THREE.Mesh(new THREE.BoxGeometry(0.35, 2.6, 0.35), concreteMat);
+      pL.position.set(gx - 1.1, 1.4, 7.6);
+      residenceGroup.add(pL);
+
+      const pR = new THREE.Mesh(new THREE.BoxGeometry(0.35, 2.6, 0.35), concreteMat);
+      pR.position.set(gx + 1.1, 1.4, 7.6);
+      residenceGroup.add(pR);
+
+      const lintel = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.25, 0.35), bronzeAccentMat);
+      lintel.position.set(gx, 2.7, 7.6);
+      residenceGroup.add(lintel);
+    });
+
+    // F. West Stair Core & East Lift Core
+    const stiltStair = new THREE.Mesh(new THREE.BoxGeometry(2.8, 3.0, 3.8), buildingWallMat);
+    stiltStair.position.set(-3.8, 1.6, 0);
+    residenceGroup.add(stiltStair);
+
+    const stiltLift = new THREE.Mesh(new THREE.BoxGeometry(2.8, 3.0, 3.8), buildingWallMat);
+    stiltLift.position.set(3.8, 1.6, 0);
+    residenceGroup.add(stiltLift);
+
+    // Parked Senior Electric Golf Cart in Bay
+    const cartBody = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.1, 2.8), new THREE.MeshStandardMaterial({ color: 0x2c5e50, metalness: 0.6 }));
+    cartBody.position.set(-3.0, 0.75, -4.5);
+    cartBody.castShadow = true;
+    residenceGroup.add(cartBody);
+
+    // G. Upper Residential Floors (Ground/1st, 2nd, 3rd) (3.3m to 12.5m)
+    for (let fl = 0; fl < 3; fl++) {
+      const flY = 3.3 + fl * 3.0;
+
+      // Habitable Living Core (Units 01, 02, 03)
+      const resFloor = new THREE.Mesh(new THREE.BoxGeometry(14.02, 2.8, 15.39), limestoneMat);
+      resFloor.position.set(0, flY + 1.4, 0);
+      resFloor.castShadow = true;
+      resFloor.receiveShadow = true;
+      residenceGroup.add(resFloor);
+
+      // Floor dividing cornice slab
+      const slab = new THREE.Mesh(new THREE.BoxGeometry(14.5, 0.2, 15.9), bronzeAccentMat);
+      slab.position.set(0, flY + 2.8, 0);
+      residenceGroup.add(slab);
+
+      // Cantilevered 3'-6" Front Balconies (South Facing)
+      const frontBalcony = new THREE.Mesh(new THREE.BoxGeometry(13.6, 0.9, 1.2), glassFacadeMat);
+      frontBalcony.position.set(0, flY + 1.4, 8.2);
+      residenceGroup.add(frontBalcony);
+
+      const balcSlab = new THREE.Mesh(new THREE.BoxGeometry(13.6, 0.15, 1.2), goldAccentMat);
+      balcSlab.position.set(0, flY + 0.9, 8.2);
+      residenceGroup.add(balcSlab);
+    }
+
+    // Rooftop Lift Machine Room & Solar PV Array
+    const liftTower = new THREE.Mesh(new THREE.BoxGeometry(3.6, 2.6, 3.8), bronzeAccentMat);
+    liftTower.position.set(3.8, 13.5, 0);
     liftTower.castShadow = true;
     residenceGroup.add(liftTower);
+
+    // Rooftop Safety Parapet Railing
+    const resParapet = new THREE.Mesh(new THREE.BoxGeometry(14.2, 1.1, 15.6), glassFacadeMat);
+    resParapet.position.set(0, 12.8, 0);
+    residenceGroup.add(resParapet);
 
     residenceGroup.traverse((child) => {
       child.userData = { landmark: 'residence' };
     });
     scene.add(residenceGroup);
 
-    // ─── 6. Landmark 3: Community Mandir & Reflection Kund ───────────────────
+    // ─── 6. Landmark 3: Community Mandir & Reflection Kund (425 SQYD / 3,825 SQFT) ───
     const mandirGroup = new THREE.Group();
     mandirGroup.name = 'landmark-mandir';
     mandirGroup.position.set(-30.71, 0, -10.53);
 
-    const mandirPlinthMat = new THREE.MeshStandardMaterial({ color: 0xd8c8b0, roughness: 0.65 });
-    const plinth1 = new THREE.Mesh(new THREE.BoxGeometry(18, 0.5, 6.5), mandirPlinthMat);
-    plinth1.position.set(0, 0.25, 0);
-    mandirGroup.add(plinth1);
+    // A. 425 SQ. YD. Dedicated Sandstone Plinth (85'-0" × 45'-0" / 25.91m × 13.72m)
+    const mandirPlinth = new THREE.Mesh(new THREE.BoxGeometry(25.91, 0.6, 13.72), sandstoneMat);
+    mandirPlinth.position.set(0, 0.3, 0);
+    mandirPlinth.receiveShadow = true;
+    mandirGroup.add(mandirPlinth);
 
-    const mandirHall = new THREE.Mesh(new THREE.BoxGeometry(10, 3.8, 5.5), mandirPlinthMat);
-    mandirHall.position.set(-3, 2.2, 0);
-    mandirHall.castShadow = true;
-    mandirGroup.add(mandirHall);
+    // B. Garbhagriha Sanctum Sanctorum (Facing East +X)
+    const garbhagriha = new THREE.Mesh(new THREE.BoxGeometry(8.0, 4.5, 8.0), sandstoneMat);
+    garbhagriha.position.set(-7.5, 2.8, 0);
+    garbhagriha.castShadow = true;
+    mandirGroup.add(garbhagriha);
 
-    const shikhara = new THREE.Mesh(
-      new THREE.ConeGeometry(3.8, 6.5, 8),
+    // C. Traditional 7-Tiered Carved Shikhara Spire (Rising to 12.5m)
+    for (let s = 0; s < 6; s++) {
+      const tierW = 7.6 - s * 1.0;
+      const tierMesh = new THREE.Mesh(new THREE.BoxGeometry(tierW, 1.1, tierW), sandstoneMat);
+      tierMesh.position.set(-7.5, 5.0 + s * 1.0, 0);
+      tierMesh.castShadow = true;
+      mandirGroup.add(tierMesh);
+    }
+
+    // Pyramid Shikhara Peak
+    const shikharaPeak = new THREE.Mesh(
+      new THREE.ConeGeometry(2.4, 3.5, 8),
       new THREE.MeshStandardMaterial({ color: 0xc58f58, roughness: 0.35, metalness: 0.55 })
     );
-    shikhara.position.set(-3, 7.2, 0);
-    shikhara.castShadow = true;
-    mandirGroup.add(shikhara);
+    shikharaPeak.position.set(-7.5, 11.2, 0);
+    shikharaPeak.castShadow = true;
+    mandirGroup.add(shikharaPeak);
 
+    // Gilded 24K Gold Kalasha & Sacred Saffron Flag (Dhwaja)
     const kalasha = new THREE.Mesh(
-      new THREE.SphereGeometry(0.4, 12, 12),
-      new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.15, metalness: 0.9 })
+      new THREE.SphereGeometry(0.45, 16, 16),
+      new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.15, metalness: 0.95 })
     );
-    kalasha.position.set(-3, 10.7, 0);
+    kalasha.position.set(-7.5, 13.2, 0);
     mandirGroup.add(kalasha);
 
-    // Stepped Reflection Kund / Pond
+    const dhwaja = new THREE.Mesh(
+      new THREE.ConeGeometry(0.35, 1.2, 3),
+      new THREE.MeshStandardMaterial({ color: 0xff6600, roughness: 0.3 })
+    );
+    dhwaja.rotation.z = Math.PI / 2.5;
+    dhwaja.position.set(-7.2, 14.1, 0);
+    mandirGroup.add(dhwaja);
+
+    // D. Mandapa Prayer Hall (with 8 Carved Sandstone Pillars)
+    const mandapaRoof = new THREE.Mesh(new THREE.BoxGeometry(11.0, 0.4, 9.0), sandstoneMat);
+    mandapaRoof.position.set(2.5, 4.4, 0);
+    mandapaRoof.castShadow = true;
+    mandirGroup.add(mandapaRoof);
+
+    // 8 Carved Sandstone Pillars
+    [-2.0, 1.0, 4.0, 7.0].forEach((px) => {
+      [-3.8, 3.8].forEach((pz) => {
+        const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.32, 3.8, 12), sandstoneMat);
+        pillar.position.set(px, 2.5, pz);
+        pillar.castShadow = true;
+        mandirGroup.add(pillar);
+
+        // Pillar Capital
+        const cap = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.25, 0.7), goldAccentMat);
+        cap.position.set(px, 4.2, pz);
+        mandirGroup.add(cap);
+      });
+    });
+
+    // E. Traditional Torana Entrance Gateway Arch (East Portal)
+    const toranaL = new THREE.Mesh(new THREE.BoxGeometry(0.6, 4.2, 0.6), sandstoneMat);
+    toranaL.position.set(10.5, 2.7, -3.0);
+    mandirGroup.add(toranaL);
+
+    const toranaR = new THREE.Mesh(new THREE.BoxGeometry(0.6, 4.2, 0.6), sandstoneMat);
+    toranaR.position.set(10.5, 2.7, 3.0);
+    mandirGroup.add(toranaR);
+
+    const toranaArch = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.6, 7.0), goldAccentMat);
+    toranaArch.position.set(10.5, 4.8, 0);
+    mandirGroup.add(toranaArch);
+
+    // F. Stepped Sacred Reflection Kund / Pond (24'-0" × 18'-0" / 7.3m × 5.5m)
+    const kundPlinth = new THREE.Mesh(new THREE.BoxGeometry(8.5, 0.5, 6.5), sandstoneMat);
+    kundPlinth.position.set(5.5, 0.35, -5.5);
+    mandirGroup.add(kundPlinth);
+
     const kundWater = new THREE.Mesh(
-      new THREE.PlaneGeometry(6.5, 5.0),
+      new THREE.PlaneGeometry(7.3, 5.5),
       new THREE.MeshStandardMaterial({
-        color: 0x1b4d63,
+        color: 0x186b80,
         roughness: 0.05,
-        metalness: 0.85,
+        metalness: 0.88,
         transparent: true,
-        opacity: 0.85
+        opacity: 0.88
       })
     );
     kundWater.rotation.x = -Math.PI / 2;
-    kundWater.position.set(5.5, 0.28, 0);
+    kundWater.position.set(5.5, 0.42, -5.5);
     mandirGroup.add(kundWater);
+
+    // Concentric Stone Ghat Steps
+    [1, 2].forEach((st) => {
+      const stepMesh = new THREE.Mesh(new THREE.BoxGeometry(7.3 + st * 0.6, 0.15, 5.5 + st * 0.6), sandstoneMat);
+      stepMesh.position.set(5.5, 0.3 - st * 0.1, -5.5);
+      mandirGroup.add(stepMesh);
+    });
+
+    // G. Deepa Stambha (Brass Oil Lamp Pillars)
+    [9.5, -9.5].forEach((dx) => {
+      const lamp = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.2, 2.4, 8), bronzeAccentMat);
+      lamp.position.set(dx, 1.8, 5.2);
+      mandirGroup.add(lamp);
+
+      const flame = new THREE.Mesh(
+        new THREE.SphereGeometry(0.12, 8, 8),
+        new THREE.MeshStandardMaterial({ color: 0xff8800, emissive: 0xffaa00, emissiveIntensity: 1.2 })
+      );
+      flame.position.set(dx, 3.1, 5.2);
+      mandirGroup.add(flame);
+    });
 
     mandirGroup.traverse((child) => {
       child.userData = { landmark: 'mandir' };
@@ -899,11 +1164,11 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     const cornerStoneMat = new THREE.MeshStandardMaterial({ color: 0xf5eedc, roughness: 0.5 });
 
     CANONICAL_PLOTS.forEach((canonicalPlot) => {
-      const { cadBoundingBox: bbox, number, sizeSqYd, block, blockColorHex } = canonicalPlot;
+      const { cadBoundingBox: bbox, number, sizeSqYd, block, blockColorHex, dimensions } = canonicalPlot;
       const plotItem = allPlots.find((p) => p.number === number);
       if (!plotItem) return;
 
-      const plotTexture = createPlotCanvasTexture(number, sizeSqYd, block, blockColorHex);
+      const plotTexture = createPlotCanvasTexture(number, sizeSqYd, block, blockColorHex, dimensions);
 
       const materials = [
         new THREE.MeshStandardMaterial({ color: 0x163942, roughness: 0.8 }), // right
@@ -970,7 +1235,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     const treeGeo = new THREE.SphereGeometry(1.4, 8, 8);
     const trunkGeo = new THREE.CylinderGeometry(0.15, 0.22, 2.5, 6);
 
-    // Trees along Central East-West Green Buffer (Positioned carefully so they do NOT cover plot numbers)
+    // Trees along Central East-West Green Buffer (Positioned so they do NOT cover plot numbers)
     [-38, -20, -4, 18, 32, 46].forEach((gx) => {
       [-5.0, 5.0].forEach((gz) => {
         const treeTrunk = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 2.2, 6), trunkMat);
@@ -1061,7 +1326,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
             if (onSelectPlotRef.current) onSelectPlotRef.current(hitPlot);
 
             orbitRef.current.targetLookAt.set(hitMesh.position.x, 0, hitMesh.position.z);
-            orbitRef.current.targetRadius = 55;
+            orbitRef.current.targetRadius = 45;
             return;
           }
         }
@@ -1083,19 +1348,19 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
             setSelectedLandmark(landmarkKey);
             if (landmarkKey === 'hospital') {
               orbitRef.current.targetLookAt.set(-25.77, 4, 27.58);
-              orbitRef.current.targetRadius = 60;
+              orbitRef.current.targetRadius = 52;
             } else if (landmarkKey === 'mandir') {
               orbitRef.current.targetLookAt.set(-30.71, 4, -10.53);
-              orbitRef.current.targetRadius = 45;
+              orbitRef.current.targetRadius = 38;
             } else if (landmarkKey === 'residence') {
               orbitRef.current.targetLookAt.set(-11.13, 4, 13.56);
-              orbitRef.current.targetRadius = 45;
+              orbitRef.current.targetRadius = 38;
             } else if (landmarkKey === 'utility') {
               orbitRef.current.targetLookAt.set(45.66, 2, -62.65);
-              orbitRef.current.targetRadius = 50;
+              orbitRef.current.targetRadius = 45;
             } else if (landmarkKey === 'gate') {
               orbitRef.current.targetLookAt.set(-43.67, 2, 0);
-              orbitRef.current.targetRadius = 60;
+              orbitRef.current.targetRadius = 55;
             }
           }
         }
@@ -1105,7 +1370,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       orbitRef.current.targetRadius = Math.max(
-        25,
+        22,
         Math.min(180, orbitRef.current.targetRadius + e.deltaY * 0.05)
       );
     };
@@ -1207,7 +1472,6 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       orbitRef.current.targetRadius = 120;
       orbitRef.current.targetLookAt.set(0, 0, 25);
     } else if (preset === 'top') {
-      // Direct Top-Down CAD Validation View
       orbitRef.current.targetTheta = 0.001;
       orbitRef.current.targetPhi = 0.04;
       orbitRef.current.targetRadius = 145;
@@ -1215,25 +1479,25 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     } else if (preset === 'hospital') {
       orbitRef.current.targetTheta = -Math.PI / 3.8;
       orbitRef.current.targetPhi = Math.PI / 3.2;
-      orbitRef.current.targetRadius = 60;
+      orbitRef.current.targetRadius = 52;
       orbitRef.current.targetLookAt.set(-25.77, 4, 27.58);
       setSelectedLandmark('hospital');
     } else if (preset === 'residence') {
       orbitRef.current.targetTheta = Math.PI / 3.5;
       orbitRef.current.targetPhi = Math.PI / 3.2;
-      orbitRef.current.targetRadius = 45;
+      orbitRef.current.targetRadius = 38;
       orbitRef.current.targetLookAt.set(-11.13, 4, 13.56);
       setSelectedLandmark('residence');
     } else if (preset === 'mandir') {
       orbitRef.current.targetTheta = Math.PI / 4;
       orbitRef.current.targetPhi = Math.PI / 3.2;
-      orbitRef.current.targetRadius = 45;
+      orbitRef.current.targetRadius = 38;
       orbitRef.current.targetLookAt.set(-30.71, 4, -10.53);
       setSelectedLandmark('mandir');
     } else if (preset === 'highway') {
       orbitRef.current.targetTheta = Math.PI / 2.05;
       orbitRef.current.targetPhi = Math.PI / 2.6;
-      orbitRef.current.targetRadius = 65;
+      orbitRef.current.targetRadius = 60;
       orbitRef.current.targetLookAt.set(-43.67, 2, 0);
       setSelectedLandmark('gate');
     }
@@ -1250,7 +1514,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
       setSelectedPlotId(firstInBlock.id);
       setSelectedLandmark(null);
       orbitRef.current.targetLookAt.set(mesh.position.x, 0, mesh.position.z);
-      orbitRef.current.targetRadius = 60;
+      orbitRef.current.targetRadius = 50;
     }
   };
 
@@ -1261,7 +1525,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
     <div
       ref={containerRef}
       className={`relative w-full overflow-hidden bg-[#071519] border border-[#163942] shadow-2xl transition-all duration-300 ${
-        isFullscreen ? 'fixed inset-0 z-[99999] rounded-none h-screen w-screen flex flex-col lg:flex-row' : 'rounded-3xl h-[640px] sm:h-[760px]'
+        isFullscreen ? 'fixed inset-0 z-[99999] rounded-none h-screen w-screen flex flex-col lg:flex-row' : 'rounded-3xl h-[660px] sm:h-[800px]'
       }`}
     >
       {/* Main 3D Canvas Viewport */}
@@ -1298,19 +1562,20 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               viewPreset === 'isometric' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
             }`}
+            title="Overview 3D Perspective"
           >
             Overview
           </button>
 
           <button
             onClick={() => handlePresetView('top')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1 cursor-pointer ${
               viewPreset === 'top' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
             }`}
-            title="Direct 2D/3D Top-Down CAD Validation View"
+            title="Orthographic Top-Down CAD Validation View"
           >
             <Compass className="w-3.5 h-3.5" />
-            Top CAD View
+            <span>Top CAD View</span>
           </button>
 
           <button
@@ -1318,40 +1583,40 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               viewPreset === 'hospital' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
             }`}
+            title="Focus on 30k sqft Ayurvedic & Multi-Speciality Hospital"
           >
             Hospital (30k sqft)
           </button>
 
           <button
             onClick={() => handlePresetView('residence')}
-            className={`hidden sm:block px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               viewPreset === 'residence' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
             }`}
+            title="Focus on Plots 63 & 64 G+2 Residences with 14 Stilt Bays"
           >
             Residences (63-64)
           </button>
 
           <button
             onClick={() => handlePresetView('mandir')}
-            className={`hidden md:block px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               viewPreset === 'mandir' ? 'bg-[#C58F58] text-[#071519] font-bold shadow-md' : 'text-white/75 hover:text-white hover:bg-white/10'
             }`}
+            title="Focus on 425 SQYD Mandir & Sacred Reflection Kund"
           >
             Mandir Land
           </button>
 
-          <div className="h-4 w-px bg-white/20 mx-1" />
-
           {onToggle2DView && (
             <button
               onClick={onToggle2DView}
-              className="px-2.5 py-1.5 rounded-xl text-xs text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              className="px-3 py-1.5 rounded-xl text-xs font-semibold text-white/75 hover:text-white hover:bg-white/10 transition-colors cursor-pointer border-l border-white/10 pl-2.5"
             >
               2D Matrix
             </button>
           )}
 
-          {/* Masterplan CAD Overlay QA Toggle */}
           <button
             onClick={() => setIsCadOverlay(!isCadOverlay)}
             className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all border cursor-pointer ${
@@ -1359,7 +1624,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                 ? 'bg-[#C58F58] text-[#071519] border-[#C58F58] shadow-md'
                 : 'bg-white/5 text-[#E0AB77] border-[#C58F58]/40 hover:bg-[#C58F58]/20'
             }`}
-            title="Toggle Masterplan Site Blueprint semi-transparent overlay alignment mode"
+            title="Toggle Masterplan CAD blueprint overlay alignment mode"
           >
             CAD Overlay QA
           </button>
@@ -1459,44 +1724,32 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
         <div className="absolute bottom-4 left-4 flex flex-col sm:flex-row items-start sm:items-center gap-2 text-[11px] text-white/70 pointer-events-none z-10">
           <div className="flex items-center gap-2 bg-[#071519]/85 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
             <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" />
-            <span className="hidden sm:inline">Drag to Orbit • Scroll to Zoom • Tap Plot / Landmark to Inspect</span>
-            <span className="sm:hidden">Tap to Inspect</span>
+            <span>Drag to Orbit • Scroll to Zoom • Tap Plot / Landmark to Inspect</span>
           </div>
 
-          {/* Visual Source Legend */}
-          <div className="hidden lg:flex items-center gap-2 bg-[#071519]/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 text-[10px] font-mono">
+          <div className="hidden md:flex items-center gap-3 bg-[#071519]/85 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 font-mono text-[10px]">
             <span className="flex items-center gap-1 text-emerald-300">
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
-              SOURCE_VERIFIED
+              <span className="w-2 h-2 rounded-full bg-emerald-400" /> SOURCE_VERIFIED
             </span>
-            <span className="text-white/30">•</span>
             <span className="flex items-center gap-1 text-amber-300">
-              <span className="w-2 h-2 rounded-full bg-amber-400" />
-              SOURCE_DERIVED
+              <span className="w-2 h-2 rounded-full bg-amber-400" /> SOURCE_DERIVED
             </span>
-            <span className="text-white/30">•</span>
             <span className="flex items-center gap-1 text-sky-300">
-              <span className="w-2 h-2 rounded-full bg-sky-400" />
-              VISUALIZATION_ONLY
+              <span className="w-2 h-2 rounded-full bg-sky-400" /> VISUALIZATION_ONLY
             </span>
           </div>
         </div>
 
-        {/* Non-Fullscreen Floating Selection Card */}
-        {!isFullscreen && (
-          <div className="absolute right-4 bottom-16 sm:bottom-20 max-w-xs w-full bg-[#071519]/95 backdrop-blur-xl border border-white/15 rounded-3xl p-5 text-white shadow-2xl z-20 space-y-3 pointer-events-auto">
+        {/* Floating Quick Card (Non-fullscreen mode) */}
+        {!isFullscreen && (selectedPlot || activeLandmarkInfo) && (
+          <div className="absolute bottom-4 right-4 z-20 w-80 sm:w-96 bg-[#071519]/95 backdrop-blur-xl p-4 rounded-3xl border border-white/20 shadow-2xl space-y-3 pointer-events-auto">
             {activeLandmarkInfo ? (
               <>
                 <div className="flex items-center justify-between pb-2 border-b border-white/10">
-                  <span className="px-2.5 py-0.5 rounded-md bg-[#2C5E50]/40 border border-emerald-400/40 text-[10px] font-bold text-emerald-300 uppercase">
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-400/30 text-[10px] font-bold uppercase">
                     {activeLandmarkInfo.badge}
                   </span>
-                  <button
-                    onClick={() => setSelectedLandmark(null)}
-                    className="text-white/50 hover:text-white cursor-pointer"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
+                  <span className="text-[10px] text-white/60 font-mono">{activeLandmarkInfo.category}</span>
                 </div>
                 <div>
                   <h4 className="text-base font-serif-heading font-bold text-[#FAF8F5]">
@@ -1506,31 +1759,58 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                     {activeLandmarkInfo.description}
                   </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2 pt-1">
                   {activeLandmarkInfo.id === 'hospital' && (
-                    <button
-                      onClick={() => openFloorPlanModal('hospital-ground')}
-                      className="flex-1 py-2 rounded-xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
-                    >
-                      <FileText className="w-3.5 h-3.5" />
-                      Hospital CAD
-                    </button>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => openFloorPlanModal('hospital-ground')}
+                        className="py-2.5 rounded-xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        Explore 3D Floors
+                      </button>
+                      <a
+                        href="/amenities"
+                        className="py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center justify-center gap-1.5 text-center border border-white/15"
+                      >
+                        <Building2 className="w-3.5 h-3.5 text-[#C58F58]" />
+                        Hospital Specs →
+                      </a>
+                    </div>
                   )}
                   {activeLandmarkInfo.id === 'residence' && (
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => openFloorPlanModal('stilt')}
+                        className="py-2.5 rounded-xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                      >
+                        <Car className="w-3.5 h-3.5" />
+                        14 Stilt Bays
+                      </button>
+                      <a
+                        href="/apartments"
+                        className="py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center justify-center gap-1.5 text-center border border-white/15"
+                      >
+                        <Home className="w-3.5 h-3.5 text-[#C58F58]" />
+                        Explore Units →
+                      </a>
+                    </div>
+                  )}
+                  {activeLandmarkInfo.id === 'mandir' && (
                     <button
-                      onClick={() => openFloorPlanModal('residences')}
-                      className="flex-1 py-2 rounded-xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                      onClick={() => openLeadDrawer({ title: 'Inquire about Community Mandir & Satsang Enclave', actionType: 'book-site-visit' })}
+                      className="w-full py-2.5 rounded-xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
                     >
-                      <FileText className="w-3.5 h-3.5" />
-                      Residence CAD
+                      <Flame className="w-3.5 h-3.5" />
+                      Inquire about Mandir Land (425 SQYD) →
                     </button>
                   )}
                   <button
                     onClick={() => setIsFullscreen(true)}
-                    className="py-2 px-3 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="py-2 px-3 rounded-xl bg-white/5 hover:bg-white/15 text-white/80 text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer border border-white/10"
                   >
                     <Maximize2 className="w-3.5 h-3.5 text-[#C58F58]" />
-                    <span>Inspector</span>
+                    <span>Open Full Inspector &amp; Specs</span>
                   </button>
                 </div>
               </>
@@ -1693,6 +1973,22 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                       </div>
                     </div>
 
+                    {activeLandmarkInfo.subFeatures && (
+                      <div className="space-y-2">
+                        <span className="text-xs font-mono uppercase tracking-wider text-[#C58F58] font-bold">
+                          Architectural Floor Breakdown:
+                        </span>
+                        <div className="space-y-1.5">
+                          {activeLandmarkInfo.subFeatures.map((sf, idx) => (
+                            <div key={idx} className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-xs space-y-0.5">
+                              <span className="font-bold text-emerald-300 block">{sf.title}</span>
+                              <span className="text-white/75 text-[11px] block">{sf.desc}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="space-y-2">
                       <span className="text-xs font-mono uppercase tracking-wider text-[#C58F58] font-bold">
                         Key Architectural Features:
@@ -1707,14 +2003,56 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
                       </div>
                     </div>
 
-                    {/* Landmark Direct Action */}
-                    <button
-                      onClick={() => openLeadDrawer({ title: `Inquire about ${activeLandmarkInfo.title}`, actionType: 'book-site-visit' })}
-                      className="w-full py-3 rounded-2xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <Calendar className="w-4 h-4 text-[#E0AB77]" />
-                      <span>Book Site Visit to Inspect Landmark Location →</span>
-                    </button>
+                    {/* Landmark Direct Action Buttons */}
+                    {activeLandmarkInfo.id === 'hospital' && (
+                      <div className="space-y-2 pt-1">
+                        <button
+                          onClick={() => openFloorPlanModal('hospital-ground')}
+                          className="w-full py-3 rounded-2xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          <FileText className="w-4 h-4" />
+                          <span>Explore Hospital 3D Floor Plans &amp; Rooms →</span>
+                        </button>
+                        <a
+                          href="/amenities"
+                          className="w-full py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 text-center block"
+                        >
+                          <Building2 className="w-4 h-4 text-[#C58F58]" />
+                          <span>View Full Hospital Specifications Page →</span>
+                        </a>
+                      </div>
+                    )}
+
+                    {activeLandmarkInfo.id === 'residence' && (
+                      <div className="space-y-2 pt-1">
+                        <button
+                          onClick={() => openFloorPlanModal('stilt')}
+                          className="w-full py-3 rounded-2xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          <Car className="w-4 h-4" />
+                          <span>Inspect 14 Stilt Parking Bays &amp; Gates →</span>
+                        </button>
+                        <a
+                          href="/apartments"
+                          className="w-full py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 text-center block"
+                        >
+                          <Home className="w-4 h-4 text-[#C58F58]" />
+                          <span>Explore Residence 3D Units 01-03 →</span>
+                        </a>
+                      </div>
+                    )}
+
+                    {activeLandmarkInfo.id === 'mandir' && (
+                      <div className="space-y-2 pt-1">
+                        <button
+                          onClick={() => openLeadDrawer({ title: 'Schedule Private Walk to Mandir Land (425 SQYD)', actionType: 'book-site-visit' })}
+                          className="w-full py-3 rounded-2xl bg-[#C58F58] hover:bg-[#D49E67] text-[#071519] text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          <Flame className="w-4 h-4" />
+                          <span>Inquire about Mandir Land &amp; Reflection Kund →</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -1842,7 +2180,7 @@ export const MasterPlan3DViewer: React.FC<MasterPlan3DViewerProps> = ({
             {activeInspectorTab === 'specs' && (
               <div className="space-y-3 text-xs animate-in fade-in duration-200">
                 <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1">
-                  <span className="text-[10px] font-mono text-[#C58F58] uppercase">Legal Title & Demarcation</span>
+                  <span className="text-[10px] font-mono text-[#C58F58] uppercase">Legal Title &amp; Demarcation</span>
                   <p className="text-white/85">Clear unencumbered freehold title chain in Kheri Asra, Tehsil Jhajjar revenue records.</p>
                 </div>
                 <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1">
