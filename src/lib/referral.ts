@@ -15,6 +15,18 @@ export function captureReferralCodeFromUrl(): string | null {
       const expiry = Date.now() + REFERRAL_EXPIRY_DAYS * 24 * 60 * 60 * 1000;
       const data = { code: cleanCode, expiresAt: expiry };
       localStorage.setItem(REFERRAL_STORAGE_KEY, JSON.stringify(data));
+
+      // Record link visit in database
+      const clickSessionKey = `slcf_click_tracked_${cleanCode}`;
+      if (!sessionStorage.getItem(clickSessionKey)) {
+        sessionStorage.setItem(clickSessionKey, '1');
+        fetch(`/api/referrals/click?code=${encodeURIComponent(cleanCode)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: cleanCode })
+        }).catch(() => {});
+      }
+
       return cleanCode;
     }
 

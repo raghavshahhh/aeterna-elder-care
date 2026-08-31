@@ -1520,6 +1520,25 @@ export const db = {
     });
     return newRef;
   },
+  recordReferralClick: (code: string): Referrer | undefined => {
+    if (!code) return undefined;
+    const cleanCode = code.trim().toUpperCase();
+    const state = ensureDataFile();
+    const idx = state.referrers.findIndex((r) => r.code.toUpperCase() === cleanCode);
+    if (idx === -1) return undefined;
+
+    state.referrers[idx].totalVisits = (state.referrers[idx].totalVisits || 0) + 1;
+    state.referrers[idx].updatedAt = new Date().toISOString();
+    saveData(state);
+
+    broadcastBusinessEvent('REFERRAL_CLICKED', 'admin', 'PARTNER', state.referrers[idx].id, {
+      code: cleanCode,
+      totalVisits: state.referrers[idx].totalVisits,
+      partnerName: state.referrers[idx].name
+    });
+
+    return state.referrers[idx];
+  },
   getReferralRewards: (referrerId?: string): ReferralReward[] => {
     let rewards = ensureDataFile().referralRewards;
     if (referrerId) rewards = rewards.filter((r) => r.referrerId === referrerId);

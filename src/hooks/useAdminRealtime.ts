@@ -98,6 +98,7 @@ export function useAdminRealtime({
           "PARTNER_CREATED",
           "REFERRAL_CREATED",
           "REFERRAL_CONVERTED",
+          "REFERRAL_CLICKED",
           "INVENTORY_UPDATED",
           "BOOKING_CREATED",
           "BOOKING_UPDATED",

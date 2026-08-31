@@ -79,7 +79,7 @@ export default function AdminReferralsPage() {
 
   // Connect live Server-Sent Events real-time sync for partners & rewards
   useAdminRealtime({
-    eventTypes: ['PARTNER_CREATED', 'REFERRAL_CREATED', 'REFERRAL_CONVERTED', 'LEAD_CREATED'],
+    eventTypes: ['PARTNER_CREATED', 'REFERRAL_CREATED', 'REFERRAL_CONVERTED', 'LEAD_CREATED', 'REFERRAL_CLICKED'],
     onRefresh: loadReferralData
   });
 
@@ -109,6 +109,11 @@ export default function AdminReferralsPage() {
           isNew: data.isNew !== false
         });
         setSuccessBanner({ name: generated.name, code: generated.code });
+        setPartnerName('');
+        setPartnerPhone('');
+        setPartnerEmail('');
+        setPartnerUpi('');
+        setActiveTab('PARTNERS');
         await loadReferralData();
       } else {
         setFormError(data.error || 'Failed to issue partner referral code. Please check inputs.');
@@ -280,135 +285,223 @@ export default function AdminReferralsPage() {
             </span>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-800">
-              <thead className="bg-slate-50 text-slate-500 font-mono uppercase text-[10px] tracking-wider border-b border-slate-200">
-                <tr>
-                  <th className="py-4 px-6 font-bold">Reward ID</th>
-                  <th className="py-4 px-6 font-bold">Referrer Partner</th>
-                  <th className="py-4 px-6 font-bold">Lead Information</th>
-                  <th className="py-4 px-6 font-bold">Bonus Amount</th>
-                  <th className="py-4 px-6 font-bold">Verification Status</th>
-                  <th className="py-4 px-6 font-bold text-right">Audit Decision</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {rewards.map((rw) => (
-                  <tr key={rw.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="py-4 px-6 font-mono text-slate-400">{rw.id}</td>
-                    <td className="py-4 px-6">
-                      <span className="font-mono font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">{rw.referrerCode}</span>
-                    </td>
-                    <td className="py-4 px-6">
-                      <div className="font-bold text-slate-900">{rw.leadName}</div>
-                      <div className="font-mono text-slate-500 text-[11px]">{rw.leadPhone}</div>
-                    </td>
-                    <td className="py-4 px-6 font-mono font-bold text-emerald-700">
-                      ₹{rw.rewardAmount}
-                    </td>
-                    <td className="py-4 px-6">
-                      <span
-                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ${
-                          rw.status === 'VERIFIED'
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                            : rw.status === 'PENDING'
-                            ? 'bg-amber-50 text-amber-800 border border-amber-200'
-                            : 'bg-red-50 text-red-700 border border-red-200'
-                        }`}
-                      >
-                        {rw.status}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 text-right">
-                      {rw.status === 'PENDING' ? (
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => verifyReward(rw.id, true)}
-                            className="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
-                          >
-                            <CheckCircle2 className="w-3.5 h-3.5" />
-                            <span>Verify (+₹50)</span>
-                          </button>
-                          <button
-                            onClick={() => verifyReward(rw.id, false)}
-                            className="px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
-                          >
-                            <XCircle className="w-3.5 h-3.5" />
-                            <span>Reject</span>
-                          </button>
-                        </div>
-                      ) : (
-                        <span className="text-[10px] font-mono text-slate-400">
-                          {rw.verifiedBy ? `Verified by ${rw.verifiedBy}` : 'Processed'}
-                        </span>
-                      )}
-                    </td>
+          {rewards.length === 0 ? (
+            <div className="p-12 text-center space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center mx-auto border border-amber-200">
+                <Award className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-base font-bold text-slate-900">No Pending Lead Rewards in Queue</h3>
+                <p className="text-xs text-slate-500 max-w-md mx-auto">
+                  When visitors submit inquiry or site visit forms through partner referral links, they will automatically appear here for 1-click ₹50 verification.
+                </p>
+              </div>
+              <div className="pt-2 flex items-center justify-center gap-3">
+                <button
+                  onClick={() => setActiveTab('PARTNERS')}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors cursor-pointer border border-slate-200"
+                >
+                  View Registered Partners Directory ({referrers.length}) →
+                </button>
+                <button
+                  onClick={() => setIsCreatingPartner(true)}
+                  className="px-4 py-2 rounded-xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Issue New Partner Code</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-slate-800">
+                <thead className="bg-slate-50 text-slate-500 font-mono uppercase text-[10px] tracking-wider border-b border-slate-200">
+                  <tr>
+                    <th className="py-4 px-6 font-bold">Reward ID</th>
+                    <th className="py-4 px-6 font-bold">Referrer Partner</th>
+                    <th className="py-4 px-6 font-bold">Lead Information</th>
+                    <th className="py-4 px-6 font-bold">Bonus Amount</th>
+                    <th className="py-4 px-6 font-bold">Verification Status</th>
+                    <th className="py-4 px-6 font-bold text-right">Audit Decision</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {rewards.map((rw) => (
+                    <tr key={rw.id} className="hover:bg-slate-50 transition-colors">
+                      <td className="py-4 px-6 font-mono text-slate-400">{rw.id}</td>
+                      <td className="py-4 px-6">
+                        <span className="font-mono font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">{rw.referrerCode}</span>
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="font-bold text-slate-900">{rw.leadName}</div>
+                        <div className="font-mono text-slate-500 text-[11px]">{rw.leadPhone}</div>
+                      </td>
+                      <td className="py-4 px-6 font-mono font-bold text-emerald-700">
+                        ₹{rw.rewardAmount}
+                      </td>
+                      <td className="py-4 px-6">
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ${
+                            rw.status === 'VERIFIED'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : rw.status === 'PENDING'
+                              ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                              : 'bg-red-50 text-red-700 border border-red-200'
+                          }`}
+                        >
+                          {rw.status}
+                        </span>
+                      </td>
+                      <td className="py-4 px-6 text-right">
+                        {rw.status === 'PENDING' ? (
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => verifyReward(rw.id, true)}
+                              className="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
+                            >
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              <span>Verify (+₹50)</span>
+                            </button>
+                            <button
+                              onClick={() => verifyReward(rw.id, false)}
+                              className="px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
+                            >
+                              <XCircle className="w-3.5 h-3.5" />
+                              <span>Reject</span>
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-[10px] font-mono text-slate-400">
+                            {rw.verifiedBy ? `Verified by ${rw.verifiedBy}` : 'Processed'}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
 
       {activeTab === 'PARTNERS' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {referrers.map((ref) => (
-            <div key={ref.id} className="p-5 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <div>
-                  <h3 className="font-bold text-slate-900 text-sm">{ref.name}</h3>
-                  <span className="text-xs font-mono text-slate-500">{ref.phone}</span>
-                </div>
-                <div className="px-3 py-1 rounded-xl bg-amber-50 border border-amber-200 font-mono font-bold text-sm text-amber-900">
-                  {ref.code}
-                </div>
+        <>
+          {referrers.length === 0 ? (
+            <div className="p-12 text-center space-y-4 bg-white border border-slate-200 rounded-3xl shadow-xs">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto border border-emerald-200">
+                <Users className="w-6 h-6" />
               </div>
-
-              <div className="space-y-1.5 text-xs text-slate-600 font-mono">
-                <div className="flex justify-between">
-                  <span>Clicks / Visits:</span>
-                  <span className="text-slate-900 font-bold">{ref.totalVisits}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Leads Submitted:</span>
-                  <span className="text-slate-900 font-bold">{ref.totalLeadsSubmitted}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Verified Leads:</span>
-                  <span className="text-emerald-700 font-bold">{ref.verifiedLeadsCount}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>₹50 Bonuses Earned:</span>
-                  <span className="text-emerald-700 font-bold">₹{ref.totalEarnedRewards}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Pending Payout:</span>
-                  <span className="text-amber-800 font-bold">₹{ref.pendingBalance}</span>
-                </div>
+              <div className="space-y-1">
+                <h3 className="text-base font-bold text-slate-900">No Referral Partners Registered Yet</h3>
+                <p className="text-xs text-slate-500 max-w-md mx-auto">
+                  Issue referral partner codes for community advocates, senior doctors, NGOs, and regional associates to track link clicks, leads, and commissions.
+                </p>
               </div>
-
-              <div className="pt-2 border-t border-slate-100 flex gap-2">
-                <button
-                  onClick={() => copyPartnerLink(ref.code)}
-                  className="flex-1 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-slate-200"
-                >
-                  {copiedCode === ref.code ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiedCode === ref.code ? 'Copied!' : 'Copy Link'}</span>
-                </button>
-                <a
-                  href={`https://wa.me/?text=${encodeURIComponent(`Explore Senior Living Citizens Foundation sanctuary: ${typeof window !== 'undefined' ? window.location.origin : 'https://seniorlivingcitizens.org'}/?ref=${ref.code}`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors border border-emerald-200"
-                >
-                  <Share2 className="w-3.5 h-3.5" />
-                  <span>Share WhatsApp</span>
-                </a>
-              </div>
+              <button
+                onClick={() => setIsCreatingPartner(true)}
+                className="px-5 py-2.5 rounded-xl bg-[#2C5E50] hover:bg-[#3D7363] text-white text-xs font-bold transition-colors cursor-pointer inline-flex items-center gap-1.5"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Issue First Partner Code →</span>
+              </button>
             </div>
-          ))}
-        </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {referrers.map((ref) => {
+                const origin = typeof window !== 'undefined' ? window.location.origin : 'https://seniorlivingcitizens.org';
+                const shareUrl = `${origin}/?ref=${ref.code}`;
+                const conversionRate = ref.totalVisits > 0 ? ((ref.totalLeadsSubmitted / ref.totalVisits) * 100).toFixed(1) : '0.0';
+                return (
+                  <div key={ref.id} className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-5 hover:border-slate-300 transition-all">
+                    {/* Partner Top Header */}
+                    <div className="flex items-start justify-between border-b border-slate-100 pb-3 gap-2">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-slate-900 text-sm">{ref.name}</h3>
+                          <span className="w-2 h-2 rounded-full bg-emerald-500" title="Active Partner" />
+                        </div>
+                        <span className="text-xs font-mono text-slate-500 block mt-0.5">{ref.phone}</span>
+                        {ref.email && <span className="text-[11px] text-slate-400 block truncate max-w-[180px]">{ref.email}</span>}
+                      </div>
+                      <div className="px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-300/80 font-mono font-bold text-sm text-amber-900 shadow-xs text-center">
+                        <span className="text-[9px] uppercase block text-amber-700 tracking-wider">Referral Code</span>
+                        {ref.code}
+                      </div>
+                    </div>
+
+                    {/* Metrics Grid */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                        <span className="text-[10px] font-mono uppercase text-slate-500 block">Link Opens / Clicks</span>
+                        <span className="text-lg font-bold text-slate-900 flex items-center gap-1.5 mt-0.5">
+                          <span className="text-emerald-600 font-mono">👁️</span> {ref.totalVisits}
+                        </span>
+                      </div>
+                      <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                        <span className="text-[10px] font-mono uppercase text-slate-500 block">Leads Submitted</span>
+                        <span className="text-lg font-bold text-slate-900 flex items-center gap-1.5 mt-0.5">
+                          <span className="text-blue-600 font-mono">📋</span> {ref.totalLeadsSubmitted}
+                        </span>
+                      </div>
+                      <div className="p-3 rounded-2xl bg-emerald-50/50 border border-emerald-100">
+                        <span className="text-[10px] font-mono uppercase text-emerald-700 block">Verified ₹50 Bonuses</span>
+                        <span className="text-base font-bold text-emerald-800 mt-0.5 block">
+                          {ref.verifiedLeadsCount} (₹{ref.totalEarnedRewards})
+                        </span>
+                      </div>
+                      <div className="p-3 rounded-2xl bg-amber-50/50 border border-amber-100">
+                        <span className="text-[10px] font-mono uppercase text-amber-800 block">Conversion Rate</span>
+                        <span className="text-base font-bold text-amber-900 mt-0.5 block">
+                          {conversionRate}%
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Full Share Link Box */}
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-mono uppercase text-slate-400">Direct Tracking URL:</span>
+                      <div className="flex items-center gap-1.5 p-2 rounded-xl bg-slate-50 border border-slate-200 text-[11px] font-mono text-slate-700 truncate">
+                        <span className="truncate flex-1">{shareUrl}</span>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => copyPartnerLink(ref.code)}
+                          className="flex-1 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                        >
+                          {copiedCode === ref.code ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                          <span>{copiedCode === ref.code ? 'Copied Link!' : 'Copy Link'}</span>
+                        </button>
+                        <a
+                          href={`https://wa.me/?text=${encodeURIComponent(`Explore Senior Living Citizens Foundation sanctuary & Ayurvedic Hospital: ${shareUrl}`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shadow-xs"
+                        >
+                          <Share2 className="w-3.5 h-3.5" />
+                          <span>WhatsApp</span>
+                        </a>
+                      </div>
+                      <a
+                        href={`/?ref=${ref.code}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-colors text-center border border-slate-200"
+                      >
+                        <ArrowUpRight className="w-3 h-3 text-[#C58F58]" />
+                        <span>Test Open Link in New Tab ↗</span>
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
 
       {activeTab === 'COMMISSIONS' && (

@@ -8,7 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const token = request.cookies.get('slcf_session')?.value;
+    const token = request.cookies.get('slcf_session')?.value || request.cookies.get('sl_owner_session')?.value;
     const user = verifySessionToken(token);
 
     if (!user || !canAccessAdmin(user)) {
@@ -34,7 +34,7 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    const token = request.cookies.get('slcf_session')?.value;
+    const token = request.cookies.get('slcf_session')?.value || request.cookies.get('sl_owner_session')?.value;
     const user = verifySessionToken(token);
 
     if (!user || !canAccessAdmin(user)) {

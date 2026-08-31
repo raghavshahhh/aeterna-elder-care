@@ -154,6 +154,7 @@ export function canAccessAdmin(user: AuthSessionUser | null): boolean {
   if (!user) return false;
   return [
     'SUPER_ADMIN',
+    'OWNER',
     'FRANCHISE_ADMIN',
     'LOCATION_ADMIN',
     'SALES_AGENT',

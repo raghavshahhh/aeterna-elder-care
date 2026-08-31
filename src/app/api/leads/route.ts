@@ -4,7 +4,7 @@ import { verifySessionToken, canAccessAdmin } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const token = request.cookies.get('slcf_session')?.value;
+    const token = request.cookies.get('slcf_session')?.value || request.cookies.get('sl_owner_session')?.value;
     const user = verifySessionToken(token);
 
     if (!user || !canAccessAdmin(user)) {
