@@ -1982,6 +1982,18 @@
   ],
   "leads": [
     {
+      "id": "LEAD-E2E-1806",
+      "name": "Dr. Vivek Malhotra",
+      "phone": "+91 98111 22334",
+      "email": "dr.malhotra@example.com",
+      "interestedUnitType": "PLOT",
+      "budgetRange": "₹30L - ₹50L",
+      "source": "WEBSITE_PLOT_DRAWER",
+      "notes": "Inquiry for Plot 23 (Block C, 122 Sq. Yd.) with 6ft green belt setback",
+      "status": "NEW",
+      "createdAt": "2026-09-01T11:47:01.806Z"
+    },
+    {
       "id": "LEAD-E2E-3540",
       "name": "Dr. Vivek Malhotra",
       "phone": "+91 98111 22334",
@@ -2233,6 +2245,19 @@
   ],
   "siteVisits": [
     {
+      "id": "SV-E2E-1807",
+      "leadId": "LEAD-E2E-1806",
+      "visitorName": "Dr. Vivek Malhotra",
+      "visitorPhone": "+91 98111 22334",
+      "visitorEmail": "dr.malhotra@example.com",
+      "preferredDate": "2026-09-10",
+      "preferredTimeSlot": "11:00 AM",
+      "transportNeeded": true,
+      "pickupLocation": "Dwarka Sector 21 Metro Station, New Delhi",
+      "status": "CONFIRMED",
+      "createdAt": "2026-09-01T11:47:01.807Z"
+    },
+    {
       "id": "SV-E2E-3541",
       "leadId": "LEAD-E2E-3540",
       "visitorName": "Dr. Vivek Malhotra",
@@ -2446,6 +2471,29 @@
     }
   ],
   "bookings": [
+    {
+      "id": "BK-E2E-1807",
+      "bookingNumber": "SLF-HAR-2026-524",
+      "leadId": "LEAD-E2E-1806",
+      "unitId": "PLOT-A-01",
+      "unitCode": "PLOT-A-01",
+      "unitType": "PLOT",
+      "projectId": "PRJ-HARYANA-01",
+      "projectTitle": "Kheri Asra Senior Plotted Sanctuary",
+      "locationId": "LOC-HARYANA",
+      "customerName": "Col. Rajesh Bakshi",
+      "customerPhone": "+91 98999 11223",
+      "customerEmail": "col.bakshi@example.com",
+      "customerAddress": "15 Defense Colony, New Delhi",
+      "bookingAmount": 270000,
+      "totalAgreedPrice": 2700000,
+      "totalPaidAmount": 270000,
+      "remainingBalance": 2430000,
+      "status": "CONFIRMED",
+      "holdExpiresAt": "2026-09-02T11:47:01.807Z",
+      "createdAt": "2026-09-01T11:47:01.807Z",
+      "updatedAt": "2026-09-01T11:47:01.807Z"
+    },
     {
       "id": "BK-E2E-3541",
       "bookingNumber": "SLF-HAR-2026-195",
@@ -3248,6 +3296,27 @@
   ],
   "paymentLinks": [],
   "receipts": [
+    {
+      "id": "RCP-2026-5566",
+      "receiptNumber": "RCP-2026-5566",
+      "paymentId": "pay_e2e_221807",
+      "bookingId": "BK-E2E-1807",
+      "buyerName": "Col. Rajesh Bakshi",
+      "buyerPhone": "+91 98999 11223",
+      "buyerEmail": "col.bakshi@example.com",
+      "projectTitle": "Kheri Asra Senior Plotted Sanctuary",
+      "locationName": "Kheri Asra, Jhajjar, Haryana",
+      "unitCode": "PLOT-A-01",
+      "unitType": "PLOT",
+      "amountPaid": 270000,
+      "amountRemaining": 2430000,
+      "totalPropertyAmount": 2700000,
+      "paymentDate": "2026-09-01T11:47:01.807Z",
+      "paymentMethod": "RAZORPAY_UPI",
+      "transactionReference": "pay_e2e_221807",
+      "status": "ISSUED",
+      "createdAt": "2026-09-01T11:47:01.807Z"
+    },
     {
       "id": "RCP-2026-3685",
       "receiptNumber": "RCP-2026-3685",
