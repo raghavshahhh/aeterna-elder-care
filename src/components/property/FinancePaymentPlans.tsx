@@ -211,7 +211,7 @@ export const FinancePaymentPlans: React.FC = () => {
                 ₹12,500 / mo
               </div>
               <p className="text-xs text-white/75 leading-relaxed">
-                Guaranteed monthly rental income under Foundation senior occupancy management pool.
+                Assured monthly rental returns as per the Foundation&apos;s official booking agreement under senior occupancy management pool.
               </p>
             </div>
 

@@ -22,7 +22,7 @@ export const CommunityAdvocacyBanner: React.FC = () => {
               </div>
 
               <h3 className="text-2xl sm:text-4xl font-serif-heading font-normal tracking-tight text-[#FAF8F5]">
-                Help Families Find Sanctuary. <span className="italic font-serif text-[#E0AB77]">Earn Guaranteed Rewards.</span>
+                Help Families Find Sanctuary. <span className="italic font-serif text-[#E0AB77]">Earn Defined Rewards.</span>
               </h3>
 
               <p className="text-sm sm:text-base text-white/75 leading-relaxed max-w-2xl">

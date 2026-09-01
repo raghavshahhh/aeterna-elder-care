@@ -76,7 +76,7 @@ export default function ReferralProgramPage() {
             Help Families Find <span className="italic font-serif text-[#E0AB77]">Sanctuary.</span>
           </h1>
           <p className="text-sm sm:text-base text-white/70 max-w-2xl mx-auto leading-relaxed">
-            Join the Senior Living Citizens Foundation advocacy network. Earn guaranteed rewards for verified family connections and meaningful sales commissions.
+            Join the Senior Living Citizens Foundation advocacy network. Earn structured rewards for verified family connections and meaningful sales commissions.
           </p>
         </div>
       </section>

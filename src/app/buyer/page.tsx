@@ -40,7 +40,7 @@ function BuyerPortalInner() {
   const searchParams = useSearchParams();
   const phoneParam = searchParams.get('phone') || searchParams.get('q') || '';
 
-  const [searchQuery, setSearchQuery] = useState(phoneParam || '+91 98112 34567');
+  const [searchQuery, setSearchQuery] = useState(phoneParam || '');
   const [buyerData, setBuyerData] = useState<{
     buyerName: string;
     buyerPhone: string;
@@ -72,7 +72,11 @@ function BuyerPortalInner() {
   };
 
   useEffect(() => {
-    fetchBuyerData(searchQuery);
+    if (phoneParam.trim()) {
+      fetchBuyerData(phoneParam.trim());
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -143,13 +147,14 @@ function BuyerPortalInner() {
               We couldn't locate any active booking records for <span className="font-mono text-white font-bold">{searchQuery}</span>. Try searching with your 10-digit registered mobile number or booking ID.
             </p>
             <div className="flex justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => fetchBuyerData('+91 98112 34567')}
-                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs text-white font-mono"
+              <a
+                href="https://wa.me/919999955847?text=I%20need%20help%20accessing%20my%20SLCF%20Buyer%20Portal"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs text-white font-medium"
               >
-                Load Demo (Col. Rajesh Bakshi)
-              </button>
+                Contact Advisory Desk
+              </a>
             </div>
           </div>
         ) : (

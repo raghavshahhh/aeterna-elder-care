@@ -7,9 +7,10 @@ export async function GET(req: NextRequest) {
     const query = searchParams.get('q') || searchParams.get('phone') || searchParams.get('booking');
 
     if (!query) {
-      // Default to Col. Rajesh Bakshi for demo if no param provided
-      const demoData = db.getBuyerDashboardData('+91 98112 34567');
-      return NextResponse.json({ data: demoData });
+      return NextResponse.json(
+        { error: 'Please provide your registered mobile number or booking ID to access your portal.' },
+        { status: 400 }
+      );
     }
 
     const data = db.getBuyerDashboardData(query);

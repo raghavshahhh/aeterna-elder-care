@@ -375,7 +375,7 @@ Please share payment schedule (₹25k/mo or ₹6,250/mo rental plan), parking op
                     </div>
                     <div className="text-xs text-white/80">
                       • <strong>₹25,000 / month</strong> rental return credited till physical possession handover.<br />
-                      • <strong>₹12,500 / month</strong> guaranteed monthly rental return post-possession.<br />
+                      • <strong>₹12,500 / month</strong> assured monthly rental return post-possession (as per Foundation booking agreement).<br />
                       • 100% direct freehold land registry executed upon clearance.
                     </div>
                   </div>

@@ -295,7 +295,7 @@ function UnitBookingInner() {
                 </div>
                 <p className="text-[11px] text-white/70 mt-1">
                   {isPlot
-                    ? 'Followed by ₹24L down payment with ₹25,000/mo guaranteed return until registry.'
+                    ? 'Followed by ₹24L down payment with ₹25,000/mo assured return until registry (per Foundation booking agreement).'
                     : 'Balanced 50% booking and 50% on key handover & possession.'}
                 </p>
               </div>

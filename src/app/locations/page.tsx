@@ -117,20 +117,19 @@ export default function LocationsDirectoryPage() {
             </div>
           </div>
 
-          {/* Card 2: Goa (Coastal Haven) */}
+          {/* Card 2: Goa (Coastal Haven — Planned) */}
           <div className="bg-white rounded-3xl border border-[#E8E2D8] overflow-hidden shadow-xl flex flex-col justify-between group hover:shadow-2xl transition-all">
-            <div className="relative h-64 sm:h-72 overflow-hidden bg-[#0D2329]">
-              <img
-                src="/project-assets/real/site-boundary.jpg"
-                alt="Goa Coastal Sanctuary"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90"
-              />
+            <div className="relative h-64 sm:h-72 overflow-hidden bg-[#0D2329] flex items-center justify-center">
+              <div className="text-center px-8">
+                <span className="text-6xl opacity-30">🌴</span>
+                <p className="text-white/40 text-xs font-mono mt-3 uppercase tracking-widest">Site Photography Pending</p>
+              </div>
               <div className="absolute top-4 left-4 flex gap-2">
                 <span className="px-3 py-1 rounded-full bg-[#0D2329]/90 backdrop-blur-md text-[#E0AB77] font-mono text-xs font-bold border border-white/10">
                   GOA · CANDOLIM
                 </span>
-                <span className="px-3 py-1 rounded-full bg-emerald-600/90 text-white font-mono text-xs font-bold">
-                  Ready to Move
+                <span className="px-3 py-1 rounded-full bg-amber-600/90 text-white font-mono text-xs font-bold">
+                  Coming Soon
                 </span>
               </div>
             </div>
@@ -141,17 +140,17 @@ export default function LocationsDirectoryPage() {
                   Goa Coastal Serene Living
                 </h2>
                 <p className="text-xs sm:text-sm text-[#53676E] leading-relaxed">
-                  An operational boutique elder care retreat nestled in North Goa. Offering immediate move-in, fully furnished suites, 24/7 nursing supervision, and wholesome home-cooked meals.
+                  A planned boutique senior retreat in the peaceful green foothills of North Goa. Designed to offer fully furnished suites, professional care services, and coastal tranquillity. Details will be updated as the franchise plan progresses.
                 </p>
 
                 <div className="grid grid-cols-2 gap-3 pt-2 text-xs font-mono">
                   <div className="p-3 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8]">
                     <span className="text-[10px] text-[#53676E] block uppercase">Current Status</span>
-                    <span className="font-bold text-emerald-700">Immediate Occupancy</span>
+                    <span className="font-bold text-amber-700">Planning Stage</span>
                   </div>
                   <div className="p-3 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D8]">
-                    <span className="text-[10px] text-[#53676E] block uppercase">Full Board Care</span>
-                    <span className="font-bold text-[#C58F58]">From ₹45,000 / month</span>
+                    <span className="text-[10px] text-[#53676E] block uppercase">Location</span>
+                    <span className="font-bold text-[#C58F58]">North Goa</span>
                   </div>
                 </div>
               </div>
@@ -161,7 +160,7 @@ export default function LocationsDirectoryPage() {
                   href="/projects/goa-residence"
                   className="flex-1 py-3.5 rounded-2xl bg-[#0D2329] hover:bg-[#1a3a42] text-white text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 font-mono"
                 >
-                  <span>View Suites &amp; Care</span>
+                  <span>Learn More</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
 
@@ -169,7 +168,7 @@ export default function LocationsDirectoryPage() {
                   onClick={() => openLeadDrawer({ actionType: 'site_visit' })}
                   className="py-3.5 px-5 rounded-2xl bg-[#FAF8F5] hover:bg-[#EAF2EE] text-[#0D2329] text-xs font-bold border border-[#E8E2D8] transition-colors cursor-pointer"
                 >
-                  Schedule Visit
+                  Register Interest
                 </button>
               </div>
             </div>
