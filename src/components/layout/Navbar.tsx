@@ -170,11 +170,11 @@ export const Navbar: React.FC = () => {
                       <span className="font-bold text-xs text-[#0D2329] group-hover:text-[#C58F58]">
                         Goa (Coastal Haven)
                       </span>
-                      <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-800 text-[8px] font-mono font-bold">
-                        Ready to Move
+                      <span className="px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-800 text-[8px] font-mono font-bold">
+                        Planning Stage
                       </span>
                     </div>
-                    <p className="text-[11px] text-[#53676E]">Assisted Suites &amp; Daily Nursing</p>
+                    <p className="text-[11px] text-[#53676E]">Planned Coastal Retreat</p>
                   </div>
                 </Link>
 

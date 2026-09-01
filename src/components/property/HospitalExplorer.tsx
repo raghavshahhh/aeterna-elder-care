@@ -169,9 +169,9 @@ export const HospitalExplorer: React.FC = () => {
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
             {(
               [
-                { id: "ground", label: "Ground Floor", sub: "OPD Â· Panchakarma Â· Emergency" },
-                { id: "first", label: "First Floor", sub: "Modular OT Â· ICU Â· Cathlab Â· Wards" },
-                { id: "second", label: "Second Floor & Roof", sub: "50-Seat Auditorium Â· Pool Â· Open Deck" }
+                { id: "ground", label: "Ground Floor", sub: "OPD · Panchakarma · Emergency" },
+                { id: "first", label: "First Floor", sub: "Modular OT · ICU · Cathlab · Wards" },
+                { id: "second", label: "Second Floor & Roof", sub: "50-Seat Auditorium · Pool · Open Deck" }
               ] as const
             ).map((fl) => (
               <button
@@ -219,7 +219,7 @@ export const HospitalExplorer: React.FC = () => {
                 </span>
                 <h3 className="text-xl font-serif-heading font-bold text-white">{currentCad.title}</h3>
                 <p className="text-xs text-white/60">
-                  Architectural Drawing: The Vision Architects Â· Ar. Yash Garg Â· Footprint 117&apos;-10&quot; &times; 138&apos;-0&quot;
+                  Architectural Drawing: The Vision Architects · Ar. Yash Garg · Footprint 117&apos;-10&quot; &times; 138&apos;-0&quot;
                 </p>
               </div>
 
@@ -275,7 +275,7 @@ export const HospitalExplorer: React.FC = () => {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#C58F58]/20 text-[#E0AB77] font-bold">
-                        {room.id} Â· {room.zone}
+                        {room.id} · {room.zone}
                       </span>
                       <span className="text-xs font-mono font-bold text-emerald-400">
                         {room.cadDimension}

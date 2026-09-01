@@ -245,7 +245,7 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
     const groundGroup = new THREE.Group();
     groundGroup.name = "hospital-ground";
 
-    // Ground Floor Slab (117'-10\" Ã 138'-0\" / 35.9m Ã 42.1m)
+    // Ground Floor Slab (117'-10\" × 138'-0\" / 35.9m × 42.1m)
     const gSlab = new THREE.Mesh(
       new THREE.BoxGeometry(HOSPITAL_FOOTPRINT.widthM, 0.4, HOSPITAL_FOOTPRINT.depthM),
       slabMat
@@ -952,7 +952,7 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
       {hoveredRoom && !selectedRoom && (
         <div className="absolute top-24 right-4 sm:right-6 z-20 pointer-events-none bg-[#0D2329]/90 backdrop-blur-md px-4 py-3 rounded-2xl border border-[#C58F58]/50 shadow-xl max-w-xs space-y-1">
           <div className="text-[10px] font-mono text-[#E0AB77] uppercase tracking-wider font-bold">
-            {hoveredRoom.id} Â· {hoveredRoom.floor.toUpperCase()} FLOOR Â· {hoveredRoom.zone.toUpperCase()}
+            {hoveredRoom.id} · {hoveredRoom.floor.toUpperCase()} FLOOR · {hoveredRoom.zone.toUpperCase()}
           </div>
           <div className="text-sm font-bold text-white">{hoveredRoom.name}</div>
           <div className="text-xs font-mono text-white/80">CAD Dimension: {hoveredRoom.cadDimension}</div>
@@ -969,7 +969,7 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
           <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-3">
             <div className="space-y-0.5">
               <span className="px-2 py-0.5 rounded-full bg-[#C58F58]/20 border border-[#C58F58]/40 text-[#E0AB77] text-[10px] font-mono uppercase font-bold tracking-wider">
-                {selectedRoom.id} Â· {selectedRoom.floor.toUpperCase()} FLOOR
+                {selectedRoom.id} · {selectedRoom.floor.toUpperCase()} FLOOR
               </span>
               <h4 className="text-base sm:text-lg font-serif-heading font-bold text-white pt-1">
                 {selectedRoom.name}
@@ -1032,9 +1032,9 @@ export const Hospital3DViewer: React.FC<Hospital3DViewerProps> = ({
           <span className="flex items-center gap-1.5 text-white/80">
             <Rotate3d className="w-3.5 h-3.5 text-[#C58F58]" /> Drag to Orbit
           </span>
-          <span className="hidden sm:inline text-white/30">Â·</span>
+          <span className="hidden sm:inline text-white/30">·</span>
           <span className="hidden sm:inline">Scroll to Zoom</span>
-          <span className="hidden sm:inline text-white/30">Â·</span>
+          <span className="hidden sm:inline text-white/30">·</span>
           <span className="hidden sm:inline">Click Room to Inspect</span>
         </div>
 
