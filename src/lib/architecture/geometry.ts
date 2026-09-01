@@ -877,8 +877,8 @@ export const CANONICAL_LANDMARKS: CanonicalLandmarkGeometry[] = [
     sourceId: 'cad-landmark-01',
     type: 'HOSPITAL',
     title: 'Multi-Speciality Ayurvedic Hospital (G+2, 30,000 SQFT)',
-    dimensions: '117\'-6" × 138\'-0"',
-    areaDescription: '30,000 sq ft Built-Up Area with Panchakarma Suites & Emergency Wing',
+    dimensions: '117\'-10" × 138\'-0"',
+    areaDescription: '30,000 sq ft Built-Up Area with Panchakarma Suites & Emergency Wing (hospital-main)',
     floors: 'G+2 Multi-Storey Healthcare Facility',
     cadBoundingBox: { x: -25.77, z: 27.58, width: 35.81, depth: 42.06 },
     sourceConfidence: 'SOURCE_VERIFIED',
@@ -889,8 +889,8 @@ export const CANONICAL_LANDMARKS: CanonicalLandmarkGeometry[] = [
     sourceId: 'cad-landmark-02',
     type: 'MANDIR',
     title: 'Community Mandir & Sacred Reflection Kund',
-    dimensions: '85\'-0" × 24\'-0" Dedicated Mandir Land Parcel',
-    areaDescription: 'Sandstone Plinth with Shikhara Spire + Meditation Kund',
+    dimensions: '85\'-0" × 45\'-0" Dedicated Mandir Land Parcel (425 SQYD)',
+    areaDescription: 'Sandstone Plinth with 7-Tier Shikhara Spire + Meditation Kund (community-mandir)',
     floors: 'Traditional Plinth & Temple Sanctum',
     cadBoundingBox: { x: -30.71, z: -10.53, width: 25.91, depth: 7.32 },
     sourceConfidence: 'SOURCE_VERIFIED',
@@ -902,7 +902,7 @@ export const CANONICAL_LANDMARKS: CanonicalLandmarkGeometry[] = [
     type: 'UTILITY',
     title: 'Utility Services Enclave (289 SQYD)',
     dimensions: '48\'-0" × 54\'-0"',
-    areaDescription: '289 Sq. Yds. Dedicated Civic Infrastructure Compound',
+    areaDescription: '289 Sq. Yds. Dedicated Civic Infrastructure Compound (utility-services)',
     floors: 'Ground Distribution & Substation Plinth',
     cadBoundingBox: { x: 45.66, z: -62.65, width: 14.63, depth: 14.63 },
     sourceConfidence: 'SOURCE_VERIFIED',
@@ -914,11 +914,23 @@ export const CANONICAL_LANDMARKS: CanonicalLandmarkGeometry[] = [
     type: 'RESIDENCES',
     title: 'Senior Living Residences (Plots 63 & 64)',
     dimensions: '50\'-6" × 46\'-0"',
-    areaDescription: 'G+2 Barrier-Free 1 BHK & 1 RK Assisted Living Suites',
-    floors: 'Stilt Parking + 3 Residential Floors',
+    areaDescription: 'G+2 Barrier-Free 1 BHK & 1 RK Assisted Living Suites (senior-residence-63-64)',
+    floors: 'Stilt Parking (14 Bays, 3 Gates, 16 Columns) + 3 Residential Floors',
     cadBoundingBox: { x: -11.13, z: 13.56, width: 15.39, depth: 14.02 },
     sourceConfidence: 'SOURCE_VERIFIED',
     architecturalNotes: 'Built on canonical plots 63 & 64, adjacent to Ayurvedic hospital for zero-response-time geriatric healthcare.'
+  },
+  {
+    id: 'landmark-gate',
+    sourceId: 'cad-landmark-05',
+    type: 'GATE',
+    title: 'Main Arterial Highway Entrance & Security Checkpoint',
+    dimensions: '33\'-0" Wide Highway Access Corridors',
+    areaDescription: '24/7 Manned Security Post & Automatic Boom Barrier (entrance-gate-west)',
+    floors: 'Ground Security Control & Visitor Registration',
+    cadBoundingBox: { x: -43.67, z: 0, width: 10.06, depth: 180 },
+    sourceConfidence: 'SOURCE_VERIFIED',
+    architecturalNotes: 'Direct highway access from State Highway 22 (Jhajjar-Bahadurgarh Road) and NH-71 / Reliance MET City corridor.'
   }
 ];
 
@@ -930,4 +942,5 @@ export const CANONICAL_PLOT_MAP = new Map<number, CanonicalPlotGeometry>(
 export function getPlotGeometryByNumber(num: number): CanonicalPlotGeometry | undefined {
   return CANONICAL_PLOT_MAP.get(num);
 }
+
 

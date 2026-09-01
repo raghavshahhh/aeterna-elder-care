@@ -273,7 +273,7 @@ function runFullE2EVerification() {
   });
 
   // TEST 20: Edge Security Route Protection
-  const hasEdgeAdminGuard = middlewareCode.includes("pathname.startsWith('/admin/')");
+  const hasEdgeAdminGuard = middlewareCode.includes("pathname.startsWith('/admin')");
   const hasEdgeOwnerGuard = middlewareCode.includes("pathname.startsWith('/owner')");
   results.push({
     testId: 'TEST 20',

@@ -725,7 +725,7 @@ export const SEED_PAYMENT_PLANS: PaymentPlan[] = [
         dueDate: '2026-04-30',
         gracePeriodDays: 7,
         status: 'PENDING',
-        notes: 'Guaranteed rental agreement execution'
+        notes: 'Assured rental agreement execution per Foundation policy'
       },
       {
         id: 'INST-005',

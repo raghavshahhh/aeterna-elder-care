@@ -1,6 +1,6 @@
 # SLCF — ADMIN COMMAND CENTER & FULL OPERATIONAL SYSTEM FINAL FORENSIC AUDIT
 **Project**: Senior Living Citizens Foundation — Kheri Asra, Jhajjar / Delhi NCR
-**Production Admin URL**: `https://aeterna-elder-care.vercel.app/admin` (and `/admin/login`)
+**Production Admin URL**: `https://senior-living-citizen-foundation.vercel.app/admin` (and `/admin/login`)
 **Audit Date**: 2026-08-31
 **Status**: REMEDIATION & FINAL FORENSIC AUDIT COMPLETE
 
