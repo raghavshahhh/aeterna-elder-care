@@ -37,7 +37,7 @@ export default function PaymentTermsPage() {
             <BadgeIndianRupee className="w-8 h-8 text-[#C58F58] mb-3" />
             <h3 className="text-base font-serif-heading font-bold text-white mb-1">Fixed Milestone Pricing</h3>
             <p className="text-xs text-white/60 leading-relaxed">
-              No hidden escalation clauses. The agreed price at booking is locked and guaranteed throughout construction and handover.
+              No hidden escalation clauses. The agreed price at booking is fixed and honoured throughout construction and handover, as specified in the Foundation&apos;s official agreement.
             </p>
           </div>
 

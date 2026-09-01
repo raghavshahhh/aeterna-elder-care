@@ -122,7 +122,7 @@ export const SEED_LOCATIONS: Location[] = [
     city: 'Jhajjar / Near Reliance MET City',
     tagline: 'Master-Plotted Sanctuary with Proposed 30k Sq. Ft. Ayurvedic Hospital',
     description: 'A 64-plot planned township featuring G+2 elder residences, community mandir, wide landscaped avenues, and rapid connectivity to Gurgaon via SH-22 and KMP Expressway.',
-    heroImage: '/project-assets/real/drone-aerial.jpg',
+    heroImage: '/project-assets/real-site/drone/real-land-aerial-1.jpg',
     featuredProjectCount: 1,
     isPublished: true,
     displayOrder: 1,
@@ -135,9 +135,9 @@ export const SEED_LOCATIONS: Location[] = [
     name: 'Goa (Coastal Haven)',
     state: 'Goa',
     city: 'North Goa / Candolim Foothills',
-    tagline: 'Ready-to-Move Serene Elder Sanctuary Surrounded by Palm Groves',
-    description: 'An operational, peaceful coastal elder sanctuary offering fully serviced 1 BHK and 2 BHK residences, daily wellness routines, on-call doctor care, and home-cooked nutritious dining.',
-    heroImage: '/project-assets/real/site-boundary.jpg',
+    tagline: 'Planned Boutique Senior Retreat in the Foothills of North Goa',
+    description: 'A planned coastal senior sanctuary designed to offer fully serviced residences, daily wellness routines, on-call doctor care, and home-cooked nutritious dining. Details will be updated as the franchise plan progresses.',
+    heroImage: '/project-assets/brand/logo-full-transparent.webp',
     featuredProjectCount: 1,
     isPublished: true,
     displayOrder: 2,
@@ -152,7 +152,7 @@ export const SEED_LOCATIONS: Location[] = [
     city: 'Doon Valley',
     tagline: 'Upcoming Hillside Wellness Community with Pure Mountain Air',
     description: 'Planned serene living sanctuary nestled in the sal forests of Doon Valley with specialized geriatric wellness and organic farming.',
-    heroImage: '/project-assets/real/drone-aerial.jpg',
+    heroImage: '/project-assets/real-site/drone/real-land-aerial-2.jpg',
     featuredProjectCount: 0,
     isPublished: false,
     displayOrder: 3,
@@ -185,8 +185,8 @@ export const SEED_PROJECTS: Project[] = [
     hospitalStatus: 'PROPOSED',
     heroMedia: {
       type: 'DRONE',
-      url: '/project-assets/real/drone-aerial.jpg',
-      thumbnailUrl: '/project-assets/real/drone-aerial.jpg',
+      url: '/project-assets/real-site/drone/real-land-aerial-1.jpg',
+      thumbnailUrl: '/project-assets/real-site/drone/poster.jpg',
       youtubeId: 'jiEwQ6RA2HI'
     },
     overview: {
@@ -216,7 +216,7 @@ export const SEED_PROJECTS: Project[] = [
       postPossessionReturn: '₹12,500 / month (6% net yield)',
       leaseGuaranteeMonths: 12,
       buybackGuaranteed: true,
-      pricingNote: 'Guaranteed 1-Year Foundation lease agreement with 100% buyback safety net.'
+      pricingNote: 'Assured rental return terms per Foundation booking agreement with capital safety policy.'
     },
     isPublished: true,
     enable3D: true,
@@ -231,11 +231,11 @@ export const SEED_PROJECTS: Project[] = [
     locationId: 'LOC-GOA',
     franchiseId: 'FRAN-GOA-01',
     name: 'Goa Coastal Serene Living',
-    tagline: 'Ready-to-Move Boutique Coastal Sanctuary',
+    tagline: 'Planned Boutique Coastal Sanctuary',
     headline: 'A Peaceful Coastal Haven with Daily Healthcare & Warm Community.',
-    subheadline: 'An operational senior retreat nestled in the peaceful green foothills of North Goa. Offering immediate possession, fully furnished suites, and 24/7 care.',
-    status: 'READY_TO_MOVE',
-    projectType: 'READY_TO_MOVE_RESIDENTIAL',
+    subheadline: 'A planned boutique senior retreat nestled in the peaceful green foothills of North Goa. Details will be updated as the franchise plan progresses.',
+    status: 'COMING_SOON',
+    projectType: 'PLANNED_RESIDENTIAL',
     address: 'Near Candolim Foothills, North Goa',
     city: 'North Goa',
     state: 'Goa',
@@ -245,32 +245,32 @@ export const SEED_PROJECTS: Project[] = [
     totalResidences: 24,
     heroMedia: {
       type: 'IMAGE',
-      url: '/project-assets/real/site-boundary.jpg',
-      thumbnailUrl: '/project-assets/real/site-boundary.jpg'
+      url: '/project-assets/brand/logo-full-transparent.webp',
+      thumbnailUrl: '/project-assets/brand/logo-full-transparent.webp'
     },
     overview: {
-      story: 'Experience peaceful coastal living surrounded by swaying palms and clean sea breezes. Our Goa sanctuary offers independent living suites with round-the-clock nursing assistance, nutritious coastal dining, and active daily community gatherings.',
+      story: 'Experience peaceful coastal living surrounded by swaying palms and clean sea breezes. Our planned Goa sanctuary is designed to offer independent living suites with nursing assistance, nutritious coastal dining, and active daily community gatherings.',
       features: [
-        { title: 'Immediate Move-In', desc: 'Fully furnished, senior-equipped suites ready for occupancy today', icon: 'CheckCircle2', status: 'EXISTS' },
-        { title: '24/7 Nursing Desk', desc: 'Licensed caregivers and emergency response in every room', icon: 'HeartPulse', status: 'EXISTS' },
-        { title: 'All-Inclusive Dining', desc: 'Fresh home-style vegetarian & balanced meals prepared daily', icon: 'Utensils', status: 'EXISTS' },
-        { title: 'Lush Tropical Gardens', desc: 'Barrier-free paved walking paths under shady coconut groves', icon: 'Trees', status: 'EXISTS' }
+        { title: 'Planned Senior Suites', desc: 'Fully furnished, senior-equipped suites designed for comfort and accessibility', icon: 'CheckCircle2', status: 'PLANNED' },
+        { title: 'Nursing Desk & Care', desc: 'Licensed caregivers and emergency response in every suite', icon: 'HeartPulse', status: 'PLANNED' },
+        { title: 'All-Inclusive Dining', desc: 'Fresh home-style vegetarian & balanced meals prepared daily', icon: 'Utensils', status: 'PLANNED' },
+        { title: 'Lush Tropical Gardens', desc: 'Barrier-free paved walking paths under shady coconut groves', icon: 'Trees', status: 'PLANNED' }
       ],
       amenities: [
-        { name: 'Daily Morning Yoga & Pranayama Sessions', category: 'Wellness', icon: 'Sun', status: 'EXISTS' },
-        { name: 'Reading Lounge & Indoor Board Games', category: 'Community', icon: 'Coffee', status: 'EXISTS' },
-        { name: 'Bi-Weekly Beach & Temple Excursions', category: 'Lifestyle', icon: 'Compass', status: 'EXISTS' },
-        { name: 'Dedicated Physiotherapy Room', category: 'Healthcare', icon: 'Activity', status: 'EXISTS' }
+        { name: 'Daily Morning Yoga & Pranayama Sessions', category: 'Wellness', icon: 'Sun', status: 'PLANNED' },
+        { name: 'Reading Lounge & Indoor Board Games', category: 'Community', icon: 'Coffee', status: 'PLANNED' },
+        { name: 'Bi-Weekly Beach & Temple Excursions', category: 'Lifestyle', icon: 'Compass', status: 'PLANNED' },
+        { name: 'Dedicated Physiotherapy Room', category: 'Healthcare', icon: 'Activity', status: 'PLANNED' }
       ],
       healthcare: [
-        { name: 'Daily Vital & Blood Sugar Monitoring', desc: 'Continuous healthcare tracking with digital record sharing for family.', status: 'EXISTS' },
-        { name: 'Tie-up with Manipal Hospital Goa', desc: 'Priority admission and 15-minute ambulance response protocol.', status: 'EXISTS' }
+        { name: 'Daily Vital & Health Monitoring', desc: 'Healthcare tracking with digital record sharing for family.', status: 'PLANNED' },
+        { name: 'Hospital Network Tie-up', desc: 'Priority admission and emergency response protocol.', status: 'PLANNED' }
       ]
     },
     pricing: {
-      basePriceDisplay: 'From ₹45,000 / month (Full Board Living)',
+      basePriceDisplay: 'From ₹45,000 / month (Indicative Full Board Living)',
       downPaymentAmount: '₹5,00,000 (Refundable Security Deposit)',
-      pricingNote: 'Includes private suite, all meals, housekeeping, laundry, and daily nursing care.'
+      pricingNote: 'Indicative pricing for planned private suite living. Subject to final launch specifications.'
     },
     isPublished: true,
     enable3D: false,

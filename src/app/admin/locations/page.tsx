@@ -26,7 +26,7 @@ export default function AdminLocationsPage() {
     city: '',
     tagline: '',
     description: '',
-    heroImage: '/project-assets/real/drone-aerial.jpg',
+    heroImage: '/project-assets/real-site/drone/real-land-aerial-1.jpg',
     featuredProjectCount: 1,
     isPublished: true,
     displayOrder: 1
@@ -84,7 +84,7 @@ export default function AdminLocationsPage() {
           city: '',
           tagline: '',
           description: '',
-          heroImage: '/project-assets/real/drone-aerial.jpg',
+          heroImage: '/project-assets/real-site/drone/real-land-aerial-1.jpg',
           featuredProjectCount: 1,
           isPublished: true,
           displayOrder: locations.length + 1

@@ -139,7 +139,7 @@ export default function DynamicProjectPage() {
     );
   }
 
-  // READY-TO-MOVE GOA EXPERIENCE
+  // GOA EXPERIENCE — PLANNED STAGE (no real assets available yet)
   return (
     <main className="min-h-screen bg-[#FAF8F5] text-[#0D2329]">
       {/* Hero Header */}
@@ -149,8 +149,8 @@ export default function DynamicProjectPage() {
             <span className="px-3 py-1 rounded-full bg-[#FAF2EB] text-[#C58F58] font-mono text-xs font-bold uppercase">
               {project.address}
             </span>
-            <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-xs font-bold">
-              Ready to Move
+            <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 font-mono text-xs font-bold">
+              Coming Soon — Planning Stage
             </span>
           </div>
 
@@ -168,7 +168,7 @@ export default function DynamicProjectPage() {
               className="px-6 py-3.5 rounded-full bg-[#C58F58] hover:bg-[#B37E47] text-white text-xs font-bold transition-all shadow-xl flex items-center gap-2 cursor-pointer font-mono"
             >
               <Calendar className="w-4 h-4" />
-              <span>Schedule Private Tour</span>
+              <span>Register Your Interest</span>
             </button>
 
             <a
@@ -182,15 +182,18 @@ export default function DynamicProjectPage() {
         </div>
       </section>
 
-      {/* Core Features Grid */}
+      {/* Planned Pillars Grid */}
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="text-center space-y-2">
           <span className="text-xs font-mono uppercase tracking-widest text-[#C58F58] font-bold">
-            OPERATIONAL SANCTUARY PILLARS
+            PLANNED SANCTUARY FEATURES
           </span>
           <h2 className="text-3xl sm:text-4xl font-serif-heading font-bold text-[#0D2329]">
             A Dignified Living Experience in Goa
           </h2>
+          <p className="text-xs text-[#53676E] max-w-xl mx-auto">
+            The following features are planned for this sanctuary. Details are subject to finalisation as the franchise plan progresses.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -206,18 +209,18 @@ export default function DynamicProjectPage() {
         </div>
       </section>
 
-      {/* Daily Care & Wellness Services */}
+      {/* Planned Care & Wellness Services */}
       <section className="py-20 bg-white border-y border-[#E8E2D8]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="max-w-2xl space-y-2">
             <span className="text-xs font-mono uppercase tracking-widest text-[#2C5E50] font-bold">
-              ROUND-THE-CLOCK ASSISTANCE
+              PLANNED CARE SERVICES
             </span>
             <h2 className="text-3xl sm:text-4xl font-serif-heading font-bold text-[#0D2329]">
-              Daily Healthcare, Nutrition &amp; Care
+              Planned Healthcare, Nutrition &amp; Care
             </h2>
             <p className="text-xs sm:text-sm text-[#53676E] leading-relaxed">
-              Every resident enjoys customized care plans, daily vital monitoring, fresh home-cooked nutrition, and doctor access.
+              The following care services are planned for this sanctuary. All services are indicative and subject to finalisation.
             </p>
           </div>
 

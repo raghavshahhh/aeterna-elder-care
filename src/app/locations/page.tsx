@@ -63,8 +63,8 @@ export default function LocationsDirectoryPage() {
           <div className="bg-white rounded-3xl border border-[#E8E2D8] overflow-hidden shadow-xl flex flex-col justify-between group hover:shadow-2xl transition-all">
             <div className="relative h-64 sm:h-72 overflow-hidden bg-[#0D2329]">
               <img
-                src="/project-assets/real/drone-aerial.jpg"
-                alt="Haryana Sanctuary Aerial"
+                src="/project-assets/real-site/drone/real-land-aerial-1.jpg"
+                alt="Haryana Sanctuary Aerial View — SH-22, Kheri Asra, Jhajjar"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90"
               />
               <div className="absolute top-4 left-4 flex gap-2">
